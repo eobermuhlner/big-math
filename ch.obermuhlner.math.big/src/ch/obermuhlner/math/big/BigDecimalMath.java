@@ -38,6 +38,22 @@ public class BigDecimalMath {
 		return result;
 	}
 	
+	public static BigDecimal sqrt(BigDecimal x, MathContext mathContext) {
+		if (x.signum() == 0) {
+			return ZERO;
+		}
+
+		BigDecimal last;
+		BigDecimal result = x.divide(TWO);
+
+		do {
+			last = result;
+			result = x.divide(result, mathContext).add(last, mathContext).divide(TWO, mathContext);
+		} while (result.compareTo(last) != 0);
+		
+		return result;
+	}
+
 	public static BigDecimal log(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Natural_logarithm
 		if (x.signum() <= 0) {
@@ -53,19 +69,19 @@ public class BigDecimalMath {
 		// http://en.wikipedia.org/wiki/Logarithm#Calculation
 		BigDecimal magic = x.subtract(ONE).divide(x.add(ONE), mathContext);
 		
+		BigDecimal last; 
 		BigDecimal result = ZERO;
-		BigDecimal prevResult; 
 		BigDecimal step;
 		int i = 0;
 		do {
 			int doubleIndexPlusOne = i * 2 + 1; 
 			step = pow(magic, doubleIndexPlusOne, mathContext).divide(BigDecimal.valueOf(doubleIndexPlusOne), mathContext);
 
-			prevResult = result;
+			last = result;
 			result = result.add(step, mathContext);
 			
 			i++;
-		} while (result.compareTo(prevResult) != 0);
+		} while (result.compareTo(last) != 0);
 		
 		result = result.multiply(TWO, mathContext);
 		
