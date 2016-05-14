@@ -216,7 +216,7 @@ public class BigDecimalMath {
 	}
 	
 	/**
-	 * Calculates the exponent of a {@link BigDecimal}.
+	 * Calculates the natural exponent of a {@link BigDecimal} (e<sup>x</sup>).
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Exponent">Wikipedia: Exponent</a></p>
 	 * 
@@ -309,53 +309,149 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
+	/**
+	 * A context for {@link BigDecimal} calculations with a specific {@link MathContext}.
+	 */
 	public static class Context {
 		private MathContext mathContext;
 
+		/**
+		 * Creates a context with the specified {@link MathContext}.
+		 * 
+		 * @param mathContext the {@link MathContext} to use
+		 */
 		public Context(MathContext mathContext) {
 			this.mathContext = mathContext;
 		}
 
+		/**
+		 * Creates a {@link BigDecimal} from the specified <code>int</code> value using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param value the <code>int</code> value
+		 * @return the created {@link BigDecimal}
+		 * @see BigDecimal#BigDecimal(int, MathContext)
+		 */
 		public BigDecimal valueOf(int value) {
 			return new BigDecimal(value, mathContext);
 		}
 
+		/**
+		 * Creates a {@link BigDecimal} from the specified <code>long</code> value using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param value the <code>long</code> value
+		 * @return the created {@link BigDecimal}
+		 * @see BigDecimal#BigDecimal(long, MathContext)
+		 */
 		public BigDecimal valueOf(long value) {
 			return new BigDecimal(value, mathContext);
 		}
 
+		/**
+		 * Creates a {@link BigDecimal} from the specified <code>double</code> value using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * <p>To avoid unexpected results this method uses <br>
+		 * {@link BigDecimal#valueOf(double)} and {@link BigDecimal#round(MathContext)}<br>
+		 * and <strong>not</strong> {@link BigDecimal#BigDecimal(double, MathContext)}.</p>
+		 * 
+		 * @param value the <code>double</code> value
+		 * @return the created {@link BigDecimal}
+		 * @see BigDecimal#valueOf(double)
+		 * @see BigDecimal#round(MathContext)
+		 */
 		public BigDecimal valueOf(double value) {
-			return new BigDecimal(value, mathContext);
+			return BigDecimal.valueOf(value).round(mathContext);
 		}
 
+		/**
+		 * Creates a {@link BigDecimal} from the specified {@link BigInteger} value using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param value the {@link BigInteger} value
+		 * @return the created {@link BigDecimal}
+		 * @see BigDecimal#BigDecimal(BigInteger, MathContext)
+		 */
 		public BigDecimal valueOf(BigInteger value) {
 			return new BigDecimal(value, mathContext);
 		}
 
+		/**
+		 * Creates a {@link BigDecimal} from the specified {@link String} value using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param value the {@link String} value
+		 * @return the created {@link BigDecimal}
+		 * @see BigDecimal#BigDecimal(String, MathContext)
+		 */
 		public BigDecimal valueOf(String value) {
 			return new BigDecimal(value, mathContext);
 		}
 
+		/**
+		 * Adds two {@link BigDecimal} values using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @param y the {@link BigDecimal} y value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimal#add(BigDecimal, MathContext)
+		 */
 		public BigDecimal add(BigDecimal x, BigDecimal y) {
 			return x.add(y, mathContext);
 		}
 		
+		/**
+		 * Subtracts {@link BigDecimal} y from {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @param y the {@link BigDecimal} y value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimal#subtract(BigDecimal, MathContext)
+		 */
 		public BigDecimal subtract(BigDecimal x, BigDecimal y) {
 			return x.subtract(y, mathContext);
 		}
 		
+		/**
+		 * Multiples two {@link BigDecimal} values using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @param y the {@link BigDecimal} y value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimal#multiply(BigDecimal, MathContext)
+		 */
 		public BigDecimal multiply(BigDecimal x, BigDecimal y) {
 			return x.multiply(y, mathContext);
 		}
 		
+		/**
+		 * Divides {@link BigDecimal} y from {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @param y the {@link BigDecimal} y value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimal#divide(BigDecimal, MathContext)
+		 */
 		public BigDecimal divide(BigDecimal x, BigDecimal y) {
 			return x.divide(y, mathContext);
 		}
 
+		/**
+		 * Calculates the division to integral value of {@link BigDecimal} y divided by {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @param y the {@link BigDecimal} y value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimal#divideToIntegralValue(BigDecimal, MathContext)
+		 */
 		public BigDecimal divideToIntegralValue(BigDecimal x, BigDecimal y) {
 			return x.divideToIntegralValue(y, mathContext);
 		}
 
+		/**
+		 * Calculated the remainder of {@link BigDecimal} y divided by {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @param y the {@link BigDecimal} y value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimal#remainder(BigDecimal, MathContext)
+		 */
 		public BigDecimal remainder(BigDecimal x, BigDecimal y) {
 			return x.remainder(y, mathContext);
 		}
@@ -364,34 +460,91 @@ public class BigDecimalMath {
 			return x.divideAndRemainder(y, mathContext);
 		}
 
+		/**
+		 * Returns the absolute value of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimal#abs(MathContext)
+		 */
 		public BigDecimal abs(BigDecimal x) {
 			return x.abs(mathContext);
 		}
 
+		/**
+		 * Returns the negated value of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimal#negate(MathContext)
+		 */
 		public BigDecimal negate(BigDecimal x) {
 			return x.negate(mathContext);
 		}
 
+		/**
+		 * Returns the natural logarithm of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#log(BigDecimal, MathContext)
+		 */
 		public BigDecimal log(BigDecimal x) {
 			return BigDecimalMath.log(x, mathContext);
 		}
 		
+		/**
+		 * Returns the {@link BigDecimal} x to the power of {@link BigDecimal} y using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @param y the {@link BigDecimal} y value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+		 */
 		public BigDecimal pow(BigDecimal x, BigDecimal y) {
 			return BigDecimalMath.pow(x, y, mathContext);
 		}
 		
+		/**
+		 * Returns the natural exponent of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#exp(BigDecimal, MathContext)
+		 */
 		public BigDecimal exp(BigDecimal x) {
 			return BigDecimalMath.exp(x, mathContext);
 		}
 		
+		/**
+		 * Returns the square root of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#sqrt(BigDecimal, MathContext)
+		 */
 		public BigDecimal sqrt(BigDecimal x) {
 			return BigDecimalMath.sqrt(x, mathContext);
 		}
 		
+		/**
+		 * Returns the sine of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#sin(BigDecimal, MathContext)
+		 */
 		public BigDecimal sin(BigDecimal x) {
 			return BigDecimalMath.sin(x, mathContext);
 		}
 		
+		/**
+		 * Returns the cosine of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#cos(BigDecimal, MathContext)
+		 */
 		public BigDecimal cos(BigDecimal x) {
 			return BigDecimalMath.cos(x, mathContext);
 		}
