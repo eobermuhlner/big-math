@@ -79,7 +79,16 @@ public class BigDecimalMath {
 	public static BigDecimal pow(BigDecimal x, BigDecimal y, MathContext mathContext) {
 		// x^y = exp(y*log(x))
 		// TODO calculate with taylor series?
-		
+
+		if (x.signum() == 0) {
+			if (y.signum() == 0) {
+				return ONE;
+			}
+			if (y.signum() > 0) {
+				return ZERO;
+			}
+		}
+
 		try {
 			int intValue = y.intValueExact();
 			return pow(x, intValue, mathContext);

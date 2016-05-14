@@ -60,19 +60,7 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
-	public void testPow() {
-		for(double x : new double[] { 1, 2, 3, 4, 5 }) {
-			for(double y : new double[] { -5, -4, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5 }) {
-				assertEquals(
-						x + "^" + y,
-						toCheck(Math.pow(x, y)),
-						toCheck(BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC)));
-			}
-		}
-	}
-
-	@Test
-	public void testPowIntPositive() {
+	public void testPowIntPositiveY() {
 		// positive exponents
 		for(int x : new int[] { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 }) {
 			for(int y : new int[] { 0, 1, 2, 3, 4, 5 }) {
@@ -85,7 +73,7 @@ public class BigDecimalMathTest {
 	}
 	
 	@Test
-	public void testPowIntNegative() {
+	public void testPowIntNegativeY() {
 		// positive exponents
 		for(int x : new int[] { -5, -4, -3, -2, -1, 1, 2, 3, 4, 5 }) { // no x=0 !
 			for(int y : new int[] { -5, -4, -3, -2, -1}) {
@@ -97,6 +85,74 @@ public class BigDecimalMathTest {
 		}
 	}
 
+	@Test
+	public void testPowIntSpecialCases() {
+		// 0^0 = 1
+		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(0), 0, MC));
+		// 0^x = 0 for x > 0
+		assertEquals(BigDecimal.valueOf(0), BigDecimalMath.pow(BigDecimal.valueOf(0), +5, MC));
+
+		// x^0 = 1 for all x
+		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(-5), 0, MC));
+		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(+5), 0, MC));
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testPowInt0NegativeY() {
+		// 0^x for x < 0 is undefined
+		System.out.println(BigDecimalMath.pow(BigDecimal.valueOf(0), -5, MC));
+	}
+	
+	@Test
+	public void testPowPositiveX() {
+		for(double x : new double[] { 1, 1.5, 2, 2.5, 3, 4, 5 }) {
+			for(double y : new double[] { -5, -4, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5 }) {
+				assertEquals(
+						x + "^" + y,
+						toCheck(Math.pow(x, y)),
+						toCheck(BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC)));
+			}
+		}
+		for(double x : new double[] { 0 }) {
+			for(double y : new double[] { 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5 }) {
+				assertEquals(
+						x + "^" + y,
+						toCheck(Math.pow(x, y)),
+						toCheck(BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC)));
+			}
+		}
+	}
+
+	@Test
+	public void testPowNegativeX() {
+		for(double x : new double[] { -2, -1 }) {
+			for(double y : new double[] { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 }) {
+				assertEquals(
+						x + "^" + y,
+						toCheck(Math.pow(x, y)),
+						toCheck(BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC)));
+			}
+		}
+	}
+
+	@Test
+	public void testPowSpecialCases() {
+		// 0^0 = 1
+		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(0), BigDecimal.valueOf(0), MC));
+		// 0^x = 0 for x > 0
+		assertEquals(BigDecimal.valueOf(0), BigDecimalMath.pow(BigDecimal.valueOf(0), BigDecimal.valueOf(+5), MC));
+
+		// x^0 = 1 for all x
+		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(-5), BigDecimal.valueOf(0), MC));
+		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(+5), BigDecimal.valueOf(0), MC));
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testPow0NegativeY() {
+		// 0^x for x < 0 is undefined
+		System.out.println(BigDecimalMath.pow(BigDecimal.valueOf(0), BigDecimal.valueOf(-5), MC));
+	}
+	
 	@Test
 	public void testSqrt() {
 		for(double value : new double[] { 0, 0.1, 2, 10, 33.3333 }) {
