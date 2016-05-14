@@ -125,6 +125,15 @@ public class BigDecimalMathTest {
 		}
 	}
 
+	@Test
+	public void testSin() {
+		for(double value : new double[] { -5, -1, -0.3, 0, 0.1, 2, 10 }) {
+			assertEquals("sin(" + value + ")",
+					toCheck(Math.sin(value)),
+					toCheck(BigDecimalMath.sin(BigDecimal.valueOf(value), MC)));
+		}
+	}
+
 	private static BigDecimal toCheck(double value) {
 		long longValue = (long) value;
 		if (value == (double)longValue) {
