@@ -38,6 +38,20 @@ public class BigDecimalMath {
 		return result;
 	}
 	
+	/**
+	 * Calculates the square root of a {@link BigDecimal} value.
+	 * 
+	 * <p><a href="http://en.wikipedia.org/wiki/Square_root">Wikipedia: Square root</a></p>
+	 * 
+	 * <p>The result has loss of precision, the desired precision must be specified by the {@link MathContext} argument.</p>
+	 * 
+	 * <p>The implementation uses <a href="http://en.wikipedia.org/wiki/Newton%27s_method">Newtown's method</a>
+	 * until the resulting value has reached the specified precision.</p>
+	 *
+	 * @param x the {@link BigDecimal} value to calculate the square root
+	 * @param mathContext the {@link MathContext} used for all calculations and the desired precision of the result
+	 * @return the calculated square root of x
+	 */
 	public static BigDecimal sqrt(BigDecimal x, MathContext mathContext) {
 		if (x.signum() == 0) {
 			return ZERO;
