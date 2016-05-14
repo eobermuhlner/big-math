@@ -2,18 +2,45 @@ package ch.obermuhlner.math.big;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
 public class BigDecimalMath {
 
-	private static final BigDecimal TWO = BigDecimal.valueOf(2);
+	private static final BigDecimal TWO = valueOf(2);
 	
+	private static BigDecimal[] factorialCache = new BigDecimal[100];
+	static {
+		BigDecimal result = ONE;
+		factorialCache[0] = result;
+		for (int i = 1; i < factorialCache.length; i++) {
+			result = result.multiply(valueOf(i));
+			factorialCache[i] = result;
+		}
+	}
+
 	private BigDecimalMath() {
 		// prevent instances
 	}
 	
+	public static BigDecimal factorial(int n) {
+		if (n < 0) {
+			// TODO document
+			throw new ArithmeticException("Negative value");
+		}
+		if (n < factorialCache.length) {
+			return factorialCache[n];
+		}
+
+		BigDecimal result = factorialCache[factorialCache.length - 1];
+		for (int i = factorialCache.length; i <= n; i++) {
+			result = result.multiply(valueOf(i));
+		}
+		return result;
+	}
+
 	public static BigDecimal pow(BigDecimal x, int y, MathContext mathContext) {
 		if (y < 0) {
 			return ONE.divide(pow(x, -y, mathContext), mathContext);
@@ -89,7 +116,7 @@ public class BigDecimalMath {
 		int i = 0;
 		do {
 			int doubleIndexPlusOne = i * 2 + 1; 
-			step = pow(magic, doubleIndexPlusOne, mathContext).divide(BigDecimal.valueOf(doubleIndexPlusOne), mathContext);
+			step = pow(magic, doubleIndexPlusOne, mathContext).divide(valueOf(doubleIndexPlusOne), mathContext);
 
 			last = result;
 			result = result.add(step, mathContext);

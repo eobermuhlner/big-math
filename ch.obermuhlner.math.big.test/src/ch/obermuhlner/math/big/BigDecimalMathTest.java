@@ -13,6 +13,20 @@ public class BigDecimalMathTest {
 
 	private static final MathContext MC_CHECK_DOUBLE = MathContext.DECIMAL32;
 
+	@Test
+	public void testFactorial() {
+		assertEquals(new BigDecimal("1"), BigDecimalMath.factorial(0));
+		assertEquals(new BigDecimal("1"), BigDecimalMath.factorial(1));
+		assertEquals(new BigDecimal("2"), BigDecimalMath.factorial(2));
+		assertEquals(new BigDecimal("6"), BigDecimalMath.factorial(3));
+		assertEquals(new BigDecimal("24"), BigDecimalMath.factorial(4));
+		assertEquals(new BigDecimal("120"), BigDecimalMath.factorial(5));
+		
+		assertEquals(
+				new BigDecimal("9425947759838359420851623124482936749562312794702543768327889353416977599316221476503087861591808346911623490003549599583369706302603264000000000000000000000000"),
+				BigDecimalMath.factorial(101));
+	}
+
 	@Test(expected = ArithmeticException.class)
 	public void testPowIntZeroPowerNegative() {
 		BigDecimalMath.pow(BigDecimal.valueOf(0), -5, MC);
