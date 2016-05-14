@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 
+/**
+ * Provides advanced functions operating on {@link BigDecimal}s.
+ */
 public class BigDecimalMath {
 
 	public static Context DECIMAL128 = new Context(MathContext.DECIMAL128);
@@ -81,11 +84,9 @@ public class BigDecimalMath {
 		// TODO calculate with taylor series?
 
 		if (x.signum() == 0) {
-			if (y.signum() == 0) {
-				return ONE;
-			}
-			if (y.signum() > 0) {
-				return ZERO;
+			switch (y.signum()) {
+				case 0 : return ONE;
+				case 1 : return ZERO;
 			}
 		}
 
@@ -168,7 +169,7 @@ public class BigDecimalMath {
 	}
 
 	/**
-	 * Calculates the natural logarithm of a {@link BigDecimal} x.
+	 * Calculates the natural logarithm of {@link BigDecimal} x.
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Natural_logarithm">Wikipedia: Natural logarithm</a></p>
 	 * 
@@ -225,7 +226,7 @@ public class BigDecimalMath {
 	}
 	
 	/**
-	 * Calculates the natural exponent of a {@link BigDecimal} (e<sup>x</sup>).
+	 * Calculates the natural exponent of {@link BigDecimal} x (e<sup>x</sup>).
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Exponent">Wikipedia: Exponent</a></p>
 	 * 
