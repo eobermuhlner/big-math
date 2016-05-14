@@ -7,7 +7,7 @@ This implementation provides:
 *   `pow(BigDecimal, int, MathContext)`
 *   `pow(BigDecimal, BigDecimal, MathContext)`
 *   `sqrt(BigDecimal, BigDecimal, MathContext)`
-*   `log(BigDecimal, BigDecimal)`
-*   `exp(BigDecimal, BigDecimal)`
-*   `sin(BigDecimal, BigDecimal)`
-*   `cos(BigDecimal, BigDecimal)`
+*   `log(BigDecimal, MathContext)`
+*   `exp(BigDecimal, MathContext)`
+*   `sin(BigDecimal, MathContext)`
+*   `cos(BigDecimal, MathContext)`
