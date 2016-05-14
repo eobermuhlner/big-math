@@ -10,7 +10,7 @@ import java.math.MathContext;
 public class BigDecimalMath {
 
 	private static final BigDecimal TWO = valueOf(2);
-	
+
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
 	static {
 		BigDecimal result = ONE;
@@ -24,11 +24,21 @@ public class BigDecimalMath {
 	private BigDecimalMath() {
 		// prevent instances
 	}
+
+	public static boolean isIntValue(BigDecimal value) {
+		// TODO impl isIntValue() without exceptions
+		try {
+			value.intValueExact();
+			return true;
+		} catch (ArithmeticException ex) {
+			// ignored
+		}
+		return false;
+	}
 	
 	public static BigDecimal factorial(int n) {
 		if (n < 0) {
-			// TODO document
-			throw new ArithmeticException("Negative value");
+			throw new ArithmeticException("Illegal factorial(n) for n < 0: n = " + n);
 		}
 		if (n < factorialCache.length) {
 			return factorialCache[n];
@@ -39,6 +49,24 @@ public class BigDecimalMath {
 			result = result.multiply(valueOf(i));
 		}
 		return result;
+	}
+
+	public static BigDecimal pow(BigDecimal x, BigDecimal y, MathContext mathContext) {
+		// x^y = exp(y*log(x))
+		// TODO calculate with taylor series?
+		
+		try {
+			int intValue = y.intValueExact();
+			return pow(x, intValue, mathContext);
+		} catch (ArithmeticException ex) {
+			// ignored
+		}
+
+		if (y.signum() < 0) {
+			return ONE.divide(pow(x, y.negate(), mathContext), mathContext);
+		}
+
+		return exp(y.multiply(log(x, mathContext)), mathContext);
 	}
 
 	public static BigDecimal pow(BigDecimal x, int y, MathContext mathContext) {
@@ -98,7 +126,7 @@ public class BigDecimalMath {
 	public static BigDecimal log(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Natural_logarithm
 		if (x.signum() <= 0) {
-			throw new ArithmeticException("Log 0");
+			throw new ArithmeticException("Illegal log(x) for x <= 0: x = " + x);
 		}
 		if (x.compareTo(ONE) == 0) {
 			return ZERO;

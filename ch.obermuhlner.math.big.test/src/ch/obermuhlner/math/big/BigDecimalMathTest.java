@@ -14,6 +14,33 @@ public class BigDecimalMathTest {
 	private static final MathContext MC_CHECK_DOUBLE = MathContext.DECIMAL32;
 
 	@Test
+	public void testInternals() {
+		assertEquals(toCheck(2.0), toCheck(BigDecimal.valueOf(2)));
+		assertEquals(toCheck(2.0), toCheck(BigDecimal.valueOf(2.0)));
+		
+		assertEquals(null, toCheck(Double.NaN));
+		assertEquals(null, toCheck(Double.NEGATIVE_INFINITY));
+		assertEquals(null, toCheck(Double.POSITIVE_INFINITY));
+	}
+	
+	@Test
+	public void testIsIntValue() {
+		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MIN_VALUE)));
+		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MAX_VALUE)));
+		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(0)));
+		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(-55)));
+		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(33)));
+		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(-55.0)));
+		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(33.0)));
+
+		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MIN_VALUE - 1L)));
+		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MAX_VALUE + 1L)));
+		
+		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(3.333)));
+		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(-5.555)));
+	}
+	
+	@Test
 	public void testFactorial() {
 		assertEquals(new BigDecimal("1"), BigDecimalMath.factorial(0));
 		assertEquals(new BigDecimal("1"), BigDecimalMath.factorial(1));
@@ -31,7 +58,19 @@ public class BigDecimalMathTest {
 	public void testPowIntZeroPowerNegative() {
 		BigDecimalMath.pow(BigDecimal.valueOf(0), -5, MC);
 	}
-	
+
+	@Test
+	public void testPow() {
+		for(double x : new double[] { 1, 2, 3, 4, 5 }) {
+			for(double y : new double[] { -5, -4, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5 }) {
+				assertEquals(
+						x + "^" + y,
+						toCheck(Math.pow(x, y)),
+						toCheck(BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC)));
+			}
+		}
+	}
+
 	@Test
 	public void testPowIntPositive() {
 		// positive exponents
@@ -79,7 +118,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testExp() {
-		for(double value : new double[] { -5, -1, 0.1, 2, 10, 33.3333 }) {
+		for(double value : new double[] { -5, -1, 0.1, 2, 10 }) {
 			assertEquals("exp(" + value + ")",
 					toCheck(Math.exp(value)),
 					toCheck(BigDecimalMath.exp(BigDecimal.valueOf(value), MC)));
@@ -92,10 +131,14 @@ public class BigDecimalMathTest {
 			return toCheck(BigDecimal.valueOf(longValue));
 		}
 		
-		return toCheck(BigDecimal.valueOf(value));
+		if (Double.isFinite(value)) {
+			return toCheck(BigDecimal.valueOf(value));
+		}
+		
+		return null;
 	}
 
 	private static BigDecimal toCheck(BigDecimal value) {
-		return value.round(MC_CHECK_DOUBLE);
+		return value.setScale(MC_CHECK_DOUBLE.getPrecision(), MC_CHECK_DOUBLE.getRoundingMode());
 	}
 }
