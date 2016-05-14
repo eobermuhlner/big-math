@@ -51,26 +51,24 @@ public class BigDecimalMath {
 
 	private static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Logarithm#Calculation
-		final BigDecimal accuracy = convertScaleToAccuracy(mathContext.getPrecision());
-		
 		BigDecimal magic = x.subtract(ONE).divide(x.add(ONE), mathContext);
 		
 		BigDecimal result = ZERO;
+		BigDecimal prevResult; 
 		BigDecimal step;
 		int i = 0;
 		do {
 			int doubleIndexPlusOne = i * 2 + 1; 
 			step = pow(magic, doubleIndexPlusOne, mathContext).divide(BigDecimal.valueOf(doubleIndexPlusOne), mathContext);
-			result = result.add(step);
+
+			prevResult = result;
+			result = result.add(step, mathContext);
+			
 			i++;
-		} while (step.abs().compareTo(accuracy) >= 0);
+		} while (result.compareTo(prevResult) != 0);
 		
 		result = result.multiply(TWO, mathContext);
 		
 		return result;
-	}
-
-	private static BigDecimal convertScaleToAccuracy(int scale) {
-		return BigDecimal.TEN.pow(-scale - 2);
 	}
 }

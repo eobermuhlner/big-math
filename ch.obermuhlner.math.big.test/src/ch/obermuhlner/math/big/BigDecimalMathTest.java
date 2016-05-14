@@ -11,6 +11,8 @@ public class BigDecimalMathTest {
 
 	private static final MathContext MC = MathContext.DECIMAL128;
 
+	private static final MathContext MC_CHECK_DOUBLE = MathContext.DECIMAL32;
+
 	@Test(expected = ArithmeticException.class)
 	public void testPowIntZeroPowerNegative() {
 		BigDecimalMath.pow(BigDecimal.valueOf(0), -5, MC);
@@ -46,7 +48,16 @@ public class BigDecimalMathTest {
 	
 	@Test
 	public void testLog() {
-		assertEquals(BigDecimal.valueOf(3.14), BigDecimalMath.log(BigDecimal.valueOf(2), MC));
+		for(double value : new double[] { 0.1, 2, 10, 33.3333 }) {
+			assertEquals("log(" + value + ")", toCheck(Math.log(value)), BigDecimalMath.log(BigDecimal.valueOf(value), MC).round(MC_CHECK_DOUBLE));
+		}
 	}
 
+	private static BigDecimal toCheck(double value) {
+		return toCheck(BigDecimal.valueOf(value));
+	}
+
+	private static BigDecimal toCheck(BigDecimal value) {
+		return value.round(MC_CHECK_DOUBLE);
+	}
 }
