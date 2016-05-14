@@ -97,11 +97,15 @@ public class BigDecimalMath {
 			// ignored
 		}
 
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+
 		if (y.signum() < 0) {
-			return ONE.divide(pow(x, y.negate(), mathContext), mathContext);
+			return ONE.divide(pow(x, y.negate(), mc), mc);
 		}
 
-		return exp(y.multiply(log(x, mathContext)), mathContext);
+		BigDecimal result = exp(y.multiply(log(x, mc)), mc);
+		
+		return result.round(mathContext);
 	}
 
 	/**
@@ -119,23 +123,25 @@ public class BigDecimalMath {
 			return ONE.divide(pow(x, -y, mathContext), mathContext);
 		}
 		
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+
 		BigDecimal result = ONE;
 		while (y > 0) {
 			if ((y & 1) == 1) {
 				// odd exponent -> multiply result with x
-				result = result.multiply(x, mathContext);
+				result = result.multiply(x, mc);
 				y -= 1;
 			}
 			
 			if (y > 0) {
 				// even exponent -> square x
-				x = x.multiply(x, mathContext);
+				x = x.multiply(x, mc);
 			}
 			
 			y >>= 1;
 		}
 
-		return result;
+		return result.round(mathContext);
 	}
 	
 	/**
