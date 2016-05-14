@@ -190,4 +190,23 @@ public class BigDecimalMath {
 
 		return result;
 	}
+	
+	public static BigDecimal cos(BigDecimal x, MathContext mathContext) {
+		BigDecimal last; 
+		BigDecimal result = ZERO;
+		BigDecimal sign = ONE;
+		BigDecimal step;
+		int i = 0;
+		do {
+			step = sign.multiply(x.pow(2 * i), mathContext).divide(factorial(2 * i), mathContext);
+			sign = sign.negate();
+
+			last = result;
+			result = result.add(step, mathContext);
+			i++;
+		} while (result.compareTo(last) != 0);
+
+		return result;
+	}
+
 }

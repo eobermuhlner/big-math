@@ -134,6 +134,15 @@ public class BigDecimalMathTest {
 		}
 	}
 
+	@Test
+	public void testCos() {
+		for(double value : new double[] { -5, -1, -0.3, 0, 0.1, 2, 10 }) {
+			assertEquals("cos(" + value + ")",
+					toCheck(Math.cos(value)),
+					toCheck(BigDecimalMath.cos(BigDecimal.valueOf(value), MC)));
+		}
+	}
+
 	private static BigDecimal toCheck(double value) {
 		long longValue = (long) value;
 		if (value == (double)longValue) {
