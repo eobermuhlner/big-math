@@ -77,6 +77,15 @@ public class BigDecimalMathTest {
 		}
 	}
 
+	@Test
+	public void testExp() {
+		for(double value : new double[] { -5, -1, 0.1, 2, 10, 33.3333 }) {
+			assertEquals("exp(" + value + ")",
+					toCheck(Math.exp(value)),
+					toCheck(BigDecimalMath.exp(BigDecimal.valueOf(value), MC)));
+		}
+	}
+
 	private static BigDecimal toCheck(double value) {
 		long longValue = (long) value;
 		if (value == (double)longValue) {

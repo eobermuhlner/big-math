@@ -128,4 +128,21 @@ public class BigDecimalMath {
 		
 		return result;
 	}
+	
+	public static BigDecimal exp(BigDecimal x, MathContext mathContext) {
+		BigDecimal last; 
+		BigDecimal result = ZERO;
+		BigDecimal step;
+		int i = 0;
+		do {
+			step = x.pow(i).divide(factorial(i), mathContext);
+
+			last = result;
+			result = result.add(step, mathContext);
+			i++;
+		} while (result.compareTo(last) != 0);
+
+		return result;
+	}
+
 }
