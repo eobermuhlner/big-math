@@ -21,8 +21,8 @@ public class BigDecimalMathTest {
 	@Test
 	public void testPowIntPositive() {
 		// positive exponents
-		for (int x = -5; x <= 5; x++) {
-			for (int y = 0; y <= 10; y++) {
+		for(int x : new int[] { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 }) {
+			for(int y : new int[] { 0, 1, 2, 3, 4, 5 }) {
 				assertEquals(
 						x + "^" + y,
 						BigDecimal.valueOf((int) Math.pow(x, y)),
@@ -34,14 +34,12 @@ public class BigDecimalMathTest {
 	@Test
 	public void testPowIntNegative() {
 		// positive exponents
-		for (int x = -5; x <= 5; x++) {
-			for (int y = -10; y < 0; y++) {
-				if (x != 0) {
-					assertEquals(
-							x + "^" + y,
-							BigDecimal.ONE.divide(BigDecimal.valueOf((int) Math.pow(x, -y)), MC),
-							BigDecimalMath.pow(BigDecimal.valueOf(x), y, MC));
-				}
+		for(int x : new int[] { -5, -4, -3, -2, -1, 1, 2, 3, 4, 5 }) { // no x=0 !
+			for(int y : new int[] { -5, -4, -3, -2, -1 }) {
+				assertEquals(
+						x + "^" + y,
+						BigDecimal.ONE.divide(BigDecimal.valueOf((int) Math.pow(x, -y)), MC),
+						BigDecimalMath.pow(BigDecimal.valueOf(x), y, MC));
 			}
 		}
 	}
