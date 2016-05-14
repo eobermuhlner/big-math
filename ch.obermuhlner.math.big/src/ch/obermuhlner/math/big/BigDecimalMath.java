@@ -5,10 +5,16 @@ import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 
 public class BigDecimalMath {
 
+	public static Context DECIMAL128 = new Context(MathContext.DECIMAL128);
+	public static Context DECIMAL64 = new Context(MathContext.DECIMAL64);
+	public static Context DECIMAL32 = new Context(MathContext.DECIMAL32);
+	public static Context UNLIMITED = new Context(MathContext.UNLIMITED);
+	
 	private static final BigDecimal TWO = valueOf(2);
 
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
@@ -112,31 +118,38 @@ public class BigDecimalMath {
 			return ZERO;
 		}
 
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
 		BigDecimal last;
 		BigDecimal result = x.divide(TWO);
 
 		do {
 			last = result;
-			result = x.divide(result, mathContext).add(last, mathContext).divide(TWO, mathContext);
+			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
 		} while (result.compareTo(last) != 0);
 		
-		return result;
+		return result.round(mathContext);
 	}
 
 	public static BigDecimal log(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Natural_logarithm
+		
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		
 		if (x.signum() <= 0) {
 			throw new ArithmeticException("Illegal log(x) for x <= 0: x = " + x);
 		}
 		if (x.compareTo(ONE) == 0) {
 			return ZERO;
 		}
-		return logAreaHyperbolicTangent(x, mathContext);
+		return logAreaHyperbolicTangent(x, mc).round(mathContext);
 	}
 
 	private static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Logarithm#Calculation
-		BigDecimal magic = x.subtract(ONE).divide(x.add(ONE), mathContext);
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		
+		BigDecimal magic = x.subtract(ONE, mc).divide(x.add(ONE), mc);
 		
 		BigDecimal last; 
 		BigDecimal result = ZERO;
@@ -144,69 +157,161 @@ public class BigDecimalMath {
 		int i = 0;
 		do {
 			int doubleIndexPlusOne = i * 2 + 1; 
-			step = pow(magic, doubleIndexPlusOne, mathContext).divide(valueOf(doubleIndexPlusOne), mathContext);
+			step = pow(magic, doubleIndexPlusOne, mc).divide(valueOf(doubleIndexPlusOne), mc);
 
 			last = result;
-			result = result.add(step, mathContext);
+			result = result.add(step, mc);
 			
 			i++;
 		} while (result.compareTo(last) != 0);
 		
-		result = result.multiply(TWO, mathContext);
+		result = result.multiply(TWO, mc);
 		
-		return result;
+		return result.round(mathContext);
 	}
 	
 	public static BigDecimal exp(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
 		BigDecimal last; 
 		BigDecimal result = ZERO;
 		BigDecimal step;
 		int i = 0;
 		do {
-			step = x.pow(i).divide(factorial(i), mathContext);
+			step = x.pow(i).divide(factorial(i), mc);
 
 			last = result;
-			result = result.add(step, mathContext);
+			result = result.add(step, mc);
 			i++;
 		} while (result.compareTo(last) != 0);
 
-		return result;
+		return result.round(mathContext);
 	}
 
 	public static BigDecimal sin(BigDecimal x, MathContext mathContext) {
-		BigDecimal last; 
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		BigDecimal last;
 		BigDecimal result = ZERO;
 		BigDecimal sign = ONE;
 		BigDecimal step;
 		int i = 0;
 		do {
-			step = sign.multiply(x.pow(2 * i + 1), mathContext).divide(factorial(2 * i + 1), mathContext);
+			step = sign.multiply(x.pow(2 * i + 1), mc).divide(factorial(2 * i + 1), mc);
 			sign = sign.negate();
 
 			last = result;
-			result = result.add(step, mathContext);
+			result = result.add(step, mc);
 			i++;
 		} while (result.compareTo(last) != 0);
 
-		return result;
+		return result.round(mathContext);
 	}
 	
 	public static BigDecimal cos(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
 		BigDecimal last; 
 		BigDecimal result = ZERO;
 		BigDecimal sign = ONE;
 		BigDecimal step;
 		int i = 0;
 		do {
-			step = sign.multiply(x.pow(2 * i), mathContext).divide(factorial(2 * i), mathContext);
+			step = sign.multiply(x.pow(2 * i), mc).divide(factorial(2 * i), mc);
 			sign = sign.negate();
 
 			last = result;
-			result = result.add(step, mathContext);
+			result = result.add(step, mc);
 			i++;
 		} while (result.compareTo(last) != 0);
 
-		return result;
+		return result.round(mathContext);
 	}
 
-}
+	public static class Context {
+		private MathContext mathContext;
+
+		public Context(MathContext mathContext) {
+			this.mathContext = mathContext;
+		}
+
+		public BigDecimal valueOf(int value) {
+			return new BigDecimal(value, mathContext);
+		}
+
+		public BigDecimal valueOf(long value) {
+			return new BigDecimal(value, mathContext);
+		}
+
+		public BigDecimal valueOf(double value) {
+			return new BigDecimal(value, mathContext);
+		}
+
+		public BigDecimal valueOf(BigInteger value) {
+			return new BigDecimal(value, mathContext);
+		}
+
+		public BigDecimal valueOf(String value) {
+			return new BigDecimal(value, mathContext);
+		}
+
+		public BigDecimal add(BigDecimal x, BigDecimal y) {
+			return x.add(y, mathContext);
+		}
+		
+		public BigDecimal subtract(BigDecimal x, BigDecimal y) {
+			return x.subtract(y, mathContext);
+		}
+		
+		public BigDecimal multiply(BigDecimal x, BigDecimal y) {
+			return x.multiply(y, mathContext);
+		}
+		
+		public BigDecimal divide(BigDecimal x, BigDecimal y) {
+			return x.divide(y, mathContext);
+		}
+
+		public BigDecimal divideToIntegralValue(BigDecimal x, BigDecimal y) {
+			return x.divideToIntegralValue(y, mathContext);
+		}
+
+		public BigDecimal remainder(BigDecimal x, BigDecimal y) {
+			return x.remainder(y, mathContext);
+		}
+
+		public BigDecimal[] divideAndRemainder(BigDecimal x, BigDecimal y) {
+			return x.divideAndRemainder(y, mathContext);
+		}
+
+		public BigDecimal abs(BigDecimal x) {
+			return x.abs(mathContext);
+		}
+
+		public BigDecimal negate(BigDecimal x) {
+			return x.negate(mathContext);
+		}
+
+		public BigDecimal log(BigDecimal x) {
+			return BigDecimalMath.log(x, mathContext);
+		}
+		
+		public BigDecimal pow(BigDecimal x, BigDecimal y) {
+			return BigDecimalMath.pow(x, y, mathContext);
+		}
+		
+		public BigDecimal exp(BigDecimal x) {
+			return BigDecimalMath.exp(x, mathContext);
+		}
+		
+		public BigDecimal sqrt(BigDecimal x) {
+			return BigDecimalMath.sqrt(x, mathContext);
+		}
+		
+		public BigDecimal sin(BigDecimal x) {
+			return BigDecimalMath.sin(x, mathContext);
+		}
+		
+		public BigDecimal cos(BigDecimal x) {
+			return BigDecimalMath.cos(x, mathContext);
+		}
+	}}

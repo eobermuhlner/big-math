@@ -157,6 +157,6 @@ public class BigDecimalMathTest {
 	}
 
 	private static BigDecimal toCheck(BigDecimal value) {
-		return value.setScale(MC_CHECK_DOUBLE.getPrecision(), MC_CHECK_DOUBLE.getRoundingMode());
+		return value.round(MC_CHECK_DOUBLE);
 	}
 }
