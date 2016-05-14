@@ -1,14 +1,12 @@
 package ch.obermuhlner.math.big;
 
-import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
-
-import org.omg.IOP.Codec;
 
 public class BigDecimalMath {
 
