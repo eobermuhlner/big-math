@@ -281,7 +281,7 @@ public class BigDecimalMathTest {
 				expected,
 				mathContext -> BigDecimalMath.log(new BigDecimal("12345.6"), mathContext),
 				10,
-				20); // TODO optimize log() with high values !!
+				200); // TODO optimize log() with high values !!
 	}
 
 	@Test
