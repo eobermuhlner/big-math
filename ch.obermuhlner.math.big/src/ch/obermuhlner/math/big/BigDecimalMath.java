@@ -163,13 +163,47 @@ public class BigDecimalMath {
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
+		BigDecimal result = x.divide(TWO, mc);
 		BigDecimal last;
-		BigDecimal result = x.divide(TWO);
 
 		do {
 			last = result;
 			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
 		} while (result.compareTo(last) != 0);
+		
+		return result.round(mathContext);
+	}
+	
+	/**
+	 * Calculates the n'th root of {@link BigDecimal} x.
+	 * 
+	 * <p>See <a href="http://en.wikipedia.org/wiki/Square_root">Wikipedia: Square root</a></p>
+	 * 
+	 * <p>The implementation uses a variant of <a href="http://en.wikipedia.org/wiki/Newton%27s_method">Newtown's method</a>
+	 * described as <a href="https://en.wikipedia.org/wiki/Nth_root_algorithm">Nth root algorithm</a>
+	 * until the resulting value has reached the specified precision + 4 (result is then rounded to the specified precision).</p>
+	 *
+	 * @param n the {@link BigDecimal} defining the root
+	 * @param x the {@link BigDecimal} value to calculate the n'th root
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated n'th root of x
+	 */
+	public static BigDecimal root(BigDecimal n, BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal factor = ONE.divide(n, mc);
+		BigDecimal nMinus1 = n.subtract(ONE);
+		BigDecimal result = x.divide(TWO, mc);
+		BigDecimal last = result;
+		BigDecimal last2;
+
+		do {
+			BigDecimal delta = factor.multiply(x.divide(pow(result, nMinus1, mc), mc).subtract(result, mc), mc);
+					
+			last2 = last;
+			last = result;
+			result = result.add(delta, mc);
+			System.out.println(result + " " + delta);
+		} while (result.compareTo(last2) != 0);
 		
 		return result.round(mathContext);
 	}
@@ -212,8 +246,8 @@ public class BigDecimalMath {
 		
 		BigDecimal magic = x.subtract(ONE, mc).divide(x.add(ONE), mc);
 		
-		BigDecimal last; 
 		BigDecimal result = ZERO;
+		BigDecimal last; 
 		BigDecimal step;
 		int i = 0;
 		do {
@@ -246,8 +280,8 @@ public class BigDecimalMath {
 	public static BigDecimal exp(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		BigDecimal last; 
 		BigDecimal result = ZERO;
+		BigDecimal last; 
 		BigDecimal step;
 		int i = 0;
 		do {
@@ -308,8 +342,8 @@ public class BigDecimalMath {
 	public static BigDecimal cos(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		BigDecimal last; 
 		BigDecimal result = ZERO;
+		BigDecimal last; 
 		BigDecimal sign = ONE;
 		BigDecimal step;
 		int i = 0;
@@ -541,6 +575,18 @@ public class BigDecimalMath {
 		 */
 		public BigDecimal sqrt(BigDecimal x) {
 			return BigDecimalMath.sqrt(x, mathContext);
+		}
+		
+		/**
+		 * Returns the n'th root of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param n the {@link BigDecimal} n value
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
+		 */
+		public BigDecimal root(BigDecimal n, BigDecimal x) {
+			return BigDecimalMath.root(n, x, mathContext);
 		}
 		
 		/**
