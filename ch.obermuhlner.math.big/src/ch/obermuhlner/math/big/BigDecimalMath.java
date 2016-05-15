@@ -97,7 +97,7 @@ public class BigDecimalMath {
 			// ignored
 		}
 
-		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		if (y.signum() < 0) {
 			return ONE.divide(pow(x, y.negate(), mc), mc);
@@ -111,7 +111,9 @@ public class BigDecimalMath {
 	/**
 	 * Calculates {@link BigDecimal} x to the power of <code>int</code> y (x<sup>y</sup>).
 	 * 
-	 * <p>The implementation uses the minimum number of multiplications of {@link BigDecimal x} (using squares whenever possible).</p>
+	 * <p>The implementation tries to minimize the number of multiplications of {@link BigDecimal x} (using squares whenever possible).</p>
+	 * 
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Exponentiation#Efficient_computation_with_integer_exponents">Wikipedia: Exponentiation - efficient computation</a></p>
 	 * 
 	 * @param x the {@link BigDecimal} value to take to the power
 	 * @param y the <code>int</code> value to serve as exponent
