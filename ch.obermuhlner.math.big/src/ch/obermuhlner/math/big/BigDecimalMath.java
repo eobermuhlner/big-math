@@ -169,7 +169,7 @@ public class BigDecimalMath {
 		do {
 			last = result;
 			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
-		} while (result.compareTo(last) != 0);
+		} while (!result.equals(last));
 		
 		return result.round(mathContext);
 	}
@@ -202,7 +202,7 @@ public class BigDecimalMath {
 			last2 = last;
 			last = result;
 			result = result.add(delta, mc);
-		} while (result.compareTo(last2) != 0);
+		} while (!result.equals(last2));
 		
 		return result.round(mathContext);
 	}
@@ -257,7 +257,7 @@ public class BigDecimalMath {
 			result = result.add(step, mc);
 			
 			i++;
-		} while (result.compareTo(last) != 0);
+		} while (!result.equals(last));
 		
 		result = result.multiply(TWO, mc);
 		
@@ -289,7 +289,7 @@ public class BigDecimalMath {
 			last = result;
 			result = result.add(step, mc);
 			i++;
-		} while (result.compareTo(last) != 0);
+		} while (!result.equals(last));
 
 		return result.round(mathContext);
 	}
@@ -321,7 +321,7 @@ public class BigDecimalMath {
 			last = result;
 			result = result.add(step, mc);
 			i++;
-		} while (result.compareTo(last) != 0);
+		} while (!result.equals(last));
 
 		return result.round(mathContext);
 	}
@@ -353,7 +353,7 @@ public class BigDecimalMath {
 			last = result;
 			result = result.add(step, mc);
 			i++;
-		} while (result.compareTo(last) != 0);
+		} while (!result.equals(last));
 
 		return result.round(mathContext);
 	}
