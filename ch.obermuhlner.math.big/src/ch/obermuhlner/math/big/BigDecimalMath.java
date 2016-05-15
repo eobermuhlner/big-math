@@ -202,7 +202,6 @@ public class BigDecimalMath {
 			last2 = last;
 			last = result;
 			result = result.add(delta, mc);
-			System.out.println(result + " " + delta);
 		} while (result.compareTo(last2) != 0);
 		
 		return result.round(mathContext);
