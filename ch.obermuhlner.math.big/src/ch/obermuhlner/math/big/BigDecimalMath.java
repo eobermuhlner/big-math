@@ -236,9 +236,42 @@ public class BigDecimalMath {
 		if (x.compareTo(ONE) == 0) {
 			return ZERO;
 		}
+		
+		if (x.compareTo(BigDecimal.valueOf(1.5)) >= 0)
+		return logNewton(x, mathContext);
+		
 		return logAreaHyperbolicTangent(x, mathContext);
 	}
 
+	private static BigDecimal logNewton(BigDecimal x, MathContext mathContext) {
+		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
+		// y = y + 2 * (x-exp(y)) / (x+exp(y))
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
+		BigDecimal last;
+
+		do {
+			last = result;
+			BigDecimal expY = exp(result, mc);
+			result = result.add(
+					TWO.multiply(
+							x.subtract(
+									expY,
+									mathContext),
+							mathContext)
+					.divide(
+							x.add(
+									expY, 
+									mathContext),
+							mathContext),
+					mathContext);
+		} while (result.compareTo(last) != 0);
+		
+		return result.round(mathContext);
+	}
+	
 	private static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Logarithm#Calculation
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
