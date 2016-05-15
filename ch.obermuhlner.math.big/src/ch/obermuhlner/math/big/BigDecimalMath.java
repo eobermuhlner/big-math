@@ -230,15 +230,13 @@ public class BigDecimalMath {
 	public static BigDecimal log(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Natural_logarithm
 		
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		
 		if (x.signum() <= 0) {
 			throw new ArithmeticException("Illegal log(x) for x <= 0: x = " + x);
 		}
 		if (x.compareTo(ONE) == 0) {
 			return ZERO;
 		}
-		return logAreaHyperbolicTangent(x, mc).round(mathContext);
+		return logAreaHyperbolicTangent(x, mathContext);
 	}
 
 	private static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
