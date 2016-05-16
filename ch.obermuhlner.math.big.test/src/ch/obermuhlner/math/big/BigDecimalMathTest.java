@@ -279,7 +279,8 @@ public class BigDecimalMathTest {
 		assertPrecisionCalculation(
 				expected,
 				mathContext -> BigDecimalMath.log(new BigDecimal("12345.6"), mathContext),
-				10);
+				10,
+				200); // TODO optimize log()
 	}
 
 	@Test
