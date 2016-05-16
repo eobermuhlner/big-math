@@ -11,12 +11,19 @@ public class PerformanceBigDecimalMath {
 	public static void main(String[] args) {
 		MathContext mathContext = new MathContext(200);
 		
-		performanceReportOverValue(
+		performanceReportOverPrecision(
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
-				mathContext,
-				+0.01,
-				+2.0,
-				+0.01);
+				BigDecimal.valueOf(3.1),
+				10,
+				1000,
+				10);
+
+//		performanceReportOverValue(
+//				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+//				mathContext,
+//				+0.01,
+//				+2.0,
+//				+0.01);
 		
 //		performanceReportOverValue(
 //				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
@@ -44,7 +51,25 @@ public class PerformanceBigDecimalMath {
 			long elapsedMillis = stopWatch.getElapsedMillis();
 			
 			System.out.println(x + "," + elapsedMillis);
-			//System.out.printf("%20.2f : %10d ms\n", x, elapsedMillis);
+		}
+	}
+
+	private static void performanceReportOverPrecision(BiFunction<BigDecimal, MathContext, BigDecimal> calculation, BigDecimal value, int precisionStart, int precisionEnd, int precisionStep) {
+		// warmup
+		for (int i = 0; i < 1000; i++) {
+			calculation.apply(value, MathContext.DECIMAL32);
+		}
+		
+		// real measurement
+		for (int precision = precisionStart; precision < precisionEnd; precision+=precisionStep) {
+			MathContext mathContext = new MathContext(precision);
+			
+			StopWatch stopWatch = new StopWatch();
+			
+			calculation.apply(value, mathContext);
+			long elapsedMillis = stopWatch.getElapsedMillis();
+			
+			System.out.println(precision + "," + elapsedMillis);
 		}
 	}
 }
