@@ -70,8 +70,7 @@ public class BigDecimalMath {
 			return x;
 		}
 		
-		BigDecimal bigExponent = new BigDecimal("1E" + exponent);
-		return x.divide(bigExponent, mathContext);
+		return x.movePointLeft(exponent);
 	}
 	
 	public static BigDecimal factorial(int n) {
