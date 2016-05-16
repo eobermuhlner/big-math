@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
+import static java.math.BigDecimal.TEN;
 import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
@@ -20,6 +21,8 @@ public class BigDecimalMath {
 	
 	private static final BigDecimal TWO = valueOf(2);
 
+	private static final BigDecimal LOG_TEN = new BigDecimal("2.302585092994045684017991454684364207601101488628772976033327900967572609677352480235997205089598298341967784042286248633409525465082806756666287369098781689482907208325554680843799894826233198528393505308965377732628846163366222287698219886746543667474404243274365155048934314939391479619404400222105101714174800368808401264708068556774321622835522011480466371565912137345074785694768346361679210180644507064800027750268491674655058685693567342067058113642922455440575892572420824131469568901675894025677631135691929203337658714166023010570308963457207544037084746994016826928280848118428931484852494864487192780967627127577539702766860595249671667418348570442250719796500471495105049221477656763693866297697952211071826454973477266242570942932258279850258550978526538320760672631716430950599508780752371033310119785754733154142180842754386359177811705430982748238504564801909561029929182431823752535770975053956518769751037497088869218020518933950723853920514463419726528728696511086257149219884998");
+	
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
 	static {
 		BigDecimal result = ONE;
@@ -51,6 +54,24 @@ public class BigDecimalMath {
 			// ignored
 		}
 		return false;
+	}
+	
+	public static int exponent(BigDecimal x) {
+		return x.precision() - x.scale() - 1;
+	}
+
+	public static BigDecimal mantissa(BigDecimal x) {
+		return mantissa(x, new MathContext(x.precision()));
+	}
+	
+	public static BigDecimal mantissa(BigDecimal x, MathContext mathContext) {
+		int exponent = exponent(x);
+		if (exponent == 0) {
+			return x;
+		}
+		
+		BigDecimal bigExponent = new BigDecimal("1E" + exponent);
+		return x.divide(bigExponent, mathContext);
 	}
 	
 	public static BigDecimal factorial(int n) {
@@ -237,12 +258,61 @@ public class BigDecimalMath {
 			return ZERO;
 		}
 		
-		if (x.compareTo(BigDecimal.valueOf(1.5)) >= 0)
-		return logNewton(x, mathContext);
+		switch (x.compareTo(TEN)) {
+		case 0:
+			return logTen(mathContext);
+		case 1:
+			return logUsingExponent(x, mathContext);
+		}
+
+		return logAreaHyperbolicTangent(x, mathContext);
+	}
+
+	public static BigDecimal log10(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
+
+		return log(x, mc).divide(logTen(mc));
+	}
+	
+	private static BigDecimal logUsingRoot(BigDecimal x, MathContext mathContext) {
+        /* Map log(x) = log root[r](x)^r = r*log( root[r](x)) with the aim
+        * to move root[r](x) near to 1.2 (that is, below the 0.3 appearing above), where log(1.2) is roughly 0.2.
+        */
+        int r = (int) (Math.log(x.doubleValue())/0.2) ;
+
+        /* Since the actual requirement is a function of the value 0.3 appearing above,
+        * we avoid the hypothetical case of endless recurrence by ensuring that r >= 2.
+        */
+        r = Math.max(2,r) ;
+
+        BigDecimal bigR = BigDecimal.valueOf(r);
+
+        BigDecimal result = root(bigR, x, mathContext) ;
+        result = logAreaHyperbolicTangent(result, mathContext).multiply(bigR, mathContext) ;
 		
 		return logAreaHyperbolicTangent(x, mathContext);
 	}
 
+	private static BigDecimal logUsingExponent(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		int exponent = exponent(x);
+		BigDecimal mantissa = mantissa(x);
+		
+		BigDecimal result = logAreaHyperbolicTangent(mantissa, mc);
+		if (exponent != 0) {
+			result = result.add(valueOf(exponent).multiply(logTen(mc), mc), mc);
+		}
+		return result.round(mathContext);
+	}
+	
+	private static BigDecimal logTen(MathContext mathContext) {
+		if (mathContext.getPrecision() < LOG_TEN.precision()) {
+			return LOG_TEN.round(mathContext);
+		}
+		return logAreaHyperbolicTangent(BigDecimal.TEN, mathContext);
+	}
+	
 	private static BigDecimal logNewton(BigDecimal x, MathContext mathContext) {
 		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
 		// y = y + 2 * (x-exp(y)) / (x+exp(y))

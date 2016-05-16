@@ -259,7 +259,7 @@ public class BigDecimalMathTest {
 				expected,
 				mathContext -> BigDecimalMath.log(new BigDecimal("0.1"), mathContext),
 				10,
-				200); // TODO optimize log()
+				200); // TODO optimize log() for value close to 0.0
 	}
 
 	@Test
@@ -269,8 +269,7 @@ public class BigDecimalMathTest {
 		assertPrecisionCalculation(
 				expected,
 				mathContext -> BigDecimalMath.log(new BigDecimal("1.1"), mathContext),
-				10,
-				200); // TODO optimize log()
+				10);
 	}
 
 	@Test
@@ -280,8 +279,7 @@ public class BigDecimalMathTest {
 		assertPrecisionCalculation(
 				expected,
 				mathContext -> BigDecimalMath.log(new BigDecimal("12345.6"), mathContext),
-				10,
-				200); // TODO optimize log() with high values !!
+				10);
 	}
 
 	@Test
