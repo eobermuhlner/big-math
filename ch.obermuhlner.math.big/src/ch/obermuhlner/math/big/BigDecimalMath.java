@@ -61,10 +61,6 @@ public class BigDecimalMath {
 	}
 
 	public static BigDecimal mantissa(BigDecimal x) {
-		return mantissa(x, new MathContext(x.precision()));
-	}
-	
-	public static BigDecimal mantissa(BigDecimal x, MathContext mathContext) {
 		int exponent = exponent(x);
 		if (exponent == 0) {
 			return x;
