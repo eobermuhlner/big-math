@@ -11,14 +11,14 @@ public class PerformanceBigDecimalMath {
 	public static void main(String[] args) {
 		MathContext mathContext = new MathContext(200);
 		
-		performanceReportOverX(
+		performanceReportOverValue(
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
 				mathContext,
 				+0.01,
 				+2.0,
 				+0.01);
 		
-//		performanceReportOverX(
+//		performanceReportOverValue(
 //				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
 //				mathContext,
 //				+0.5,
@@ -26,11 +26,11 @@ public class PerformanceBigDecimalMath {
 //				+0.5);
 	}
 
-	private static void performanceReportOverX(BiFunction<BigDecimal, MathContext, BigDecimal> calculation, MathContext mathContext, double xStart, double xEnd, double xStep) {
-		performanceReport(calculation, mathContext, BigDecimal.valueOf(xStart), BigDecimal.valueOf(xEnd), BigDecimal.valueOf(xStep));
+	private static void performanceReportOverValue(BiFunction<BigDecimal, MathContext, BigDecimal> calculation, MathContext mathContext, double xStart, double xEnd, double xStep) {
+		performanceReportOverValue(calculation, mathContext, BigDecimal.valueOf(xStart), BigDecimal.valueOf(xEnd), BigDecimal.valueOf(xStep));
 	}
 
-	private static void performanceReport(BiFunction<BigDecimal, MathContext, BigDecimal> calculation, MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep) {
+	private static void performanceReportOverValue(BiFunction<BigDecimal, MathContext, BigDecimal> calculation, MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep) {
 		// warmup
 		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
 			calculation.apply(x, MathContext.DECIMAL32);
@@ -40,7 +40,7 @@ public class PerformanceBigDecimalMath {
 		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
 			StopWatch stopWatch = new StopWatch();
 			
-			BigDecimal result = calculation.apply(x, mathContext);
+			calculation.apply(x, mathContext);
 			long elapsedMillis = stopWatch.getElapsedMillis();
 			
 			System.out.println(x + "," + elapsedMillis);
