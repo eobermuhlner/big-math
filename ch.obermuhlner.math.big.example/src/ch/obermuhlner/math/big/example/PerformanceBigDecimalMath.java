@@ -9,67 +9,163 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 public class PerformanceBigDecimalMath {
 
 	public static void main(String[] args) {
+
+		performanceReportStandardFunctions();
+		//performanceReportSlowFunctions();
+
+		//performanceReportLogBigRange();
+
+		//performanceReportOverPrecision();
+	}
+
+	private static void performanceReportStandardFunctions() {
+		MathContext mathContext = new MathContext(1000);
+
+		printHeaders("x", "exp", "sqrt", "root2", "root3", "sin", "cos");
+		performanceReportOverValue(
+				mathContext,
+				+0,
+				+2.0,
+				+0.01,
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+	}
+
+	private static void performanceReportSlowFunctions() {
 		MathContext mathContext = new MathContext(200);
-		
-		performanceReportOverPrecision(
+
+		printHeaders("x", "log", "exp", "pow");
+		performanceReportOverValue(
+				mathContext,
+				+0.01,
+				+2.0,
+				+0.01,
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
+
+	private static void performanceReportLogBigRange() {
+		MathContext mathContext = new MathContext(300);
+
+		printHeaders("x", "log");
+		performanceReportOverValue(
+				mathContext,
+				+1,
+				+100,
+				+1,
+				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext));
+	}
+
+	private static void performanceReportOverPrecision() {
+		printHeaders("precision", "exp", "log", "pow");
+		performanceReportOverPrecision(
 				BigDecimal.valueOf(3.1),
 				10,
 				1000,
-				10);
-
-//		performanceReportOverValue(
-//				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
-//				mathContext,
-//				+0.01,
-//				+2.0,
-//				+0.01);
-		
-//		performanceReportOverValue(
-//				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
-//				mathContext,
-//				+0.5,
-//				+100.0,
-//				+0.5);
+				10,
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
 
-	private static void performanceReportOverValue(BiFunction<BigDecimal, MathContext, BigDecimal> calculation, MathContext mathContext, double xStart, double xEnd, double xStep) {
-		performanceReportOverValue(calculation, mathContext, BigDecimal.valueOf(xStart), BigDecimal.valueOf(xEnd), BigDecimal.valueOf(xStep));
+	private static void printHeaders(String... headers) {
+		for (int i = 0; i < headers.length; i++) {
+			if (i != 0) {
+				System.out.print(",");
+			}
+			System.out.printf("%6s", headers[i]);
+		}
+		System.out.println();
 	}
 
-	private static void performanceReportOverValue(BiFunction<BigDecimal, MathContext, BigDecimal> calculation, MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep) {
+	@SafeVarargs
+	private static void performanceReportOverValue(MathContext mathContext, double xStart, double xEnd, double xStep, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
+		performanceReportOverValue(mathContext, BigDecimal.valueOf(xStart), BigDecimal.valueOf(xEnd), BigDecimal.valueOf(xStep), calculations);
+	}
+
+	private static void performanceReportOverValue(MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
 		// warmup
 		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
-			calculation.apply(x, MathContext.DECIMAL32);
+			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : calculations) {
+				try {
+					calculation.apply(x, MathContext.DECIMAL32);
+				}
+				catch (ArithmeticException ex) {
+					// ignore
+				}
+			}
 		}
-		
+
 		// real measurement
 		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
-			StopWatch stopWatch = new StopWatch();
-			
-			calculation.apply(x, mathContext);
-			long elapsedMillis = stopWatch.getElapsedMillis();
-			
-			System.out.println(x + "," + elapsedMillis);
+			long[] elapsedMillis = new long[calculations.length];
+
+			for (int i = 0; i < calculations.length; i++) {
+				BiFunction<BigDecimal, MathContext, BigDecimal> calculation = calculations[i];
+
+				StopWatch stopWatch = new StopWatch();
+				try {
+					calculation.apply(x, mathContext);
+					elapsedMillis[i] = stopWatch.getElapsedMillis();
+				}
+				catch (ArithmeticException ex) {
+					// ignore
+				}
+
+			}
+
+			System.out.printf("%6.3f", x);
+			for (int i = 0; i < elapsedMillis.length; i++) {
+				System.out.print(",");
+				System.out.printf("%6d", elapsedMillis[i]);
+			}
+			System.out.println();
 		}
 	}
 
-	private static void performanceReportOverPrecision(BiFunction<BigDecimal, MathContext, BigDecimal> calculation, BigDecimal value, int precisionStart, int precisionEnd, int precisionStep) {
+	private static void performanceReportOverPrecision(BigDecimal value, int precisionStart, int precisionEnd, int precisionStep, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
 		// warmup
 		for (int i = 0; i < 1000; i++) {
-			calculation.apply(value, MathContext.DECIMAL32);
+			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : calculations) {
+				try {
+					calculation.apply(value, MathContext.DECIMAL32);
+				}
+				catch (ArithmeticException ex) {
+					// ignore
+				}
+			}
 		}
-		
+
 		// real measurement
-		for (int precision = precisionStart; precision < precisionEnd; precision+=precisionStep) {
+		for (int precision = precisionStart; precision < precisionEnd; precision += precisionStep) {
+			long[] elapsedMillis = new long[calculations.length];
 			MathContext mathContext = new MathContext(precision);
-			
-			StopWatch stopWatch = new StopWatch();
-			
-			calculation.apply(value, mathContext);
-			long elapsedMillis = stopWatch.getElapsedMillis();
-			
-			System.out.println(precision + "," + elapsedMillis);
+
+			for (int i = 0; i < calculations.length; i++) {
+				BiFunction<BigDecimal, MathContext, BigDecimal> calculation = calculations[i];
+
+				StopWatch stopWatch = new StopWatch();
+
+				try {
+					calculation.apply(value, mathContext);
+					elapsedMillis[i] = stopWatch.getElapsedMillis();
+				}
+				catch (ArithmeticException ex) {
+					// ignore
+				}
+			}
+
+			System.out.printf("%9d", precision);
+			for (int i = 0; i < elapsedMillis.length; i++) {
+				System.out.print(",");
+				System.out.printf("%6d", elapsedMillis[i]);
+			}
+			System.out.println();
 		}
 	}
 }
