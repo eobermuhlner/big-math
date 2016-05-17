@@ -21,8 +21,9 @@ public class BigDecimalMath {
 	
 	private static final BigDecimal TWO = valueOf(2);
 
-	private static final BigDecimal LOG_TEN = new BigDecimal("2.302585092994045684017991454684364207601101488628772976033327900967572609677352480235997205089598298341967784042286248633409525465082806756666287369098781689482907208325554680843799894826233198528393505308965377732628846163366222287698219886746543667474404243274365155048934314939391479619404400222105101714174800368808401264708068556774321622835522011480466371565912137345074785694768346361679210180644507064800027750268491674655058685693567342067058113642922455440575892572420824131469568901675894025677631135691929203337658714166023010570308963457207544037084746994016826928280848118428931484852494864487192780967627127577539702766860595249671667418348570442250719796500471495105049221477656763693866297697952211071826454973477266242570942932258279850258550978526538320760672631716430950599508780752371033310119785754733154142180842754386359177811705430982748238504564801909561029929182431823752535770975053956518769751037497088869218020518933950723853920514463419726528728696511086257149219884998");
-	
+	private static final BigDecimal LOG_TWO = new BigDecimal("0.69314718055994530941723212145817656807550013436025525412068000949339362196969471560586332699641868754200148102057068573368552023575813055703267075163507596193072757082837143519030703862389167347112335011536449795523912047517268157493206515552473413952588295045300709532636664265410423915781495204374043038550080194417064167151864471283996817178454695702627163106454615025720740248163777338963855069526066834113727387372292895649354702576265209885969320196505855476470330679365443254763274495125040606943814710468994650622016772042452452961268794654619316517468139267250410380254625965686914419287160829380317271436778265487756648508567407764845146443994046142260319309673540257444607030809608504748663852313818167675143866747664789088143714198549423151997354880375165861275352916610007105355824987941472950929311389715599820565439287170007218085761025236889213244971389320378439353088774825970171559107088236836275898425891853530243634214367061189236789192372314672321720534016492568727477823445353476481149418642386776774406069562657379600867076257199184734022651462837904883062033061144630073719489");
+	private static final BigDecimal LOG_TEN = new BigDecimal("2.3025850929940456840179914546843642076011014886287729760333279009675726096773524802359972050895982983419677840422862486334095254650828067566662873690987816894829072083255546808437998948262331985283935053089653777326288461633662222876982198867465436674744042432743651550489343149393914796194044002221051017141748003688084012647080685567743216228355220114804663715659121373450747856947683463616792101806445070648000277502684916746550586856935673420670581136429224554405758925724208241314695689016758940256776311356919292033376587141660230105703089634572075440370847469940168269282808481184289314848524948644871927809676271275775397027668605952496716674183485704422507197965004714951050492214776567636938662976979522110718264549734772662425709429322582798502585509785265383207606726317164309505995087807523710333101197857547331541421808427543863591778117054309827482385045648019095610299291824318237525357709750539565187697510374970888692180205189339507238539205144634197265287286965110862571492198849978748873771345686209167058498078280597511938544450099781311469159346662410718466923101075984383191913");
+
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
 	static {
 		BigDecimal result = ONE;
@@ -253,22 +254,29 @@ public class BigDecimalMath {
 			return ZERO;
 		}
 		
-//		switch (x.compareTo(TEN)) {
-//		case 0:
-//			return logTen(mathContext);
-//		case 1:
-//			return logUsingExponent(x, mathContext);
-//		}
+		switch (x.compareTo(TEN)) {
+		case 0:
+			return logTen(mathContext);
+		case 1:
+			return logUsingExponent(x, mathContext);
+		}
 
-		return logUsingRoot(x, mathContext);
+		return logUsingPowerTwo(x, mathContext);
+//		return logUsingRoot(x, mathContext);
 //		return logUsingSqrt(x, mathContext);
 //		return logAreaHyperbolicTangent(x, mathContext);
 	}
 
+	public static BigDecimal log2(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
+
+		return log(x, mc).divide(logTwo(mc), mc);
+	}
+	
 	public static BigDecimal log10(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
 
-		return log(x, mc).divide(logTen(mc));
+		return log(x, mc).divide(logTen(mc), mc);
 	}
 	
 	private static BigDecimal logUsingRoot(BigDecimal x, MathContext mathContext) {
@@ -286,8 +294,46 @@ public class BigDecimalMath {
 	private static BigDecimal logUsingSqrt(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		BigDecimal result = sqrt(x, mc) ;
-        result = logAreaHyperbolicTangent(result, mc).multiply(TWO, mc) ;
+		BigDecimal sqrtX = sqrt(x, mc) ;
+        BigDecimal result = logAreaHyperbolicTangent(sqrtX, mc).multiply(TWO, mc) ;
+		
+		return result.round(mathContext);
+	}
+
+	private static BigDecimal logUsingPowerTwo(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		int factorOfTwo = 0;
+		int powerOfTwo = 1;
+		double value = x.doubleValue();
+		if (value > 1) {
+			while (value > 1.4) {
+				value /= 2;
+				factorOfTwo++;
+				powerOfTwo *= 2;
+			}
+		} else {
+			while (value < 0.6) {
+				value *= 2;
+				factorOfTwo--;
+				powerOfTwo *= 2;
+			}
+		}
+		
+		BigDecimal result = null;
+		if (factorOfTwo != 0) {
+			if (factorOfTwo > 0) {
+				BigDecimal correctedX = x.divide(valueOf(powerOfTwo), mc);
+				result = logAreaHyperbolicTangent(correctedX, mc).add(logTwo(mc).multiply(valueOf(factorOfTwo), mc), mc);
+			} else if (factorOfTwo < 0) {
+				BigDecimal correctedX = x.multiply(valueOf(powerOfTwo), mc);
+				result = logAreaHyperbolicTangent(correctedX, mc).subtract(logTwo(mc).multiply(valueOf(-factorOfTwo), mc), mc);
+			}
+		}
+		
+		if (result == null) {
+	        result = logAreaHyperbolicTangent(x, mc);
+		}
 		
 		return result.round(mathContext);
 	}
@@ -298,7 +344,7 @@ public class BigDecimalMath {
 		int exponent = exponent(x);
 		BigDecimal mantissa = mantissa(x);
 		
-		BigDecimal result = logAreaHyperbolicTangent(mantissa, mc);
+		BigDecimal result = logUsingPowerTwo(mantissa, mc);
 		if (exponent != 0) {
 			result = result.add(valueOf(exponent).multiply(logTen(mc), mc), mc);
 		}
@@ -312,6 +358,13 @@ public class BigDecimalMath {
 		return logAreaHyperbolicTangent(BigDecimal.TEN, mathContext);
 	}
 	
+	private static BigDecimal logTwo(MathContext mathContext) {
+		if (mathContext.getPrecision() < LOG_TWO.precision()) {
+			return LOG_TWO;
+		}
+		return logAreaHyperbolicTangent(TWO, mathContext);
+	}
+
 	private static BigDecimal logNewton(BigDecimal x, MathContext mathContext) {
 		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
 		// y = y + 2 * (x-exp(y)) / (x+exp(y))

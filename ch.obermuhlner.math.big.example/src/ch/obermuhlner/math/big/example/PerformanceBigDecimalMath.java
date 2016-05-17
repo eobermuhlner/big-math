@@ -10,12 +10,17 @@ public class PerformanceBigDecimalMath {
 
 	public static void main(String[] args) {
 
+//		System.out.println(BigDecimalMath.log(BigDecimal.valueOf(8), new MathContext(1100)));
+		
 		performanceReportStandardFunctions();
-		//performanceReportSlowFunctions();
+//		performanceReportSlowFunctions();
+//		performanceReportVerySlowFunctions();
 
-		//performanceReportLogBigRange();
+//		performanceReportLogBigRange();
 
-		//performanceReportOverPrecision();
+//		performanceReportLogDebug();
+
+//		performanceReportOverPrecision();
 	}
 
 	private static void performanceReportStandardFunctions() {
@@ -36,15 +41,29 @@ public class PerformanceBigDecimalMath {
 	}
 
 	private static void performanceReportSlowFunctions() {
-		MathContext mathContext = new MathContext(200);
+		MathContext mathContext = new MathContext(300);
 
-		printHeaders("x", "log", "exp", "pow");
+		printHeaders("x", "exp", "log", "log2", "log10");
 		performanceReportOverValue(
 				mathContext,
 				+0.01,
 				+2.0,
 				+0.01,
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.log2(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.log10(x, calculationMathContext));
+	}
+
+	private static void performanceReportVerySlowFunctions() {
+		MathContext mathContext = new MathContext(200);
+
+		printHeaders("x", "log", "pow");
+		performanceReportOverValue(
+				mathContext,
+				+0.01,
+				+2.0,
+				+0.01,
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
@@ -60,6 +79,19 @@ public class PerformanceBigDecimalMath {
 				+1,
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext));
 	}
+
+//	private static void performanceReportLogDebug() {
+//		MathContext mathContext = new MathContext(300);
+//
+//		printHeaders("x", "log", "usingRoot");
+//		performanceReportOverValue(
+//				mathContext,
+//				0.01,
+//				10,
+//				+0.01,
+//				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+//				(x, calculationMathContext) -> BigDecimalMath.logUsingRoot(x, calculationMathContext));
+//	}
 
 	private static void performanceReportOverPrecision() {
 		printHeaders("precision", "exp", "log", "pow");
