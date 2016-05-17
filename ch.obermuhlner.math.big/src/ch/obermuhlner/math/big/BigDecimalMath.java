@@ -253,14 +253,16 @@ public class BigDecimalMath {
 			return ZERO;
 		}
 		
-		switch (x.compareTo(TEN)) {
-		case 0:
-			return logTen(mathContext);
-		case 1:
-			return logUsingExponent(x, mathContext);
-		}
+//		switch (x.compareTo(TEN)) {
+//		case 0:
+//			return logTen(mathContext);
+//		case 1:
+//			return logUsingExponent(x, mathContext);
+//		}
 
-		return logAreaHyperbolicTangent(x, mathContext);
+		return logUsingRoot(x, mathContext);
+//		return logUsingSqrt(x, mathContext);
+//		return logAreaHyperbolicTangent(x, mathContext);
 	}
 
 	public static BigDecimal log10(BigDecimal x, MathContext mathContext) {
@@ -270,22 +272,24 @@ public class BigDecimalMath {
 	}
 	
 	private static BigDecimal logUsingRoot(BigDecimal x, MathContext mathContext) {
-        /* Map log(x) = log root[r](x)^r = r*log( root[r](x)) with the aim
-        * to move root[r](x) near to 1.2 (that is, below the 0.3 appearing above), where log(1.2) is roughly 0.2.
-        */
-        int r = (int) (Math.log(x.doubleValue())/0.2) ;
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-        /* Since the actual requirement is a function of the value 0.3 appearing above,
-        * we avoid the hypothetical case of endless recurrence by ensuring that r >= 2.
-        */
-        r = Math.max(2,r) ;
+		// log(x) = log(root(r, x)^r) = r * log(root(r, x))
+        BigDecimal r = valueOf(Math.max(2, (int) (Math.log(x.doubleValue()) * 5)));
 
-        BigDecimal bigR = BigDecimal.valueOf(r);
-
-        BigDecimal result = root(bigR, x, mathContext) ;
-        result = logAreaHyperbolicTangent(result, mathContext).multiply(bigR, mathContext) ;
+        BigDecimal result = root(r, x, mc) ;
+        result = logAreaHyperbolicTangent(result, mc).multiply(r, mc) ;
 		
-		return logAreaHyperbolicTangent(x, mathContext);
+		return result.round(mathContext);
+	}
+
+	private static BigDecimal logUsingSqrt(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		BigDecimal result = sqrt(x, mc) ;
+        result = logAreaHyperbolicTangent(result, mc).multiply(TWO, mc) ;
+		
+		return result.round(mathContext);
 	}
 
 	private static BigDecimal logUsingExponent(BigDecimal x, MathContext mathContext) {
@@ -303,7 +307,7 @@ public class BigDecimalMath {
 	
 	private static BigDecimal logTen(MathContext mathContext) {
 		if (mathContext.getPrecision() < LOG_TEN.precision()) {
-			return LOG_TEN.round(mathContext);
+			return LOG_TEN;
 		}
 		return logAreaHyperbolicTangent(BigDecimal.TEN, mathContext);
 	}
