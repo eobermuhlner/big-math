@@ -440,18 +440,28 @@ public class BigDecimalMath {
 	 * @return the calculated exponent {@link BigDecimal}
 	 */
 	public static BigDecimal exp(BigDecimal x, MathContext mathContext) {
+		return expTaylor(x, mathContext);
+	}
+	
+	private static BigDecimal expTaylor(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
+		BigDecimal factorial = ONE;
+		BigDecimal power = ONE;
+		
 		BigDecimal result = ZERO;
 		BigDecimal last; 
 		BigDecimal step;
 		int i = 0;
-		do {
-			step = x.pow(i).divide(factorial(i), mc);
+		do {			
+			step = power.divide(factorial, mc);
 
 			last = result;
 			result = result.add(step, mc);
+			
 			i++;
+			factorial = factorial.multiply(valueOf(i));
+			power = power.multiply(x, mc);
 		} while (result.compareTo(last) != 0);
 
 		return result.round(mathContext);
