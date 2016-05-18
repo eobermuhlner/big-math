@@ -10,17 +10,23 @@ public class PerformanceBigDecimalMath {
 
 	public static void main(String[] args) {
 
-//		System.out.println(BigDecimalMath.log(BigDecimal.valueOf(8), new MathContext(1100)));
+//		System.out.println(BigDecimalMath.log(BigDecimal.valueOf(3), new MathContext(1100)));
 		
-		performanceReportStandardFunctions();
+//		performanceReportStandardFunctions();
 //		performanceReportSlowFunctions();
 //		performanceReportVerySlowFunctions();
 
 //		performanceReportLogBigRange();
 
-//		performanceReportLogDebug();
-
 //		performanceReportOverPrecision();
+		
+		// --- log() optimizations:
+//		performanceReportLogOptimization1();
+//		performanceReportLogOptimization2();
+//		performanceReportLogOptimization3();
+//		performanceReportLogOptimization4();
+		performanceReportLogOptimization5();
+//		performanceReportLogOptimization4();
 	}
 
 	private static void performanceReportStandardFunctions() {
@@ -80,19 +86,87 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext));
 	}
 
-//	private static void performanceReportLogDebug() {
-//		MathContext mathContext = new MathContext(300);
-//
-//		printHeaders("x", "log", "usingRoot");
-//		performanceReportOverValue(
-//				mathContext,
-//				0.01,
-//				10,
-//				+0.01,
-//				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMath.logUsingRoot(x, calculationMathContext));
-//	}
+	private static void performanceReportLogOptimization1() {
+		MathContext mathContext = new MathContext(300);
 
+		printHeaders("x", "HyperbolicTangent", "Newton");
+		performanceReportOverValue(
+				mathContext,
+				0.01,
+				10,
+				+0.01,
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logAreaHyperbolicTangent(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logNewton(x, calculationMathContext));
+	}
+
+	private static void performanceReportLogOptimization2() {
+		MathContext mathContext = new MathContext(300);
+
+		printHeaders("x", "HyperbolicTangent", "Exponent+Hyperbolic", "Root");
+		performanceReportOverValue(
+				mathContext,
+				0.01,
+				10,
+				+0.01,
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logAreaHyperbolicTangent(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentAndAreaHyperbolicTangent(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
+	}
+
+	private static void performanceReportLogOptimization3() {
+		MathContext mathContext = new MathContext(300);
+
+		printHeaders("x", "Hyperbolic", "Exponent+Hyperbolic", "Root");
+		performanceReportOverValue(
+				mathContext,
+				0.05,
+				100,
+				+0.05,
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logAreaHyperbolicTangent(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentAndAreaHyperbolicTangent(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
+	}
+
+	private static void performanceReportLogOptimization4() {
+		MathContext mathContext = new MathContext(300);
+
+		printHeaders("x", "PowerTwo", "UsingRoot");
+		performanceReportOverValue(
+				mathContext,
+				0.01,
+				10,
+				+0.01,
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingPowerTwo(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
+	}
+
+	private static void performanceReportLogOptimization5() {
+		MathContext mathContext = new MathContext(300);
+
+		printHeaders("x", "PowerTwo", "TwoThree", "UsingRoot");
+		performanceReportOverValue(
+				mathContext,
+				0.01,
+				10,
+				+0.01,
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingPowerTwo(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingTwoThree(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
+	}
+
+	private static void performanceReportLogOptimization6() {
+		MathContext mathContext = new MathContext(300);
+
+		printHeaders("x", "ExpPowerTwoHyperbolic", "UsingRoot");
+		performanceReportOverValue(
+				mathContext,
+				0.01,
+				10,
+				+0.01,
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentPowerTwoHyperbolicTangent(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
+	}
+	
 	private static void performanceReportOverPrecision() {
 		printHeaders("precision", "exp", "log", "pow");
 		performanceReportOverPrecision(
