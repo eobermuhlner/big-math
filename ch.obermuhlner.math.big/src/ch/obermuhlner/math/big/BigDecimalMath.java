@@ -538,7 +538,7 @@ public class BigDecimalMath {
 		return expIntegralFractional(x, mathContext);
 	}
 
-	public static BigDecimal expIntegralFractional(BigDecimal x, MathContext mathContext) {
+	private static BigDecimal expIntegralFractional(BigDecimal x, MathContext mathContext) {
 		BigDecimal integralPart = integralPart(x);
 		
 		if (integralPart.signum() == 0) {
@@ -563,7 +563,7 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 	
-	public static BigDecimal expTaylor(BigDecimal x, MathContext mathContext) {
+	private static BigDecimal expTaylor(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		BigDecimal factorial = ONE;
