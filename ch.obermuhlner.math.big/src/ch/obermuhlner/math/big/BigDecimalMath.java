@@ -70,6 +70,14 @@ public class BigDecimalMath {
 		return x.movePointLeft(exponent);
 	}
 	
+	public static BigDecimal integralPart(BigDecimal x) {
+		return x.setScale(0, BigDecimal.ROUND_DOWN);
+	}
+	
+	public static BigDecimal fractionalPart(BigDecimal x) {
+		return x.subtract(integralPart(x));
+	}
+	
 	public static BigDecimal factorial(int n) {
 		if (n < 0) {
 			throw new ArithmeticException("Illegal factorial(n) for n < 0: n = " + n);
