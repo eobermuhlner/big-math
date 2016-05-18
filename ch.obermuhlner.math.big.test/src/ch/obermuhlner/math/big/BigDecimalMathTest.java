@@ -44,6 +44,42 @@ public class BigDecimalMathTest {
 	}
 	
 	@Test
+	public void testMantissa() {
+		assertEquals(0, BigDecimal.ZERO.compareTo(BigDecimalMath.mantissa(BigDecimal.ZERO)));
+
+		assertEquals(0, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("123.45"))));
+		assertEquals(0, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("0.00012345"))));
+
+		assertEquals(0, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("123.45"))));
+		assertEquals(0, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("0.00012345"))));
+
+		assertEquals(0, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("123.45000"))));
+		assertEquals(0, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("0.00012345000"))));
+
+		assertEquals(0, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("12.345E1"))));
+		assertEquals(0, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("0.0012345E-1"))));
+
+		assertEquals(-1, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("123.459999"))));
+		assertEquals(1, new BigDecimal("1.2345").compareTo(BigDecimalMath.mantissa(new BigDecimal("0.000123"))));
+	}
+	
+	@Test
+	public void testExponent() {
+		assertEquals(0, BigDecimalMath.exponent(BigDecimal.ZERO));
+
+		assertEquals(0, BigDecimalMath.exponent(new BigDecimal("1.2345")));
+		assertEquals(2, BigDecimalMath.exponent(new BigDecimal("123.45")));
+		assertEquals(-2, BigDecimalMath.exponent(new BigDecimal("0.012345")));
+		
+		assertEquals(0, BigDecimalMath.exponent(new BigDecimal("123.45E-2")));
+		assertEquals(0, BigDecimalMath.exponent(new BigDecimal("0.012345E2")));
+
+		assertEquals(3, BigDecimalMath.exponent(new BigDecimal("1.2345E3")));
+		assertEquals(5, BigDecimalMath.exponent(new BigDecimal("123.45E3")));
+		assertEquals(1, BigDecimalMath.exponent(new BigDecimal("0.012345E3")));
+	}
+	
+	@Test
 	public void testFactorial() {
 		assertEquals(new BigDecimal("1"), BigDecimalMath.factorial(0));
 		assertEquals(new BigDecimal("1"), BigDecimalMath.factorial(1));
@@ -256,7 +292,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testLogRandom() {
 		assertRandomCalculation(
-				100,
+				1000,
 				"log",
 				random -> random.nextFloat() * 100 + 0.00001,
 				(x, mathContext) -> BigDecimalMath.log(x, mathContext));
