@@ -22,50 +22,50 @@ public class BigDecimalMathExperimental {
 	private BigDecimalMathExperimental() {
 		// prevent instances
 	}
-	
+
 	// variations on log()
-	
-	public static BigDecimal logUsingExponentPowerTwoHyperbolicTangent(BigDecimal x, MathContext mathContext) {
+
+	public static BigDecimal logUsingExponentPowerTwo(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Natural_logarithm
-		
+
 		if (x.signum() <= 0) {
 			throw new ArithmeticException("Illegal log(x) for x <= 0: x = " + x);
 		}
 		if (x.compareTo(ONE) == 0) {
 			return ZERO;
 		}
-		
+
 		switch (x.compareTo(TEN)) {
-		case 0:
-			return logTen(mathContext);
-		case 1:
-			return logUsingExponent(x, mathContext);
+			case 0:
+				return logTen(mathContext);
+			case 1:
+				return logUsingExponent(x, mathContext);
 		}
 
 		return logUsingPowerTwo(x, mathContext);
-//		return logUsingRoot(x, mathContext);
-//		return logUsingSqrt(x, mathContext);
-//		return logAreaHyperbolicTangent(x, mathContext);
+		//		return logUsingRoot(x, mathContext);
+		//		return logUsingSqrt(x, mathContext);
+		//		return logAreaHyperbolicTangent(x, mathContext);
 	}
 
 	public static BigDecimal logUsingRoot(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		// log(x) = log(root(r, x)^r) = r * log(root(r, x))
-        BigDecimal r = valueOf(Math.max(2, (int) (Math.log(x.doubleValue()) * 5)));
+		BigDecimal r = valueOf(Math.max(2, (int) (Math.log(x.doubleValue()) * 5)));
 
-        BigDecimal result = BigDecimalMath.root(r, x, mc) ;
-        result = logAreaHyperbolicTangent(result, mc).multiply(r, mc) ;
-		
+		BigDecimal result = BigDecimalMath.root(r, x, mc);
+		result = logAreaHyperbolicTangent(result, mc).multiply(r, mc);
+
 		return result.round(mathContext);
 	}
 
 	public static BigDecimal logUsingSqrt(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		BigDecimal sqrtX = BigDecimalMath.sqrt(x, mc) ;
-        BigDecimal result = logAreaHyperbolicTangent(sqrtX, mc).multiply(TWO, mc) ;
-		
+		BigDecimal sqrtX = BigDecimalMath.sqrt(x, mc);
+		BigDecimal result = logAreaHyperbolicTangent(sqrtX, mc).multiply(TWO, mc);
+
 		return result.round(mathContext);
 	}
 
@@ -81,52 +81,34 @@ public class BigDecimalMathExperimental {
 				factorOfTwo++;
 				powerOfTwo *= 2;
 			}
-		} else {
+		}
+		else {
 			while (value < 0.6) {
 				value *= 2;
 				factorOfTwo--;
 				powerOfTwo *= 2;
 			}
 		}
-		
+
 		BigDecimal result = null;
 		if (factorOfTwo != 0) {
 			if (factorOfTwo > 0) {
 				BigDecimal correctedX = x.divide(valueOf(powerOfTwo), mc);
-				result = logAreaHyperbolicTangent(correctedX, mc).add(logTwo(mc).multiply(valueOf(factorOfTwo), mc), mc);
-			} else if (factorOfTwo < 0) {
+				result = logUsingRoot(correctedX, mc).add(logTwo(mc).multiply(valueOf(factorOfTwo), mc), mc);
+			}
+			else if (factorOfTwo < 0) {
 				BigDecimal correctedX = x.multiply(valueOf(powerOfTwo), mc);
-				result = logAreaHyperbolicTangent(correctedX, mc).subtract(logTwo(mc).multiply(valueOf(-factorOfTwo), mc), mc);
+				result = logUsingRoot(correctedX, mc).subtract(logTwo(mc).multiply(valueOf(-factorOfTwo), mc), mc);
 			}
 		}
-		
+
 		if (result == null) {
-	        result = logAreaHyperbolicTangent(x, mc);
+			result = logUsingRoot(x, mc);
 		}
-		
+
 		return result.round(mathContext);
 	}
 
-	
-	//  0.1	*2*2*2	= 0.8
-	//  0.2	*2*2	= 0.8
-	//  0.3	*3		= 0.9
-	//  0.4	*2		= 0.8
-	//  0.5	*2
-	//  0.6	*2		= 1.2
-	//  0.7 
-	//  0.8	
-	//  0.9	
-	//  1.0 -----	
-	//  2.0	/2
-	//  3.0	/3
-	//  4.0	/2/2
-	//  5.0	
-	//  6.0	/3/2
-	//  7.0	
-	//  8.0	/2/2/2
-	//  9.0	/3/3
-	// 10.0	
 	public static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
@@ -135,64 +117,113 @@ public class BigDecimalMathExperimental {
 		int factorOfThree = 0;
 		int powerOfThree = 1;
 		double value = x.doubleValue();
-		if (value > 1) {
-			if (value < 1.4) {
-				// do nothing
-			} else if (value < 2.5) {
-				value /= 2;
-				factorOfTwo = 1;
-				powerOfTwo = 2;
-			} else if (value < 3.5) {
-				value /= 3;
-				factorOfThree = 1;
-				powerOfThree = 3;
-			} else if (value < 5.0) {
-				value /= 4;
-				factorOfTwo = 2;
-				powerOfTwo = 4;
-			} else if (value < 7.0) {
-				value /= 3;
-				factorOfThree = 1;
-				powerOfThree = 3;
-				value /= 2;
-				factorOfTwo = 1;
-				powerOfTwo = 2;
-			} else if (value < 8.5) {
-				value /= 8;
-				factorOfTwo = 3;
-				powerOfTwo = 8;
-			} else {
-				value /= 9;
-				factorOfThree = 2;
-				powerOfThree = 9;
-			}
-		} else {
+		if (value < 0.1) {
 			while (value < 0.6) {
 				value *= 2;
 				factorOfTwo--;
 				powerOfTwo *= 2;
 			}
 		}
-		
+		else if (value < 0.115) { // 0.11111 * 9 = 1
+			value *= 9;
+			factorOfThree = -2;
+			powerOfThree = 9;
+		}
+		else if (value < 0.14) { // 0.125 * 8 = 1
+			value *= 8;
+			factorOfTwo = -3;
+			powerOfTwo = 8;
+		}
+		else if (value < 0.20) { // 0.16667 * 6 = 1
+			value *= 2;
+			factorOfTwo = -1;
+			powerOfTwo = 2;
+			value *= 3;
+			factorOfThree = -1;
+			powerOfThree = 3;
+		}
+		else if (value < 0.3) { // 0.25 * 4 = 1
+			value *= 4;
+			factorOfTwo = -2;
+			powerOfTwo = 4;
+		}
+		else if (value < 0.42) { // 0.33333 * 3 = 1
+			value *= 3;
+			factorOfThree = -1;
+			powerOfThree = 3;
+		}
+		else if (value < 0.7) { // 0.5 * 2 = 1
+			value *= 2;
+			factorOfTwo = -1;
+			powerOfTwo = 2;
+		}
+		else if (value < 1.4) {
+			// do nothing
+		}
+		else if (value < 2.5) {
+			value /= 2;
+			factorOfTwo = 1;
+			powerOfTwo = 2;
+		}
+		else if (value < 3.5) {
+			value /= 3;
+			factorOfThree = 1;
+			powerOfThree = 3;
+		}
+		else if (value < 5.0) {
+			value /= 4;
+			factorOfTwo = 2;
+			powerOfTwo = 4;
+		}
+		else if (value < 7.0) {
+			value /= 3;
+			factorOfThree = 1;
+			powerOfThree = 3;
+			value /= 2;
+			factorOfTwo = 1;
+			powerOfTwo = 2;
+		}
+		else if (value < 8.5) {
+			value /= 8;
+			factorOfTwo = 3;
+			powerOfTwo = 8;
+		}
+		else if (value < 12.0) {
+			value /= 9;
+			factorOfThree = 2;
+			powerOfThree = 9;
+		}
+		else {
+			while (value > 1.4) {
+				value /= 2;
+				factorOfTwo++;
+				powerOfTwo *= 2;
+			}
+		}
+
 		BigDecimal correctedX = x;
 		BigDecimal result = ZERO;
+
 		if (factorOfTwo > 0) {
 			correctedX = correctedX.divide(valueOf(powerOfTwo), mc);
 			result = result.add(logTwo(mc).multiply(valueOf(factorOfTwo), mc), mc);
-		} else if (factorOfTwo < 0) {
+		}
+		else if (factorOfTwo < 0) {
 			correctedX = correctedX.multiply(valueOf(powerOfTwo), mc);
 			result = result.subtract(logTwo(mc).multiply(valueOf(-factorOfTwo), mc), mc);
 		}
+
 		if (factorOfThree > 0) {
 			correctedX = correctedX.divide(valueOf(powerOfThree), mc);
 			result = result.add(logThree(mc).multiply(valueOf(factorOfThree), mc), mc);
-		} else if (factorOfThree < 0) {
+		}
+		else if (factorOfThree < 0) {
 			correctedX = correctedX.multiply(valueOf(powerOfThree), mc);
 			result = result.subtract(logThree(mc).multiply(valueOf(-factorOfThree), mc), mc);
 		}
-		
-	    result = result.add(logAreaHyperbolicTangent(correctedX, mc));
-		
+
+		result = result.add(logUsingRoot(correctedX, mc));
+
 		return result.round(mathContext);
 	}
 
@@ -201,7 +232,7 @@ public class BigDecimalMathExperimental {
 
 		int exponent = BigDecimalMath.exponent(x);
 		BigDecimal mantissa = BigDecimalMath.mantissa(x);
-		
+
 		BigDecimal result = logUsingPowerTwo(mantissa, mc);
 		if (exponent != 0) {
 			result = result.add(valueOf(exponent).multiply(logTen(mc), mc), mc);
@@ -214,7 +245,7 @@ public class BigDecimalMathExperimental {
 
 		int exponent = BigDecimalMath.exponent(x);
 		BigDecimal mantissa = BigDecimalMath.mantissa(x);
-		
+
 		BigDecimal result = logAreaHyperbolicTangent(mantissa, mc);
 		if (exponent != 0) {
 			result = result.add(valueOf(exponent).multiply(logTen(mc), mc), mc);
@@ -228,7 +259,7 @@ public class BigDecimalMathExperimental {
 		}
 		return logAreaHyperbolicTangent(BigDecimal.TEN, mathContext);
 	}
-	
+
 	private static BigDecimal logTwo(MathContext mathContext) {
 		if (mathContext.getPrecision() < LOG_TWO.precision()) {
 			return LOG_TWO;
@@ -260,40 +291,39 @@ public class BigDecimalMathExperimental {
 							x.subtract(
 									expY,
 									mathContext),
-							mathContext)
-					.divide(
-							x.add(
-									expY, 
+							mathContext).divide(
+									x.add(
+											expY,
+											mathContext),
 									mathContext),
-							mathContext),
 					mathContext);
 		} while (result.compareTo(last) != 0);
-		
+
 		return result.round(mathContext);
 	}
-	
+
 	public static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Logarithm#Calculation
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		
+
 		BigDecimal magic = x.subtract(ONE, mc).divide(x.add(ONE), mc);
-		
+
 		BigDecimal result = ZERO;
-		BigDecimal last; 
+		BigDecimal last;
 		BigDecimal step;
 		int i = 0;
 		do {
-			int doubleIndexPlusOne = i * 2 + 1; 
+			int doubleIndexPlusOne = i * 2 + 1;
 			step = BigDecimalMath.pow(magic, doubleIndexPlusOne, mc).divide(valueOf(doubleIndexPlusOne), mc);
 
 			last = result;
 			result = result.add(step, mc);
-			
+
 			i++;
 		} while (result.compareTo(last) != 0);
-		
+
 		result = result.multiply(TWO, mc);
-		
+
 		return result.round(mathContext);
 	}
 
