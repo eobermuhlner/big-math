@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big.example;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -10,23 +11,23 @@ public class PerformanceBigDecimalMath {
 
 	public static void main(String[] args) {
 
-//		System.out.println(BigDecimalMath.log(BigDecimal.valueOf(3), new MathContext(1100)));
-		
-//		performanceReportStandardFunctions();
-//		performanceReportSlowFunctions();
-//		performanceReportVerySlowFunctions();
+		//		System.out.println(BigDecimalMath.log(BigDecimal.valueOf(3), new MathContext(1100)));
 
-//		performanceReportLogBigRange();
+		//		performanceReportStandardFunctions();
+		//		performanceReportSlowFunctions();
+		//		performanceReportVerySlowFunctions();
 
-//		performanceReportOverPrecision();
-		
+		//		performanceReportLogBigRange();
+
+		//		performanceReportOverPrecision();
+
 		// --- log() optimizations:
-//		performanceReportLogOptimization1();
-//		performanceReportLogOptimization2();
-//		performanceReportLogOptimization3();
-//		performanceReportLogOptimization4();
+		//		performanceReportLogOptimization1();
+		//		performanceReportLogOptimization2();
+		//		performanceReportLogOptimization3();
+		//		performanceReportLogOptimization4();
 		performanceReportLogOptimization5();
-//		performanceReportLogOptimization4();
+		//		performanceReportLogOptimization6();
 	}
 
 	private static void performanceReportStandardFunctions() {
@@ -116,7 +117,7 @@ public class PerformanceBigDecimalMath {
 	private static void performanceReportLogOptimization3() {
 		MathContext mathContext = new MathContext(300);
 
-		printHeaders("x", "Hyperbolic", "Exponent+Hyperbolic", "Root");
+		printHeaders("x", "Hyperbolic", "ExponentHyperbolic", "Root");
 		performanceReportOverValue(
 				mathContext,
 				0.05,
@@ -141,15 +142,14 @@ public class PerformanceBigDecimalMath {
 	}
 
 	private static void performanceReportLogOptimization5() {
-		MathContext mathContext = new MathContext(300);
+		MathContext mathContext = new MathContext(200);
 
-		printHeaders("x", "PowerTwo", "TwoThree", "UsingRoot");
+		printHeaders("x", "TwoThree", "UsingRoot");
 		performanceReportOverValue(
 				mathContext,
-				0.01,
-				10,
-				+0.01,
-				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingPowerTwo(x, calculationMathContext),
+				0.1,
+				2,
+				+0.001,
 				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingTwoThree(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
 	}
@@ -157,16 +157,16 @@ public class PerformanceBigDecimalMath {
 	private static void performanceReportLogOptimization6() {
 		MathContext mathContext = new MathContext(300);
 
-		printHeaders("x", "ExpPowerTwoHyperbolic", "UsingRoot");
+		printHeaders("x", "ExpPowerTwo", "UsingRoot");
 		performanceReportOverValue(
 				mathContext,
-				0.01,
-				10,
-				+0.01,
-				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentPowerTwoHyperbolicTangent(x, calculationMathContext),
+				0.02,
+				50,
+				+0.02,
+				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentPowerTwo(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
 	}
-	
+
 	private static void performanceReportOverPrecision() {
 		printHeaders("precision", "exp", "log", "pow");
 		performanceReportOverPrecision(
@@ -184,7 +184,7 @@ public class PerformanceBigDecimalMath {
 			if (i != 0) {
 				System.out.print(",");
 			}
-			System.out.printf("%6s", headers[i]);
+			System.out.printf("%8s", headers[i]);
 		}
 		System.out.println();
 	}
@@ -207,30 +207,46 @@ public class PerformanceBigDecimalMath {
 			}
 		}
 
+		final int repeat = 10;
+
 		// real measurement
 		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
-			long[] elapsedMillis = new long[calculations.length];
+			long[] elapsedNanos = new long[calculations.length];
 
 			for (int i = 0; i < calculations.length; i++) {
 				BiFunction<BigDecimal, MathContext, BigDecimal> calculation = calculations[i];
+				long[] nanos = new long[repeat];
 
-				StopWatch stopWatch = new StopWatch();
 				try {
-					calculation.apply(x, mathContext);
-					elapsedMillis[i] = stopWatch.getElapsedMillis();
+					for (int j = 0; j < repeat; j++) {
+						StopWatch stopWatch = new StopWatch();
+						calculation.apply(x, mathContext);
+						nanos[j] = stopWatch.getElapsedNanos();
+					}
+					elapsedNanos[i] = median(nanos);
 				}
 				catch (ArithmeticException ex) {
 					// ignore
 				}
-
 			}
 
 			System.out.printf("%6.3f", x);
-			for (int i = 0; i < elapsedMillis.length; i++) {
+			for (int i = 0; i < elapsedNanos.length; i++) {
 				System.out.print(",");
-				System.out.printf("%6d", elapsedMillis[i]);
+				System.out.printf("%8d", elapsedNanos[i]);
 			}
 			System.out.println();
+		}
+	}
+
+	private static long median(long[] values) {
+		Arrays.sort(values);
+		int halfIndex = values.length / 2;
+		if (values.length > 1 && values.length % 2 == 0) {
+			return (values[halfIndex] + values[halfIndex + 1]) / 2;
+		}
+		else {
+			return values[halfIndex];
 		}
 	}
 
