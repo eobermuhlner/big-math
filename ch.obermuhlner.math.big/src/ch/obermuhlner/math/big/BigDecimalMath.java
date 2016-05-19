@@ -60,28 +60,68 @@ public class BigDecimalMath {
 		}
 		return false;
 	}
-	
-	public static int exponent(BigDecimal x) {
-		return x.precision() - x.scale() - 1;
-	}
 
-	public static BigDecimal mantissa(BigDecimal x) {
-		int exponent = exponent(x);
+	/**
+	 * Returns the mantissa of the specified {@link BigDecimal} written as <em>mantissa * 10<sup>exponent</sup></em>.
+	 * 
+	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
+	 * 
+	 * @param value the {@link BigDecimal}
+	 * @return the mantissa
+	 * @see #exponent(BigDecimal)
+	 */
+	public static BigDecimal mantissa(BigDecimal value) {
+		int exponent = exponent(value);
 		if (exponent == 0) {
-			return x;
+			return value;
 		}
 		
-		return x.movePointLeft(exponent);
+		return value.movePointLeft(exponent);
 	}
 	
-	public static BigDecimal integralPart(BigDecimal x) {
-		return x.setScale(0, BigDecimal.ROUND_DOWN);
+	/**
+	 * Returns the exponent of the specified {@link BigDecimal} written as <em>mantissa * 10<sup>exponent</sup></em>.
+	 * 
+	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
+	 * 
+	 * @param value the {@link BigDecimal}
+	 * @return the exponent
+	 * @see #mantissa(BigDecimal)
+	 */
+	public static int exponent(BigDecimal value) {
+		return value.precision() - value.scale() - 1;
+	}
+
+	/**
+	 * Returns the integral part of the specified {@link BigDecimal} (left of the decimal point).
+	 * 
+	 * @param value the {@link BigDecimal}
+	 * @return the integral part
+	 * @see #fractionalPart(BigDecimal)
+	 */
+	public static BigDecimal integralPart(BigDecimal value) {
+		return value.setScale(0, BigDecimal.ROUND_DOWN);
 	}
 	
-	public static BigDecimal fractionalPart(BigDecimal x) {
-		return x.subtract(integralPart(x));
+	/**
+	 * Returns the integral part of the specified {@link BigDecimal} (right of the decimal point).
+	 * 
+	 * @param value the {@link BigDecimal}
+	 * @return the integral part
+	 * @see #integralPart(BigDecimal)
+	 */
+	public static BigDecimal fractionalPart(BigDecimal value) {
+		return value.subtract(integralPart(value));
 	}
 	
+	/**
+	 * Calculates the factorial of the specified {@link BigDecimal}.
+	 * 
+	 * <p>factorial = 1 * 2 * 3 * ... n</p>
+	 * 
+	 * @param n the {@link BigDecimal}
+	 * @return the factorial {@link BigDecimal}
+	 */
 	public static BigDecimal factorial(int n) {
 		if (n < 0) {
 			throw new ArithmeticException("Illegal factorial(n) for n < 0: n = " + n);
@@ -303,15 +343,6 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
-	private static BigDecimal logUsingSqrt(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-
-		BigDecimal sqrtX = sqrt(x, mc) ;
-        BigDecimal result = logAreaHyperbolicTangent(sqrtX, mc).multiply(TWO, mc) ;
-		
-		return result.round(mathContext);
-	}
-
 	public static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
@@ -464,35 +495,6 @@ public class BigDecimalMath {
 		return logAreaHyperbolicTangent(THREE, mathContext);
 	}
 
-	private static BigDecimal logNewton(BigDecimal x, MathContext mathContext) {
-		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
-		// y = y + 2 * (x-exp(y)) / (x+exp(y))
-
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-
-		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
-		BigDecimal last;
-
-		do {
-			last = result;
-			BigDecimal expY = exp(result, mc);
-			result = result.add(
-					TWO.multiply(
-							x.subtract(
-									expY,
-									mathContext),
-							mathContext)
-					.divide(
-							x.add(
-									expY, 
-									mathContext),
-							mathContext),
-					mathContext);
-		} while (result.compareTo(last) != 0);
-		
-		return result.round(mathContext);
-	}
-	
 	private static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Logarithm#Calculation
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
@@ -580,7 +582,11 @@ public class BigDecimalMath {
 			result = result.add(step, mc);
 			
 			i++;
-			factorial = factorial.multiply(valueOf(i));
+			if (i<factorialCache.length) {
+				factorial = factorialCache[i];
+			} else {
+				factorial = factorial.multiply(valueOf(i));
+			}
 			power = power.multiply(x, mc);
 		} while (result.compareTo(last) != 0);
 

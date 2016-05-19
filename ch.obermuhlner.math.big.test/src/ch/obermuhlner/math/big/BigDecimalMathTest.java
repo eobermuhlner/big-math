@@ -80,13 +80,45 @@ public class BigDecimalMathTest {
 	}
 	
 	@Test
+	public void testIntegralPart() {
+		assertEquals(0, BigDecimal.ZERO.compareTo(BigDecimalMath.integralPart(BigDecimal.ZERO)));
+
+		assertEquals(0, new BigDecimal("1").compareTo(BigDecimalMath.integralPart(new BigDecimal("1.2345"))));
+		assertEquals(0, new BigDecimal("123").compareTo(BigDecimalMath.integralPart(new BigDecimal("123.45"))));
+		assertEquals(0, new BigDecimal("0").compareTo(BigDecimalMath.integralPart(new BigDecimal("0.12345"))));
+
+		assertEquals(0, new BigDecimal("-1").compareTo(BigDecimalMath.integralPart(new BigDecimal("-1.2345"))));
+		assertEquals(0, new BigDecimal("-123").compareTo(BigDecimalMath.integralPart(new BigDecimal("-123.45"))));
+		assertEquals(0, new BigDecimal("-0").compareTo(BigDecimalMath.integralPart(new BigDecimal("-0.12345"))));
+
+		assertEquals(0, new BigDecimal("123E987").compareTo(BigDecimalMath.integralPart(new BigDecimal("123E987"))));
+		assertEquals(0, new BigDecimal("0").compareTo(BigDecimalMath.integralPart(new BigDecimal("123E-987"))));
+	}
+	
+	@Test
+	public void testFractionalPart() {
+		assertEquals(0, BigDecimal.ZERO.compareTo(BigDecimalMath.fractionalPart(BigDecimal.ZERO)));
+
+		assertEquals(0, new BigDecimal("0.2345").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("1.2345"))));
+		assertEquals(0, new BigDecimal("0.45").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("123.45"))));
+		assertEquals(0, new BigDecimal("0.12345").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("0.12345"))));
+
+		assertEquals(0, new BigDecimal("-0.2345").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("-1.2345"))));
+		assertEquals(0, new BigDecimal("-0.45").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("-123.45"))));
+		assertEquals(0, new BigDecimal("-0.12345").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("-0.12345"))));
+
+		assertEquals(0, new BigDecimal("0").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("123E987"))));
+		assertEquals(0, new BigDecimal("123E-987").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("123E-987"))));
+	}
+	
+	@Test
 	public void testFactorial() {
-		assertEquals(new BigDecimal("1"), BigDecimalMath.factorial(0));
-		assertEquals(new BigDecimal("1"), BigDecimalMath.factorial(1));
-		assertEquals(new BigDecimal("2"), BigDecimalMath.factorial(2));
-		assertEquals(new BigDecimal("6"), BigDecimalMath.factorial(3));
-		assertEquals(new BigDecimal("24"), BigDecimalMath.factorial(4));
-		assertEquals(new BigDecimal("120"), BigDecimalMath.factorial(5));
+		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(0));
+		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(1));
+		assertEquals(new BigDecimal(2), BigDecimalMath.factorial(2));
+		assertEquals(new BigDecimal(6), BigDecimalMath.factorial(3));
+		assertEquals(new BigDecimal(24), BigDecimalMath.factorial(4));
+		assertEquals(new BigDecimal(120), BigDecimalMath.factorial(5));
 		
 		assertEquals(
 				new BigDecimal("9425947759838359420851623124482936749562312794702543768327889353416977599316221476503087861591808346911623490003549599583369706302603264000000000000000000000000"),
@@ -209,8 +241,7 @@ public class BigDecimalMathTest {
 		assertPrecisionCalculation(
 				expected,
 				mathContext -> BigDecimalMath.pow(new BigDecimal("0.12345"), new BigDecimal("0.54321"), mathContext),
-				10,
-				200); // TODO optimize pow()
+				10);
 	}
 	
 	//@Test
@@ -220,8 +251,7 @@ public class BigDecimalMathTest {
 		assertPrecisionCalculation(
 				expected,
 				mathContext -> BigDecimalMath.pow(new BigDecimal("1234.5"), new BigDecimal("5.4321"), mathContext),
-				10,
-				200); // TODO optimize pow()
+				10);
 	}
 	
 	@Test
@@ -341,8 +371,7 @@ public class BigDecimalMathTest {
 		assertPrecisionCalculation(
 				expected,
 				mathContext -> BigDecimalMath.log(new BigDecimal("12345.6"), mathContext),
-				10,
-				200); // TODO optimize log()
+				10);
 	}
 
 	@Test
