@@ -116,6 +116,7 @@ public class BigDecimalMathExperimental {
 		int powerOfTwo = 1;
 		int factorOfThree = 0;
 		int powerOfThree = 1;
+
 		double value = x.doubleValue();
 		if (value < 0.1) {
 			while (value < 0.6) {
@@ -125,35 +126,28 @@ public class BigDecimalMathExperimental {
 			}
 		}
 		else if (value < 0.115) { // 0.11111 * 9 = 1
-			value *= 9;
 			factorOfThree = -2;
 			powerOfThree = 9;
 		}
 		else if (value < 0.14) { // 0.125 * 8 = 1
-			value *= 8;
 			factorOfTwo = -3;
 			powerOfTwo = 8;
 		}
 		else if (value < 0.20) { // 0.16667 * 6 = 1
-			value *= 2;
 			factorOfTwo = -1;
 			powerOfTwo = 2;
-			value *= 3;
 			factorOfThree = -1;
 			powerOfThree = 3;
 		}
 		else if (value < 0.3) { // 0.25 * 4 = 1
-			value *= 4;
 			factorOfTwo = -2;
 			powerOfTwo = 4;
 		}
 		else if (value < 0.42) { // 0.33333 * 3 = 1
-			value *= 3;
 			factorOfThree = -1;
 			powerOfThree = 3;
 		}
 		else if (value < 0.7) { // 0.5 * 2 = 1
-			value *= 2;
 			factorOfTwo = -1;
 			powerOfTwo = 2;
 		}
@@ -161,35 +155,28 @@ public class BigDecimalMathExperimental {
 			// do nothing
 		}
 		else if (value < 2.5) {
-			value /= 2;
 			factorOfTwo = 1;
 			powerOfTwo = 2;
 		}
 		else if (value < 3.5) {
-			value /= 3;
 			factorOfThree = 1;
 			powerOfThree = 3;
 		}
 		else if (value < 5.0) {
-			value /= 4;
 			factorOfTwo = 2;
 			powerOfTwo = 4;
 		}
 		else if (value < 7.0) {
-			value /= 3;
 			factorOfThree = 1;
 			powerOfThree = 3;
-			value /= 2;
 			factorOfTwo = 1;
 			powerOfTwo = 2;
 		}
 		else if (value < 8.5) {
-			value /= 8;
 			factorOfTwo = 3;
 			powerOfTwo = 8;
 		}
 		else if (value < 12.0) {
-			value /= 9;
 			factorOfThree = 2;
 			powerOfThree = 9;
 		}
