@@ -140,13 +140,10 @@ public class BigDecimalMath {
 	/**
 	 * Calculates {@link BigDecimal} x to the power of {@link BigDecimal} y (x<sup>y</sup>).
 	 * 
-	 * <p>The implementation uses <a href="http://en.wikipedia.org/wiki/Newton%27s_method">Newtown's method</a>
-	 * until the resulting value has reached the specified precision + 4 (result is then rounded to the specified precision).</p>
-	 *
 	 * @param x the {@link BigDecimal} value to take to the power
 	 * @param y the {@link BigDecimal} value to serve as exponent
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated x to the power of y
+	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal pow(BigDecimal x, BigDecimal y, MathContext mathContext) {
 		// x^y = exp(y*log(x))
@@ -187,7 +184,7 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} value to take to the power
 	 * @param y the <code>int</code> value to serve as exponent
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated x to the power of y
+	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal pow(BigDecimal x, int y, MathContext mathContext) {
 		if (y < 0) {
@@ -220,12 +217,9 @@ public class BigDecimalMath {
 	 * 
 	 * <p>See <a href="http://en.wikipedia.org/wiki/Square_root">Wikipedia: Square root</a></p>
 	 * 
-	 * <p>The implementation uses <a href="http://en.wikipedia.org/wiki/Newton%27s_method">Newtown's method</a>
-	 * until the resulting value has reached the specified precision + 4 (result is then rounded to the specified precision).</p>
-	 *
 	 * @param x the {@link BigDecimal} value to calculate the square root
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated square root of x
+	 * @return the calculated square root of x with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal sqrt(BigDecimal x, MathContext mathContext) {
 		if (x.signum() == 0) {
@@ -250,14 +244,10 @@ public class BigDecimalMath {
 	 * 
 	 * <p>See <a href="http://en.wikipedia.org/wiki/Square_root">Wikipedia: Square root</a></p>
 	 * 
-	 * <p>The implementation uses a variant of <a href="http://en.wikipedia.org/wiki/Newton%27s_method">Newtown's method</a>
-	 * described as <a href="https://en.wikipedia.org/wiki/Nth_root_algorithm">Nth root algorithm</a>
-	 * until the resulting value has reached the specified precision + 4 (result is then rounded to the specified precision).</p>
-	 *
 	 * @param n the {@link BigDecimal} defining the root
 	 * @param x the {@link BigDecimal} value to calculate the n'th root
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated n'th root of x
+	 * @return the calculated n'th root of x with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal root(BigDecimal n, BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
@@ -283,17 +273,9 @@ public class BigDecimalMath {
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Natural_logarithm">Wikipedia: Natural logarithm</a></p>
 	 * 
-	 * <p>The implementation uses <a href="http://en.wikipedia.org/wiki/Taylor_series">Taylor series</a>
-	 * until the resulting value has reached the specified precision + 4 (result is then rounded to the specified precision).</p>
-	 * 
-	 * <p>For x < 1 the following series is used:</br>
-	 * <code>sum(-1^(n+1)(x-1)^n/n)</code></p>
-	 * <p>For x >= 1 the following series is used:</br>
-	 * <code>sum(((x-1)/n)^n/n)</code></p>
-	 *
 	 * @param x the {@link BigDecimal} to calculate the natural logarithm for
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated natural logarithm {@link BigDecimal}
+	 * @return the calculated natural logarithm {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException for 0 or negative numbers
 	 */
 	public static BigDecimal log(BigDecimal x, MathContext mathContext) {
@@ -314,17 +296,30 @@ public class BigDecimalMath {
 		}
 
 		return logUsingTwoThree(x, mathContext);
-//		return logUsingRoot(x, mathContext);
-//		return logUsingSqrt(x, mathContext);
-//		return logAreaHyperbolicTangent(x, mathContext);
 	}
 
+	/**
+	 * Calculates the logarithm of {@link BigDecimal} x to the base 2.
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the logarithm base 2 for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated natural logarithm {@link BigDecimal} to the base 2 with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException for 0 or negative numbers
+	 */
 	public static BigDecimal log2(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
 
 		return log(x, mc).divide(logTwo(mc), mc);
 	}
 	
+	/**
+	 * Calculates the logarithm of {@link BigDecimal} x to the base 10.
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the logarithm base 10 for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated natural logarithm {@link BigDecimal} to the base 10 with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException for 0 or negative numbers
+	 */
 	public static BigDecimal log10(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
 
@@ -512,12 +507,9 @@ public class BigDecimalMath {
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Exponent">Wikipedia: Exponent</a></p>
 	 * 
-	 * <p>The implementation uses <a href="http://en.wikipedia.org/wiki/Taylor_series">Taylor series</a>
-	 * until the resulting value has reached the specified precision + 4 (result is then rounded to the specified precision).</p>
-	 *
 	 * @param x the {@link BigDecimal} to calculate the exponent for
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated exponent {@link BigDecimal}
+	 * @return the calculated exponent {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal exp(BigDecimal x, MathContext mathContext) {
 		if (x.signum() == 0) {
@@ -585,12 +577,9 @@ public class BigDecimalMath {
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Sine">Wikipedia: Sine</a></p>
 	 * 
-	 * <p>The implementation uses <a href="http://en.wikipedia.org/wiki/Taylor_series">Taylor series</a>
-	 * until the resulting value has reached the specified precision + 4 (result is then rounded to the specified precision).</p>
-	 *
 	 * @param x the {@link BigDecimal} to calculate the sine for
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated sine {@link BigDecimal}
+	 * @return the calculated sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal sin(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
@@ -617,9 +606,6 @@ public class BigDecimalMath {
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Cosine">Wikipedia: Cosine</a></p>
 	 * 
-	 * <p>The implementation uses <a href="http://en.wikipedia.org/wiki/Taylor_series">Taylor series</a>
-	 * until the resulting value has reached the specified precision + 4 (result is then rounded to the specified precision).</p>
-	 *
 	 * @param x the {@link BigDecimal} to calculate the cosine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated cosine {@link BigDecimal}
