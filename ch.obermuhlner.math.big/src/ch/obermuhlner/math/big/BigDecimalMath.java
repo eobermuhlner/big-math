@@ -347,70 +347,70 @@ public class BigDecimalMath {
 		int powerOfThree = 1;
 
 		double value = x.doubleValue();
-		if (value < 0.1) {
+		if (value < 0.1) { // never happens when called by logUsingExponent()
 			while (value < 0.6) {
 				value *= 2;
 				factorOfTwo--;
 				powerOfTwo *= 2;
 			}
 		}
-		else if (value < 0.115) { // 0.11111 * 9 = 1
+		else if (value < 0.115) { // (0.1 - 0.11111 - 0.115) -> (0.9 - 1.0 - 1.035)
 			factorOfThree = -2;
 			powerOfThree = 9;
 		}
-		else if (value < 0.14) { // 0.125 * 8 = 1
+		else if (value < 0.14) { // (0.115 - 0.125 - 0.14) -> (0.92 - 1.0 - 1.12)
 			factorOfTwo = -3;
 			powerOfTwo = 8;
 		}
-		else if (value < 0.20) { // 0.16667 * 6 = 1
+		else if (value < 0.2) { // (0.14 - 0.16667 - 0.2) - (0.84 - 1.0 - 1.2)
 			factorOfTwo = -1;
 			powerOfTwo = 2;
 			factorOfThree = -1;
 			powerOfThree = 3;
 		}
-		else if (value < 0.3) { // 0.25 * 4 = 1
+		else if (value < 0.3) { // (0.2 - 0.25 - 0.3) -> (0.8 - 1.0 - 1.2)
 			factorOfTwo = -2;
 			powerOfTwo = 4;
 		}
-		else if (value < 0.42) { // 0.33333 * 3 = 1
+		else if (value < 0.42) { // (0.3 - 0.33333 - 0.42) -> (0.9 - 1.0 - 1.26)
 			factorOfThree = -1;
 			powerOfThree = 3;
 		}
-		else if (value < 0.7) { // 0.5 * 2 = 1
+		else if (value < 0.7) { // (0.42 - 0.5 - 0.7) -> (0.84 - 1.0 - 1.4)
 			factorOfTwo = -1;
 			powerOfTwo = 2;
 		}
-		else if (value < 1.4) {
+		else if (value < 1.4) { // (0.7 - 1.0 - 1.4) -> (0.7 - 1.0 - 1.4)
 			// do nothing
 		}
-		else if (value < 2.5) {
+		else if (value < 2.5) { // (1.4 - 2.0 - 2.5) -> (0.7 - 1.0 - 1.25)
 			factorOfTwo = 1;
 			powerOfTwo = 2;
 		}
-		else if (value < 3.5) {
+		else if (value < 3.5) { // (2.5 - 3.0 - 3.5) -> (0.833333 - 1.0 - 1.166667)
 			factorOfThree = 1;
 			powerOfThree = 3;
 		}
-		else if (value < 5.0) {
+		else if (value < 5.0) { // (3.5 - 4.0 - 5.0) -> (0.875 - 1.0 - 1.25)
 			factorOfTwo = 2;
 			powerOfTwo = 4;
 		}
-		else if (value < 7.0) {
+		else if (value < 7.0) { // (5.0 - 6.0 - 7.0) -> (0.833333 - 1.0 - 1.166667)
 			factorOfThree = 1;
 			powerOfThree = 3;
 			factorOfTwo = 1;
 			powerOfTwo = 2;
 		}
-		else if (value < 8.5) {
+		else if (value < 8.5) { // (7.0 - 8.0 - 8.5) -> (0.875 - 1.0 - 1.0625)
 			factorOfTwo = 3;
 			powerOfTwo = 8;
 		}
-		else if (value < 12.0) {
+		else if (value < 10.0) { // (8.5 - 9.0 - 10.0) -> (0.94444 - 1.0 - 1.11111)
 			factorOfThree = 2;
 			powerOfThree = 9;
 		}
 		else {
-			while (value > 1.4) {
+			while (value > 1.4) { // never happens when called by logUsingExponent()
 				value /= 2;
 				factorOfTwo++;
 				powerOfTwo *= 2;
