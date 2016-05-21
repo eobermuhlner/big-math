@@ -32,7 +32,8 @@ public class PerformanceBigDecimalMath {
 				performanceReportSlowFunctions();
 				performanceReportVerySlowFunctions();
 				performanceReportVerySlowFunctionBigRange();
-
+				performanceReportVerySlowFunctionVeryBigRange();
+				
 //				performanceReportExp();
 //				performanceReportLogBigRange();
 
@@ -68,7 +69,7 @@ public class PerformanceBigDecimalMath {
 		performanceReportOverValue(
 				"perf_slow_funcs_from_0_to_2.csv",
 				REF_MATHCONTEXT,
-				+0.01,
+				0,
 				+2.0,
 				+0.01,
 				REPEATS,
@@ -81,9 +82,9 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReportVerySlowFunctions() {
 		performanceReportOverValue(
-				"perf_slow_funcs_from_0_to_2.csv",
+				"perf_very_slow_funcs_from_0_to_2.csv",
 				REF_MATHCONTEXT,
-				+0.01,
+				0,
 				+2.0,
 				+0.01,
 				REPEATS,
@@ -107,13 +108,13 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
 
-	private static void performanceReportLogBigRange() {
+	private static void performanceReportVerySlowFunctionVeryBigRange() {
 		performanceReportOverValue(
 				"perf_slow_funcs_from_0_to_100.csv",
 				REF_MATHCONTEXT,
-				+1,
+				0,
 				+100,
-				+1,
+				+0.1,
 				REPEATS,
 				Arrays.asList("exp", "log", "pow"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
