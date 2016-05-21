@@ -261,30 +261,29 @@ public class BigDecimalMathExperimental {
 		return logAreaHyperbolicTangent(THREE, mathContext);
 	}
 
-	public static BigDecimal logNewton(BigDecimal x, MathContext mathContext) {
+	public static BigDecimal logUsingNewton(BigDecimal x, MathContext mathContext) {
 		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
 		// y = y + 2 * (x-exp(y)) / (x+exp(y))
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		
 		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
-		BigDecimal last;
-
+		BigDecimal step;
+		
 		do {
-			last = result;
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
-			result = result.add(
-					TWO.multiply(
-							x.subtract(
+			step = TWO.multiply(
+					x.subtract(
+							expY,
+							mc),
+					mc).divide(
+							x.add(
 									expY,
-									mathContext),
-							mathContext).divide(
-									x.add(
-											expY,
-											mathContext),
-									mathContext),
-					mathContext);
-		} while (result.compareTo(last) != 0);
+									mc),
+							mc);
+			result = result.add(step);
+		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}
@@ -292,25 +291,24 @@ public class BigDecimalMathExperimental {
 	public static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Logarithm#Calculation
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		
 		BigDecimal magic = x.subtract(ONE, mc).divide(x.add(ONE), mc);
-
+		
 		BigDecimal result = ZERO;
-		BigDecimal last;
 		BigDecimal step;
 		int i = 0;
 		do {
-			int doubleIndexPlusOne = i * 2 + 1;
+			int doubleIndexPlusOne = i * 2 + 1; 
 			step = BigDecimalMath.pow(magic, doubleIndexPlusOne, mc).divide(valueOf(doubleIndexPlusOne), mc);
 
-			last = result;
 			result = result.add(step, mc);
-
+			
 			i++;
-		} while (result.compareTo(last) != 0);
-
+		} while (step.abs().compareTo(acceptableError) > 0);
+		
 		result = result.multiply(TWO, mc);
-
+		
 		return result.round(mathContext);
 	}
 
