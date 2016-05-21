@@ -227,6 +227,7 @@ public class BigDecimalMath {
 		}
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal result = x.divide(TWO, mc);
 		BigDecimal last;
@@ -234,7 +235,7 @@ public class BigDecimalMath {
 		do {
 			last = result;
 			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
-		} while (result.compareTo(last) != 0);
+		} while (result.subtract(last).abs().compareTo(acceptableError) > 0);
 		
 		return result.round(mathContext);
 	}
@@ -251,19 +252,18 @@ public class BigDecimalMath {
 	 */
 	public static BigDecimal root(BigDecimal n, BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
 		BigDecimal factor = ONE.divide(n, mc);
 		BigDecimal nMinus1 = n.subtract(ONE);
 		BigDecimal result = x.divide(TWO, mc);
-		BigDecimal last = result;
-		BigDecimal last2;
+		BigDecimal step;
 
 		do {
-			BigDecimal delta = factor.multiply(x.divide(pow(result, nMinus1, mc), mc).subtract(result, mc), mc);
+			step = factor.multiply(x.divide(pow(result, nMinus1, mc), mc).subtract(result, mc), mc);
 					
-			last2 = last;
-			last = result;
-			result = result.add(delta, mc);
-		} while (result.compareTo(last2) != 0);
+			result = result.add(step, mc);
+		} while (step.abs().compareTo(acceptableError) > 0);
 		
 		return result.round(mathContext);
 	}
@@ -288,14 +288,15 @@ public class BigDecimalMath {
 			return ZERO;
 		}
 		
-		switch (x.compareTo(TEN)) {
-		case 0:
-			return logTen(mathContext);
-		case 1:
-			return logUsingExponent(x, mathContext);
-		}
-
-		return logUsingTwoThree(x, mathContext);
+//		switch (x.compareTo(TEN)) {
+//		case 0:
+//			return logTen(mathContext);
+//		case 1:
+//			return logUsingExponent(x, mathContext);
+//		}
+//
+//		return logUsingTwoThree(x, mathContext);
+		return logUsingNewton(x, mathContext);
 	}
 
 	/**
@@ -326,6 +327,33 @@ public class BigDecimalMath {
 		return log(x, mc).divide(logTen(mc), mc);
 	}
 	
+	private static BigDecimal logUsingNewton(BigDecimal x, MathContext mathContext) {
+		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
+		// y = y + 2 * (x-exp(y)) / (x+exp(y))
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		
+		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
+		BigDecimal step;
+		
+		do {
+			BigDecimal expY = BigDecimalMath.exp(result, mc);
+			step = TWO.multiply(
+					x.subtract(
+							expY,
+							mc),
+					mc).divide(
+							x.add(
+									expY,
+									mc),
+							mc);
+			result = result.add(step);
+		} while (step.abs().compareTo(acceptableError) > 0);
+
+		return result.round(mathContext);
+	}
+
 	private static BigDecimal logUsingRoot(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
@@ -338,7 +366,7 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
-	public static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
+	private static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		int factorOfTwo = 0;
@@ -386,7 +414,7 @@ public class BigDecimalMath {
 		else if (value < 2.5) { // (1.4 - 2.0 - 2.5) -> (0.7 - 1.0 - 1.25)
 			factorOfTwo = 1;
 			powerOfTwo = 2;
-		}
+		} 
 		else if (value < 3.5) { // (2.5 - 3.0 - 3.5) -> (0.833333 - 1.0 - 1.166667)
 			factorOfThree = 1;
 			powerOfThree = 3;
@@ -460,42 +488,41 @@ public class BigDecimalMath {
 		if (mathContext.getPrecision() < LOG_TEN.precision()) {
 			return LOG_TEN;
 		}
-		return logAreaHyperbolicTangent(BigDecimal.TEN, mathContext);
+		return logUsingNewton(BigDecimal.TEN, mathContext);
 	}
 	
 	private static BigDecimal logTwo(MathContext mathContext) {
 		if (mathContext.getPrecision() < LOG_TWO.precision()) {
 			return LOG_TWO;
 		}
-		return logAreaHyperbolicTangent(TWO, mathContext);
+		return logUsingNewton(TWO, mathContext);
 	}
 
 	private static BigDecimal logThree(MathContext mathContext) {
 		if (mathContext.getPrecision() < LOG_THREE.precision()) {
 			return LOG_THREE;
 		}
-		return logAreaHyperbolicTangent(THREE, mathContext);
+		return logUsingNewton(THREE, mathContext);
 	}
 
 	private static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Logarithm#Calculation
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 		
 		BigDecimal magic = x.subtract(ONE, mc).divide(x.add(ONE), mc);
 		
 		BigDecimal result = ZERO;
-		BigDecimal last; 
 		BigDecimal step;
 		int i = 0;
 		do {
 			int doubleIndexPlusOne = i * 2 + 1; 
 			step = pow(magic, doubleIndexPlusOne, mc).divide(valueOf(doubleIndexPlusOne), mc);
 
-			last = result;
 			result = result.add(step, mc);
 			
 			i++;
-		} while (result.compareTo(last) != 0);
+		} while (step.abs().compareTo(acceptableError) > 0);
 		
 		result = result.multiply(TWO, mc);
 		
@@ -546,28 +573,29 @@ public class BigDecimalMath {
 	
 	private static BigDecimal expTaylor(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal factorial = ONE;
 		BigDecimal power = ONE;
 		
 		BigDecimal result = ZERO;
-		BigDecimal last; 
 		BigDecimal step;
 		int i = 0;
 		do {			
 			step = power.divide(factorial, mc);
 
-			last = result;
 			result = result.add(step, mc);
 			
 			i++;
+			
+			// TODO move this at the begin of loop
 			if (i<factorialCache.length) {
 				factorial = factorialCache[i];
 			} else {
-				factorial = factorial.multiply(valueOf(i));
+				factorial = factorial.multiply(valueOf(i), mc);
 			}
 			power = power.multiply(x, mc);
-		} while (result.compareTo(last) != 0);
+		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}
@@ -583,8 +611,8 @@ public class BigDecimalMath {
 	 */
 	public static BigDecimal sin(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
-		BigDecimal last;
 		BigDecimal result = ZERO;
 		BigDecimal sign = ONE;
 		BigDecimal step;
@@ -593,10 +621,9 @@ public class BigDecimalMath {
 			step = sign.multiply(x.pow(2 * i + 1), mc).divide(factorial(2 * i + 1), mc);
 			sign = sign.negate();
 
-			last = result;
 			result = result.add(step, mc);
 			i++;
-		} while (result.compareTo(last) != 0);
+		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}
@@ -612,9 +639,9 @@ public class BigDecimalMath {
 	 */
 	public static BigDecimal cos(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal result = ZERO;
-		BigDecimal last; 
 		BigDecimal sign = ONE;
 		BigDecimal step;
 		int i = 0;
@@ -622,10 +649,9 @@ public class BigDecimalMath {
 			step = sign.multiply(x.pow(2 * i), mc).divide(factorial(2 * i), mc);
 			sign = sign.negate();
 
-			last = result;
 			result = result.add(step, mc);
 			i++;
-		} while (result.compareTo(last) != 0);
+		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}
