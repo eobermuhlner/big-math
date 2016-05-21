@@ -26,19 +26,22 @@ public class PerformanceBigDecimalMath {
 
 	public static void main(String[] args) {
 
-//				System.out.println(BigDecimalMath.log(BigDecimal.valueOf(3), new MathContext(1100)));
+//		System.out.println(BigDecimalMath.log(BigDecimal.valueOf(10), new MathContext(1100)));
 
-				performanceReportStandardFunctions();
-				performanceReportSlowFunctions();
-				performanceReportVerySlowFunctions();
-				performanceReportVerySlowFunctionBigRange();
-				performanceReportVerySlowFunctionVeryBigRange();
+		performanceReport_Fast_0_to_2();
+		performanceReport_Fast_neg10_to_10();
+		performanceReport_Fast_0_to_10();
+		performanceReport_Fast_0_to_100();
+
+		
+		performanceReport_Slow_0_to_2();
+		performanceReport_Slow_neg10_to_10();
+		performanceReport_Slow_0_to_10();
+		performanceReport_Slow_0_to_100();
+		
+		performanceReport_Fast_precision();
+		performanceReport_Slow_precision();
 				
-//				performanceReportExp();
-//				performanceReportLogBigRange();
-
-//				performanceReportOverPrecision();
-
 		// --- log() optimizations:
 //				performanceReportLogOptimization1();
 //				performanceReportLogOptimization2();
@@ -48,12 +51,46 @@ public class PerformanceBigDecimalMath {
 //				performanceReportLogOptimization6();
 	}
 
-	private static void performanceReportStandardFunctions() {
+	private static void performanceReport_Fast_0_to_2() {
 		performanceReportOverValue(
 				"perf_standard_funcs_from_0_to_2.csv",
 				REF_MATHCONTEXT,
 				0,
 				+2.0,
+				+0.005,
+				REPEATS,
+				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+	}
+
+	private static void performanceReport_Fast_neg10_to_10() {
+		performanceReportOverValue(
+				"perf_standard_funcs_from_-10_to_10.csv",
+				REF_MATHCONTEXT,
+				-10,
+				+10,
+				+0.1,
+				REPEATS,
+				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+	}
+
+	private static void performanceReport_Fast_0_to_10() {
+		performanceReportOverValue(
+				"perf_standard_funcs_from_0_to_10.csv",
+				REF_MATHCONTEXT,
+				0,
+				+10,
 				+0.01,
 				REPEATS,
 				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
@@ -65,28 +102,30 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
 	}
 
-	private static void performanceReportSlowFunctions() {
+	private static void performanceReport_Fast_0_to_100() {
+		performanceReportOverValue(
+				"perf_standard_funcs_from_0_to_100.csv",
+				REF_MATHCONTEXT,
+				0,
+				+100,
+				+0.1,
+				REPEATS,
+				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+	}
+
+	private static void performanceReport_Slow_0_to_2() {
 		performanceReportOverValue(
 				"perf_slow_funcs_from_0_to_2.csv",
 				REF_MATHCONTEXT,
 				0,
 				+2.0,
-				+0.01,
-				REPEATS,
-				Arrays.asList("exp", "log", "log2", "log10"),
-				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.log2(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.log10(x, calculationMathContext));
-	}
-
-	private static void performanceReportVerySlowFunctions() {
-		performanceReportOverValue(
-				"perf_very_slow_funcs_from_0_to_2.csv",
-				REF_MATHCONTEXT,
-				0,
-				+2.0,
-				+0.01,
+				+0.005,
 				REPEATS,
 				Arrays.asList("exp", "log", "pow"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
@@ -94,7 +133,7 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
 
-	private static void performanceReportVerySlowFunctionBigRange() {
+	private static void performanceReport_Slow_neg10_to_10() {
 		performanceReportOverValue(
 				"perf_slow_funcs_from_-10_to_10.csv",
 				REF_MATHCONTEXT,
@@ -108,7 +147,21 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
 
-	private static void performanceReportVerySlowFunctionVeryBigRange() {
+	private static void performanceReport_Slow_0_to_10() {
+		performanceReportOverValue(
+				"perf_slow_funcs_from_0_to_10.csv",
+				REF_MATHCONTEXT,
+				0.0,
+				+10.0,
+				+0.05,
+				REPEATS,
+				Arrays.asList("exp", "log", "pow"),
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
+
+	private static void performanceReport_Slow_0_to_100() {
 		performanceReportOverValue(
 				"perf_slow_funcs_from_0_to_100.csv",
 				REF_MATHCONTEXT,
@@ -121,6 +174,37 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
+
+	private static void performanceReport_Fast_precision() {
+		performanceReportOverPrecision(
+				"perf_standard_funcs_precisions_to_1000.csv",
+				BigDecimal.valueOf(3.1),
+				10,
+				1000,
+				10,
+				REPEATS,
+				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+	}
+	
+	private static void performanceReport_Slow_precision() {
+		performanceReportOverPrecision(
+				"perf_slow_funcs_precisions_to_1000.csv",
+				BigDecimal.valueOf(3.1),
+				10,
+				1000,
+				10,
+				REPEATS,
+				Arrays.asList("exp", "log", "pow"),
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+}
 
 	/**
 Writing an implementation of the binary logarithm function with BigDecimal is surprisingly challenging.
@@ -290,23 +374,11 @@ REFERENCE github eobermuhlner/big-math
 //				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentPowerTwo(x, calculationMathContext),
 //				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
 //	}
-//
-//	private static void performanceReportOverPrecision() {
-//		printHeaders("precision", "exp", "log", "pow");
-//		printHeaders("number", "number", "number", "number");
-//		performanceReportOverPrecision(
-//				BigDecimal.valueOf(3.1),
-//				10,
-//				1000,
-//				10,
-//				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
-//	}
+
 
 	@SafeVarargs
-	private static void performanceReportOverValue(String name, MathContext mathContext, double xStart, double xEnd, double xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
-		performanceReportOverValue(name, mathContext, BigDecimal.valueOf(xStart), BigDecimal.valueOf(xEnd), BigDecimal.valueOf(xStep), repeats, functionNames, calculations);
+	private static void performanceReportOverValue(String name, MathContext mathContext, double xStart, double xEnd, double xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
+		performanceReportOverValue(name, mathContext, BigDecimal.valueOf(xStart), BigDecimal.valueOf(xEnd), BigDecimal.valueOf(xStep), repeats, functionNames, functions);
 	}
 
 	@SafeVarargs
@@ -324,14 +396,14 @@ REFERENCE github eobermuhlner/big-math
 	}
 	
 	@SafeVarargs
-	private static void performanceReportOverValue(PrintWriter writer, MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
-		if (functionNames.size() != calculations.length) {
-			throw new IllegalArgumentException("Must be same number of functionNames (" + functionNames.size() + ") and functions (" + calculations.length + ")");
+	private static void performanceReportOverValue(PrintWriter writer, MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
+		if (functionNames.size() != functions.length) {
+			throw new IllegalArgumentException("Must be same number of functionNames (" + functionNames.size() + ") and functions (" + functions.length + ")");
 		}
 		
 		// warmup
 		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
-			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : calculations) {
+			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : functions) {
 				try {
 					calculation.apply(x, MathContext.DECIMAL32);
 				}
@@ -357,33 +429,55 @@ REFERENCE github eobermuhlner/big-math
 		}		
 		writer.println();
 
-		// real measurement
+		// prepare data storage
+		int xCount = 0;
 		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
-			long[] elapsedNanos = new long[calculations.length];
-
-			for (int i = 0; i < calculations.length; i++) {
-				BiFunction<BigDecimal, MathContext, BigDecimal> calculation = calculations[i];
-				long[] nanos = new long[repeats];
-
-				try {
-					for (int j = 0; j < repeats; j++) {
+			xCount++;
+		}
+		
+		long[][][] nanosFunctionValueRepeat = new long[functions.length][][];
+		for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+			nanosFunctionValueRepeat[fIndex] = new long[xCount][];
+			for (int xIndex = 0; xIndex < xCount; xIndex++) {
+				nanosFunctionValueRepeat[fIndex][xIndex] = new long[repeats];
+			}
+		}
+		
+		// real measurements
+		for (int rIndex = 0; rIndex < repeats; rIndex++) {
+			int xIndex = 0;
+			for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+				for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+					BiFunction<BigDecimal, MathContext, BigDecimal> function = functions[fIndex];
+					try {
 						StopWatch stopWatch = new StopWatch();
-						calculation.apply(x, mathContext);
-						nanos[j] = stopWatch.getElapsedNanos();
+						function.apply(x, mathContext);
+						nanosFunctionValueRepeat[fIndex][xIndex][rIndex] = stopWatch.getElapsedNanos();
 					}
-					elapsedNanos[i] = median(nanos);
+					catch (ArithmeticException ex) {
+						// ignore
+					}
 				}
-				catch (ArithmeticException ex) {
-					// ignore
-				}
+				xIndex++;
 			}
+			System.out.print(".");
+		}
+		System.out.println();
 
-			writer.printf("%8.3f", x);
-			for (int i = 0; i < elapsedNanos.length; i++) {
-				writer.print(",");
-				writer.printf("%8d", elapsedNanos[i]);
+		// write report
+		{
+			int xIndex = 0;
+			for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+				writer.printf("%8.3f", x);
+				for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+					writer.print(",");
+					long elapsedNanos = median(nanosFunctionValueRepeat[fIndex][xIndex]);
+					writer.printf("%8d", elapsedNanos);
+				}
+				writer.println();
+				
+				xIndex++;
 			}
-			writer.println();
 		}
 	}
 
@@ -399,10 +493,24 @@ REFERENCE github eobermuhlner/big-math
 	}
 
 	@SafeVarargs
-	private static void performanceReportOverPrecision(BigDecimal value, int precisionStart, int precisionEnd, int precisionStep, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
+	private static void performanceReportOverPrecision(String name, BigDecimal value, int precisionStart, int precisionEnd, int precisionStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
+		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out));
+		
+		System.out.println("Writing  " + name);
+		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
+			performanceReportOverPrecision(writer, value, precisionStart, precisionEnd, precisionStep, repeats, functionNames, calculations);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		
+		System.out.println("Finished ");
+	}
+	
+	@SafeVarargs
+	private static void performanceReportOverPrecision(PrintWriter writer, BigDecimal value, int precisionStart, int precisionEnd, int precisionStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
 		// warmup
 		for (int i = 0; i < 1000; i++) {
-			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : calculations) {
+			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : functions) {
 				try {
 					calculation.apply(value, MathContext.DECIMAL32);
 				}
@@ -412,31 +520,75 @@ REFERENCE github eobermuhlner/big-math
 			}
 		}
 
-		// real measurement
+		// print headers
+		writer.printf("%8s", "precision");
+		for (int fIndex = 0; fIndex < functionNames.size(); fIndex++) {
+			writer.print(",");
+			writer.printf("%8s", functionNames.get(fIndex));
+		}
+		writer.println();
+
+		// print types
+		writer.printf("%8s", "number");
+		for (int fIndex = 0; fIndex < functionNames.size(); fIndex++) {
+			writer.print(",");
+			writer.printf("%8s", "number");
+		}		
+		writer.println();
+
+		// prepare data storage
+		int pCount = 0;
 		for (int precision = precisionStart; precision < precisionEnd; precision += precisionStep) {
-			long[] elapsedMillis = new long[calculations.length];
-			MathContext mathContext = new MathContext(precision);
+			pCount++;
+		}
+		
+		long[][][] nanosFunctionPrecisionRepeat = new long[functions.length][][];
+		for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+			nanosFunctionPrecisionRepeat[fIndex] = new long[pCount][];
 
-			for (int i = 0; i < calculations.length; i++) {
-				BiFunction<BigDecimal, MathContext, BigDecimal> calculation = calculations[i];
-
-				StopWatch stopWatch = new StopWatch();
-
-				try {
-					calculation.apply(value, mathContext);
-					elapsedMillis[i] = stopWatch.getElapsedMillis();
-				}
-				catch (ArithmeticException ex) {
-					// ignore
-				}
+			for (int pIndex = 0; pIndex < pCount; pIndex++) {
+				nanosFunctionPrecisionRepeat[fIndex][pIndex] = new long[repeats];
 			}
+		}
+		
+		// real measurement
+		for (int rIndex = 0; rIndex < repeats; rIndex++) {
+			for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+				int pIndex = 0;
+				for (int precision = precisionStart; precision < precisionEnd; precision += precisionStep) {
+					MathContext mathContext = new MathContext(precision);
+				
+					BiFunction<BigDecimal, MathContext, BigDecimal> calculation = functions[fIndex];
 
-			System.out.printf("%9d", precision);
-			for (int i = 0; i < elapsedMillis.length; i++) {
-				System.out.print(",");
-				System.out.printf("%6d", elapsedMillis[i]);
+					try {
+						StopWatch stopWatch = new StopWatch();
+						calculation.apply(value, mathContext);
+						nanosFunctionPrecisionRepeat[fIndex][pIndex][rIndex] = stopWatch.getElapsedNanos();
+					}
+					catch (ArithmeticException ex) {
+						// ignore
+					}
+					pIndex++;
+				}
+				
 			}
-			System.out.println();
+			System.out.print(".");
+		}
+		System.out.println();
+		
+		// write report
+		{
+			int p = 0;
+			for (int precision = precisionStart; precision < precisionEnd; precision += precisionStep) {
+				writer.printf("%8d", precision);
+				for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+					writer.print(",");
+					long elapsedNanos = median(nanosFunctionPrecisionRepeat[fIndex][p]);
+					writer.printf("%8d", elapsedNanos);
+				}
+				p++;
+				writer.println();
+			}
 		}
 	}
 }
