@@ -222,8 +222,11 @@ public class BigDecimalMath {
 	 * @return the calculated square root of x with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal sqrt(BigDecimal x, MathContext mathContext) {
-		if (x.signum() == 0) {
+		switch (x.signum()) {
+		case 0:
 			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
 		}
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
@@ -251,6 +254,13 @@ public class BigDecimalMath {
 	 * @return the calculated n'th root of x with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal root(BigDecimal n, BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+		}
+
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
