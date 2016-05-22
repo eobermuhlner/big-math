@@ -255,6 +255,16 @@ public class BigDecimalMathTest {
 	}
 	
 	@Test
+	public void testPowRandom() {
+		assertRandomCalculation(
+				1000,
+				"pow",
+				random -> random.nextDouble() * 100 + 0.000001,
+				random -> random.nextDouble() * 100 - 50,
+				(x, y, mathContext) -> BigDecimalMath.pow(x, y, mathContext));
+	}
+
+	@Test
 	public void testSqrt() {
 		for(double value : new double[] { 0, 0.1, 2, 10, 33.3333 }) {
 			assertEquals(
@@ -272,6 +282,15 @@ public class BigDecimalMathTest {
 				expected,
 				mathContext -> BigDecimalMath.sqrt(new BigDecimal("2"), mathContext),
 				10);
+	}
+
+	@Test
+	public void testSqrtRandom() {
+		assertRandomCalculation(
+				1000,
+				"sqrt",
+				random -> random.nextDouble() * 100 + 0.000001,
+				(x, mathContext) -> BigDecimalMath.sqrt(x, mathContext));
 	}
 
 	@Test
@@ -311,6 +330,16 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testRootRandom() {
+		BigDecimal n = new BigDecimal("3.456");
+		assertRandomCalculation(
+				1000,
+				"root",
+				random -> random.nextDouble() * 100 + 0.000001,
+				(x, mathContext) -> BigDecimalMath.root(n, x, mathContext));
+	}
+
+	@Test
 	public void testLog() {
 		for(double value : new double[] { 0.1, 2, 10, 33.3333 }) {
 			assertEquals("log(" + value + ")",
@@ -318,31 +347,6 @@ public class BigDecimalMathTest {
 					toCheck(BigDecimalMath.log(BigDecimal.valueOf(value), MC)));
 		}
 	}
-
-	@Test
-	public void testLogRandom() {
-		assertRandomCalculation(
-				1000,
-				"log",
-				random -> random.nextFloat() * 100 + 0.00001,
-				(x, mathContext) -> BigDecimalMath.log(x, mathContext));
-	}
-	
-	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, BiFunction<BigDecimal, MathContext, BigDecimal> calculation) {
-		Random random = new Random(1);
-		
-		for (int i = 0; i < count; i++) {
-			int precision = random.nextInt(100) + 1;
-			BigDecimal x = BigDecimal.valueOf(xFunction.apply(random));
-			
-			MathContext mathContext = new MathContext(precision);
-			BigDecimal result = calculation.apply(x, mathContext);
-			BigDecimal expected = calculation.apply(x, new MathContext(precision + 20)).round(mathContext);
-			String description = functionName + "(" + x + ") precision=" + precision;
-			assertEquals(description, expected.toString(), result.toString());
-		}
-	}
-	
 
 	@Test
 	public void testLogHighAccuracy1() {
@@ -375,6 +379,15 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testLogRandom() {
+		assertRandomCalculation(
+				1000,
+				"log",
+				random -> random.nextDouble() * 100 + 0.00001,
+				(x, mathContext) -> BigDecimalMath.log(x, mathContext));
+	}
+	
+	@Test
 	public void testExp() {
 		for(double value : new double[] { -5, -1, 0.1, 2, 10 }) {
 			assertEquals("exp(" + value + ")",
@@ -404,6 +417,15 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testExpRandom() {
+		assertRandomCalculation(
+				1000,
+				"exp",
+				random -> random.nextDouble() * 100 - 50,
+				(x, mathContext) -> BigDecimalMath.exp(x, mathContext));
+	}
+
+	@Test
 	public void testSin() {
 		for(double value : new double[] { -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
 			assertEquals("sin(" + value + ")",
@@ -413,12 +435,50 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testSinHighAccuracy() {
+		// Result from wolframalpha.com: sin(1.234)
+		BigDecimal expected = new BigDecimal("0.9438182093746337048617510061568275895172142720765760747220911781871399906968099483012598865055627858443507995518738766093869470509555068501582327052306784505752678705592908705201008148688700290760777223780263846758767378849305659165171458418076473553139600704400668632728702595059340199442411041490960324146869032516728992265808389968786198384238945833333329583982909393226122072922972072082343881982280834707504367506003311264818344731205557095928837491316071651630909050078777342482603092413467227932481298625668189293277970973821823536368859836352290171029827678389361668326651223313262181049179177713541062354198699357532113523026870736528786100665809233401695953717292150408826019906221690064294418649612406003915087946369501457359604343584263199153607653049282756925573849745513783165941970858623580447565222079996405576286670288022685431434886874295950242554364666123772837748084818582410730641892357161908769689946576427006541439717287833624991188137124554987468952436155712514180011917087180464841510692660163853984256220178122573051503993728719511214066957647751102014250171535662112264708511179562539851056691807479887430154563476132015884380272176766265870281843666030351481875369524292556759059067229573601315888931475939650530190997869732280644783380897437687282157862590038715019700476516674872568434184233136320198348795549241647388226943616471234865808472025746819601113742677172125085499919170003010129528504832452877371569832101275092363746925641703736428733071588960741542241552270894271703880793621738884941850045978201484407786879714905305225922874339567944723190660416232538921600185338494145628390029969393239498992087392435528382285271962107670662847438424222622822172719234821254495443425396088216409484488852445333426778397941937246299790022429378799080231482904310254381416336471042617299708975");
+		assertPrecisionCalculation(
+				expected,
+				mathContext -> BigDecimalMath.sin(new BigDecimal("1.234"), mathContext),
+				10);
+	}
+
+	@Test
+	public void testSinRandom() {
+		assertRandomCalculation(
+				1000,
+				"sin",
+				random -> random.nextDouble() * 100 - 50,
+				(x, mathContext) -> BigDecimalMath.sin(x, mathContext));
+	}
+	
+	@Test
 	public void testCos() {
 		for(double value : new double[] { -5, -1, -0.3, 0, 0.1, 2, 10 }) {
 			assertEquals("cos(" + value + ")",
 					toCheck(Math.cos(value)),
 					toCheck(BigDecimalMath.cos(BigDecimal.valueOf(value), MC)));
 		}
+	}
+
+	@Test
+	public void testCosHighAccuracy() {
+		// Result from wolframalpha.com: cos(1.234)
+		BigDecimal expected = new BigDecimal("0.3304651080717298574032807727899271437216920101969540348605304415152510377850481654650247150200780863415535299490857568279769354541967379397431278152484662377393883768410533419456683721348368071060447119629226464127475191769149818089642412919990646712138828462407239787011203786844401859479654861215480468553428321928822608813865008312100125205763217809424012405019490461648738007730900576327363563072819683608077467442286094847912950576189413624713414163958384339772584148744200648200688260933678578647517949013249027860144759454924413798901254668352778102301380649346953594529136819938821616590614874123930824463095104424946532966863750206459438812141713997562660701774968530149079881716322567945593156313333714539747617833144412172753445042952390635799639722239182963246046253903297563427741240081854182759746064810195237864060495745282046388159544259160022883886283097655348787382625328541498058884531961700370121969709480517496749271767735566816249479148488140162802977360971480510530896749944967304972380342831111213248738743617588927820627474733980422901948506009170945896565358929343777077336070289567245971065005860921723126096986632224093068775586235017140132374230378564807873973345322857782900999655081761884197357196908109838154083921138904571471346009606070648486103795109388774364448499820533743041120697352743044140279966823607345221684081898024173036376672034911709557102798619864101440725109041264516550229345850413762376113868869256025801898710854538411051622029568572639882301754336762028948110406127835411158515890274188501674397646117070538768699719967119559314804437052735458481025364866752041137855637961697664203246176781407193905595472755222134533679020285886126388322265972029035063590381025908006103799793443322205833892605275969980406879438015951448721792889383476504454337544038606643477976186");
+		assertPrecisionCalculation(
+				expected,
+				mathContext -> BigDecimalMath.cos(new BigDecimal("1.234"), mathContext),
+				10);
+	}
+
+	@Test
+	public void testCosRandom() {
+		assertRandomCalculation(
+				1000,
+				"sin",
+				random -> random.nextDouble() * 100 - 50,
+				(x, mathContext) -> BigDecimalMath.cos(x, mathContext));
 	}
 
 	private void assertPrecisionCalculation(BigDecimal expected, Function<MathContext, BigDecimal> precisionCalculation, int startPrecision) {
@@ -437,6 +497,41 @@ public class BigDecimalMathTest {
 		}
 	}
 	
+	private static interface Function3<T1, T2, T3, R> {
+		R apply(T1 t1, T2 t2, T3 t3);
+	}
+	
+	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, BiFunction<BigDecimal, MathContext, BigDecimal> calculation) {
+		Random random = new Random(1);
+		
+		for (int i = 0; i < count; i++) {
+			int precision = random.nextInt(100) + 1;
+			BigDecimal x = BigDecimal.valueOf(xFunction.apply(random));
+			
+			MathContext mathContext = new MathContext(precision);
+			BigDecimal result = calculation.apply(x, mathContext);
+			BigDecimal expected = calculation.apply(x, new MathContext(precision + 20)).round(mathContext);
+			String description = functionName + "(" + x + ") precision=" + precision;
+			assertEquals(description, expected.toString(), result.toString());
+		}
+	}
+
+	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, Function<Random, Double> yFunction, Function3<BigDecimal, BigDecimal, MathContext, BigDecimal> calculation) {
+		Random random = new Random(1);
+		
+		for (int i = 0; i < count; i++) {
+			int precision = random.nextInt(100) + 1;
+			BigDecimal x = BigDecimal.valueOf(xFunction.apply(random));
+			BigDecimal y = BigDecimal.valueOf(yFunction.apply(random));
+			
+			MathContext mathContext = new MathContext(precision);
+			BigDecimal result = calculation.apply(x, y, mathContext);
+			BigDecimal expected = calculation.apply(x, y, new MathContext(precision + 20, mathContext.getRoundingMode())).round(mathContext);
+			String description = functionName + "(" + x + "," + y + ") precision=" + precision;
+			assertEquals(description, expected.toString(), result.toString());
+		}
+	}
+
 	private static BigDecimal toCheck(double value) {
 		long longValue = (long) value;
 		if (value == (double)longValue) {

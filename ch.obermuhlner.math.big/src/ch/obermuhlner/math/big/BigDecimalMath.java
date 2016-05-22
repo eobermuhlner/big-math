@@ -151,7 +151,6 @@ public class BigDecimalMath {
 	 */
 	public static BigDecimal pow(BigDecimal x, BigDecimal y, MathContext mathContext) {
 		// x^y = exp(y*log(x))
-		// TODO calculate with taylor series?
 
 		if (x.signum() == 0) {
 			switch (y.signum()) {
@@ -167,13 +166,9 @@ public class BigDecimalMath {
 			// ignored
 		}
 
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
-		if (y.signum() < 0) {
-			return ONE.divide(pow(x, y.negate(), mc), mc);
-		}
-
-		BigDecimal result = exp(y.multiply(log(x, mc)), mc);
+		BigDecimal result = exp(y.multiply(log(x, mc), mc), mc);
 		
 		return result.round(mathContext);
 	}
@@ -576,7 +571,7 @@ public class BigDecimalMath {
 		
 		BigDecimal fractionalPart = x.subtract(integralPart);
 
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 5, mathContext.getRoundingMode());
 
         BigDecimal z = ONE.add(fractionalPart.divide(integralPart, mc));
         BigDecimal t = expTaylor(z, mc);
@@ -631,8 +626,8 @@ public class BigDecimalMath {
 	 * @return the calculated sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal sin(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
 	
 		if (x.signum() < 0 || x.compareTo(ROUGHLY_TWO_PI) > 0) {
 			BigDecimal twoPi = TWO.multiply(pi(mc), mc);
@@ -672,8 +667,8 @@ public class BigDecimalMath {
 	 * @return the calculated cosine {@link BigDecimal}
 	 */
 	public static BigDecimal cos(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
 
 		if (x.signum() < 0 || x.compareTo(ROUGHLY_TWO_PI) > 0) {
 			BigDecimal twoPi = TWO.multiply(pi(mc), mc);
