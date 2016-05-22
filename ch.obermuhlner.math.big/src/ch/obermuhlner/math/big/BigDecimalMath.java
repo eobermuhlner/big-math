@@ -641,18 +641,22 @@ public class BigDecimalMath {
 		
 		BigDecimal xPower2i = ONE;
 		BigDecimal result = ZERO;
-		BigDecimal sign = ONE;
 		BigDecimal step;
 		int i = 0;
 		do {
 			BigDecimal xPower2iPlus1 = xPower2i.multiply(x, mc);
-			step = sign.multiply(xPower2iPlus1, mc).divide(factorial(2 * i + 1), mc);
-			sign = sign.negate();
+			step = xPower2iPlus1.divide(factorial(2 * i + 1), mc);
 
-			result = result.add(step, mc);
 			i++;
-			
 			xPower2i = xPower2iPlus1.multiply(x, mc);
+			xPower2iPlus1 = xPower2i.multiply(x, mc);
+			
+			step = step.subtract(xPower2iPlus1.divide(factorial(2 * i + 1), mc), mc);
+			
+			i++;
+			xPower2i = xPower2iPlus1.multiply(x, mc);
+			
+			result = result.add(step, mc);
 		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
@@ -679,17 +683,20 @@ public class BigDecimalMath {
 		BigDecimal xPower2 = x.multiply(x, mc);
 		BigDecimal xPower2i = ONE;
 		BigDecimal result = ZERO;
-		BigDecimal sign = ONE;
 		BigDecimal step;
 		int i = 0;
 		do {
-			step = sign.multiply(xPower2i, mc).divide(factorial(2 * i), mc);
-			sign = sign.negate();
+			step = xPower2i.divide(factorial(2 * i), mc);
 
-			result = result.add(step, mc);
 			i++;
-			
 			xPower2i = xPower2i.multiply(xPower2, mc);
+			
+			step = step.subtract(xPower2i.divide(factorial(2 * i), mc), mc);
+
+			i++;
+			xPower2i = xPower2i.multiply(xPower2, mc);
+			
+			result = result.add(step, mc);
 		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
