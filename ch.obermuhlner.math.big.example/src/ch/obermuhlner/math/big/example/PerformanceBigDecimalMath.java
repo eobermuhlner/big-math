@@ -53,7 +53,7 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReport_Fast_0_to_2() {
 		performanceReportOverValue(
-				"perf_standard_funcs_from_0_to_2.csv",
+				"perf_fast_funcs_from_0_to_2.csv",
 				REF_MATHCONTEXT,
 				0,
 				+2.0,
@@ -70,7 +70,7 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReport_Fast_neg10_to_10() {
 		performanceReportOverValue(
-				"perf_standard_funcs_from_-10_to_10.csv",
+				"perf_fast_funcs_from_-10_to_10.csv",
 				REF_MATHCONTEXT,
 				-10,
 				+10,
@@ -87,7 +87,7 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReport_Fast_0_to_10() {
 		performanceReportOverValue(
-				"perf_standard_funcs_from_0_to_10.csv",
+				"perf_fast_funcs_from_0_to_10.csv",
 				REF_MATHCONTEXT,
 				0,
 				+10,
@@ -104,7 +104,7 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReport_Fast_0_to_100() {
 		performanceReportOverValue(
-				"perf_standard_funcs_from_0_to_100.csv",
+				"perf_fast_funcs_from_0_to_100.csv",
 				REF_MATHCONTEXT,
 				0,
 				+100,
@@ -177,7 +177,7 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReport_Fast_precision() {
 		performanceReportOverPrecision(
-				"perf_standard_funcs_precisions_to_1000.csv",
+				"perf_fast_funcs_precisions_to_1000.csv",
 				BigDecimal.valueOf(3.1),
 				10,
 				1000,
