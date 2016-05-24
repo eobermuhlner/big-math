@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
+import static java.math.BigDecimal.TEN;
 import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
@@ -296,15 +297,14 @@ public class BigDecimalMath {
 			return ZERO;
 		}
 		
-//		switch (x.compareTo(TEN)) {
-//		case 0:
-//			return logTen(mathContext);
-//		case 1:
-//			return logUsingExponent(x, mathContext);
-//		}
-//
-//		return logUsingTwoThree(x, mathContext);
-		return logUsingNewton(x, mathContext);
+		switch (x.compareTo(TEN)) {
+		case 0:
+			return logTen(mathContext);
+		case 1:
+			return logUsingExponent(x, mathContext);
+		}
+
+		return logUsingTwoThree(x, mathContext);
 	}
 
 	/**
@@ -474,7 +474,7 @@ public class BigDecimalMath {
 			result = result.subtract(logThree(mc).multiply(valueOf(-factorOfThree), mc), mc);
 		}
 
-		result = result.add(logUsingRoot(correctedX, mc));
+		result = result.add(logUsingNewton(correctedX, mc));
 
 		return result.round(mathContext);
 	}
@@ -502,11 +502,11 @@ public class BigDecimalMath {
 	private static BigDecimal piChudnovski(MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 
-		BigDecimal value24 = BigDecimal.valueOf(24);
-		BigDecimal value640320 = BigDecimal.valueOf(640320);
-		BigDecimal value13591409 = BigDecimal.valueOf(13591409);
-		BigDecimal value545140134 = BigDecimal.valueOf(545140134);
-		BigDecimal valueDivisor = value640320.pow(3).divide(value24, mc);
+		final BigDecimal value24 = BigDecimal.valueOf(24);
+		final BigDecimal value640320 = BigDecimal.valueOf(640320);
+		final BigDecimal value13591409 = BigDecimal.valueOf(13591409);
+		final BigDecimal value545140134 = BigDecimal.valueOf(545140134);
+		final BigDecimal valueDivisor = value640320.pow(3).divide(value24, mc);
 
 		BigDecimal sumA = BigDecimal.ONE;
 		BigDecimal sumB = BigDecimal.ZERO;
@@ -533,9 +533,9 @@ public class BigDecimalMath {
 			sumB = sumB.add(b);
 		}
 		
-		BigDecimal value426880 = BigDecimal.valueOf(426880);
-		BigDecimal value10005 = BigDecimal.valueOf(10005);
-		BigDecimal factor = value426880.multiply(sqrt(value10005, mc));
+		final BigDecimal value426880 = BigDecimal.valueOf(426880);
+		final BigDecimal value10005 = BigDecimal.valueOf(10005);
+		final BigDecimal factor = value426880.multiply(sqrt(value10005, mc));
 		BigDecimal pi = factor.divide(value13591409.multiply(sumA, mc).add(value545140134.multiply(sumB, mc)), mc);
 		
 		return pi.round(mathContext);
