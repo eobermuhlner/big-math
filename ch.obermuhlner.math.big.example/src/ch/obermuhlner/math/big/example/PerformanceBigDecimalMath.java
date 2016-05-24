@@ -8,6 +8,7 @@ import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
@@ -26,29 +27,32 @@ public class PerformanceBigDecimalMath {
 
 	public static void main(String[] args) {
 
-//		System.out.println(BigDecimalMath.log(BigDecimal.valueOf(10), new MathContext(1100)));
+//		System.out.println(BigDecimalMath.pi(new MathContext(1100)));
 
-		performanceReport_Fast_0_to_2();
-		performanceReport_Fast_neg10_to_10();
-		performanceReport_Fast_0_to_10();
-		performanceReport_Fast_0_to_100();
+//		performanceReport_Fast_0_to_2();
+//		performanceReport_Fast_neg10_to_10();
+//		performanceReport_Fast_0_to_10();
+//		performanceReport_Fast_0_to_100();
+//		
+//		performanceReport_Slow_0_to_2();
+//		performanceReport_Slow_neg10_to_10();
+//		performanceReport_Slow_0_to_10();
+//		performanceReport_Slow_0_to_100();
+//		
+//		performanceReport_Fast_precision();
+//		performanceReport_Slow_precision();
 
-		
-		performanceReport_Slow_0_to_2();
-		performanceReport_Slow_neg10_to_10();
-		performanceReport_Slow_0_to_10();
-		performanceReport_Slow_0_to_100();
-		
-		performanceReport_Fast_precision();
-		performanceReport_Slow_precision();
-				
 		// --- log() optimizations:
-//				performanceReportLogOptimization1();
-//				performanceReportLogOptimization2();
-//				performanceReportLogOptimization3();
-//				performanceReportLogOptimization4();
-//				performanceReportLogOptimization5();
-//				performanceReportLogOptimization6();
+		performanceReportLogOptimizationNewton_0_to_10();
+		performanceReportLogOptimizationNewton_0_to_100();
+		
+//		performanceReportLogOptimizationTry();
+//		performanceReportLogOptimization1();
+//		performanceReportLogOptimization2();
+//		performanceReportLogOptimization3();
+//		performanceReportLogOptimization4();
+//		performanceReportLogOptimization5();
+//		performanceReportLogOptimization6();
 	}
 
 	private static void performanceReport_Fast_0_to_2() {
@@ -294,6 +298,45 @@ If we are inside the precalculated precision we use logUsingTwoThreeRoot, otherw
 
 REFERENCE github eobermuhlner/big-math
 	 */
+	private static void performanceReportLogOptimizationNewton_0_to_10() {
+		performanceReportOverValue(
+				"test_log_impl_from_0_to_10.csv",
+				REF_MATHCONTEXT,
+				0.05,
+				+10,
+				+0.05,
+				REPEATS,
+				Arrays.asList("newton", "root+newton", "primes+newton", "primes+root+newton"),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewton(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingRoot(x1, mc1,
+						BigDecimalMathExperimental::logUsingNewton),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1,
+						BigDecimalMathExperimental::logUsingNewton),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1,
+						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x1, mc2, 
+								BigDecimalMathExperimental::logUsingNewton)));
+	}
+
+	private static void performanceReportLogOptimizationNewton_0_to_100() {
+		performanceReportOverValue(
+				"test_log_impl_from_0_to_100.csv",
+				REF_MATHCONTEXT,
+				0.1,
+				+100,
+				+0.1,
+				REPEATS,
+				Arrays.asList("newton", "root+newton", "exp+primes+newton", "primes+root+newton"),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewton(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingRoot(x1, mc1, 
+						BigDecimalMathExperimental::logUsingNewton),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingExponent(x1, mc1, 
+						(x2, mc2) -> BigDecimalMathExperimental.logUsingPrimes(x2, mc2, 
+								BigDecimalMathExperimental::logUsingNewton)),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1, 
+						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x2, mc2, 
+								BigDecimalMathExperimental::logUsingNewton)));
+	}
+
 //	private static void performanceReportLogOptimization1() {
 //		MathContext mathContext = new MathContext(300);
 //
@@ -383,8 +426,6 @@ REFERENCE github eobermuhlner/big-math
 
 	@SafeVarargs
 	private static void performanceReportOverValue(String name, MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
-		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out));
-		
 		System.out.println("Writing  " + name);
 		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
 			performanceReportOverValue(writer, mathContext, xStart, xEnd, xStep, repeats, functionNames, calculations);

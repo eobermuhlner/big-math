@@ -7,6 +7,7 @@ import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.function.BiFunction;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
@@ -25,7 +26,7 @@ public class BigDecimalMathExperimental {
 
 	// variations on log()
 
-	public static BigDecimal logUsingExponentPowerTwo(BigDecimal x, MathContext mathContext) {
+	public static BigDecimal logRangeTen(BigDecimal x, MathContext mathContext, BiFunction<BigDecimal, MathContext, BigDecimal> logFunction) {
 		// http://en.wikipedia.org/wiki/Natural_logarithm
 
 		if (x.signum() <= 0) {
@@ -39,37 +40,34 @@ public class BigDecimalMathExperimental {
 			case 0:
 				return logTen(mathContext);
 			case 1:
-				return logUsingExponent(x, mathContext);
+				return logUsingExponent(x, mathContext, logFunction);
 		}
 
-		return logUsingPowerTwo(x, mathContext);
-		//		return logUsingRoot(x, mathContext);
-		//		return logUsingSqrt(x, mathContext);
-		//		return logAreaHyperbolicTangent(x, mathContext);
+		return logFunction.apply(x, mathContext);
 	}
 
-	public static BigDecimal logUsingRoot(BigDecimal x, MathContext mathContext) {
+	public static BigDecimal logUsingRoot(BigDecimal x, MathContext mathContext, BiFunction<BigDecimal, MathContext, BigDecimal> logFunction) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		// log(x) = log(root(r, x)^r) = r * log(root(r, x))
 		BigDecimal r = valueOf(Math.max(2, (int) (Math.log(x.doubleValue()) * 5)));
 
 		BigDecimal result = BigDecimalMath.root(r, x, mc);
-		result = logAreaHyperbolicTangent(result, mc).multiply(r, mc);
+		result = logFunction.apply(result, mc).multiply(r, mc);
 
 		return result.round(mathContext);
 	}
 
-	public static BigDecimal logUsingSqrt(BigDecimal x, MathContext mathContext) {
+	public static BigDecimal logUsingSqrt(BigDecimal x, MathContext mathContext, BiFunction<BigDecimal, MathContext, BigDecimal> logFunction) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		BigDecimal sqrtX = BigDecimalMath.sqrt(x, mc);
-		BigDecimal result = logAreaHyperbolicTangent(sqrtX, mc).multiply(TWO, mc);
+		BigDecimal result = logFunction.apply(sqrtX, mc).multiply(TWO, mc);
 
 		return result.round(mathContext);
 	}
 
-	public static BigDecimal logUsingPowerTwo(BigDecimal x, MathContext mathContext) {
+	public static BigDecimal logUsingPowerTwo(BigDecimal x, MathContext mathContext, BiFunction<BigDecimal, MathContext, BigDecimal> logFunction) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		int factorOfTwo = 0;
@@ -94,22 +92,23 @@ public class BigDecimalMathExperimental {
 		if (factorOfTwo != 0) {
 			if (factorOfTwo > 0) {
 				BigDecimal correctedX = x.divide(valueOf(powerOfTwo), mc);
-				result = logUsingRoot(correctedX, mc).add(logTwo(mc).multiply(valueOf(factorOfTwo), mc), mc);
+				result = logFunction.apply(correctedX, mc).add(logTwo(mc).multiply(valueOf(factorOfTwo), mc), mc);
 			}
 			else if (factorOfTwo < 0) {
 				BigDecimal correctedX = x.multiply(valueOf(powerOfTwo), mc);
-				result = logUsingRoot(correctedX, mc).subtract(logTwo(mc).multiply(valueOf(-factorOfTwo), mc), mc);
+				result = logFunction.apply(correctedX, mc).subtract(logTwo(mc).multiply(valueOf(-factorOfTwo), mc), mc);
 			}
 		}
 
 		if (result == null) {
-			result = logUsingRoot(x, mc);
+			result = logFunction.apply(x, mc);
 		}
 
 		return result.round(mathContext);
 	}
 
-	public static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
+
+	public static BigDecimal logUsingPrimes(BigDecimal x, MathContext mathContext, BiFunction<BigDecimal, MathContext, BigDecimal> logFunction) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		int factorOfTwo = 0;
@@ -209,31 +208,17 @@ public class BigDecimalMathExperimental {
 			result = result.subtract(logThree(mc).multiply(valueOf(-factorOfThree), mc), mc);
 		}
 
-		result = result.add(logUsingRoot(correctedX, mc));
+		result = result.add(logFunction.apply(correctedX, mc));
 
 		return result.round(mathContext);
 	}
-
-	public static BigDecimal logUsingExponent(BigDecimal x, MathContext mathContext) {
+	public static BigDecimal logUsingExponent(BigDecimal x, MathContext mathContext, BiFunction<BigDecimal, MathContext, BigDecimal> logFunction) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		int exponent = BigDecimalMath.exponent(x);
 		BigDecimal mantissa = BigDecimalMath.mantissa(x);
 
-		BigDecimal result = logUsingPowerTwo(mantissa, mc);
-		if (exponent != 0) {
-			result = result.add(valueOf(exponent).multiply(logTen(mc), mc), mc);
-		}
-		return result.round(mathContext);
-	}
-
-	public static BigDecimal logUsingExponentAndAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-
-		int exponent = BigDecimalMath.exponent(x);
-		BigDecimal mantissa = BigDecimalMath.mantissa(x);
-
-		BigDecimal result = logAreaHyperbolicTangent(mantissa, mc);
+		BigDecimal result = logFunction.apply(mantissa, mc);
 		if (exponent != 0) {
 			result = result.add(valueOf(exponent).multiply(logTen(mc), mc), mc);
 		}
