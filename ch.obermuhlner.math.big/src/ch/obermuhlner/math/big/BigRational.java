@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A rational number represented as a quotient of two values.
@@ -1073,4 +1075,48 @@ public class BigRational implements Comparable<BigRational> {
 		}
 		return result;
 	}
+
+	private static List<BigRational> bernoulliCache = new ArrayList<>();
+	
+    public static BigRational bernoulli(int n) {
+    	if (n == 1) {
+    		return valueOf(-1, 2);
+    	} else if (n % 2 == 1) {
+    		return ZERO;
+    	}
+    	
+    	synchronized (bernoulliCache) {
+    		int index = n / 2;
+    		
+    		if (bernoulliCache.size() <= index) {
+    			for (int i = bernoulliCache.size(); i <= index; i++) {
+    				BigRational b = calculateBernoulli(i * 2);
+					bernoulliCache.add(b);
+				}
+    		}
+    		
+    		return bernoulliCache.get(index);
+		}
+    }
+    
+    private static BigRational calculateBernoulli(int n) {
+        BigRational result = ZERO ;
+        for(int k=0 ; k <= n ; k++) {
+            BigRational jSum = ZERO ;
+            BigRational bin = ONE ;
+            for(int j=0 ; j <= k ; j++) {
+                BigRational jPowN = valueOf(j).pow(n);
+                if (j % 2 == 0) {
+                	jSum = jSum.add(bin.multiply(jPowN)) ;
+                } else {
+                	jSum = jSum.subtract(bin.multiply(jPowN)) ;
+                }
+
+                bin = bin.multiply(valueOf(k-j).divide(valueOf(j+1)));
+            }
+            result = result.add(jSum.divide(valueOf(k+1)));
+        }
+        return result;
+    }
+
 }
