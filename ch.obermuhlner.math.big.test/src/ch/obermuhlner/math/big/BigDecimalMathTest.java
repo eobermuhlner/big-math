@@ -131,6 +131,30 @@ public class BigDecimalMathTest {
 				10);
 	}
 
+
+	@Test
+	public void testBernoulli() {
+		assertEquals(toCheck(1),			toCheck(BigDecimalMath.bernoulli(0, MathContext.DECIMAL64)));
+		assertEquals(toCheck(-1.0/2),		toCheck(BigDecimalMath.bernoulli(1, MathContext.DECIMAL64)));
+		assertEquals(toCheck(1.0/6),		toCheck(BigDecimalMath.bernoulli(2, MathContext.DECIMAL64)));
+		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(3, MathContext.DECIMAL64)));
+		assertEquals(toCheck(-1.0/30),		toCheck(BigDecimalMath.bernoulli(4, MathContext.DECIMAL64)));
+		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(5, MathContext.DECIMAL64)));
+		assertEquals(toCheck(1.0/42),		toCheck(BigDecimalMath.bernoulli(6, MathContext.DECIMAL64)));
+		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(7, MathContext.DECIMAL64)));
+		assertEquals(toCheck(-1.0/30),		toCheck(BigDecimalMath.bernoulli(8, MathContext.DECIMAL64)));
+		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(9, MathContext.DECIMAL64)));
+		assertEquals(toCheck(5.0/66),		toCheck(BigDecimalMath.bernoulli(10, MathContext.DECIMAL64)));
+		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(11, MathContext.DECIMAL64)));
+		assertEquals(toCheck(-691.0/2730),	toCheck(BigDecimalMath.bernoulli(12, MathContext.DECIMAL64)));
+		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(13, MathContext.DECIMAL64)));
+		assertEquals(toCheck(7.0/6),		toCheck(BigDecimalMath.bernoulli(14, MathContext.DECIMAL64)));
+		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(15, MathContext.DECIMAL64)));
+		assertEquals(toCheck(-3617.0/510),	toCheck(BigDecimalMath.bernoulli(16, MathContext.DECIMAL64)));
+		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(17, MathContext.DECIMAL64)));
+		assertEquals(toCheck(43867.0/798),	toCheck(BigDecimalMath.bernoulli(18, MathContext.DECIMAL64)));
+	}
+	
 	@Test
 	public void testFactorial() {
 		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(0));
@@ -500,6 +524,15 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				(x, mathContext) -> BigDecimalMath.cos(x, mathContext));
 	}
+
+//	@Test
+//	public void testTan() {
+//		for(double value : new double[] { 1.1, -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
+//			assertEquals("tan(" + value + ")",
+//					toCheck(Math.tan(value)),
+//					toCheck(BigDecimalMath.tan(BigDecimal.valueOf(value), MC)));
+//		}
+//	}
 
 	private void assertPrecisionCalculation(BigDecimal expected, Function<MathContext, BigDecimal> precisionCalculation, int startPrecision) {
 		assertPrecisionCalculation(expected, precisionCalculation, startPrecision, expected.precision());
