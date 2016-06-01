@@ -6,6 +6,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * A rational number represented as a quotient of two values.
@@ -1100,8 +1101,7 @@ public class BigRational implements Comparable<BigRational> {
     }
     
     private static BigRational calculateBernoulli(int n) {
-        BigRational result = ZERO ;
-        for(int k=0 ; k <= n ; k++) {
+    	return IntStream.rangeClosed(0, n).parallel().mapToObj(k -> {
             BigRational jSum = ZERO ;
             BigRational bin = ONE ;
             for(int j=0 ; j <= k ; j++) {
@@ -1114,9 +1114,8 @@ public class BigRational implements Comparable<BigRational> {
 
                 bin = bin.multiply(valueOf(k-j).divide(valueOf(j+1)));
             }
-            result = result.add(jSum.divide(valueOf(k+1)));
-        }
-        return result;
+            return jSum.divide(valueOf(k+1));
+    	}).reduce(ZERO, BigRational::add);
     }
 
 }
