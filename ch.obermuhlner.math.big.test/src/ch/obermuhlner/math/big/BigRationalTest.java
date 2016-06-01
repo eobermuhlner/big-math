@@ -1,10 +1,15 @@
 package ch.obermuhlner.math.big;
 
+import static ch.obermuhlner.math.big.BigRational.ONE;
+import static ch.obermuhlner.math.big.BigRational.ZERO;
+import static ch.obermuhlner.math.big.BigRational.bernoulli;
+import static ch.obermuhlner.math.big.BigRational.max;
+import static ch.obermuhlner.math.big.BigRational.min;
+import static ch.obermuhlner.math.big.BigRational.valueOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static ch.obermuhlner.math.big.BigRational.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -737,5 +742,31 @@ public class BigRationalTest {
 
 		BigRational L1 = valueOf(0.02);
 		assertEquals(L1.multiply(L1).multiply(L1), L1.pow(3));
+	}
+	
+	/**
+	 * Tests {@link BigRational#bernoulli(int)}.
+	 */
+	@Test
+	public void testBernoulli() {
+		assertEquals("1", bernoulli(0).reduce().toRationalString());
+		assertEquals("-1/2", bernoulli(1).reduce().toRationalString());
+		assertEquals("1/6", bernoulli(2).reduce().toRationalString());
+		assertEquals("0", bernoulli(3).reduce().toRationalString());
+		assertEquals("-1/30", bernoulli(4).reduce().toRationalString());
+		assertEquals("0", bernoulli(5).reduce().toRationalString());
+		assertEquals("1/42", bernoulli(6).reduce().toRationalString());
+		assertEquals("0", bernoulli(7).reduce().toRationalString());
+		assertEquals("-1/30", bernoulli(8).reduce().toRationalString());
+		assertEquals("0", bernoulli(9).reduce().toRationalString());
+		assertEquals("5/66", bernoulli(10).reduce().toRationalString());
+		assertEquals("0", bernoulli(11).reduce().toRationalString());
+		assertEquals("-691/2730", bernoulli(12).reduce().toRationalString());
+		assertEquals("0", bernoulli(13).reduce().toRationalString());
+		assertEquals("7/6", bernoulli(14).reduce().toRationalString());
+		assertEquals("0", bernoulli(15).reduce().toRationalString());
+		assertEquals("-3617/510", bernoulli(16).reduce().toRationalString());
+		assertEquals("0", bernoulli(17).reduce().toRationalString());
+		assertEquals("43867/798", bernoulli(18).reduce().toRationalString());
 	}
 }
