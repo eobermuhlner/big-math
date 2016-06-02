@@ -525,14 +525,27 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.cos(x, mathContext));
 	}
 
-//	@Test
-//	public void testTan() {
-//		for(double value : new double[] { 1.1, -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
-//			assertEquals("tan(" + value + ")",
-//					toCheck(Math.tan(value)),
-//					toCheck(BigDecimalMath.tan(BigDecimal.valueOf(value), MC)));
-//		}
-//	}
+	@Test
+	public void testTan() {
+		for(double value : new double[] { 1.1, -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
+			assertEquals("tan(" + value + ")",
+					toCheck(Math.tan(value)),
+					toCheck(BigDecimalMath.tan(BigDecimal.valueOf(value), MC)));
+		}
+	}
+
+	@Test
+	public void testCot() {
+		for(double value : new double[] { 0.5, -0.5 }) {
+			assertEquals("cot(" + value + ")",
+					toCheck(cot(value)),
+					toCheck(BigDecimalMath.cot(BigDecimal.valueOf(value), MC)));
+		}
+	}
+
+	private double cot(double x) {
+		return Math.cos(x) / Math.sin(x);
+	}
 
 	private void assertPrecisionCalculation(BigDecimal expected, Function<MathContext, BigDecimal> precisionCalculation, int startPrecision) {
 		assertPrecisionCalculation(expected, precisionCalculation, startPrecision, expected.precision());

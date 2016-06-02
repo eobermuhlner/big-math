@@ -755,10 +755,34 @@ public class BigDecimalMath {
 	}
 
 	public static BigDecimal tan(BigDecimal x, MathContext mathContext) {
+		if (x.signum() == 0) {
+			return ZERO;
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		return sin(x, mc).divide(cos(x, mc), mc).round(mathContext);
+	}
+	
+	private static BigDecimal tanTaylor(BigDecimal x, MathContext mathContext) {
+		if (x.signum() == 0) {
+			return ZERO;
+		}
+		if (x.signum() < 0) {
+			return tan(x.negate(), mathContext).negate();
+		}
+		
+		if (x.compareTo(new BigDecimal("0.8")) < 0) {
+			return ONE.divide(cot(x, mathContext));
+		}
+		
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
 
-		if (x.signum() < 0 || x.compareTo(ROUGHLY_PI_HALF) > 0) {
+		System.out.println("TAN " + x);
+		System.out.println("GOAL " + Math.tan(x.doubleValue()));
+		System.out.println("ACCEPTABLE ERROR " + acceptableError);
+		
+		if (x.compareTo(ROUGHLY_PI_HALF) > 0) {
 			BigDecimal piHalf = pi(mc).divide(TWO, mc);
 			x = x.remainder(piHalf, mc);
 		}
@@ -787,13 +811,66 @@ public class BigDecimalMath {
 
 			xPower2nMinus1 = xPower2nMinus1.multiply(xPower2, mc);
 			
-			System.out.println(result + " " + step);
-
+			System.out.println(i + " " + result + " " + step);
 		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}
+
+	public static BigDecimal cot(BigDecimal x, MathContext mathContext) {
+		if (x.signum() == 0) {
+			throw new ArithmeticException("Illegal cot(x) for x = 0");
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		return cos(x, mc).divide(sin(x, mc), mc).round(mathContext);
+	}
+	
+	private static BigDecimal cotTaylor(BigDecimal x, MathContext mathContext) {
+		if (x.signum() == 0) {
+			throw new ArithmeticException("Illegal cot(x) for x = 0");
+		}
+		if (x.signum() < 0) {
+			return cot(x.negate(), mathContext).negate();
+		}
 		
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
+
+		if (x.compareTo(PI) >= 0) {
+			x = x.remainder(pi(mc), mc);
+		}
+
+		BigDecimal result = ZERO;
+		boolean negative = false;
+		BigDecimal xPower2 = x.multiply(x, mc);
+		BigDecimal twoPower2n = ONE;
+		BigDecimal factorialOf2n = ONE;
+		BigDecimal xPower2nMinus1 = x;
+		BigDecimal step;
+		int i = 0;
+		do {
+			BigDecimal factor = twoPower2n.multiply(bernoulli(i*2, mc));
+			factor = factor.divide(factorialOf2n, mc);
+			step = factor.multiply(xPower2nMinus1, mc);
+			if (negative) {
+				step = step.negate();
+			}
+			result = result.add(step, mc);
+
+			xPower2nMinus1 = xPower2nMinus1.multiply(xPower2, mc);
+
+			i++;
+			twoPower2n = twoPower2n.multiply(FOUR, mc);
+			factorialOf2n = factorialOf2n.multiply(valueOf(2*i), mc).multiply(valueOf(2*i-1), mc);
+			negative = !negative;
+
+			System.out.println(i + " " + result + " " + step);
+		} while (step.abs().compareTo(acceptableError) > 0);
+		
+		return result;
+	}
+
 	/**
 	 * A context for {@link BigDecimal} calculations with a specific {@link MathContext}.
 	 */
