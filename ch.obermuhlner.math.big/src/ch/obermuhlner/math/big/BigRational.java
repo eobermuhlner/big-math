@@ -912,12 +912,12 @@ public class BigRational implements Comparable<BigRational> {
 			return ONE;
 		}
 		if (value.scale() < 0) {
-			BigDecimal n = new BigDecimal(value.unscaledValue().multiply(BigInteger.TEN.pow(-value.scale())));
+			BigDecimal n = new BigDecimal(value.unscaledValue()).multiply(BigDecimal.ONE.movePointLeft(value.scale()));
 			return new BigRational(n, BigDecimal.ONE);
 		}
 		else {
 			BigDecimal n = new BigDecimal(value.unscaledValue());
-			BigDecimal d = new BigDecimal(BigInteger.TEN.pow(value.scale()));
+			BigDecimal d = BigDecimal.ONE.movePointRight(value.scale());
 			return new BigRational(n, d);
 		}
 	}
