@@ -189,6 +189,21 @@ public class BigRationalTest {
 	}
 
 	/**
+	 * Tests {@link BigRational#valueOf(BigDecimal)}.
+	 */
+	@Test
+	public void testValueOfRationalBigDecimal() {
+		assertSame(ZERO, valueOf(BigDecimal.ZERO, BigDecimal.ONE));
+		assertSame(ZERO, valueOf(BigDecimal.ZERO, BigDecimal.TEN));
+		assertSame(ONE, valueOf(BigDecimal.ONE, BigDecimal.ONE));
+
+		assertEquals("123", valueOf(new BigDecimal("123"), new BigDecimal("1")).toString());
+		assertEquals("12.3", valueOf(new BigDecimal("123"), new BigDecimal("10")).toString());
+		assertEquals("123", valueOf(new BigDecimal("12.3"), new BigDecimal("0.1")).toString());
+		assertEquals("1230", valueOf(new BigDecimal("123"), new BigDecimal("0.1")).toString());
+	}
+
+	/**
 	 * Tests {@link BigRational#valueOf(String)}.
 	 */
 	@Test

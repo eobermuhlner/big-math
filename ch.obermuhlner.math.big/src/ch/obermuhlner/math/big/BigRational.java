@@ -139,7 +139,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * @return the integer part of this rational number
 	 */
 	public BigRational integerPart() {
-		return valueOf(numerator.subtract(numerator.remainder(denominator)), denominator);
+		return of(numerator.subtract(numerator.remainder(denominator)), denominator);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * @return the fraction part of this rational number
 	 */
 	public BigRational fractionPart() {
-		return valueOf(numerator.remainder(denominator), denominator);
+		return of(numerator.remainder(denominator), denominator);
 	}
 	
 	/**
@@ -175,7 +175,7 @@ public class BigRational implements Comparable<BigRational> {
 			return this;
 		}
 
-		return valueOf(numerator.negate(), denominator);
+		return of(numerator.negate(), denominator);
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * @throws ArithmeticException if the argument is 0 (division by zero)
 	 */
 	public BigRational reciprocal() {
-		return valueOf(denominator, numerator);
+		return of(denominator, numerator);
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * @return the incremented rational number
 	 */
 	public BigRational increment() {
-		return valueOf(numerator.add(denominator), denominator);
+		return of(numerator.add(denominator), denominator);
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * @return the decremented rational number
 	 */
 	public BigRational decrement() {
-		return valueOf(numerator.subtract(denominator), denominator);
+		return of(numerator.subtract(denominator), denominator);
 	}
 
 	/**
@@ -264,16 +264,16 @@ public class BigRational implements Comparable<BigRational> {
 	 */
 	public BigRational add(BigRational value) {
 		if (denominator.equals(value.denominator)) {
-			return valueOf(numerator.add(value.numerator), denominator);
+			return of(numerator.add(value.numerator), denominator);
 		}
 
 		BigDecimal n = numerator.multiply(value.denominator).add(value.numerator.multiply(denominator));
 		BigDecimal d = denominator.multiply(value.denominator);
-		return valueOf(n, d);
+		return of(n, d);
 	}
 
 	private BigRational add(BigDecimal value) {
-		return valueOf(numerator.add(value.multiply(denominator)), denominator);
+		return of(numerator.add(value.multiply(denominator)), denominator);
 	}
 	
 	/**
@@ -324,16 +324,16 @@ public class BigRational implements Comparable<BigRational> {
 	 */
 	public BigRational subtract(BigRational value) {
 		if (denominator.equals(value.denominator)) {
-			return valueOf(numerator.subtract(value.numerator), denominator);
+			return of(numerator.subtract(value.numerator), denominator);
 		}
 
 		BigDecimal n = numerator.multiply(value.denominator).subtract(value.numerator.multiply(denominator));
 		BigDecimal d = denominator.multiply(value.denominator);
-		return valueOf(n, d);
+		return of(n, d);
 	}
 
 	private BigRational subtract(BigDecimal value) {
-		return valueOf(numerator.subtract(value.multiply(denominator)), denominator);
+		return of(numerator.subtract(value.multiply(denominator)), denominator);
 	}
 	
 	/**
@@ -395,14 +395,14 @@ public class BigRational implements Comparable<BigRational> {
 
 		BigDecimal n = numerator.multiply(value.numerator);
 		BigDecimal d = denominator.multiply(value.denominator);
-		return valueOf(n, d);
+		return of(n, d);
 	}
 
 	// private, because we want to hide that we use BigDecimal internally
 	private BigRational multiply(BigDecimal value) {
 		BigDecimal n = numerator.multiply(value);
 		BigDecimal d = denominator;
-		return valueOf(n, d);
+		return of(n, d);
 	}
 	
 	/**
@@ -463,13 +463,13 @@ public class BigRational implements Comparable<BigRational> {
 
 		BigDecimal n = numerator.multiply(value.denominator);
 		BigDecimal d = denominator.multiply(value.numerator);
-		return valueOf(n, d);
+		return of(n, d);
 	}
 
 	private BigRational divide(BigDecimal value) {
 		BigDecimal n = numerator;
 		BigDecimal d = denominator.multiply(value);
-		return valueOf(n, d);
+		return of(n, d);
 	}
 	
 	/**
@@ -819,7 +819,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * @throws ArithmeticException if the denominator is 0 (division by zero)
 	 */
 	public static BigRational valueOf(int numerator, int denominator) {
-		return valueOf(BigDecimal.valueOf(numerator), BigDecimal.valueOf(denominator));
+		return of(BigDecimal.valueOf(numerator), BigDecimal.valueOf(denominator));
 	}
 
 	/**
@@ -856,7 +856,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * @throws ArithmeticException if the denominator is 0 (division by zero)
 	 */
 	public static BigRational valueOf(BigInteger numerator, BigInteger denominator) {
-		return valueOf(new BigDecimal(numerator), new BigDecimal(denominator));
+		return of(new BigDecimal(numerator), new BigDecimal(denominator));
 	}
 
 	/**
@@ -1036,7 +1036,19 @@ public class BigRational implements Comparable<BigRational> {
 		return result;
 	}
 
-	private static BigRational valueOf(BigDecimal numerator, BigDecimal denominator) {
+	/**
+	 * Creates a rational number of the specified numerator/denominator BigDecimal values.
+	 * 
+	 * @param numerator the numerator {@link BigDecimal} value
+	 * @param denominator the denominator {@link BigDecimal} value (0 not allowed)
+	 * @return the rational number
+	 * @throws ArithmeticException if the denominator is 0 (division by zero)
+	 */
+	public static BigRational valueOf(BigDecimal numerator, BigDecimal denominator) {
+		return valueOf(numerator).divide(valueOf(denominator));
+	}
+	
+	private static BigRational of(BigDecimal numerator, BigDecimal denominator) {
 		if (numerator.signum() == 0 && denominator.signum() != 0) {
 			return ZERO;
 		}
