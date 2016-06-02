@@ -911,7 +911,11 @@ public class BigRational implements Comparable<BigRational> {
 		if (value.compareTo(BigDecimal.ONE) == 0) {
 			return ONE;
 		}
-		if (value.scale() < 0) {
+		
+		int scale = value.scale();
+		if (scale == 0) {
+			return new BigRational(value, BigDecimal.ONE);
+		} else if (scale < 0) {
 			BigDecimal n = new BigDecimal(value.unscaledValue()).multiply(BigDecimal.ONE.movePointLeft(value.scale()));
 			return new BigRational(n, BigDecimal.ONE);
 		}
