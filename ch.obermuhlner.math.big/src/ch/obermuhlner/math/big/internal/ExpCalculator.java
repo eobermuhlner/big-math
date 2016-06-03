@@ -17,7 +17,7 @@ public class ExpCalculator extends SeriesCalculator {
 	}
 
 	@Override
-	protected BigRational getCurrectFactor() {
+	protected BigRational getCurrentFactor() {
 		return oneOverFactorialOfN;
 	}
 	

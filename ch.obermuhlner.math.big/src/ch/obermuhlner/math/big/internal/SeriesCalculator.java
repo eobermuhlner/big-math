@@ -33,14 +33,14 @@ public abstract class SeriesCalculator {
 	
 	protected BigRational getFactor(int index) {
 		while (factors.size() <= index) {
-			BigRational factor = getCurrectFactor();
+			BigRational factor = getCurrentFactor();
 			factors.add(factor);
 			calculateNextFactor();
 		}
 		return factors.get(index);
 	}
 	
-	protected abstract BigRational getCurrectFactor();
+	protected abstract BigRational getCurrentFactor();
 	protected abstract void calculateNextFactor();
 
 	protected abstract BigDecimal initialPower(BigDecimal x, MathContext mathContext);
