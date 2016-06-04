@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
  * 
  * <p>The values are internally stored as {@link BigDecimal} (for performance optimizations) but represented
  * as {@link BigInteger} (for mathematical correctness)
- * when accessed with {@link #getNumerator()} and {@link #getDenominator()}.</p>
+ * when accessed with {@link #getNumeratorBigInteger()} and {@link #getDenominatorBigInteger()}.</p>
  * 
  * <p>The following basic calculations have no loss of precision:
  * <ul>
@@ -91,31 +91,44 @@ public class BigRational implements Comparable<BigRational> {
 	}
 
 	/**
-	 * Returns the numerator of this rational number.
+	 * Returns the numerator of this rational number as BigInteger.
 	 * 
-	 * @return the numerator
+	 * @return the numerator as BigInteger
 	 */
-	public BigInteger getNumerator() {
+	public BigInteger getNumeratorBigInteger() {
 		return numerator.toBigInteger();
 	}
 
-	public BigDecimal getNumeratorBigDecimal() {
+	/**
+	 * Returns the numerator of this rational number as BigDecimal.
+	 * 
+	 * @return the numerator as BigDecimal
+	 */
+	public BigDecimal getNumerator() {
 		return numerator;
 	}
 
 	/**
-	 * Returns the denominator of this rational number.
+	 * Returns the denominator of this rational number as BigInteger.
 	 * 
 	 * <p>Guaranteed to not be 0.</p>
 	 * <p>Guaranteed to be positive.</p>
 	 * 
-	 * @return the denominator
+	 * @return the denominator as BigInteger
 	 */
-	public BigInteger getDenominator() {
+	public BigInteger getDenominatorBigInteger() {
 		return denominator.toBigInteger();
 	}
 
-	public BigDecimal getDenominatorBigDecimal() {
+	/**
+	 * Returns the denominator of this rational number as BigDecimal.
+	 * 
+	 * <p>Guaranteed to not be 0.</p>
+	 * <p>Guaranteed to be positive.</p>
+	 * 
+	 * @return the denominator as BigDecimal
+	 */
+	public BigDecimal getDenominator() {
 		return denominator;
 	}
 

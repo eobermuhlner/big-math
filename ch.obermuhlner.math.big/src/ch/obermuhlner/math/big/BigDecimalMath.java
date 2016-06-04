@@ -9,6 +9,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 
+import ch.obermuhlner.math.big.internal.CosCalculator;
+import ch.obermuhlner.math.big.internal.ExpCalculator;
+import ch.obermuhlner.math.big.internal.SinCalculator;
+
 /**
  * Provides advanced functions operating on {@link BigDecimal}s.
  */
@@ -33,6 +37,8 @@ public class BigDecimalMath {
 	private static final BigDecimal ROUGHLY_PI_HALF = new BigDecimal("3.141592653589793").divide(TWO);
 	
 	private static final BigDecimal MAX_INT = valueOf(Integer.MAX_VALUE);
+	
+	private static final boolean USE_SERIES_CALCULATOR = true;
 
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
 	static {
@@ -645,32 +651,38 @@ public class BigDecimalMath {
 	}
 	
 	private static BigDecimal expTaylor(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		if (USE_SERIES_CALCULATOR) {
+			MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+			BigDecimal result = ExpCalculator.INSTANCE.calculate(x, mc);
+			return result.round(mathContext);
+		} else {
+			MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+			BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
-		BigDecimal factorialOfI = ONE;
-		BigDecimal power = ONE;
-		
-		BigDecimal result = ZERO;
-		BigDecimal step;
-		int i = 0;
-		do {			
-			step = power.divide(factorialOfI, mc);
-
-			result = result.add(step, mc);
+			BigDecimal factorialOfI = ONE;
+			BigDecimal power = ONE;
 			
-			i++;
-			
-			// TODO move this at the begin of loop
-			if (i<factorialCache.length) {
-				factorialOfI = factorialCache[i];
-			} else {
-				factorialOfI = factorialOfI.multiply(valueOf(i), mc);
-			}
-			power = power.multiply(x, mc);
-		} while (step.abs().compareTo(acceptableError) > 0);
+			BigDecimal result = ZERO;
+			BigDecimal step;
+			int i = 0;
+			do {			
+				step = power.divide(factorialOfI, mc);
 
-		return result.round(mathContext);
+				result = result.add(step, mc);
+				
+				i++;
+				
+				// TODO move this at the begin of loop
+				if (i<factorialCache.length) {
+					factorialOfI = factorialCache[i];
+				} else {
+					factorialOfI = factorialOfI.multiply(valueOf(i), mc);
+				}
+				power = power.multiply(x, mc);
+			} while (step.abs().compareTo(acceptableError) > 0);
+
+			return result.round(mathContext);
+		}
 	}
 
 	/**
@@ -683,32 +695,73 @@ public class BigDecimalMath {
 	 * @return the calculated sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal sin(BigDecimal x, MathContext mathContext) {
+		if (USE_SERIES_CALCULATOR) {
+			MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+			if (x.abs().compareTo(ROUGHLY_TWO_PI) > 0) {
+				BigDecimal twoPi = TWO.multiply(pi(mc), mc);
+				x = x.remainder(twoPi, mc);
+			}
+
+			BigDecimal result = SinCalculator.INSTANCE.calculate(x, mc);
+			return result.round(mathContext);
+		} else {
+			MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+			BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
+		
+			// TODO signum() < 0 is probably wrong, should use x.abs().compareTo(ROUGHLY_TWO_PI) 
+			if (x.signum() < 0 || x.compareTo(ROUGHLY_TWO_PI) > 0) {
+				BigDecimal twoPi = TWO.multiply(pi(mc), mc);
+				x = x.remainder(twoPi, mc);
+			}
+			
+			BigDecimal xPower2i = ONE;
+			BigDecimal result = ZERO;
+			BigDecimal step;
+			int i = 0;
+			do {
+				BigDecimal xPower2iPlus1 = xPower2i.multiply(x, mc);
+				step = xPower2iPlus1.divide(factorial(2 * i + 1), mc);
+	
+				i++;
+				xPower2i = xPower2iPlus1.multiply(x, mc);
+				xPower2iPlus1 = xPower2i.multiply(x, mc);
+				
+				step = step.subtract(xPower2iPlus1.divide(factorial(2 * i + 1), mc), mc);
+				
+				i++;
+				xPower2i = xPower2iPlus1.multiply(x, mc);
+				
+				result = result.add(step, mc);
+			} while (step.abs().compareTo(acceptableError) > 0);
+	
+			return result.round(mathContext);
+		}
+	}
+	
+	public static BigDecimal asin(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
-	
-		if (x.signum() < 0 || x.compareTo(ROUGHLY_TWO_PI) > 0) {
-			BigDecimal twoPi = TWO.multiply(pi(mc), mc);
-			x = x.remainder(twoPi, mc);
-		}
+
+		x = fractionalPart(x);
 		
-		BigDecimal xPower2i = ONE;
+		BigDecimal factorialOf2i = ONE;
+		BigDecimal fourPowerI = ONE;
+		BigDecimal factorialOfI = ONE;
+		BigDecimal xPower2iPlus1 = x;
 		BigDecimal result = ZERO;
 		BigDecimal step;
 		int i = 0;
 		do {
-			BigDecimal xPower2iPlus1 = xPower2i.multiply(x, mc);
-			step = xPower2iPlus1.divide(factorial(2 * i + 1), mc);
-
-			i++;
-			xPower2i = xPower2iPlus1.multiply(x, mc);
-			xPower2iPlus1 = xPower2i.multiply(x, mc);
-			
-			step = step.subtract(xPower2iPlus1.divide(factorial(2 * i + 1), mc), mc);
-			
-			i++;
-			xPower2i = xPower2iPlus1.multiply(x, mc);
-			
+			BigDecimal dividend = factorialOf2i;
+			BigDecimal divisor = fourPowerI.multiply(factorialOf2i, mc).multiply(factorialOf2i, mc).multiply(valueOf(2 * i + 1), mc);
+			step = xPower2iPlus1.multiply(dividend, mc).divide(divisor, mc);
 			result = result.add(step, mc);
+			
+			i++;
+			factorialOf2i = factorialOf2i.multiply(valueOf(2*i), mc).multiply(valueOf(2*i-1), mc);
+			fourPowerI = fourPowerI.multiply(valueOf(i), mc);
+			factorialOfI = factorialOfI.multiply(valueOf(i), mc);
 		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
@@ -724,34 +777,46 @@ public class BigDecimalMath {
 	 * @return the calculated cosine {@link BigDecimal}
 	 */
 	public static BigDecimal cos(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
-		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
+		if (USE_SERIES_CALCULATOR) {
+			MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		if (x.signum() < 0 || x.compareTo(ROUGHLY_TWO_PI) > 0) {
-			BigDecimal twoPi = TWO.multiply(pi(mc), mc);
-			x = x.remainder(twoPi, mc);
+			if (x.abs().compareTo(ROUGHLY_TWO_PI) > 0) {
+				BigDecimal twoPi = TWO.multiply(pi(mc), mc);
+				x = x.remainder(twoPi, mc);
+			}
+			
+			BigDecimal result = CosCalculator.INSTANCE.calculate(x, mc);
+			return result.round(mathContext);
+		} else {
+			MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+			BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
+	
+			if (x.signum() < 0 || x.compareTo(ROUGHLY_TWO_PI) > 0) {
+				BigDecimal twoPi = TWO.multiply(pi(mc), mc);
+				x = x.remainder(twoPi, mc);
+			}
+	
+			BigDecimal xPower2 = x.multiply(x, mc);
+			BigDecimal xPower2i = ONE;
+			BigDecimal result = ZERO;
+			BigDecimal step;
+			int i = 0;
+			do {
+				step = xPower2i.divide(factorial(2 * i), mc);
+	
+				i++;
+				xPower2i = xPower2i.multiply(xPower2, mc);
+				
+				step = step.subtract(xPower2i.divide(factorial(2 * i), mc), mc);
+	
+				i++;
+				xPower2i = xPower2i.multiply(xPower2, mc);
+				
+				result = result.add(step, mc);
+			} while (step.abs().compareTo(acceptableError) > 0);
+	
+			return result.round(mathContext);
 		}
-
-		BigDecimal xPower2 = x.multiply(x, mc);
-		BigDecimal xPower2i = ONE;
-		BigDecimal result = ZERO;
-		BigDecimal step;
-		int i = 0;
-		do {
-			step = xPower2i.divide(factorial(2 * i), mc);
-
-			i++;
-			xPower2i = xPower2i.multiply(xPower2, mc);
-			
-			step = step.subtract(xPower2i.divide(factorial(2 * i), mc), mc);
-
-			i++;
-			xPower2i = xPower2i.multiply(xPower2, mc);
-			
-			result = result.add(step, mc);
-		} while (step.abs().compareTo(acceptableError) > 0);
-
-		return result.round(mathContext);
 	}
 
 	public static BigDecimal tan(BigDecimal x, MathContext mathContext) {

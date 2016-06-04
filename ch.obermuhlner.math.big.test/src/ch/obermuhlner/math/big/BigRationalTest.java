@@ -48,8 +48,8 @@ public class BigRationalTest {
 		assertSame(ONE, valueOf(2,2).reduce()); // needs reduce
 
 		assertEquals("0.5", valueOf(1, 2).toString());
-		assertEquals(BigInteger.valueOf(1), valueOf(1, 2).getNumerator());
-		assertEquals(BigInteger.valueOf(2), valueOf(1, 2).getDenominator());
+		assertEquals(BigInteger.valueOf(1), valueOf(1, 2).getNumeratorBigInteger());
+		assertEquals(BigInteger.valueOf(2), valueOf(1, 2).getDenominatorBigInteger());
 
 		assertEquals("1/2", valueOf(1, 2).toRationalString());
 		assertEquals("2/4", valueOf(2, 4).toRationalString());

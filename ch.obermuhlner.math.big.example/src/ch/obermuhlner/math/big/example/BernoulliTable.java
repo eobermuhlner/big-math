@@ -49,9 +49,9 @@ public class BernoulliTable {
 			if (b.isInteger()) {
 				System.out.printf("%s", b);
 			} else {
-				System.out.printf("<span style=\"border-bottom:solid 1px black;\">&nbsp;%s&nbsp;", b.getNumerator());
+				System.out.printf("<span style=\"border-bottom:solid 1px black;\">&nbsp;%s&nbsp;", b.getNumeratorBigInteger());
 				System.out.printf("</span><br>\n");
-				System.out.printf("<span>&nbsp;%s&nbsp;", b.getDenominator());
+				System.out.printf("<span>&nbsp;%s&nbsp;", b.getDenominatorBigInteger());
 				System.out.printf("</span>\n");
 			}
 			System.out.printf("</span>\n");

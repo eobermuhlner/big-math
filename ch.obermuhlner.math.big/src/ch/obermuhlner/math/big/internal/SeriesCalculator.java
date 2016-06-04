@@ -35,14 +35,14 @@ public abstract class SeriesCalculator {
 			BigRational factor = getFactor(i);
 			BigDecimal xToThePower  = powerIterator.getCurrentPower();
 			powerIterator.calculateNextPower();
-			step = factor.getNumeratorBigDecimal().multiply(xToThePower, mathContext).divide(factor.getDenominatorBigDecimal(), mathContext);
+			step = factor.getNumerator().multiply(xToThePower, mathContext).divide(factor.getDenominator(), mathContext);
 			i++;
 
 			if (calculateInPairs) {
 				xToThePower  = powerIterator.getCurrentPower();
 				powerIterator.calculateNextPower();
 				factor = getFactor(i);
-				BigDecimal step2 = factor.getNumeratorBigDecimal().multiply(xToThePower, mathContext).divide(factor.getDenominatorBigDecimal(), mathContext);
+				BigDecimal step2 = factor.getNumerator().multiply(xToThePower, mathContext).divide(factor.getDenominator(), mathContext);
 				step = step.add(step2, mathContext);
 				i++;
 			}
