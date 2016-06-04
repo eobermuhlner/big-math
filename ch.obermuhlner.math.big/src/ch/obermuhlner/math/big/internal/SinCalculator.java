@@ -14,7 +14,7 @@ public class SinCalculator extends SeriesCalculator {
 	BigRational factorial2nPlus1 = BigRational.ONE;
 	
 	private SinCalculator() {
-		// prevent instances
+		super(true);
 	}
 	
 	@Override
@@ -35,12 +35,7 @@ public class SinCalculator extends SeriesCalculator {
 	}
 	
 	@Override
-	protected BigDecimal initialPower(BigDecimal x, MathContext mathContext) {
-		return x;
-	}
-
-	@Override
-	protected BigDecimal nextPower(BigDecimal xToThePreviousPower, BigDecimal x, MathContext mathContext) {
-		return xToThePreviousPower.multiply(x, mathContext).multiply(x, mathContext);
+	protected PowerIterator createPowerIterator(BigDecimal x, MathContext mathContext) {
+		return new PowerTwoNPlusOneIterator(x, mathContext);
 	}
 }

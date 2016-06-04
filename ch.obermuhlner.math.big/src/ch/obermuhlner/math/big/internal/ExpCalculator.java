@@ -26,14 +26,9 @@ public class ExpCalculator extends SeriesCalculator {
 		n++;
 		oneOverFactorialOfN = oneOverFactorialOfN.divide(n);
 	}
-	
-	@Override
-	protected BigDecimal initialPower(BigDecimal x, MathContext mathContext) {
-		return BigDecimal.ONE;
-	}
 
 	@Override
-	protected BigDecimal nextPower(BigDecimal xToThePreviousPower, BigDecimal x, MathContext mathContext) {
-		return xToThePreviousPower.multiply(x, mathContext);
+	protected PowerIterator createPowerIterator(BigDecimal x, MathContext mathContext) {
+		return new PowerNIterator(x, mathContext);
 	}
 }
