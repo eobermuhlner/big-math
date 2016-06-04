@@ -99,6 +99,10 @@ public class BigRational implements Comparable<BigRational> {
 		return numerator.toBigInteger();
 	}
 
+	public BigDecimal getNumeratorBigDecimal() {
+		return numerator;
+	}
+
 	/**
 	 * Returns the denominator of this rational number.
 	 * 
@@ -109,6 +113,10 @@ public class BigRational implements Comparable<BigRational> {
 	 */
 	public BigInteger getDenominator() {
 		return denominator.toBigInteger();
+	}
+
+	public BigDecimal getDenominatorBigDecimal() {
+		return denominator;
 	}
 
 	/**
