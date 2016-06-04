@@ -10,8 +10,8 @@ public class SinCalculator extends SeriesCalculator {
 	public static final SinCalculator INSTANCE = new SinCalculator();
 	
 	private int n = 0;
-	boolean negative = false;
-	BigRational factorial2nPlus1 = BigRational.ONE;
+	private boolean negative = false;
+	private BigRational factorial2nPlus1 = BigRational.ONE;
 	
 	private SinCalculator() {
 		super(true);
