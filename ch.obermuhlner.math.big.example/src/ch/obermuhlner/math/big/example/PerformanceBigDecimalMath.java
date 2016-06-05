@@ -26,7 +26,7 @@ public class PerformanceBigDecimalMath {
 	
 	private static int REPEATS = 10;
 	
-	private static final String OUTPUT_DIRECTORY = "docu/benchmarks2/";
+	private static final String OUTPUT_DIRECTORY = "docu/benchmarks/";
 
 	public static void main(String[] args) {
 
@@ -45,10 +45,6 @@ public class PerformanceBigDecimalMath {
 //		performanceReport_Fast_precision();
 //		performanceReport_Slow_precision();
 
-		//performanceReport_Exp_0_to_3();
-		//performanceReport_Sin_0_to_3();
-		//performanceReport_Cos_0_to_3();
-		
 		// --- log() optimizations:
 //		performanceReportLogOptimizationNewton_0_to_10();
 //		performanceReportLogOptimizationNewton_0_to_100();
@@ -111,45 +107,6 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
-	}
-
-	private static void performanceReport_Exp_0_to_3() {
-		performanceReportOverValue(
-				"perf_exp_funcs_from_0_to_3.csv",
-				REF_MATHCONTEXT,
-				0,
-				1,
-				+0.001,
-				REPEATS,
-				Arrays.asList("exp", "expNEW"),
-				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
-				(x, calculationMathContext) -> ExpCalculator.INSTANCE.calculate(x, calculationMathContext));
-	}
-
-	private static void performanceReport_Sin_0_to_3() {
-		performanceReportOverValue(
-				"perf_sin_funcs_from_0_to_3.csv",
-				REF_MATHCONTEXT,
-				0,
-				3,
-				+0.01,
-				REPEATS,
-				Arrays.asList("sin", "sinNEW"),
-				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
-				(x, calculationMathContext) -> SinCalculator.INSTANCE.calculate(x, calculationMathContext));
-	}
-
-	private static void performanceReport_Cos_0_to_3() {
-		performanceReportOverValue(
-				"perf_cos_funcs_from_0_to_3.csv",
-				REF_MATHCONTEXT,
-				0,
-				3,
-				+0.01,
-				REPEATS,
-				Arrays.asList("cos", "cosNEW"),
-				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
-				(x, calculationMathContext) -> CosCalculator.INSTANCE.calculate(x, calculationMathContext));
 	}
 
 	private static void performanceReport_Fast_0_to_100() {

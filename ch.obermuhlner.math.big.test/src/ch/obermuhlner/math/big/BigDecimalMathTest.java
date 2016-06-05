@@ -571,6 +571,26 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testTanRandom() {
+		assertRandomCalculation(
+				1000,
+				"tan",
+				random -> random.nextDouble() * 100 - 50,
+				Math::tan,
+				(x, mathContext) -> BigDecimalMath.tan(x, mathContext));
+	}
+	
+	@Test
+	public void testAtanRandom() {
+		assertRandomCalculation(
+				1000,
+				"atan",
+				random -> random.nextDouble() * 100 - 50,
+				Math::atan,
+				(x, mathContext) -> BigDecimalMath.atan(x, mathContext));
+	}
+	
+	@Test
 	public void testCot() {
 		for(double value : new double[] { 0.5, -0.5 }) {
 			assertEquals("cot(" + value + ")",

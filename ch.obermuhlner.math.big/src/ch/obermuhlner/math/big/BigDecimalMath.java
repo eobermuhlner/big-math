@@ -746,6 +746,15 @@ public class BigDecimalMath {
 		return sin(x, mc).divide(cos(x, mc), mc).round(mathContext);
 	}
 	
+	public static BigDecimal atan(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+
+		x = x.divide(sqrt(ONE.add(x.multiply(x, mc), mc), mc), mc);
+
+		BigDecimal result = asin(x, mc);
+		return result.round(mathContext);
+	}
+
 	private static BigDecimal tanTaylor(BigDecimal x, MathContext mathContext) {
 		if (x.signum() == 0) {
 			return ZERO;
