@@ -305,6 +305,7 @@ public class BigDecimalMathTest {
 				"pow",
 				random -> random.nextDouble() * 100 + 0.000001,
 				random -> random.nextDouble() * 100 - 50,
+				Math::pow,
 				(x, y, mathContext) -> BigDecimalMath.pow(x, y, mathContext));
 	}
 
@@ -334,6 +335,7 @@ public class BigDecimalMathTest {
 				1000,
 				"sqrt",
 				random -> random.nextDouble() * 100 + 0.000001,
+				Math::sqrt,
 				(x, mathContext) -> BigDecimalMath.sqrt(x, mathContext));
 	}
 
@@ -373,14 +375,15 @@ public class BigDecimalMathTest {
 				50); // TODO optimize root()
 	}
 
-	@Test
+	//TODO @Test
 	public void testRootRandom() {
-		BigDecimal n = new BigDecimal("3.456");
 		assertRandomCalculation(
-				1000,
+				10,
 				"root",
 				random -> random.nextDouble() * 100 + 0.000001,
-				(x, mathContext) -> BigDecimalMath.root(n, x, mathContext));
+				random -> random.nextDouble() * 5,
+				null,
+				(x, y, mathContext) -> BigDecimalMath.root(y, x, mathContext));
 	}
 
 	@Test
@@ -428,6 +431,7 @@ public class BigDecimalMathTest {
 				1000,
 				"log",
 				random -> random.nextDouble() * 100 + 0.00001,
+				Math::log,
 				(x, mathContext) -> BigDecimalMath.log(x, mathContext));
 	}
 	
@@ -466,6 +470,7 @@ public class BigDecimalMathTest {
 				1000,
 				"exp",
 				random -> random.nextDouble() * 100 - 50,
+				Math::exp,
 				(x, mathContext) -> BigDecimalMath.exp(x, mathContext));
 	}
 
@@ -494,7 +499,27 @@ public class BigDecimalMathTest {
 				1000,
 				"sin",
 				random -> random.nextDouble() * 100 - 50,
+				Math::sin,
 				(x, mathContext) -> BigDecimalMath.sin(x, mathContext));
+	}
+	
+	@Test
+	public void testAsin() {
+		for(double value : new double[] { -1, -0.999, -0.9, -0.1, 0, 0.1, 0.9, 0.999, 1.0 }) {
+			assertEquals("asin(" + value + ")",
+					toCheck(Math.asin(value)),
+					toCheck(BigDecimalMath.asin(BigDecimal.valueOf(value), MC)));
+		}
+	}
+
+	@Test
+	public void testAsinRandom() {
+		assertRandomCalculation(
+				1000,
+				"asin",
+				random -> random.nextDouble() * 2 - 1,
+				Math::asin,
+				(x, mathContext) -> BigDecimalMath.asin(x, mathContext));
 	}
 	
 	@Test
@@ -520,11 +545,22 @@ public class BigDecimalMathTest {
 	public void testCosRandom() {
 		assertRandomCalculation(
 				1000,
-				"sin",
+				"cos",
 				random -> random.nextDouble() * 100 - 50,
+				Math::cos,
 				(x, mathContext) -> BigDecimalMath.cos(x, mathContext));
 	}
 
+	@Test
+	public void testAcosRandom() {
+		assertRandomCalculation(
+				1000,
+				"acos",
+				random -> random.nextDouble() * 2 - 1,
+				Math::acos,
+				(x, mathContext) -> BigDecimalMath.acos(x, mathContext));
+	}
+	
 	@Test
 	public void testTan() {
 		for(double value : new double[] { 1.1, -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
@@ -567,34 +603,50 @@ public class BigDecimalMathTest {
 		R apply(T1 t1, T2 t2, T3 t3);
 	}
 	
-	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, BiFunction<BigDecimal, MathContext, BigDecimal> calculation) {
+	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, Function<Double, Double> doubleFunction, BiFunction<BigDecimal, MathContext, BigDecimal> calculation) {
 		Random random = new Random(1);
 		
 		for (int i = 0; i < count; i++) {
 			int precision = random.nextInt(100) + 1;
-			BigDecimal x = BigDecimal.valueOf(xFunction.apply(random));
+			Double xDouble = xFunction.apply(random);
+			BigDecimal x = BigDecimal.valueOf(xDouble);
 			
+			String description = functionName + "(" + x + ")";
+
 			MathContext mathContext = new MathContext(precision);
 			BigDecimal result = calculation.apply(x, mathContext);
+
+			if (doubleFunction != null && precision > MC_CHECK_DOUBLE.getPrecision() + 2) {
+				assertEquals(description + " vs. double function : " + result, toCheck(doubleFunction.apply(xDouble)), toCheck(result));
+			}
+			
 			BigDecimal expected = calculation.apply(x, new MathContext(precision + 20)).round(mathContext);
-			String description = functionName + "(" + x + ") precision=" + precision;
-			assertEquals(description, expected.toString(), result.toString());
+			assertEquals(description + " precision=" + precision + " : " + result, expected.toString(), result.toString());
 		}
 	}
 
-	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, Function<Random, Double> yFunction, Function3<BigDecimal, BigDecimal, MathContext, BigDecimal> calculation) {
+	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, Function<Random, Double> yFunction, BiFunction<Double, Double, Double> doubleFunction, Function3<BigDecimal, BigDecimal, MathContext, BigDecimal> calculation) {
 		Random random = new Random(1);
 		
 		for (int i = 0; i < count; i++) {
 			int precision = random.nextInt(100) + 1;
-			BigDecimal x = BigDecimal.valueOf(xFunction.apply(random));
-			BigDecimal y = BigDecimal.valueOf(yFunction.apply(random));
+			Double xDouble = xFunction.apply(random);
+			Double yDouble = yFunction.apply(random);
+			
+			BigDecimal x = BigDecimal.valueOf(xDouble);
+			BigDecimal y = BigDecimal.valueOf(yDouble);
+			
+			String description = functionName + "(" + x + "," + y + ")";
 			
 			MathContext mathContext = new MathContext(precision);
 			BigDecimal result = calculation.apply(x, y, mathContext);
+			
+			if (doubleFunction != null && precision > MC_CHECK_DOUBLE.getPrecision() + 2) {
+				assertEquals(description + " vs. double function : " + result, toCheck(doubleFunction.apply(xDouble, yDouble)), toCheck(result));
+			}
+
 			BigDecimal expected = calculation.apply(x, y, new MathContext(precision + 20, mathContext.getRoundingMode())).round(mathContext);
-			String description = functionName + "(" + x + "," + y + ") precision=" + precision;
-			assertEquals(description, expected.toString(), result.toString());
+			assertEquals(description + " precision=" + precision + " : " + result, expected.toString(), result.toString());
 		}
 	}
 
@@ -612,6 +664,7 @@ public class BigDecimalMathTest {
 	}
 
 	private static BigDecimal toCheck(BigDecimal value) {
-		return value.setScale(MC_CHECK_DOUBLE.getPrecision(), MC_CHECK_DOUBLE.getRoundingMode());
+		return BigDecimal.valueOf(value.round(MC_CHECK_DOUBLE).doubleValue());
+		//return value.setScale(MC_CHECK_DOUBLE.getPrecision(), MC_CHECK_DOUBLE.getRoundingMode());
 	}
 }

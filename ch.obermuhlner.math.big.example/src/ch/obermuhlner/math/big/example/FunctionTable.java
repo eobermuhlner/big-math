@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import ch.obermuhlner.math.big.internal.AsinCalculator;
 import ch.obermuhlner.math.big.internal.SinCalculator;
 import ch.obermuhlner.math.big.internal.ExpCalculator;
 
 public class FunctionTable {
 
 	public static void main(String[] args) {
-		printTableSin();
+		//printTableSin();
+		printTableAsin();
 		//printTableExp();
 	}
 
@@ -31,6 +33,21 @@ public class FunctionTable {
 						x -> SinCalculator.INSTANCE.calculate(x, mathContext),
 						x -> BigDecimalMath.sin(x, mathContext),
 						x -> BigDecimal.valueOf(Math.sin(x.doubleValue()))
+						));
+	}
+
+	public static void printTableAsin() {
+		MathContext mathContext = new MathContext(20);
+		printTable(
+				-1,
+				1,
+				0.01,
+				Arrays.asList(
+						"BigDecimalMath.asin",
+						"Math.asin"),
+				Arrays.asList(
+						x -> BigDecimalMath.asin(x, mathContext),
+						x -> BigDecimal.valueOf(Math.asin(x.doubleValue()))
 						));
 	}
 
@@ -82,7 +99,7 @@ public class FunctionTable {
 		System.out.println();
 		
 		// print values
-		for (BigDecimal x = startX; x.compareTo(endX) < 0; x = x.add(deltaX)) {
+		for (BigDecimal x = startX; x.compareTo(endX) <= 0; x = x.add(deltaX)) {
 			System.out.printf("%10s", x);
 			for (Function<BigDecimal, BigDecimal> function : functions) {
 				try {

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import ch.obermuhlner.math.big.internal.AsinCalculator;
 import ch.obermuhlner.math.big.internal.CosCalculator;
 import ch.obermuhlner.math.big.internal.ExpCalculator;
 import ch.obermuhlner.math.big.internal.SinCalculator;
@@ -31,10 +32,10 @@ public class PerformanceBigDecimalMath {
 
 //		System.out.println(BigDecimalMath.pi(new MathContext(1100)));
 
-		performanceReport_Fast_0_to_2();
-		performanceReport_Fast_neg10_to_10();
-		performanceReport_Fast_0_to_10();
-		performanceReport_Fast_0_to_100();
+//		performanceReport_Fast_0_to_2();
+//		performanceReport_Fast_neg10_to_10();
+//		performanceReport_Fast_0_to_10();
+//		performanceReport_Fast_0_to_100();
 		
 //		performanceReport_Slow_0_to_2();
 //		performanceReport_Slow_neg10_to_10();
