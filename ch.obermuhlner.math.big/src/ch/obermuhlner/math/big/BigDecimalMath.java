@@ -1,8 +1,8 @@
 package ch.obermuhlner.math.big;
 
 import static java.math.BigDecimal.ONE;
-import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.TEN;
+import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
@@ -26,7 +26,6 @@ public class BigDecimalMath {
 	
 	private static final BigDecimal TWO = valueOf(2);
 	private static final BigDecimal THREE = valueOf(3);
-	private static final BigDecimal FOUR = valueOf(4);
 	private static final BigDecimal MINUS_ONE = valueOf(-1);
 
 	private static final BigDecimal LOG_TWO = new BigDecimal("0.69314718055994530941723212145817656807550013436025525412068000949339362196969471560586332699641868754200148102057068573368552023575813055703267075163507596193072757082837143519030703862389167347112335011536449795523912047517268157493206515552473413952588295045300709532636664265410423915781495204374043038550080194417064167151864471283996817178454695702627163106454615025720740248163777338963855069526066834113727387372292895649354702576265209885969320196505855476470330679365443254763274495125040606943814710468994650622016772042452452961268794654619316517468139267250410380254625965686914419287160829380317271436778265487756648508567407764845146443994046142260319309673540257444607030809608504748663852313818167675143866747664789088143714198549423151997354880375165861275352916610007105355824987941472950929311389715599820565439287170007218085761025236889213244971389320378439353088774825970171559107088236836275898425891853530243634214367061189236789192372314672321720534016492568727477823445353476481149418642386776774406069562657379600867076257199184734022651462837904883062033061144630073719489");
@@ -36,7 +35,6 @@ public class BigDecimalMath {
 	private static final BigDecimal PI = new BigDecimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989380952572010654858632788659361533818279682303019520353018529689957736225994138912497217752834791315");                               
 	
 	private static final BigDecimal ROUGHLY_TWO_PI = new BigDecimal("3.141592653589793").multiply(TWO);
-	private static final BigDecimal ROUGHLY_PI_HALF = new BigDecimal("3.141592653589793").divide(TWO);
 	
 	private static final BigDecimal MAX_INT = valueOf(Integer.MAX_VALUE);
 	
@@ -780,60 +778,6 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
-	private static BigDecimal tanTaylor(BigDecimal x, MathContext mathContext) {
-		if (x.signum() == 0) {
-			return ZERO;
-		}
-		if (x.signum() < 0) {
-			return tan(x.negate(), mathContext).negate();
-		}
-		
-		if (x.compareTo(new BigDecimal("0.8")) < 0) {
-			return ONE.divide(cot(x, mathContext));
-		}
-		
-		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
-		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
-
-		System.out.println("TAN " + x);
-		System.out.println("GOAL " + Math.tan(x.doubleValue()));
-		System.out.println("ACCEPTABLE ERROR " + acceptableError);
-		
-		if (x.compareTo(ROUGHLY_PI_HALF) > 0) {
-			BigDecimal piHalf = pi(mc).divide(TWO, mc);
-			x = x.remainder(piHalf, mc);
-		}
-		
-		BigDecimal result = ZERO;
-		boolean negative = true;
-		BigDecimal xPower2 = x.multiply(x, mc);
-		BigDecimal twoPower2n = ONE;
-		BigDecimal factorialOf2n = ONE;
-		BigDecimal xPower2nMinus1 = x;
-		BigDecimal step;
-		int i = 0;
-		do {
-			i++;
-			twoPower2n = twoPower2n.multiply(FOUR, mc);
-			factorialOf2n = factorialOf2n.multiply(valueOf(2*i), mc).multiply(valueOf(2*i-1), mc);
-			negative = !negative;
-
-			BigDecimal factor = twoPower2n.multiply(twoPower2n.subtract(ONE)).multiply(bernoulli(i*2, mc));
-			factor = factor.divide(factorialOf2n, mc);
-			step = factor.multiply(xPower2nMinus1, mc);
-			if (negative) {
-				step = step.negate();
-			}
-			result = result.add(step, mc);
-
-			xPower2nMinus1 = xPower2nMinus1.multiply(xPower2, mc);
-			
-			System.out.println(i + " " + result + " " + step);
-		} while (step.abs().compareTo(acceptableError) > 0);
-
-		return result.round(mathContext);
-	}
-
 	/**
 	 * Calculates the cotangens of {@link BigDecimal} x.
 	 * 
@@ -866,51 +810,6 @@ public class BigDecimalMath {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = pi(mc).divide(TWO, mc).subtract(atan(x, mc), mc);
 		return result.round(mathContext);
-	}
-
-	private static BigDecimal cotTaylor(BigDecimal x, MathContext mathContext) {
-		if (x.signum() == 0) {
-			throw new ArithmeticException("Illegal cot(x) for x = 0");
-		}
-		if (x.signum() < 0) {
-			return cot(x.negate(), mathContext).negate();
-		}
-		
-		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
-		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 2);
-
-		if (x.compareTo(PI) >= 0) {
-			x = x.remainder(pi(mc), mc);
-		}
-
-		BigDecimal result = ZERO;
-		boolean negative = false;
-		BigDecimal xPower2 = x.multiply(x, mc);
-		BigDecimal twoPower2n = ONE;
-		BigDecimal factorialOf2n = ONE;
-		BigDecimal xPower2nMinus1 = x;
-		BigDecimal step;
-		int i = 0;
-		do {
-			BigDecimal factor = twoPower2n.multiply(bernoulli(i*2, mc));
-			factor = factor.divide(factorialOf2n, mc);
-			step = factor.multiply(xPower2nMinus1, mc);
-			if (negative) {
-				step = step.negate();
-			}
-			result = result.add(step, mc);
-
-			xPower2nMinus1 = xPower2nMinus1.multiply(xPower2, mc);
-
-			i++;
-			twoPower2n = twoPower2n.multiply(FOUR, mc);
-			factorialOf2n = factorialOf2n.multiply(valueOf(2*i), mc).multiply(valueOf(2*i-1), mc);
-			negative = !negative;
-
-			System.out.println(i + " " + result + " " + step);
-		} while (step.abs().compareTo(acceptableError) > 0);
-		
-		return result;
 	}
 
 	/**
