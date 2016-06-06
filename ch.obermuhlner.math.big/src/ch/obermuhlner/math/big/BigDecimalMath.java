@@ -40,8 +40,6 @@ public class BigDecimalMath {
 	
 	private static final BigDecimal MAX_INT = valueOf(Integer.MAX_VALUE);
 	
-	private static final boolean USE_SERIES_CALCULATOR = true;
-
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
 	static {
 		BigDecimal result = ONE;
@@ -679,6 +677,15 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 	
+	/**
+	 * Calculates the inverse sine (arc sinus) of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="http://en.wikipedia.org/wiki/Arcsine">Wikipedia: Arcsine</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the arc sine for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal asin(BigDecimal x, MathContext mathContext) {
 		if (x.compareTo(ONE) > 0) {
 			throw new ArithmeticException("Illegal asin(x) for x > 1: x = " + x);
@@ -693,9 +700,9 @@ public class BigDecimalMath {
 		
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
-		if (x.compareTo(BigDecimal.valueOf(0.95)) > 0) {
-			x = sqrt(ONE.subtract(x.multiply(x, mc), mc), mc);
-			return acos(x, mathContext);
+		if (x.compareTo(BigDecimal.valueOf(0.707107)) >= 0) {
+			BigDecimal xTransformed = sqrt(ONE.subtract(x.multiply(x, mc), mc), mc);
+			return acos(xTransformed, mathContext);
 		}
 
 		BigDecimal result = AsinCalculator.INSTANCE.calculate(x, mc);
@@ -737,6 +744,15 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
+	/**
+	 * Calculates the tangens of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="http://en.wikipedia.org/wiki/Tangens">Wikipedia: Tangens</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the tangens for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal tan(BigDecimal x, MathContext mathContext) {
 		if (x.signum() == 0) {
 			return ZERO;
@@ -746,6 +762,15 @@ public class BigDecimalMath {
 		return sin(x, mc).divide(cos(x, mc), mc).round(mathContext);
 	}
 	
+	/**
+	 * Calculates the inverse tangens (arc tangens) of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="http://en.wikipedia.org/wiki/Arctangens">Wikipedia: Arctangens</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the arc tangens for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated arc tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal atan(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
@@ -809,15 +834,40 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
+	/**
+	 * Calculates the cotangens of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="http://en.wikipedia.org/wiki/Cotangens">Wikipedia: Cotangens</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the cotangens for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated cotanges {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal cot(BigDecimal x, MathContext mathContext) {
 		if (x.signum() == 0) {
 			throw new ArithmeticException("Illegal cot(x) for x = 0");
 		}
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		return cos(x, mc).divide(sin(x, mc), mc).round(mathContext);
+		BigDecimal result = cos(x, mc).divide(sin(x, mc), mc).round(mathContext);
+		return result.round(mathContext);
 	}
-	
+
+	/**
+	 * Calculates the inverse cotangens (arc cotangens) of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="http://en.wikipedia.org/wiki/Arccotangens">Wikipedia: Arccotangens</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the arc cotangens for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated arc cotangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
+	public static BigDecimal acot(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal result = pi(mc).divide(TWO, mc).subtract(atan(x, mc), mc);
+		return result.round(mathContext);
+	}
+
 	private static BigDecimal cotTaylor(BigDecimal x, MathContext mathContext) {
 		if (x.signum() == 0) {
 			throw new ArithmeticException("Illegal cot(x) for x = 0");

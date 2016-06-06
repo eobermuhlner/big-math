@@ -3,6 +3,9 @@ package ch.obermuhlner.math.big.internal;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+/**
+ * {@link PowerIterator} to calculate x<sup>2*n+1</sup>.
+ */
 public class PowerTwoNPlusOneIterator implements PowerIterator {
 
 	private final MathContext mathContext;

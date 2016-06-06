@@ -5,6 +5,14 @@ import java.math.MathContext;
 
 import ch.obermuhlner.math.big.BigRational;
 
+/**
+ * Calculates sinus using the Maclaurin series.
+ * 
+ * <p>See <a href="https://de.wikipedia.org/wiki/Taylorreihe">Wikipedia: Taylorreihe</a></p>
+ * 
+ * <p>No argument checking or optimizations are done.
+ * This implementation is <strong>not</strong> intended to be called directly.</p>
+ */
 public class SinCalculator extends SeriesCalculator {
 
 	public static final SinCalculator INSTANCE = new SinCalculator();
