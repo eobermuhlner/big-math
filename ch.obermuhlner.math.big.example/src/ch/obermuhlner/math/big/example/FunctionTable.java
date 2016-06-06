@@ -7,16 +7,15 @@ import java.util.List;
 import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
-import ch.obermuhlner.math.big.internal.AsinCalculator;
-import ch.obermuhlner.math.big.internal.SinCalculator;
-import ch.obermuhlner.math.big.internal.ExpCalculator;
 
 public class FunctionTable {
 
 	public static void main(String[] args) {
-		//printTableSin();
+//		printTableSin();
 		printTableAsin();
-		//printTableExp();
+//		printTableAcos();
+//		printTableAtan();
+//		printTableExp();
 	}
 
 	public static void printTableSin() {
@@ -26,11 +25,9 @@ public class FunctionTable {
 				10,
 				0.1,
 				Arrays.asList(
-						"SinCalculator",
 						"BigDecimalMath.sin",
 						"Math.sin"),
 				Arrays.asList(
-						x -> SinCalculator.INSTANCE.calculate(x, mathContext),
 						x -> BigDecimalMath.sin(x, mathContext),
 						x -> BigDecimal.valueOf(Math.sin(x.doubleValue()))
 						));
@@ -51,6 +48,36 @@ public class FunctionTable {
 						));
 	}
 
+	public static void printTableAcos() {
+		MathContext mathContext = new MathContext(20);
+		printTable(
+				-1,
+				1,
+				0.01,
+				Arrays.asList(
+						"BigDecimalMath.acos",
+						"Math.acos"),
+				Arrays.asList(
+						x -> BigDecimalMath.acos(x, mathContext),
+						x -> BigDecimal.valueOf(Math.acos(x.doubleValue()))
+						));
+	}
+
+	public static void printTableAtan() {
+		MathContext mathContext = new MathContext(20);
+		printTable(
+				-1,
+				1,
+				0.01,
+				Arrays.asList(
+						"BigDecimalMath.atan",
+						"Math.atan"),
+				Arrays.asList(
+						x -> BigDecimalMath.atan(x, mathContext),
+						x -> BigDecimal.valueOf(Math.atan(x.doubleValue()))
+						));
+	}
+
 	public static void printTableExp() {
 		MathContext mathContext = new MathContext(20);
 		printTable(
@@ -58,11 +85,9 @@ public class FunctionTable {
 				10,
 				0.1,
 				Arrays.asList(
-						"ExpCalculator",
 						"BigDecimalMath.exp",
 						"Math.exp"),
 				Arrays.asList(
-						x -> ExpCalculator.INSTANCE.calculate(x, mathContext),
 						x -> BigDecimalMath.exp(x, mathContext),
 						x -> BigDecimal.valueOf(Math.exp(x.doubleValue()))
 						));
