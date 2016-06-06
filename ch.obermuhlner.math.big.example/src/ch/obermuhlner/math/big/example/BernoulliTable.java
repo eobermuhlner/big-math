@@ -5,13 +5,14 @@ import ch.obermuhlner.math.big.BigRational;
 public class BernoulliTable {
 
 	public static void main(String[] args) {
-		printBernoulliTableSimple(100);
+		printBernoulliTableSimple(500);
 	}
 
 	private static void printBernoulliTableSimple(int n) {
+		System.out.printf("%3s,%s\n", "N", "Bernoulli");
 		for (int i = 0; i < n; i++) {
 			BigRational b = BigRational.bernoulli(i).reduce();
-			System.out.printf("%3d : %s\n", i, b.toRationalString());
+			System.out.printf("%3d,%s\n", i, b.toRationalString());
 		}
 	}
 	
@@ -35,14 +36,11 @@ public class BernoulliTable {
 	private static void printBernoulliTableHtml2(int n) {
 		System.out.printf("<table>\n");
 		
-		System.out.printf("<thead>\n");
-		System.out.printf("<th>N</th>");
-		System.out.printf("<th>Bernoulli Number</th>\n");
 		System.out.printf("</thead>\n");
 		for (int i = 0; i < n; i++) {
 			BigRational b = BigRational.bernoulli(i).reduce();
 			System.out.printf("<tr>");
-			System.out.printf("<td>%3d</td>", i);
+			System.out.printf("<td style=\"vertical-align: middle\">B<sub>%d</sub>&nbsp;=</td>", i);
 			System.out.printf("<td>\n");
 
 			System.out.printf("<span style=\"display: block; text-align: center; vertical-align: middle\">\n");
