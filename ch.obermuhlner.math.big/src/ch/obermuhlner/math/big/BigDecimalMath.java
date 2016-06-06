@@ -377,18 +377,6 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
-	private static BigDecimal logUsingRoot(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-
-		// log(x) = log(root(r, x)^r) = r * log(root(r, x))
-        BigDecimal r = valueOf(Math.max(2, (int) (Math.log(x.doubleValue()) * 5)));
-
-        BigDecimal result = root(r, x, mc) ;
-        result = logAreaHyperbolicTangent(result, mc).multiply(r, mc) ;
-		
-		return result.round(mathContext);
-	}
-
 	private static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
