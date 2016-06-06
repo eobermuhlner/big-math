@@ -281,17 +281,24 @@ public class BigDecimalMath {
 			throw new ArithmeticException("Illegal root(x) for x < 0: x = " + x);
 		}
 
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		int maxPrecision = mathContext.getPrecision() + 4;
+		MathContext mcMax = new MathContext(maxPrecision, mathContext.getRoundingMode());
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
-		BigDecimal factor = ONE.divide(n, mc);
+		BigDecimal factor = ONE.divide(n, mcMax);
 		BigDecimal nMinus1 = n.subtract(ONE);
-		BigDecimal result = x.divide(TWO, mc);
+		BigDecimal result = x.divide(TWO, mcMax);
+		int adaptivePrecision = 2;
 		BigDecimal step;
 
 		do {
+			adaptivePrecision = adaptivePrecision * 2;
+			if (adaptivePrecision > maxPrecision) {
+				adaptivePrecision = maxPrecision;
+			}
+			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+			
 			step = factor.multiply(x.divide(pow(result, nMinus1, mc), mc).subtract(result, mc), mc);
-					
 			result = result.add(step, mc);
 		} while (step.abs().compareTo(acceptableError) > 0);
 		
