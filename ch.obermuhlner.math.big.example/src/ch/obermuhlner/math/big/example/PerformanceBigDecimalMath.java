@@ -32,24 +32,27 @@ public class PerformanceBigDecimalMath {
 
 //		System.out.println(BigDecimalMath.pi(new MathContext(1100)));
 
-//		performanceReport_Fast_0_to_2();
-//		performanceReport_Fast_neg10_to_10();
-//		performanceReport_Fast_0_to_10();
-//		performanceReport_Fast_0_to_100();
+		performanceReport_Fast_0_to_2();
+		performanceReport_Fast_neg10_to_10();
+		performanceReport_Fast_0_to_10();
+		performanceReport_Fast_0_to_100();
 
-//		performanceReport_Trigo_0_to_1();
+		performanceReport_Trigo_0_to_1();
 
-//		performanceReport_Slow_0_to_2();
-//		performanceReport_Slow_neg10_to_10();
-//		performanceReport_Slow_0_to_10();
-//		performanceReport_Slow_0_to_100();
+		performanceReport_Slow_0_to_2();
+		performanceReport_Slow_neg10_to_10();
+		performanceReport_Slow_0_to_10();
+		performanceReport_Slow_0_to_100();
 		
-//		performanceReport_Fast_precision();
-//		performanceReport_Slow_precision();
+		performanceReport_Fast_precision();
+		performanceReport_Slow_precision();
 
-		// --- sqrt () optimizations:
-//		performanceReportSqrtOptimization_0_to_10();
-		
+		// --- sqrt() optimizations:
+		performanceReportSqrtOptimization_0_to_10();
+
+		// --- root() optimizations:
+		performanceReportRootOptimization_0_to_10();
+
 		// --- log() optimizations:
 		performanceReportLogOptimizationNewton_0_to_10();
 //		performanceReportLogOptimizationNewton_0_to_100();
@@ -247,6 +250,19 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList("sqrt", "sqrtAdaptive"),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1));
+	}
+
+	private static void performanceReportRootOptimization_0_to_10() {
+		performanceReportOverValue(
+				"test_root_impl_from_0_to_10.csv",
+				REF_MATHCONTEXT,
+				0,
+				+1000,
+				+0.1,
+				REPEATS,
+				Arrays.asList("root", "rootAdaptive"),
+				(x1, mc1) -> BigDecimalMathExperimental.rootFixPrecision(BigDecimal.valueOf(3), x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.rootAdaptivePrecision(BigDecimal.valueOf(3), x1, mc1));
 	}
 
 	/**
