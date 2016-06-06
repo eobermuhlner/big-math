@@ -24,6 +24,58 @@ public class BigDecimalMathExperimental {
 		// prevent instances
 	}
 
+	// variations on sqrt()
+	
+	public static BigDecimal sqrtUsingNewton(BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		BigDecimal last;
+
+		do {
+			last = result;
+			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
+		} while (result.subtract(last).abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+	
+	public static BigDecimal sqrtUsingNewtonAdaptivePrecision(BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+		}
+
+		int maxPrecision = mathContext.getPrecision() + 4;
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		int adaptivePrecision = 12;
+		BigDecimal last;
+
+		do {
+			last = result;
+			adaptivePrecision = adaptivePrecision * 2;
+			if (adaptivePrecision > maxPrecision) {
+				adaptivePrecision = maxPrecision;
+			}
+			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
+		} while (adaptivePrecision < maxPrecision && result.subtract(last).abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+	
 	// variations on log()
 
 	public static BigDecimal logRangeTen(BigDecimal x, MathContext mathContext, BiFunction<BigDecimal, MathContext, BigDecimal> logFunction) {
@@ -246,7 +298,7 @@ public class BigDecimalMathExperimental {
 		return logAreaHyperbolicTangent(THREE, mathContext);
 	}
 
-	public static BigDecimal logUsingNewton(BigDecimal x, MathContext mathContext) {
+	public static BigDecimal logUsingNewtonFixPrecision(BigDecimal x, MathContext mathContext) {
 		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
 		// y = y + 2 * (x-exp(y)) / (x+exp(y))
 
@@ -258,17 +310,35 @@ public class BigDecimalMathExperimental {
 		
 		do {
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
-			step = TWO.multiply(
-					x.subtract(
-							expY,
-							mc),
-					mc).divide(
-							x.add(
-									expY,
-									mc),
-							mc);
+			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
 			result = result.add(step);
 		} while (step.abs().compareTo(acceptableError) > 0);
+
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal logUsingNewtonAdaptivePrecision(BigDecimal x, MathContext mathContext) {
+		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
+		// y = y + 2 * (x-exp(y)) / (x+exp(y))
+
+		int maxPrecision = mathContext.getPrecision() + 4;
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		
+		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
+		int adaptivePrecision = 12;
+		BigDecimal step;
+		
+		do {
+			adaptivePrecision = adaptivePrecision * 2;
+			if (adaptivePrecision > maxPrecision) {
+				adaptivePrecision = maxPrecision;
+			}
+			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+			
+			BigDecimal expY = BigDecimalMath.exp(result, mc);
+			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
+			result = result.add(step);
+		} while (adaptivePrecision < maxPrecision && step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}

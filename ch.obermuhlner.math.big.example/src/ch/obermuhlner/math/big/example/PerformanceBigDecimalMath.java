@@ -36,7 +36,9 @@ public class PerformanceBigDecimalMath {
 //		performanceReport_Fast_neg10_to_10();
 //		performanceReport_Fast_0_to_10();
 //		performanceReport_Fast_0_to_100();
-		
+
+//		performanceReport_Trigo_0_to_1();
+
 //		performanceReport_Slow_0_to_2();
 //		performanceReport_Slow_neg10_to_10();
 //		performanceReport_Slow_0_to_10();
@@ -45,8 +47,11 @@ public class PerformanceBigDecimalMath {
 //		performanceReport_Fast_precision();
 //		performanceReport_Slow_precision();
 
+		// --- sqrt () optimizations:
+//		performanceReportSqrtOptimization_0_to_10();
+		
 		// --- log() optimizations:
-//		performanceReportLogOptimizationNewton_0_to_10();
+		performanceReportLogOptimizationNewton_0_to_10();
 //		performanceReportLogOptimizationNewton_0_to_100();
 		
 //		performanceReportLogOptimizationTry();
@@ -124,6 +129,23 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+	}
+
+	private static void performanceReport_Trigo_0_to_1() {
+		performanceReportOverValue(
+				"perf_trigo_funcs_from_0_to_1.csv",
+				REF_MATHCONTEXT,
+				0,
+				+1.0,
+				+0.01,
+				REPEATS,
+				Arrays.asList("sin", "cos", "tan", "asin", "acos", "atan"),
+				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.asin(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.acos(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.atan(x, calculationMathContext));
 	}
 
 	private static void performanceReport_Slow_0_to_2() {
@@ -212,6 +234,20 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 }
+
+
+	private static void performanceReportSqrtOptimization_0_to_10() {
+		performanceReportOverValue(
+				"test_sqrt_impl_from_0_to_10.csv",
+				REF_MATHCONTEXT,
+				0,
+				+1000,
+				+0.1,
+				REPEATS,
+				Arrays.asList("sqrt", "sqrtAdaptive"),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1));
+	}
 
 	/**
 Writing an implementation of the binary logarithm function with BigDecimal is surprisingly challenging.
@@ -309,15 +345,16 @@ REFERENCE github eobermuhlner/big-math
 				+10,
 				+0.05,
 				REPEATS,
-				Arrays.asList("newton", "root+newton", "primes+newton", "primes+root+newton"),
-				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewton(x1, mc1),
+				Arrays.asList("newton", "newtonAdaptive", "root+newton", "primes+newton", "primes+root+newton"),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonFixPrecision(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingRoot(x1, mc1,
-						BigDecimalMathExperimental::logUsingNewton),
+						BigDecimalMathExperimental::logUsingNewtonAdaptivePrecision),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1,
-						BigDecimalMathExperimental::logUsingNewton),
+						BigDecimalMathExperimental::logUsingNewtonAdaptivePrecision),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1,
 						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x1, mc2, 
-								BigDecimalMathExperimental::logUsingNewton)));
+								BigDecimalMathExperimental::logUsingNewtonAdaptivePrecision)));
 	}
 
 	private static void performanceReportLogOptimizationNewton_0_to_100() {
@@ -329,15 +366,15 @@ REFERENCE github eobermuhlner/big-math
 				+0.1,
 				REPEATS,
 				Arrays.asList("newton", "root+newton", "exp+primes+newton", "primes+root+newton"),
-				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewton(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonFixPrecision(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingRoot(x1, mc1, 
-						BigDecimalMathExperimental::logUsingNewton),
+						BigDecimalMathExperimental::logUsingNewtonFixPrecision),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingExponent(x1, mc1, 
 						(x2, mc2) -> BigDecimalMathExperimental.logUsingPrimes(x2, mc2, 
-								BigDecimalMathExperimental::logUsingNewton)),
+								BigDecimalMathExperimental::logUsingNewtonFixPrecision)),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1, 
 						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x2, mc2, 
-								BigDecimalMathExperimental::logUsingNewton)));
+								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
 
 //	private static void performanceReportLogOptimization1() {
