@@ -75,7 +75,68 @@ public class BigDecimalMathExperimental {
 		
 		return result.round(mathContext);
 	}
+
+	// variations on root()
 	
+	public static BigDecimal rootFixPrecision(BigDecimal n, BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal root(x) for x < 0: x = " + x);
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+		BigDecimal factor = ONE.divide(n, mc);
+		BigDecimal nMinus1 = n.subtract(ONE);
+		BigDecimal result = x.divide(TWO, mc);
+		BigDecimal step;
+
+		do {
+			step = factor.multiply(x.divide(BigDecimalMath.pow(result, nMinus1, mc), mc).subtract(result, mc), mc);
+					
+			result = result.add(step, mc);
+		} while (step.abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal rootAdaptivePrecision(BigDecimal n, BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal root(x) for x < 0: x = " + x);
+		}
+
+		int maxPrecision = mathContext.getPrecision() + 4;
+		MathContext mcMax = new MathContext(maxPrecision, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+//		BigDecimal factor = ONE.divide(n, mcMax);
+		BigDecimal nMinus1 = n.subtract(ONE);
+		BigDecimal result = x.divide(TWO, MathContext.DECIMAL32);
+		int adaptivePrecision = 4;
+		BigDecimal step;
+
+		do {
+			adaptivePrecision = adaptivePrecision * 2;
+			if (adaptivePrecision > maxPrecision) {
+				adaptivePrecision = maxPrecision;
+			}
+			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+
+			BigDecimal factor = ONE.divide(n, mc);
+
+			step = factor.multiply(x.divide(BigDecimalMath.pow(result, nMinus1, mc), mc).subtract(result, mc), mc);
+			result = result.add(step, mc);
+		} while (step.abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+
 	// variations on log()
 
 	public static BigDecimal logRangeTen(BigDecimal x, MathContext mathContext, BiFunction<BigDecimal, MathContext, BigDecimal> logFunction) {
