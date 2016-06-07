@@ -1,0 +1,197 @@
+[latex]\require{AMSmath}[/latex]
+Java 8 is out and there are still no Math functions for BigDecimal.
+
+After playing around with some implementations to calculate Pi I decided to write some implementation of BigDecimalMath to fill this gap.
+
+The result of this is available on <a href="https://github.com/eobermuhlner/big-math">github: big-math</a>.
+
+The goal was to provide the following functions:
+<ul>
+	<li>log(x)</li>
+	<li>exp(x)</li>
+	<li>pow(x, y)</li>
+	<li>sqrt(x)</li>
+	<li>root(n, x)</li>
+	<li>sin(x)</li>
+	<li>cos(x)</li>
+</ul>
+
+The calculations must be accurate to the desired precision (specified in the <code>MathContext</code>)
+and the performance should be acceptable and stable for a large range of input values.
+
+<h2>Implementation Details</h2>
+
+<h3>Implementation exp(x)</h3>
+
+To implement exp() the classical Maclaurin series was used:
+[latex]\displaystyle e^x = \sum^{\infty}_{n=0} \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots[/latex]
+
+<h3>Implementation log()</h3>
+
+Note that in Java the function name log() means the natural logarithm, which in mathematical notation is written [latex]\ln{x}[/latex].
+
+The implementation of log() is based on Newton's method.
+We can use the double version Math.log() to give us a good initial value.
+
+[latex]\displaystyle y_0 = \operatorname{Math.log}(x),[/latex]
+[latex]\displaystyle y_{i+1} = y_i + 2 \frac{x - e^{y_i} }{ x + e^{y_i}},[/latex]
+[latex]\displaystyle \ln{x} = \lim_{i \to \infty} y_i[/latex]
+<br>
+
+Several optimizations in the implementation transform the argument of log(x) so that it will be nearer to the optimum of 1.0 to converge faster.
+[latex]
+\begin{align}
+\displaystyle \ln{x} & = \ln{\left(a \cdot 10^b\right)} = \ln{a} + \ln{10} \cdot b & \qquad \text{for } x \leq 0.1 \text{ or } x \geq 10 \\
+\displaystyle \ln{x} & = \ln{\left( 2 x \right)} - \ln{2}                          & \qquad \text{for } x \lt 0.115 \\
+\displaystyle \ln{x} & = \ln{\left( 3 x \right)} - \ln{3}                          & \qquad \text{for } x \lt 0.14 \\
+\displaystyle \ln{x} & = \ln{\left( 4 x \right)} - 2 \ln{2}                        & \qquad \text{for } x \lt 0.2 \\
+\displaystyle \ln{x} & = \ln{\left( 6 x \right)} - \ln{2} - \ln{3}                 & \qquad \text{for } x \lt 0.3 \\
+\displaystyle \ln{x} & = \ln{\left( 8 x \right)} - 3 \ln{2}                        & \qquad \text{for } x \lt 0.42 \\
+\displaystyle \ln{x} & = \ln{\left( 9 x \right)} - 3 \ln{3}                        & \qquad \text{for } x \lt 0.7 \\
+\displaystyle \ln{x} & = \ln{\left( \frac{1}{2} x \right)} + \ln{2}                & \qquad \text{for } x \lt 2.5 \\
+\displaystyle \ln{x} & = \ln{\left( \frac{1}{3} x \right)} + \ln{3}                & \qquad \text{for } x \lt 3.5 \\
+\displaystyle \ln{x} & = \ln{\left( \frac{1}{4} x \right)} + 2 \ln{2}              & \qquad \text{for } x \lt 5.0 \\
+\displaystyle \ln{x} & = \ln{\left( \frac{1}{6} x \right)} + \ln{2} + \ln{3}       & \qquad \text{for } x \lt 7.0 \\
+\displaystyle \ln{x} & = \ln{\left( \frac{1}{8} x \right)} + 3 \ln{2}              & \qquad \text{for } x \lt 8.5 \\
+\displaystyle \ln{x} & = \ln{\left( \frac{1}{9} x \right)} + 3 \ln{3}              & \qquad \text{for } x \lt 10.0
+\end{align}
+[/latex]
+
+The additional logarithmic functions to different common bases are simple:
+[latex]\displaystyle \operatorname{log}_2{x} = \frac{\ln{x}}{\ln{2}}[/latex]
+<br>
+
+[latex]\displaystyle \operatorname{log}_{10}{x} = \frac{\ln{x}}{\ln{10}}[/latex]
+<br>
+
+Since the precalculated values for [latex]\ln{2}, \ln{3}, \ln{10}[/latex] with a precision of up to 1100 digits already exist for the optimizations mentioned above, the log2() and log10() functions could reuse them and are therefore reasonably fast.
+
+<h3>Implementation pow(x)</h3>
+
+The implementation of pow() with non-integer arguments is based on exp() and log():
+[latex]\displaystyle x^y = e^{y \ln x}[/latex]
+
+If y is an integer argument then pow() is implemented with multiplications:
+[latex]\displaystyle x^y = \prod_{i \to y} x[/latex]
+
+Actually the implementation is further optimized to reduce the number of multiplications by squaring the argument whenever possible.
+
+<h3>Implementation sqrt(x), root(n, x)</h3>
+
+The implementation of sqrt() and root() uses Newton's method to approximate the result until the necessary precision is reached.
+In the case of sqrt() we can use the double version Math.sqrt() to give us a good initial value.
+
+[latex]\displaystyle y_0 = \operatorname{Math.sqrt}(x),[/latex]
+[latex]\displaystyle y_{i+1} = \frac{1}{2} \left(y_i + \frac{x}{y_i}\right),[/latex]
+[latex]\displaystyle \sqrt{x} = \lim_{i \to \infty} y_i[/latex]
+<br>
+
+Unfortunately the root() function does not exist for double so we are forced to use a simpler initial value.
+[latex]\displaystyle y_0 = \frac{1}{n},[/latex]
+[latex]\displaystyle y_{i+1} = \frac{1}{n} \left[{(n-1)y_i +\frac{x}{y_i^{n-1}}}\right],[/latex]
+[latex]\displaystyle \sqrt[n]{x} = \lim_{i \to \infty} y_i[/latex]
+<br>
+
+<h3>Implementation sin(x), cos(x), tan(x), cot(x)</h3>
+
+The basic trigonometric functions where implemented using Maclaurin series or if this proved more efficient by their relationship with an already implemented functions:
+[latex]\displaystyle \sin x = \sum^{\infty}_{n=0} \frac{(-1)^n}{(2n+1)!} x^{2n+1} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots[/latex]
+<br>
+
+[latex]\displaystyle \cos x = \sum^{\infty}_{n=0} \frac{(-1)^n}{(2n)!} x^{2n} = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \cdots[/latex]
+<br>
+
+[latex]\displaystyle \tan x = \frac{\sin x}{\cos x}[/latex]
+<br>
+
+[latex]\displaystyle \cot x = \frac{\cos x}{\sin x}[/latex]
+<br>
+
+<h3>Implementation asin(x), acos(x), atan(x), acot(x)</h3>
+
+The inverse trigonometric functions use a Maclaurin series for arcsin(), the remaining functions are implemented by their relationship with arcsin():
+[latex]\displaystyle \arcsin x = \sum^{\infty}_{n=0} \frac{(2n)!}{4^n (n!)^2 (2n+1)} x^{2n+1}[/latex]
+<br>
+
+[latex]\displaystyle \arccos x = \frac{\pi}{2} - \arcsin x[/latex]
+<br>
+
+[latex]\displaystyle \arctan x = \arcsin \frac{x}{\sqrt{1+x^2}}[/latex]
+<br>
+
+[latex]\displaystyle \operatorname{arccot} x = \frac{\pi}{2} - \arctan x[/latex]
+<br>
+
+
+<h2>Performance calculating different precisions</h2>
+Obviously it will take longer to calculate a function result with a higher precision than a lower precision.
+
+The following charts show the time needed to calculate the functions with different precisions.
+
+The arguments of the functions where:
+<ul>
+	<li>log(3.1)</li>
+	<li>exp(3.1)</li>
+	<li>pow(123.456, 3.1)</li>
+	<li>sqrt(3.1)</li>
+	<li>root(2, 3.1)</li>
+	<li>root(3, 3.1)</li>
+	<li>sin(3.1)</li>
+	<li>cos(3.1)</li>
+</ul>
+
+[visualizer id="479"]
+[visualizer id="480"]
+While the time to calculate the results grows worse than linear for higher precisions the speed is still reasonable for precisions of up to 1000 digits.
+
+<h2>Performance calculating different values</h2>
+The following charts show the time needed to calculate the functions over a range of values with a precision of 300 digits.
+
+<ul>
+	<li>log(x)</li>
+	<li>exp(x)</li>
+	<li>pow(123.456, x)</li>
+	<li>sqrt(x)</li>
+	<li>root(2, x)</li>
+	<li>root(3, x)</li>
+	<li>sin(x)</li>
+	<li>cos(x)</li>
+</ul>
+
+
+The functions have been separated in a fast group (exp, sqrt, root, sin, cos) and a slow group (exp, log, pow).
+For comparison reasons the exp() function is contained in both groups.
+
+<h3>Range 0 to 2</h3>
+[visualizer id="484"]
+The performance of the functions is in a reasonable range and is stable, especially when getting close to 0 in which some functions might converge slowly.
+The functions exp(), sin(), cos() need to be watched at the higher values of x to prove that the do not continue to grow.
+[visualizer id="477"]
+Shows nicely that log() is more efficient when x is close to 1.0.
+By using divisions and multiplication with the prime numbers 2 and 3 the log() function was optimized to use this fact for values of x than can be brought closer to 1.0.
+This gives the strange arches in the performance of log().
+The pow() function performs fairly constant, except for the powers of integer values which are optimized specifically.
+
+<h3>Range 0 to 10</h3>
+[visualizer id="482"]
+Shows that sin(), cos() have been optimized with the period of 2*Pi (roughly 6.28) so that they do not continue to grow with higher values.
+This optimization has some cost which needs to be watched at higher values.
+
+[visualizer id="492"]
+exp() has become stable and does no longer grow.
+log() is stable and shows the typical arches with optimas at 1.0, 2.0 (divided by 2), 3.0 (divided by 3), 4.0 (divided by 2*2), 6.0 (divided by 2*3), 8.0 (divided by 2*2*2) and 9.0 (divided by 3*3).
+pow() continues stable.
+
+<h3>Range -10 to 10</h3>
+[visualizer id="481"]
+[visualizer id="478"]
+Positive and negative values are symmetric for all functions that are defined for the negative range.
+
+<h3>Range 0 to 100</h3>
+[visualizer id="483"]
+All functions are stable over this range.
+
+[visualizer id="493"]
+All functions are stable over this range.
+The pow() function makes the chart somewhat hard to read because of the optimized version for integer powers.
+The log() function shows here the effect of another optimization using the expoential form. The range from 10 to 100 is brought down to the range 1 to 10 and the same divisions are applied. This has the effect of showing the same arches again in the range from 10 to 100.
