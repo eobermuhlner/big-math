@@ -38,6 +38,8 @@ public class BigDecimalMath {
 	
 	private static final BigDecimal MAX_INT = valueOf(Integer.MAX_VALUE);
 	
+	private static final int EXPECTED_INITIAL_PRECISION = 15;
+	
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
 	static {
 		BigDecimal result = ONE;
@@ -247,7 +249,7 @@ public class BigDecimalMath {
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
-		int adaptivePrecision = 12;
+		int adaptivePrecision = EXPECTED_INITIAL_PRECISION;
 		BigDecimal last;
 
 		do {
@@ -288,11 +290,11 @@ public class BigDecimalMath {
 		BigDecimal factor = ONE.divide(n, mcMax);
 		BigDecimal nMinus1 = n.subtract(ONE);
 		BigDecimal result = x.divide(TWO, mcMax);
-		int adaptivePrecision = 2;
+		int adaptivePrecision = 2; // first approximation has really bad precision
 		BigDecimal step;
 
 		do {
-			adaptivePrecision = adaptivePrecision * 2;
+			adaptivePrecision = adaptivePrecision * 3; // cubic convergence
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
@@ -371,7 +373,7 @@ public class BigDecimalMath {
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 		
 		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
-		int adaptivePrecision = 12;
+		int adaptivePrecision = EXPECTED_INITIAL_PRECISION;
 		BigDecimal step;
 		
 		do {

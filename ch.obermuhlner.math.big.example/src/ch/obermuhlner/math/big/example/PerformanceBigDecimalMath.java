@@ -47,14 +47,20 @@ public class PerformanceBigDecimalMath {
 		performanceReport_Fast_precision();
 		performanceReport_Slow_precision();
 
+		// --- asin() optimizations:
+//		performanceReportAsinOptimization_0_to_1();
+
 		// --- sqrt() optimizations:
-		performanceReportSqrtOptimization_0_to_10();
+//		performanceReportSqrtOptimization_0_to_1();
 
 		// --- root() optimizations:
-		performanceReportRootOptimization_0_to_10();
+//		performanceReportRootOptimization_0_to_10();
+		
 
 		// --- log() optimizations:
-		performanceReportLogOptimizationNewton_0_to_10();
+//		performanceReportLogNewtonAdaptive_0_to_10();
+		
+//		performanceReportLogOptimizationNewton_0_to_10();
 //		performanceReportLogOptimizationNewton_0_to_100();
 		
 //		performanceReportLogOptimizationTry();
@@ -239,13 +245,26 @@ public class PerformanceBigDecimalMath {
 }
 
 
-	private static void performanceReportSqrtOptimization_0_to_10() {
+	private static void performanceReportAsinOptimization_0_to_1() {
 		performanceReportOverValue(
-				"test_sqrt_impl_from_0_to_10.csv",
+				"test_asin_impl_from_0_to_1.csv",
 				REF_MATHCONTEXT,
 				0,
-				+1000,
-				+0.1,
+				+1,
+				+0.01,
+				REPEATS,
+				Arrays.asList("asin", "asinNewton"),
+				(x1, mc1) -> BigDecimalMathExperimental.asin(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.asinUsingNewton(x1, mc1));
+	}
+
+	private static void performanceReportSqrtOptimization_0_to_1() {
+		performanceReportOverValue(
+				"test_sqrt_impl_from_0_to_1.csv",
+				REF_MATHCONTEXT,
+				0,
+				+1,
+				+0.01,
 				REPEATS,
 				Arrays.asList("sqrt", "sqrtAdaptive"),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
@@ -257,12 +276,25 @@ public class PerformanceBigDecimalMath {
 				"test_root_impl_from_0_to_10.csv",
 				REF_MATHCONTEXT,
 				0,
-				+1000,
-				+0.1,
+				+10,
+				+0.01,
 				REPEATS,
 				Arrays.asList("root", "rootAdaptive"),
 				(x1, mc1) -> BigDecimalMathExperimental.rootFixPrecision(BigDecimal.valueOf(3), x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.rootAdaptivePrecision(BigDecimal.valueOf(3), x1, mc1));
+	}
+
+	private static void performanceReportLogNewtonAdaptive_0_to_10() {
+		performanceReportOverValue(
+				"test_log_adaptive_impl_from_0_to_10.csv",
+				REF_MATHCONTEXT,
+				0.05,
+				+10,
+				+0.05,
+				REPEATS,
+				Arrays.asList("newton", "newtonAdaptive"),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonFixPrecision(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(x1, mc1));
 	}
 
 	/**

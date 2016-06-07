@@ -41,9 +41,11 @@ public class FunctionTable {
 				0.01,
 				Arrays.asList(
 						"BigDecimalMath.asin",
+						"Experimantal.asinNewton",
 						"Math.asin"),
 				Arrays.asList(
 						x -> BigDecimalMath.asin(x, mathContext),
+						x -> BigDecimalMathExperimental.asinUsingNewton(x, mathContext),
 						x -> BigDecimal.valueOf(Math.asin(x.doubleValue()))
 						));
 	}

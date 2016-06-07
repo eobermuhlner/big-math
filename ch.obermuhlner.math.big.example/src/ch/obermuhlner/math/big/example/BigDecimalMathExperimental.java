@@ -10,6 +10,7 @@ import java.math.MathContext;
 import java.util.function.BiFunction;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import ch.obermuhlner.math.big.internal.AsinCalculator;
 
 public class BigDecimalMathExperimental {
 
@@ -20,10 +21,78 @@ public class BigDecimalMathExperimental {
 	private static final BigDecimal LOG_THREE = new BigDecimal("1.0986122886681096913952452369225257046474905578227494517346943336374942932186089668736157548137320887879700290659578657423680042259305198210528018707672774106031627691833813671793736988443609599037425703167959115211455919177506713470549401667755802222031702529468975606901065215056428681380363173732985777823669916547921318181490200301038236301222486527481982259910974524908964580534670088459650857484441190188570876474948670796130858294116021661211840014098255143919487688936798494302255731535329685345295251459213876494685932562794416556941578272310355168866102118469890439943063138255285736466882824988136822800634143910786893251456437510204451627561934973982116941585740535361758900975122233797736969687754354795135712982177017581242122351405810163272465588937249564919185242960796684234647069377237252655082032078333928055892853146873095132606458309184397496822230325765467533311823019649275257599132217851353390237482964339502546074245824934666866121881436526565429542767610505477795422933973323401173743193974579847018559548494059478353943841010602930762292228131207489306344534025277732685627");
 	private static final BigDecimal LOG_TEN = new BigDecimal("2.3025850929940456840179914546843642076011014886287729760333279009675726096773524802359972050895982983419677840422862486334095254650828067566662873690987816894829072083255546808437998948262331985283935053089653777326288461633662222876982198867465436674744042432743651550489343149393914796194044002221051017141748003688084012647080685567743216228355220114804663715659121373450747856947683463616792101806445070648000277502684916746550586856935673420670581136429224554405758925724208241314695689016758940256776311356919292033376587141660230105703089634572075440370847469940168269282808481184289314848524948644871927809676271275775397027668605952496716674183485704422507197965004714951050492214776567636938662976979522110718264549734772662425709429322582798502585509785265383207606726317164309505995087807523710333101197857547331541421808427543863591778117054309827482385045648019095610299291824318237525357709750539565187697510374970888692180205189339507238539205144634197265287286965110862571492198849978748873771345686209167058498078280597511938544450099781311469159346662410718466923101075984383191913");
 
+	private static final BigDecimal MINUS_ONE = valueOf(-1);
+
 	private BigDecimalMathExperimental() {
 		// prevent instances
 	}
 
+	// variations on asin()
+	
+	public static BigDecimal asinUsingNewton(BigDecimal x, MathContext mathContext) {
+		if (x.compareTo(ONE) > 0) {
+			throw new ArithmeticException("Illegal asin(x) for x > 1: x = " + x);
+		}
+		if (x.compareTo(MINUS_ONE) < 0) {
+			throw new ArithmeticException("Illegal asin(x) for x < -1: x = " + x);
+		}
+		
+		if (x.signum() == -1) {
+			return asinUsingNewton(x.negate(), mathContext).negate();
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		
+		BigDecimal result = BigDecimal.valueOf(Math.asin(x.doubleValue()));
+		BigDecimal step;
+		
+		do {
+			BigDecimal factor = BigDecimalMath.sqrt(ONE.subtract(result.multiply(result, mc)), mc);
+			step = BigDecimalMath.sin(result, mathContext).subtract(x, mc).multiply(factor, mc);
+			result = result.add(step);
+		} while (step.abs().compareTo(acceptableError) > 0);
+
+		return result.round(mathContext);
+	}
+	
+	public static BigDecimal asin(BigDecimal x, MathContext mathContext) {
+		if (x.compareTo(ONE) > 0) {
+			throw new ArithmeticException("Illegal asin(x) for x > 1: x = " + x);
+		}
+		if (x.compareTo(MINUS_ONE) < 0) {
+			throw new ArithmeticException("Illegal asin(x) for x < -1: x = " + x);
+		}
+		
+		if (x.signum() == -1) {
+			return asin(x.negate(), mathContext).negate();
+		}
+		
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+
+		if (x.compareTo(BigDecimal.valueOf(0.707107)) >= 0) {
+			BigDecimal xTransformed = BigDecimalMath.sqrt(ONE.subtract(x.multiply(x, mc), mc), mc);
+			return acos(xTransformed, mathContext);
+		}
+
+		BigDecimal result = AsinCalculator.INSTANCE.calculate(x, mc);
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal acos(BigDecimal x, MathContext mathContext) {
+		if (x.compareTo(ONE) > 0) {
+			throw new ArithmeticException("Illegal acos(x) for x > 1: x = " + x);
+		}
+		if (x.compareTo(MINUS_ONE) < 0) {
+			throw new ArithmeticException("Illegal acos(x) for x < -1: x = " + x);
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+
+		BigDecimal result = BigDecimalMath.pi(mc).divide(TWO, mc).subtract(asin(x, mc), mc);
+		return result.round(mathContext);
+	}	
+	
 	// variations on sqrt()
 	
 	public static BigDecimal sqrtUsingNewton(BigDecimal x, MathContext mathContext) {
@@ -386,11 +455,11 @@ public class BigDecimalMathExperimental {
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 		
 		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
-		int adaptivePrecision = 12;
+		int adaptivePrecision = 15;
 		BigDecimal step;
 		
 		do {
-			adaptivePrecision = adaptivePrecision * 2;
+			adaptivePrecision = adaptivePrecision * 3;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
