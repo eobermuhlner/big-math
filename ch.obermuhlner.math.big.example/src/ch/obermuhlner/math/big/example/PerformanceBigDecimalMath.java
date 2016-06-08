@@ -31,7 +31,9 @@ public class PerformanceBigDecimalMath {
 	public static void main(String[] args) {
 
 //		System.out.println(BigDecimalMath.pi(new MathContext(1100)));
-
+//		System.out.println(BigDecimalMathExperimental.logUsingNewtonFixPrecision(BigDecimal.valueOf(3.1), new MathContext(1000)));
+//		System.out.println(BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(BigDecimal.valueOf(3.1), new MathContext(1000), -17));
+		
 		performanceReport_Fast_0_to_2();
 		performanceReport_Fast_neg10_to_10();
 		performanceReport_Fast_0_to_10();
@@ -48,17 +50,16 @@ public class PerformanceBigDecimalMath {
 		performanceReport_Slow_precision();
 
 		// --- asin() optimizations:
-//		performanceReportAsinOptimization_0_to_1();
+		performanceReportAsinOptimization_0_to_1();
 
 		// --- sqrt() optimizations:
-//		performanceReportSqrtOptimization_0_to_1();
+		performanceReportSqrtOptimization_0_to_1();
 
 		// --- root() optimizations:
-//		performanceReportRootOptimization_0_to_10();
+		performanceReportRootOptimization_0_to_10();
 		
-
 		// --- log() optimizations:
-//		performanceReportLogNewtonAdaptive_0_to_10();
+		performanceReportLogNewtonAdaptive_0_to_10();
 		
 //		performanceReportLogOptimizationNewton_0_to_10();
 //		performanceReportLogOptimizationNewton_0_to_100();
@@ -242,8 +243,7 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
-}
-
+	}
 
 	private static void performanceReportAsinOptimization_0_to_1() {
 		performanceReportOverValue(
@@ -279,9 +279,9 @@ public class PerformanceBigDecimalMath {
 				+10,
 				+0.01,
 				REPEATS,
-				Arrays.asList("root", "rootAdaptive"),
+				Arrays.asList("root", "rootAdaptive2"),
 				(x1, mc1) -> BigDecimalMathExperimental.rootFixPrecision(BigDecimal.valueOf(3), x1, mc1),
-				(x1, mc1) -> BigDecimalMathExperimental.rootAdaptivePrecision(BigDecimal.valueOf(3), x1, mc1));
+				(x1, mc1) -> BigDecimalMathExperimental.rootAdaptivePrecision(BigDecimal.valueOf(3), x1, mc1, 2));
 	}
 
 	private static void performanceReportLogNewtonAdaptive_0_to_10() {
@@ -292,9 +292,9 @@ public class PerformanceBigDecimalMath {
 				+10,
 				+0.05,
 				REPEATS,
-				Arrays.asList("newton", "newtonAdaptive"),
+				Arrays.asList("newtonFix", "newton17"),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonFixPrecision(x1, mc1),
-				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(x1, mc1));
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(x1, mc1, 17));
 	}
 
 	/**

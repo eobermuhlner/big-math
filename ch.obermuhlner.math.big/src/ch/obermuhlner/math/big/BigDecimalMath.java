@@ -38,7 +38,7 @@ public class BigDecimalMath {
 	
 	private static final BigDecimal MAX_INT = valueOf(Integer.MAX_VALUE);
 	
-	private static final int EXPECTED_INITIAL_PRECISION = 15;
+	private static final int EXPECTED_INITIAL_PRECISION = 17;
 	
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
 	static {
@@ -254,13 +254,13 @@ public class BigDecimalMath {
 
 		do {
 			last = result;
-			adaptivePrecision = adaptivePrecision * 2;
+			adaptivePrecision = adaptivePrecision * 3;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
 			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
-		} while (adaptivePrecision < maxPrecision && result.subtract(last).abs().compareTo(acceptableError) > 0);
+		} while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
 		
 		return result.round(mathContext);
 	}
@@ -284,25 +284,23 @@ public class BigDecimalMath {
 		}
 
 		int maxPrecision = mathContext.getPrecision() + 4;
-		MathContext mcMax = new MathContext(maxPrecision, mathContext.getRoundingMode());
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
-		BigDecimal factor = ONE.divide(n, mcMax);
 		BigDecimal nMinus1 = n.subtract(ONE);
-		BigDecimal result = x.divide(TWO, mcMax);
+		BigDecimal result = x.divide(TWO, MathContext.DECIMAL32);
 		int adaptivePrecision = 2; // first approximation has really bad precision
 		BigDecimal step;
 
 		do {
-			adaptivePrecision = adaptivePrecision * 3; // cubic convergence
+			adaptivePrecision = adaptivePrecision * 3;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
 			
-			step = factor.multiply(x.divide(pow(result, nMinus1, mc), mc).subtract(result, mc), mc);
+			step = x.divide(pow(result, nMinus1, mc), mc).subtract(result, mc).divide(n, mc);
 			result = result.add(step, mc);
-		} while (step.abs().compareTo(acceptableError) > 0);
+		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
 		
 		return result.round(mathContext);
 	}
@@ -377,7 +375,7 @@ public class BigDecimalMath {
 		BigDecimal step;
 		
 		do {
-			adaptivePrecision = adaptivePrecision * 2;
+			adaptivePrecision = adaptivePrecision * 3;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
@@ -386,7 +384,7 @@ public class BigDecimalMath {
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
 			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
 			result = result.add(step);
-		} while (adaptivePrecision < maxPrecision && step.abs().compareTo(acceptableError) > 0);
+		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}

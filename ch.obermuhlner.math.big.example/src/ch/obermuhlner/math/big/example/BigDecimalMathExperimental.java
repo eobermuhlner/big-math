@@ -129,18 +129,18 @@ public class BigDecimalMathExperimental {
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
-		int adaptivePrecision = 12;
+		int adaptivePrecision = 17;
 		BigDecimal last;
 
 		do {
 			last = result;
-			adaptivePrecision = adaptivePrecision * 2;
+			adaptivePrecision = adaptivePrecision * 3;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
 			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
-		} while (adaptivePrecision < maxPrecision && result.subtract(last).abs().compareTo(acceptableError) > 0);
+		} while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
 		
 		return result.round(mathContext);
 	}
@@ -173,6 +173,10 @@ public class BigDecimalMathExperimental {
 	}
 
 	public static BigDecimal rootAdaptivePrecision(BigDecimal n, BigDecimal x, MathContext mathContext) {
+		return rootAdaptivePrecision(n, x, mathContext, 4);
+	}
+	
+	public static BigDecimal rootAdaptivePrecision(BigDecimal n, BigDecimal x, MathContext mathContext, int initialPrecision) {
 		switch (x.signum()) {
 		case 0:
 			return ZERO;
@@ -181,27 +185,23 @@ public class BigDecimalMathExperimental {
 		}
 
 		int maxPrecision = mathContext.getPrecision() + 4;
-		MathContext mcMax = new MathContext(maxPrecision, mathContext.getRoundingMode());
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
-//		BigDecimal factor = ONE.divide(n, mcMax);
 		BigDecimal nMinus1 = n.subtract(ONE);
 		BigDecimal result = x.divide(TWO, MathContext.DECIMAL32);
-		int adaptivePrecision = 4;
+		int adaptivePrecision = initialPrecision;
 		BigDecimal step;
 
 		do {
-			adaptivePrecision = adaptivePrecision * 2;
+			adaptivePrecision = adaptivePrecision * 3;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
 
-			BigDecimal factor = ONE.divide(n, mc);
-
-			step = factor.multiply(x.divide(BigDecimalMath.pow(result, nMinus1, mc), mc).subtract(result, mc), mc);
+			step = x.divide(BigDecimalMath.pow(result, nMinus1, mc), mc).subtract(result, mc).divide(n, mc);
 			result = result.add(step, mc);
-		} while (step.abs().compareTo(acceptableError) > 0);
+		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
 		
 		return result.round(mathContext);
 	}
@@ -438,16 +438,23 @@ public class BigDecimalMathExperimental {
 		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
 		BigDecimal step;
 		
+		//System.out.println(result);
 		do {
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
 			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
 			result = result.add(step);
+			//System.out.println(result);
+			//System.out.println(BigDecimalMath.exponent(step));
 		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}
 
 	public static BigDecimal logUsingNewtonAdaptivePrecision(BigDecimal x, MathContext mathContext) {
+		return logUsingNewtonAdaptivePrecision(x, mathContext, 17);
+	}
+	
+	public static BigDecimal logUsingNewtonAdaptivePrecision(BigDecimal x, MathContext mathContext, int initialPrecision) {
 		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
 		// y = y + 2 * (x-exp(y)) / (x+exp(y))
 
@@ -455,9 +462,10 @@ public class BigDecimalMathExperimental {
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 		
 		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
-		int adaptivePrecision = 15;
-		BigDecimal step;
+		int adaptivePrecision = initialPrecision;
+		BigDecimal step = null;
 		
+		//System.out.println(result);
 		do {
 			adaptivePrecision = adaptivePrecision * 3;
 			if (adaptivePrecision > maxPrecision) {
@@ -468,7 +476,9 @@ public class BigDecimalMathExperimental {
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
 			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
 			result = result.add(step);
-		} while (adaptivePrecision < maxPrecision && step.abs().compareTo(acceptableError) > 0);
+			//System.out.println(result);
+//			System.out.println(BigDecimalMath.exponent(step));
+		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
 	}
