@@ -431,22 +431,19 @@ public class BigDecimalMathExperimental {
 	public static BigDecimal logUsingNewtonFixPrecision(BigDecimal x, MathContext mathContext) {
 		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
 		// y = y + 2 * (x-exp(y)) / (x+exp(y))
-
+	
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 		
 		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
 		BigDecimal step;
 		
-		//System.out.println(result);
 		do {
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
 			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
 			result = result.add(step);
-			//System.out.println(result);
-			//System.out.println(BigDecimalMath.exponent(step));
 		} while (step.abs().compareTo(acceptableError) > 0);
-
+	
 		return result.round(mathContext);
 	}
 
@@ -457,7 +454,7 @@ public class BigDecimalMathExperimental {
 	public static BigDecimal logUsingNewtonAdaptivePrecision(BigDecimal x, MathContext mathContext, int initialPrecision) {
 		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
 		// y = y + 2 * (x-exp(y)) / (x+exp(y))
-
+	
 		int maxPrecision = mathContext.getPrecision() + 4;
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 		
@@ -465,7 +462,6 @@ public class BigDecimalMathExperimental {
 		int adaptivePrecision = initialPrecision;
 		BigDecimal step = null;
 		
-		//System.out.println(result);
 		do {
 			adaptivePrecision = adaptivePrecision * 3;
 			if (adaptivePrecision > maxPrecision) {
@@ -476,10 +472,8 @@ public class BigDecimalMathExperimental {
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
 			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
 			result = result.add(step);
-			//System.out.println(result);
-//			System.out.println(BigDecimalMath.exponent(step));
 		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
-
+	
 		return result.round(mathContext);
 	}
 
