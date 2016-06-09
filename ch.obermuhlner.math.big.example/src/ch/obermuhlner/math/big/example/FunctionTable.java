@@ -11,11 +11,58 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 public class FunctionTable {
 
 	public static void main(String[] args) {
+//		printTableLog();
+		printTableLog10();
+//		printTableExp();
 //		printTableSin();
-		printTableAsin();
+//		printTableAsin();
 //		printTableAcos();
 //		printTableAtan();
-//		printTableExp();
+	}
+
+	public static void printTableLog() {
+		MathContext mathContext = new MathContext(20);
+		printTable(
+				0,
+				10,
+				0.1,
+				Arrays.asList(
+						"BigDecimalMath.log",
+						"Math.log"),
+				Arrays.asList(
+						x -> BigDecimalMath.log(x, mathContext),
+						x -> BigDecimal.valueOf(Math.log(x.doubleValue()))
+						));
+	}
+
+	public static void printTableLog10() {
+		MathContext mathContext = new MathContext(5);
+		printTable(
+				0,
+				100,
+				1,
+				Arrays.asList(
+						"BigDecimalMath.log10",
+						"Math.log10"),
+				Arrays.asList(
+						x -> BigDecimalMath.log10(x, mathContext),
+						x -> BigDecimal.valueOf(Math.log(x.doubleValue()) / Math.log(10))
+						));
+	}
+
+	public static void printTableExp() {
+		MathContext mathContext = new MathContext(20);
+		printTable(
+				0,
+				10,
+				0.1,
+				Arrays.asList(
+						"BigDecimalMath.exp",
+						"Math.exp"),
+				Arrays.asList(
+						x -> BigDecimalMath.exp(x, mathContext),
+						x -> BigDecimal.valueOf(Math.exp(x.doubleValue()))
+						));
 	}
 
 	public static void printTableSin() {
@@ -41,11 +88,9 @@ public class FunctionTable {
 				0.01,
 				Arrays.asList(
 						"BigDecimalMath.asin",
-						"Experimantal.asinNewton",
 						"Math.asin"),
 				Arrays.asList(
 						x -> BigDecimalMath.asin(x, mathContext),
-						x -> BigDecimalMathExperimental.asinUsingNewton(x, mathContext),
 						x -> BigDecimal.valueOf(Math.asin(x.doubleValue()))
 						));
 	}
@@ -77,21 +122,6 @@ public class FunctionTable {
 				Arrays.asList(
 						x -> BigDecimalMath.atan(x, mathContext),
 						x -> BigDecimal.valueOf(Math.atan(x.doubleValue()))
-						));
-	}
-
-	public static void printTableExp() {
-		MathContext mathContext = new MathContext(20);
-		printTable(
-				0,
-				10,
-				0.1,
-				Arrays.asList(
-						"BigDecimalMath.exp",
-						"Math.exp"),
-				Arrays.asList(
-						x -> BigDecimalMath.exp(x, mathContext),
-						x -> BigDecimal.valueOf(Math.exp(x.doubleValue()))
 						));
 	}
 
@@ -132,7 +162,7 @@ public class FunctionTable {
 				try {
 					BigDecimal y = function.apply(x);
 					System.out.printf(",%30s", y);
-				} catch(ArithmeticException ex) {
+				} catch(Exception ex) {
 					System.out.printf(",%30s", "NaN");
 					// ignore
 				}
