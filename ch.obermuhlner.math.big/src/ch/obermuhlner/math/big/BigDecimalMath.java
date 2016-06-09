@@ -659,13 +659,13 @@ public class BigDecimalMath {
 	}
 	
 	/**
-	 * Calculates the inverse sine (arc sinus) of {@link BigDecimal} x.
+	 * Calculates the arc sine (inverted sine) of {@link BigDecimal} x.
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Arcsine">Wikipedia: Arcsine</a></p>
 	 * 
 	 * @param x the {@link BigDecimal} to calculate the arc sine for
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @return the calculated arc sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal asin(BigDecimal x, MathContext mathContext) {
 		if (x.compareTo(ONE) > 0) {
@@ -711,6 +711,15 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
+	/**
+	 * Calculates the arc cosine (inverted cosine) of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="http://en.wikipedia.org/wiki/Arccosine">Wikipedia: Arccosine</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the arc cosine for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated arc sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal acos(BigDecimal x, MathContext mathContext) {
 		if (x.compareTo(ONE) > 0) {
 			throw new ArithmeticException("Illegal acos(x) for x > 1: x = " + x);
@@ -744,7 +753,7 @@ public class BigDecimalMath {
 	}
 	
 	/**
-	 * Calculates the inverse tangens (arc tangens) of {@link BigDecimal} x.
+	 * Calculates the arc tangens (inverted tangens) of {@link BigDecimal} x.
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Arctangens">Wikipedia: Arctangens</a></p>
 	 * 
@@ -1044,6 +1053,72 @@ public class BigDecimalMath {
 		 * @see BigDecimalMath#cos(BigDecimal, MathContext)
 		 */
 		public BigDecimal cos(BigDecimal x) {
+			return BigDecimalMath.cos(x, mathContext);
+		}
+
+		/**
+		 * Returns the tangens of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#tan(BigDecimal, MathContext)
+		 */
+		public BigDecimal tan(BigDecimal x) {
+			return BigDecimalMath.cos(x, mathContext);
+		}
+
+		/**
+		 * Returns the cotangens of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#cot(BigDecimal, MathContext)
+		 */
+		public BigDecimal cot(BigDecimal x) {
+			return BigDecimalMath.cos(x, mathContext);
+		}
+
+		/**
+		 * Returns the arc sine of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#asin(BigDecimal, MathContext)
+		 */
+		public BigDecimal asin(BigDecimal x) {
+			return BigDecimalMath.asin(x, mathContext);
+		}
+		
+		/**
+		 * Returns the arc cosine of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#acos(BigDecimal, MathContext)
+		 */
+		public BigDecimal acos(BigDecimal x) {
+			return BigDecimalMath.acos(x, mathContext);
+		}
+
+		/**
+		 * Returns the arc tangens of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#atan(BigDecimal, MathContext)
+		 */
+		public BigDecimal atan(BigDecimal x) {
+			return BigDecimalMath.atan(x, mathContext);
+		}
+
+		/**
+		 * Returns the arc cotangens of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#acot(BigDecimal, MathContext)
+		 */
+		public BigDecimal acot(BigDecimal x) {
 			return BigDecimalMath.cos(x, mathContext);
 		}
 	}}
