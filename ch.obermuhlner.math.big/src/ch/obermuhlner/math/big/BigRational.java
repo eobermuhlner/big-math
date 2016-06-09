@@ -63,8 +63,6 @@ public class BigRational implements Comparable<BigRational> {
 	 */
 	public static final BigRational TEN = new BigRational(10);
 
-	private static final BigDecimal BIGDECIMAL_MAX_INT = BigDecimal.valueOf(Integer.MAX_VALUE);
-
 	private final BigDecimal numerator;
 
 	private final BigDecimal denominator;
@@ -538,10 +536,6 @@ public class BigRational implements Comparable<BigRational> {
 	 */
 	public boolean isZero() {
 		return numerator.signum() == 0;
-	}
-
-	private boolean isOne() {
-		return numerator.equals(denominator);
 	}
 
 	private boolean isPositive() {
