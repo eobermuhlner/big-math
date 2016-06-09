@@ -325,14 +325,19 @@ public class BigDecimalMath {
 			return ZERO;
 		}
 		
+		BigDecimal result;
 		switch (x.compareTo(TEN)) {
 		case 0:
-			return logTen(mathContext);
+			result = logTen(mathContext);
+			break;
 		case 1:
-			return logUsingExponent(x, mathContext);
+			result = logUsingExponent(x, mathContext);
+			break;
+		default :
+			result = logUsingTwoThree(x, mathContext);
 		}
 
-		return logUsingTwoThree(x, mathContext);
+		return result.round(mathContext);
 	}
 
 	/**
@@ -346,7 +351,8 @@ public class BigDecimalMath {
 	public static BigDecimal log2(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
 
-		return log(x, mc).divide(logTwo(mc), mc);
+		BigDecimal result = log(x, mc).divide(logTwo(mc), mc);
+		return result.round(mathContext);
 	}
 	
 	/**
@@ -360,7 +366,8 @@ public class BigDecimalMath {
 	public static BigDecimal log10(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
 
-		return log(x, mc).divide(logTen(mc), mc);
+		BigDecimal result = log(x, mc).divide(logTen(mc), mc);
+		return result.round(mathContext);
 	}
 	
 	private static BigDecimal logUsingNewton(BigDecimal x, MathContext mathContext) {
@@ -386,7 +393,7 @@ public class BigDecimalMath {
 			result = result.add(step);
 		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
 
-		return result.round(mathContext);
+		return result;
 	}
 
 	private static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
@@ -491,7 +498,7 @@ public class BigDecimalMath {
 
 		result = result.add(logUsingNewton(correctedX, mc));
 
-		return result.round(mathContext);
+		return result;
 	}
 
 	private static BigDecimal logUsingExponent(BigDecimal x, MathContext mathContext) {
@@ -504,7 +511,7 @@ public class BigDecimalMath {
 		if (exponent != 0) {
 			result = result.add(valueOf(exponent).multiply(logTen(mc), mc), mc);
 		}
-		return result.round(mathContext);
+		return result;
 	}
 	
 	public static BigDecimal pi(MathContext mathContext) {
