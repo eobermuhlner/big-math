@@ -1,38 +1,40 @@
 This describes a way to improve the performance of a BigDecimal based implementation of Newton's Method
 by adapting the precision for every iteration to the maximum precision that is actually possible at this step.
 
-As showcase I have picked the implementation of Newton's Method to calculate the square root of a BigDecimal value with a determined precision.
+As showcase I have picked the implementation of Newton's Method to calculate the natural logarithm of a BigDecimal value with a determined precision.
+
+The source code is available on <a href="https://github.com/eobermuhlner/big-math">github: big-math</a>.
 
 Here the mathematical formulation of the algorithm:
 
 [latex]\require{AMSmath}[/latex]
-[latex]\displaystyle y_0 = \operatorname{Math.sqrt}(x),[/latex]
-[latex]\displaystyle y_{i+1} = \frac{1}{2} \left(y_i + \frac{x}{y_i}\right),[/latex]
-[latex]\displaystyle \sqrt{x} = \lim_{i \to \infty} y_i[/latex]
+[latex]\displaystyle y_0 = \operatorname{Math.log}(x),[/latex]
+[latex]\displaystyle y_{i+1} = y_i + 2 \frac{x - e^{y_i} }{ x + e^{y_i}},[/latex]
+[latex]\displaystyle \ln{x} = \lim_{i \to \infty} y_i[/latex]
 <br>
 
 Here a straightforward implementation:
 
 <pre class="brush:java">
-public static BigDecimal sqrt(BigDecimal x, MathContext mathContext) {
-	switch (x.signum()) {
-	case 0:
-		return ZERO;
-	case -1:
-		throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+private static final BigDecimal TWO = valueOf(2);
+
+public static BigDecimal logUsingNewtonFixPrecision(BigDecimal x, MathContext mathContext) {
+	if (x.signum() <= 0) {
+		throw new ArithmeticException("Illegal log(x) for x <= 0: x = " + x);
 	}
 
 	MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 	BigDecimal acceptableError = BigDecimal.ONE.movePointLeft(mathContext.getPrecision() + 1);
-
-	BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
-	BigDecimal last;
-
+	
+	BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
+	BigDecimal step;
+	
 	do {
-		last = result;
-		result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
-	} while (result.subtract(last).abs().compareTo(acceptableError) > 0);
-		
+		BigDecimal expY = BigDecimalMath.exp(result, mc); // available on https://github.com/eobermuhlner/big-math
+		step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
+		result = result.add(step);
+	} while (step.abs().compareTo(acceptableError) > 0);
+
 	return result.round(mathContext);
 }
 </pre>
@@ -42,58 +44,49 @@ All calculations are done with this MathContext and therefore with the full prec
 
 The result is correct but we can improve the performance significantly be adapting the precision for every iteration.
 
-The initial approximation uses the <code>Math.sqrt(x.doubleValue())</code> which has a precision of about 15 significant digits.
+The initial approximation uses <code>Math.log(x.doubleValue())</code> which has a precision of about 17 significant digits.
 
-We can expect that the precision doubles with every iteration so it does not make sense to calculate with a higher precision than necessary.
+We can expect that the precision triples with every iteration so it does not make sense to calculate with a higher precision than necessary.
 
 Here the same implementation with a temporary MathContext that is recreated with a different precision every iteration.
 
 <pre class="brush:java">
-public static BigDecimal sqrt(BigDecimal x, MathContext mathContext) {
-	switch (x.signum()) {
-	case 0:
-		return ZERO;
-	case -1:
-		throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+public static BigDecimal logUsingNewtonAdaptivePrecision(BigDecimal x, MathContext mathContext) {
+	if (x.signum() <= 0) {
+		throw new ArithmeticException("Illegal log(x) for x <= 0: x = " + x);
 	}
 
 	int maxPrecision = mathContext.getPrecision() + 4;
 	BigDecimal acceptableError = BigDecimal.ONE.movePointLeft(mathContext.getPrecision() + 1);
-
-	BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
-	int adaptivePrecision = 15;
-	BigDecimal last;
-
+	
+	BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
+	int adaptivePrecision = 17;
+	BigDecimal step = null;
+	
 	do {
-		last = result;
-		adaptivePrecision = adaptivePrecision * 2;
+		adaptivePrecision = adaptivePrecision * 3;
 		if (adaptivePrecision > maxPrecision) {
 			adaptivePrecision = maxPrecision;
 		}
 		MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
-		result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
-	} while (adaptivePrecision < maxPrecision && result.subtract(last).abs().compareTo(acceptableError) > 0);
-	
+		
+		BigDecimal expY = BigDecimalMath.exp(result, mc); // available on https://github.com/eobermuhlner/big-math
+		step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
+		result = result.add(step);
+	} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
+
 	return result.round(mathContext);
 }
 </pre>
 
 The performance comparison between the two implementations is impressive.
-The following chart shows the time in nanoseconds it takes to calculate the sqrt() of values of x in the range from 0 to 1 with a precision of 300 digits.
+The following chart shows the time in nanoseconds it takes to calculate the log() of values of x in the range from 0 to 1 with a precision of 300 digits.
 
-[visualizer id="553"]
-
-The adaptive precision implementation is at least 3 times faster than the fixed precision version.
+[visualizer id="558"]
 
 Here some more charts to show the performance improvements of the adaptive precision technique applied to different approximative implementations:
 [visualizer id="557"]
-[visualizer id="558"]
-
-The log() approximative algorithm has cubic convergence and therefore the adaptive precision has to increase even faster than in the sqrt() example.
-<pre class="brush:java">
-		adaptivePrecision = adaptivePrecision * 3;
-</pre>
-
+[visualizer id="553"]
 
 This method can only be applied to approximative methods that improve the result with every iteration and discard the previous result, such as Newton's Method.
 
