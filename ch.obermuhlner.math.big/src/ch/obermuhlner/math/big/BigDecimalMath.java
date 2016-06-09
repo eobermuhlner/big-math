@@ -589,30 +589,6 @@ public class BigDecimalMath {
 		return logUsingNewton(THREE, mathContext);
 	}
 
-	private static BigDecimal logAreaHyperbolicTangent(BigDecimal x, MathContext mathContext) {
-		// http://en.wikipedia.org/wiki/Logarithm#Calculation
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
-		
-		BigDecimal magic = x.subtract(ONE, mc).divide(x.add(ONE), mc);
-		
-		BigDecimal result = ZERO;
-		BigDecimal step;
-		int i = 0;
-		do {
-			int doubleIndexPlusOne = i * 2 + 1; 
-			step = pow(magic, doubleIndexPlusOne, mc).divide(valueOf(doubleIndexPlusOne), mc);
-
-			result = result.add(step, mc);
-			
-			i++;
-		} while (step.abs().compareTo(acceptableError) > 0);
-		
-		result = result.multiply(TWO, mc);
-		
-		return result.round(mathContext);
-	}
-	
 	/**
 	 * Calculates the natural exponent of {@link BigDecimal} x (e<sup>x</sup>).
 	 * 
