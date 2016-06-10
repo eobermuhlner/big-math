@@ -22,9 +22,9 @@ import ch.obermuhlner.math.big.internal.SinCalculator;
  */
 public class PerformanceBigDecimalMath {
 
-	private static MathContext REF_MATHCONTEXT = new MathContext(300);
+	private static MathContext REF_MATHCONTEXT = new MathContext(100);
 	
-	private static int REPEATS = 10;
+	private static int REPEATS = 3;
 	
 	private static final String OUTPUT_DIRECTORY = "docu/benchmarks/";
 
@@ -33,33 +33,34 @@ public class PerformanceBigDecimalMath {
 //		System.out.println(BigDecimalMath.pi(new MathContext(1100)));
 //		System.out.println(BigDecimalMathExperimental.logUsingNewtonFixPrecision(BigDecimal.valueOf(3.1), new MathContext(1000)));
 //		System.out.println(BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(BigDecimal.valueOf(3.1), new MathContext(1000), -17));
-		
-		performanceReport_Fast_0_to_2();
-		performanceReport_Fast_neg10_to_10();
-		performanceReport_Fast_0_to_10();
-		performanceReport_Fast_0_to_100();
 
-		performanceReport_Trigo_0_to_1();
-
-		performanceReport_Slow_0_to_2();
-		performanceReport_Slow_neg10_to_10();
-		performanceReport_Slow_0_to_10();
-		performanceReport_Slow_0_to_100();
-		
-		performanceReport_Fast_precision();
-		performanceReport_Slow_precision();
+//		performanceReport_Fast_0_to_2();
+//		performanceReport_Fast_neg10_to_10();
+//		performanceReport_Fast_0_to_10();
+//		performanceReport_Fast_0_to_100();
+//
+//		performanceReport_Trigo_0_to_1();
+//		performanceReport_Hyperbolic_0_to_2();
+//
+//		performanceReport_Slow_0_to_2();
+//		performanceReport_Slow_neg10_to_10();
+//		performanceReport_Slow_0_to_10();
+//		performanceReport_Slow_0_to_100();
+//		
+//		performanceReport_Fast_precision();
+//		performanceReport_Slow_precision();
 
 		// --- asin() optimizations:
 		performanceReportAsinOptimization_0_to_1();
 
 		// --- sqrt() optimizations:
-		performanceReportSqrtOptimization_0_to_1();
+//		performanceReportSqrtOptimization_0_to_1();
 
 		// --- root() optimizations:
-		performanceReportRootOptimization_0_to_10();
+//		performanceReportRootOptimization_0_to_10();
 		
 		// --- log() optimizations:
-		performanceReportLogNewtonAdaptive_0_to_10();
+//		performanceReportLogNewtonAdaptive_0_to_10();
 		
 //		performanceReportLogOptimizationNewton_0_to_10();
 //		performanceReportLogOptimizationNewton_0_to_100();
@@ -81,13 +82,14 @@ public class PerformanceBigDecimalMath {
 				+2.0,
 				+0.005,
 				REPEATS,
-				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
+				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos", "tan"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext));
 	}
 
 	private static void performanceReport_Fast_neg10_to_10() {
@@ -98,13 +100,14 @@ public class PerformanceBigDecimalMath {
 				+10,
 				+0.1,
 				REPEATS,
-				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
+				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos", "tan"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext));
 	}
 
 	private static void performanceReport_Fast_0_to_10() {
@@ -115,13 +118,14 @@ public class PerformanceBigDecimalMath {
 				10,
 				+0.01,
 				REPEATS,
-				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
+				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos", "tan"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext));
 	}
 
 	private static void performanceReport_Fast_0_to_100() {
@@ -132,13 +136,14 @@ public class PerformanceBigDecimalMath {
 				+100,
 				+0.1,
 				REPEATS,
-				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
+				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos", "tan"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
+				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext));
 	}
 
 	private static void performanceReport_Trigo_0_to_1() {
@@ -156,6 +161,23 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.asin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.acos(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.atan(x, calculationMathContext));
+	}
+
+	private static void performanceReport_Hyperbolic_0_to_2() {
+		performanceReportOverValue(
+				"perf_hyperbolic_funcs_from_0_to_2.csv",
+				REF_MATHCONTEXT,
+				0,
+				+2.0,
+				+0.01,
+				REPEATS,
+				Arrays.asList("sinh", "cosh", "tanh", "asinh", "acosh", "atanh"),
+				(x, calculationMathContext) -> BigDecimalMath.sinh(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.cosh(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.tanh(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.asinh(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.acosh(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.atanh(x, calculationMathContext));
 	}
 
 	private static void performanceReport_Slow_0_to_2() {
@@ -253,7 +275,8 @@ public class PerformanceBigDecimalMath {
 				+1,
 				+0.01,
 				REPEATS,
-				Arrays.asList("asin", "asinNewton"),
+				Arrays.asList("sin", "asin", "asinNewton"),
+				(x1, mc1) -> BigDecimalMath.sin(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.asin(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.asinUsingNewton(x1, mc1));
 	}

@@ -41,16 +41,33 @@ public class BigDecimalMathExperimental {
 			return asinUsingNewton(x.negate(), mathContext).negate();
 		}
 
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		int maxPrecision = mathContext.getPrecision() + 4;
+
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		MathContext maxMathContext = new MathContext(maxPrecision, mathContext.getRoundingMode());
 		
+		if (x.compareTo(BigDecimal.valueOf(0.707107)) >= 0) {
+			BigDecimal xTransformed = BigDecimalMath.sqrt(ONE.subtract(x.multiply(x, maxMathContext), maxMathContext), maxMathContext);
+			return acosUsingNewton(xTransformed, mathContext);
+		}
+
+		BigDecimal denominator = BigDecimalMath.cos(x, maxMathContext);
+
 		BigDecimal result = BigDecimal.valueOf(Math.asin(x.doubleValue()));
+		int adaptivePrecision = 17;
 		BigDecimal step;
 		
 		do {
-			BigDecimal factor = BigDecimalMath.sqrt(ONE.subtract(result.multiply(result, mc)), mc);
-			step = BigDecimalMath.sin(result, mathContext).subtract(x, mc).multiply(factor, mc);
-			result = result.add(step);
+			adaptivePrecision = adaptivePrecision * 3;
+			if (adaptivePrecision > maxPrecision) {
+				adaptivePrecision = maxPrecision;
+			}
+			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+
+			BigDecimal nominator = BigDecimalMath.sin(result, mc).subtract(x, mc); 
+			step = nominator.divide(denominator, mc);
+			result = result.subtract(step, mc);
+//			System.out.println(BigDecimalMath.exponent(step) + " : " + result);
 		} while (step.abs().compareTo(acceptableError) > 0);
 
 		return result.round(mathContext);
@@ -90,6 +107,20 @@ public class BigDecimalMathExperimental {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		BigDecimal result = BigDecimalMath.pi(mc).divide(TWO, mc).subtract(asin(x, mc), mc);
+		return result.round(mathContext);
+	}	
+	
+	public static BigDecimal acosUsingNewton(BigDecimal x, MathContext mathContext) {
+		if (x.compareTo(ONE) > 0) {
+			throw new ArithmeticException("Illegal acos(x) for x > 1: x = " + x);
+		}
+		if (x.compareTo(MINUS_ONE) < 0) {
+			throw new ArithmeticException("Illegal acos(x) for x < -1: x = " + x);
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+
+		BigDecimal result = BigDecimalMath.pi(mc).divide(TWO, mc).subtract(asinUsingNewton(x, mc), mc);
 		return result.round(mathContext);
 	}	
 	
