@@ -603,6 +603,99 @@ public class BigDecimalMathTest {
 		return Math.cos(x) / Math.sin(x);
 	}
 
+	@Test
+	public void testSinhRandom() {
+		assertRandomCalculation(
+				1000,
+				"sinh",
+				random -> random.nextDouble() * 100 - 50,
+				Math::sinh,
+				(x, mathContext) -> BigDecimalMath.sinh(x, mathContext));
+	}
+	
+	@Test
+	public void testAsinhRandom() {
+		assertRandomCalculation(
+				1000,
+				"asinh",
+				random -> random.nextDouble() * 100 - 50,
+				BigDecimalMathTest::asinh,
+				(x, mathContext) -> BigDecimalMath.asinh(x, mathContext));
+	}
+	
+	public static double asinh(double x) {
+		return Math.log(x + Math.sqrt(x*x + 1));
+	}
+	
+	@Test
+	public void testAcoshRandom() {
+		assertRandomCalculation(
+				1000,
+				"acosh",
+				random -> random.nextDouble() * 100 + 1,
+				BigDecimalMathTest::acosh,
+				(x, mathContext) -> BigDecimalMath.acosh(x, mathContext));
+	}
+	
+	public static double acosh(double x) {
+		return Math.log(x + Math.sqrt(x*x - 1));
+	}
+	
+	@Test
+	public void testAtanhRandom() {
+		assertRandomCalculation(
+				1000,
+				"atanh",
+				random -> random.nextDouble() * 1.9999 - 1,
+				BigDecimalMathTest::atanh,
+				(x, mathContext) -> BigDecimalMath.atanh(x, mathContext));
+	}
+	
+	public static double atanh(double x) {
+		return Math.log((1+x)/(1-x))/2;
+	}
+	
+	@Test
+	public void testAcothRandom() {
+		assertRandomCalculation(
+				1000,
+				"acoth",
+				random -> random.nextDouble() * 100 + 1,
+				BigDecimalMathTest::acoth,
+				(x, mathContext) -> BigDecimalMath.acoth(x, mathContext));
+
+		assertRandomCalculation(
+				1000,
+				"acoth",
+				random -> -(random.nextDouble() * 100 + 1),
+				BigDecimalMathTest::acoth,
+				(x, mathContext) -> BigDecimalMath.acoth(x, mathContext));
+	}
+	
+	public static double acoth(double x) {
+		return Math.log((x+1)/(x-1))/2;
+	}
+	
+	@Test
+	public void testCoshRandom() {
+		assertRandomCalculation(
+				1000,
+				"cosh",
+				random -> random.nextDouble() * 100 - 50,
+				Math::cosh,
+				(x, mathContext) -> BigDecimalMath.cosh(x, mathContext));
+	}
+	
+	@Test
+	public void testTanhRandom() {
+		assertRandomCalculation(
+				1000,
+				"tanh",
+				random -> random.nextDouble() * 100 - 50,
+				Math::tanh,
+				(x, mathContext) -> BigDecimalMath.tanh(x, mathContext));
+	}
+	
 	private void assertPrecisionCalculation(BigDecimal expected, Function<MathContext, BigDecimal> precisionCalculation, int startPrecision) {
 		assertPrecisionCalculation(expected, precisionCalculation, startPrecision, expected.precision());
 	}

@@ -11,8 +11,10 @@ import java.math.MathContext;
 
 import ch.obermuhlner.math.big.internal.AsinCalculator;
 import ch.obermuhlner.math.big.internal.CosCalculator;
+import ch.obermuhlner.math.big.internal.CoshCalculator;
 import ch.obermuhlner.math.big.internal.ExpCalculator;
 import ch.obermuhlner.math.big.internal.SinCalculator;
+import ch.obermuhlner.math.big.internal.SinhCalculator;
 
 /**
  * Provides advanced functions operating on {@link BigDecimal}s.
@@ -803,6 +805,48 @@ public class BigDecimalMath {
 		BigDecimal result = pi(mc).divide(TWO, mc).subtract(atan(x, mc), mc);
 		return result.round(mathContext);
 	}
+
+	public static BigDecimal sinh(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal result = SinhCalculator.INSTANCE.calculate(x, mc);
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal cosh(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal result = CoshCalculator.INSTANCE.calculate(x, mc);
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal tanh(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal result = sinh(x, mc).divide(cosh(x, mc), mc);
+		return result.round(mathContext);
+	}
+	
+	public static BigDecimal asinh(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).add(ONE, mc), mc), mc), mc);
+		return result.round(mathContext);
+	}	
+	
+	public static BigDecimal acosh(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).subtract(ONE, mc), mc), mc), mc);
+		return result.round(mathContext);
+	}	
+
+	public static BigDecimal atanh(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal result = log(ONE.add(x, mc).divide(ONE.subtract(x, mc), mc), mc).divide(TWO, mc);
+		return result.round(mathContext);
+	}	
+
+	public static BigDecimal acoth(BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal result = log(x.add(ONE, mc).divide(x.subtract(ONE, mc), mc), mc).divide(TWO, mc);
+		return result.round(mathContext);
+	}	
 
 	/**
 	 * A context for {@link BigDecimal} calculations with a specific {@link MathContext}.
