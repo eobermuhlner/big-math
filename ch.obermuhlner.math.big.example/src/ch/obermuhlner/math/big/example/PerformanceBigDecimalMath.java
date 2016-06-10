@@ -16,7 +16,7 @@ import ch.obermuhlner.math.big.internal.ExpCalculator;
 import ch.obermuhlner.math.big.internal.SinCalculator;
 
 /**
- * finding optimium point between 2 and 3
+ * finding optimum point between 2 and 3
  * // x / 2 - 1 = 1 - x / 3
  *
  */
@@ -34,24 +34,24 @@ public class PerformanceBigDecimalMath {
 //		System.out.println(BigDecimalMathExperimental.logUsingNewtonFixPrecision(BigDecimal.valueOf(3.1), new MathContext(1000)));
 //		System.out.println(BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(BigDecimal.valueOf(3.1), new MathContext(1000), -17));
 
-//		performanceReport_Fast_0_to_2();
-//		performanceReport_Fast_neg10_to_10();
-//		performanceReport_Fast_0_to_10();
-//		performanceReport_Fast_0_to_100();
-//
-//		performanceReport_Trigo_0_to_1();
-//		performanceReport_Hyperbolic_0_to_2();
-//
-//		performanceReport_Slow_0_to_2();
-//		performanceReport_Slow_neg10_to_10();
-//		performanceReport_Slow_0_to_10();
-//		performanceReport_Slow_0_to_100();
-//		
-//		performanceReport_Fast_precision();
-//		performanceReport_Slow_precision();
+		performanceReport_Fast_0_to_2();
+		performanceReport_Fast_neg10_to_10();
+		performanceReport_Fast_0_to_10();
+		performanceReport_Fast_0_to_100();
+
+		performanceReport_Trigo_0_to_1();
+		performanceReport_Hyperbolic_0_to_2();
+
+		performanceReport_Slow_0_to_2();
+		performanceReport_Slow_neg10_to_10();
+		performanceReport_Slow_0_to_10();
+		performanceReport_Slow_0_to_100();
+		
+		performanceReport_Fast_precision();
+		performanceReport_Slow_precision();
 
 		// --- exp() optimizations:
-		performanceReportExpOptimization_0_to_4();
+//		performanceReportExpOptimization_0_to_4();
 		
 		// --- asin() optimizations:
 //		performanceReportAsinOptimization_0_to_1();
@@ -278,10 +278,11 @@ public class PerformanceBigDecimalMath {
 				+4,
 				+0.01,
 				REPEATS,
-				Arrays.asList("exp", "exp_4", "exp_1024"),
+				Arrays.asList("exp", "exp_256", "exp_1024", "exp_65536"),
 				(x1, mc1) -> BigDecimalMathExperimental.exp(x1, mc1),
-				(x1, mc1) -> BigDecimalMathExperimental.expReducing(x1, mc1, 4),
-				(x1, mc1) -> BigDecimalMathExperimental.expReducing(x1, mc1, 1024));
+				(x1, mc1) -> BigDecimalMathExperimental.expReducing(x1, mc1, 256),
+				(x1, mc1) -> BigDecimalMathExperimental.expReducing(x1, mc1, 1024),
+				(x1, mc1) -> BigDecimalMathExperimental.expReducing(x1, mc1, 65536));
 	}
 
 	private static void performanceReportAsinOptimization_0_to_1() {
@@ -319,7 +320,7 @@ public class PerformanceBigDecimalMath {
 				+10,
 				+0.01,
 				REPEATS,
-				Arrays.asList("root", "rootAdaptive2"),
+				Arrays.asList("root", "rootAdaptive"),
 				(x1, mc1) -> BigDecimalMathExperimental.rootFixPrecision(BigDecimal.valueOf(3), x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.rootAdaptivePrecision(BigDecimal.valueOf(3), x1, mc1, 2));
 	}
@@ -332,7 +333,7 @@ public class PerformanceBigDecimalMath {
 				+10,
 				+0.05,
 				REPEATS,
-				Arrays.asList("newtonFix", "newton17"),
+				Arrays.asList("log", "logAdaptive"),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonFixPrecision(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(x1, mc1, 17));
 	}
