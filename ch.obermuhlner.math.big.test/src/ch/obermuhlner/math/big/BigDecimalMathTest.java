@@ -734,7 +734,9 @@ public class BigDecimalMathTest {
 			}
 			
 			BigDecimal expected = calculation.apply(x, new MathContext(precision + 20)).round(mathContext);
-			assertEquals(description + " precision=" + precision + " : " + result, expected.toString(), result.toString());
+			if (expected.compareTo(result) != 0) {
+				assertEquals(description + " precision=" + precision + " : " + result, expected.toString(), result.toString());
+			}
 		}
 	}
 
