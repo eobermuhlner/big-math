@@ -22,9 +22,9 @@ import ch.obermuhlner.math.big.internal.SinCalculator;
  */
 public class PerformanceBigDecimalMath {
 
-	private static MathContext REF_MATHCONTEXT = new MathContext(100);
+	private static MathContext REF_MATHCONTEXT = new MathContext(300);
 	
-	private static int REPEATS = 3;
+	private static int REPEATS = 10;
 	
 	private static final String OUTPUT_DIRECTORY = "docu/benchmarks/";
 
@@ -50,8 +50,11 @@ public class PerformanceBigDecimalMath {
 //		performanceReport_Fast_precision();
 //		performanceReport_Slow_precision();
 
+		// --- exp() optimizations:
+		performanceReportExpOptimization_0_to_4();
+		
 		// --- asin() optimizations:
-		performanceReportAsinOptimization_0_to_1();
+//		performanceReportAsinOptimization_0_to_1();
 
 		// --- sqrt() optimizations:
 //		performanceReportSqrtOptimization_0_to_1();
@@ -265,6 +268,20 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
+
+	private static void performanceReportExpOptimization_0_to_4() {
+		performanceReportOverValue(
+				"test_exp_impl_from_0_to_4.csv",
+				REF_MATHCONTEXT,
+				0,
+				+4,
+				+0.01,
+				REPEATS,
+				Arrays.asList("exp", "exp_4", "exp_1024"),
+				(x1, mc1) -> BigDecimalMathExperimental.exp(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.expReducing(x1, mc1, 4),
+				(x1, mc1) -> BigDecimalMathExperimental.expReducing(x1, mc1, 1024));
 	}
 
 	private static void performanceReportAsinOptimization_0_to_1() {
