@@ -635,7 +635,11 @@ public class BigDecimalMath {
 	
 	private static BigDecimal expTaylor(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		x = x.divide(valueOf(256), mc);
+		
 		BigDecimal result = ExpCalculator.INSTANCE.calculate(x, mc);
+		result = BigDecimalMath.pow(result, 256, mc);
 		return result.round(mathContext);
 	}
 
