@@ -71,9 +71,11 @@ Since the precalculated values for [latex]\ln{2}, \ln{3}, \ln{10}[/latex] with a
 <h3>Implementation pow(x)</h3>
 
 The implementation of pow() with non-integer arguments is based on exp() and log():
+
 [latex]\displaystyle x^y = e^{y \ln x}[/latex]
 
 If y is an integer argument then pow() is implemented with multiplications:
+
 [latex]\displaystyle x^y = \prod_{i \to y} x[/latex]
 
 Actually the implementation is further optimized to reduce the number of multiplications by squaring the argument whenever possible.
@@ -89,6 +91,7 @@ In the case of sqrt() we can use the double version Math.sqrt() to give us a goo
 <br>
 
 Unfortunately the root() function does not exist for double so we are forced to use a simpler initial value.
+
 [latex]\displaystyle y_0 = \frac{1}{n},[/latex]
 [latex]\displaystyle y_{i+1} = \frac{1}{n} \left[{(n-1)y_i +\frac{x}{y_i^{n-1}}}\right],[/latex]
 [latex]\displaystyle \sqrt[n]{x} = \lim_{i \to \infty} y_i[/latex]
@@ -97,6 +100,7 @@ Unfortunately the root() function does not exist for double so we are forced to 
 <h3>Implementation sin(x), cos(x), tan(x), cot(x)</h3>
 
 The basic trigonometric functions where implemented using Taylor series or if this proved more efficient by their relationship with an already implemented functions:
+
 [latex]\displaystyle \sin x = \sum^{\infty}_{n=0} \frac{(-1)^n}{(2n+1)!} x^{2n+1} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots[/latex]
 <br>
 
@@ -112,11 +116,13 @@ The basic trigonometric functions where implemented using Taylor series or if th
 <h3>Implementation asin(x), acos(x), atan(x), acot(x)</h3>
 
 The inverse trigonometric functions use a Taylor series for arcsin().
+
 [latex]\displaystyle \arcsin x = \sum^{\infty}_{n=0} \frac{(2n)!}{4^n (n!)^2 (2n+1)} x^{2n+1}[/latex]
 <br>
 
 This series takes very long to converge, especially when the argument x gets close to 1.
-As optimization the argument x is transformed to a more efficient range using the following relationship:
+As optimization the argument x is transformed to a more efficient range using the following relationship.
+
 [latex]\displaystyle \arcsin x = \arccos \sqrt{1-x^2} \qquad \text{for } x \gt \sqrt{\frac{1}{2}} \text{ (} \approx 0.707107 \text{)}[/latex]
 <br>
 
@@ -134,28 +140,30 @@ The remaining functions are implemented by their relationship with arcsin().
 
 <h3>Implementation sinh(x), cosh(x), tanh(x)</h3>
 
-Taylor series are efficient for most of the implementations for hyperbolic functions. 
+Taylor series are efficient for most of the implementations of hyperbolic functions. 
+
 [latex]\displaystyle \sinh x= \sum_{n=0}^\infty \frac{x^{2n+1}}{(2n+1)!} = x + \frac{x^3}{3!} + \frac{x^5}{5!} + \frac{x^7}{7!} +\cdots[/latex]
 <br>
 
 [latex]\displaystyle \cosh x = \sum_{n=0}^\infty \frac{x^{2n}}{(2n)!} = 1 + \frac{x^2}{2!} + \frac{x^4}{4!} + \frac{x^6}{6!} + \cdots[/latex]
 <br>
 
-The Taylor series for tanh() converges very slowly so we use the relationship with sinh() and tanh() instead.
+The Taylor series for tanh() converges very slowly, so we use the relationship with sinh() and tanh() instead.
 [latex]\displaystyle \tanh x = \frac{\sinh x}{\cosh x}[/latex]
 <br>
 
 
 <h3>Implementation asinh(x), acosh(x), atanh(x)</h3>
 
-The inverse hyperbolic functions can be expressed using natural logarithm:
-[latex]\displaystyle \operatorname{arsinh} x  = \ln(x + \sqrt{x^2 + 1} )[/latex]
+The inverse hyperbolic functions can be expressed using natural logarithm.
+
+[latex]\displaystyle \operatorname{asinh} x  = \ln(x + \sqrt{x^2 + 1} )[/latex]
 <br>
 
-[latex]\displaystyle \operatorname{arcosh} x  = \ln(x + \sqrt{x^2-1} )[/latex]
+[latex]\displaystyle \operatorname{acosh} x  = \ln(x + \sqrt{x^2-1} )[/latex]
 <br>
 
-[latex]\displaystyle \operatorname{artanh} x  = \frac12\ln\left(\frac{1+x}{1-x}\right)[/latex]
+[latex]\displaystyle \operatorname{atanh} x  = \frac12\ln\left(\frac{1+x}{1-x}\right)[/latex]
 <br>
 
 <h2>Performance calculating different precisions</h2>
