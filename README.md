@@ -4,15 +4,29 @@ Java math functions for `BigDecimal`.
 
 This implementation provides efficient and accurate implementations for:
 
-*   `pow(BigDecimal, BigDecimal, MathContext)`
-*   `sqrt(BigDecimal, BigDecimal, MathContext)`
 *   `log(BigDecimal, MathContext)`
 *   `exp(BigDecimal, MathContext)`
+*   `pow(BigDecimal, BigDecimal, MathContext)`
+*   `sqrt(BigDecimal, BigDecimal, MathContext)`
+*   `root(BigDecimal, BigDecimal, BigDecimal, MathContext)` calculates the n'th root
+
 *   `sin(BigDecimal, MathContext)`
 *   `cos(BigDecimal, MathContext)`
+*   `tan(BigDecimal, MathContext)`
+*   `asin(BigDecimal, MathContext)`
+*   `acos(BigDecimal, MathContext)`
+*   `atan(BigDecimal, MathContext)`
+
+*   `sinh(BigDecimal, MathContext)`
+*   `cosh(BigDecimal, MathContext)`
+*   `tanh(BigDecimal, MathContext)`
+*   `asinh(BigDecimal, MathContext)`
+*   `acosh(BigDecimal, MathContext)`
+*   `atanh(BigDecimal, MathContext)`
 
 *   `pow(BigDecimal, int, MathContext)` calculates x^y for `int` y
 *   `factorial(int, MathContext)` calculates n!
+*   `bernoulli(int)` calculates Bernoulli numbers
 
 *   `pi(MathContext)` calculates pi to an arbitrary precision
 *   `e(MathContext)` calculates e to an arbitrary precision
