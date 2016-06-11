@@ -7,13 +7,15 @@ The result of this is available on <a href="https://github.com/eobermuhlner/big-
 
 The goal was to provide the following functions:
 <ul>
-	<li>log(x)</li>
 	<li>exp(x)</li>
+	<li>log(x)</li>
 	<li>pow(x, y)</li>
 	<li>sqrt(x)</li>
 	<li>root(n, x)</li>
-	<li>sin(x)</li>
-	<li>cos(x)</li>
+	<li>sin(x), cos(x), tan(x), cot(x)</li>
+	<li>asin(x), acos(x), atan(x), acot(x)</li>
+	<li>sinh(x), cosh(x), tanh(x)</li>
+	<li>asinh(x), acosh(x), atanh(x)</li>
 </ul>
 
 The calculations must be accurate to the desired precision (specified in the <code>MathContext</code>)
@@ -23,7 +25,7 @@ and the performance should be acceptable and stable for a large range of input v
 
 <h3>Implementation exp(x)</h3>
 
-To implement exp() the classical Maclaurin series was used:
+To implement exp() the classical Taylor series was used:
 [latex]\displaystyle e^x = \sum^{\infty}_{n=0} \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots[/latex]
 
 <h3>Implementation log()</h3>
@@ -94,7 +96,7 @@ Unfortunately the root() function does not exist for double so we are forced to 
 
 <h3>Implementation sin(x), cos(x), tan(x), cot(x)</h3>
 
-The basic trigonometric functions where implemented using Maclaurin series or if this proved more efficient by their relationship with an already implemented functions:
+The basic trigonometric functions where implemented using Taylor series or if this proved more efficient by their relationship with an already implemented functions:
 [latex]\displaystyle \sin x = \sum^{\infty}_{n=0} \frac{(-1)^n}{(2n+1)!} x^{2n+1} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots[/latex]
 <br>
 
@@ -109,9 +111,16 @@ The basic trigonometric functions where implemented using Maclaurin series or if
 
 <h3>Implementation asin(x), acos(x), atan(x), acot(x)</h3>
 
-The inverse trigonometric functions use a Maclaurin series for arcsin(), the remaining functions are implemented by their relationship with arcsin():
+The inverse trigonometric functions use a Taylor series for arcsin().
 [latex]\displaystyle \arcsin x = \sum^{\infty}_{n=0} \frac{(2n)!}{4^n (n!)^2 (2n+1)} x^{2n+1}[/latex]
 <br>
+
+This series takes very long to converge, especially when the argument x gets close to 1.
+As optimization the argument x is transformed to a more efficient range using the following relationship:
+[latex]\displaystyle \arcsin x = \arccos \sqrt{1-x^2} \qquad \text{for } x \gt \sqrt{\frac{1}{2}} \text{ (} \approx 0.707107 \text{)}[/latex]
+<br>
+
+The remaining functions are implemented by their relationship with arcsin().
 
 [latex]\displaystyle \arccos x = \frac{\pi}{2} - \arcsin x[/latex]
 <br>
@@ -122,6 +131,32 @@ The inverse trigonometric functions use a Maclaurin series for arcsin(), the rem
 [latex]\displaystyle \operatorname{arccot} x = \frac{\pi}{2} - \arctan x[/latex]
 <br>
 
+
+<h3>Implementation sinh(x), cosh(x), tanh(x)</h3>
+
+Taylor series are efficient for most of the implementations for hyperbolic functions. 
+[latex]\displaystyle \sinh x= \sum_{n=0}^\infty \frac{x^{2n+1}}{(2n+1)!} = x + \frac{x^3}{3!} + \frac{x^5}{5!} + \frac{x^7}{7!} +\cdots[/latex]
+<br>
+
+[latex]\displaystyle \cosh x = \sum_{n=0}^\infty \frac{x^{2n}}{(2n)!} = 1 + \frac{x^2}{2!} + \frac{x^4}{4!} + \frac{x^6}{6!} + \cdots[/latex]
+<br>
+
+The Taylor series for tanh() converges very slowly so we use the relationship with sinh() and tanh() instead.
+[latex]\displaystyle \tanh x = \frac{\sinh x}{\cosh x}[/latex]
+<br>
+
+
+<h3>Implementation asinh(x), acosh(x), atanh(x)</h3>
+
+The inverse hyperbolic functions can be expressed using natural logarithm:
+[latex]\displaystyle \operatorname{arsinh} x  = \ln(x + \sqrt{x^2 + 1} )[/latex]
+<br>
+
+[latex]\displaystyle \operatorname{arcosh} x  = \ln(x + \sqrt{x^2-1} )[/latex]
+<br>
+
+[latex]\displaystyle \operatorname{artanh} x  = \frac12\ln\left(\frac{1+x}{1-x}\right)[/latex]
+<br>
 
 <h2>Performance calculating different precisions</h2>
 Obviously it will take longer to calculate a function result with a higher precision than a lower precision.
