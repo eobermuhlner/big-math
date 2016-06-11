@@ -2,6 +2,8 @@
 
 Java math functions for `BigDecimal`.
 
+## Overview BigDecimalMath
+
 This implementation provides efficient and accurate implementations for:
 
 *   `log(BigDecimal, MathContext)`
@@ -36,4 +38,12 @@ This implementation provides efficient and accurate implementations for:
 *   `integralPart(BigDecimal)` extract the integral part from a `BigDecimal` (everything before the decimal point) 
 *   `fractionalPart(BigDecimal)` extract the fractional part from a `BigDecimal` (everything after the decimal point)
 
+## Documentation
+
+For the mathematical background and performance analysis please refer to this article:
+*	[BigDecimalMath](http://obermuhlner.ch/wordpress/2016/06/02/bigdecimalmath/)
+
+Some of the implementation details are explained here: 
+*	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
+ 
 
