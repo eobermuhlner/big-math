@@ -8,9 +8,9 @@ This implementation provides efficient and accurate implementations for:
 
 *   `log(BigDecimal, MathContext)`
 *   `exp(BigDecimal, MathContext)`
-*   `pow(BigDecimal, BigDecimal, MathContext)`
+*   `pow(BigDecimal, BigDecimal, MathContext)` calculates x^y
 *   `sqrt(BigDecimal, BigDecimal, MathContext)`
-*   `root(BigDecimal, BigDecimal, BigDecimal, MathContext)` calculates the n'th root
+*   `root(BigDecimal, BigDecimal, MathContext)` calculates the n'th root of x
 
 *   `sin(BigDecimal, MathContext)`
 *   `cos(BigDecimal, MathContext)`
