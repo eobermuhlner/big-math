@@ -1,17 +1,3 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-
-version = '1.0'
-
-jar {
-	baseName 'mandelbrot'
-	manifest {
-		attributes 'Implementation-Title' : applicationName,
-			'Implementation-Version' : version,
-			'Implementation-Vendor' : 'Eric Obermuhlner',
-			'Implementation-URL' : 'https://github.com/eobermuhlner/mandelbrot',
-			'Main-Class' : mainClassName
-	}
-}
-
