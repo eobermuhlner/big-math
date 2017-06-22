@@ -20,26 +20,22 @@ import java.util.stream.IntStream;
  * as {@link BigInteger} (for mathematical correctness)
  * when accessed with {@link #getNumeratorBigInteger()} and {@link #getDenominatorBigInteger()}.</p>
  * 
- * <p>The following basic calculations have no loss of precision:
+ * <p>The following basic calculations have no loss of precision:</p>
  * <ul>
  * <li>{@link #add(BigRational)}</li>
  * <li>{@link #subtract(BigRational)}</li>
  * <li>{@link #multiply(BigRational)}</li>
  * <li>{@link #divide(BigRational)}</li>
  * <li>{@link #pow(int)}</li>
- * <li>{@link #pow(BigRational, int)} with integer arguments</li>
  * </ul>
- * </p>
  * 
- * <p>The following calculations are special cases of the ones listed above and have no loss of precision:
+ * <p>The following calculations are special cases of the ones listed above and have no loss of precision:</p>
  * <ul>
  * <li>{@link #negate()}</li>
  * <li>{@link #reciprocal()}</li>
  * <li>{@link #increment()}</li>
  * <li>{@link #decrement()}</li>
- * <li>{@link #factorial(int)}</li>
  * </ul>
- * </p>
  * 
  * <p>Any {@link BigRational} value can be converted into an arbitrary {@link #withPrecision(int) precision} (number of significant digits)
  * or {@link #withScale(int) scale} (number of digits after the decimal point).</p>
@@ -149,11 +145,10 @@ public class BigRational implements Comparable<BigRational> {
 	/**
 	 * Returns the integer part of this rational number.
 	 * 
-	 * <p>Examples:
+	 * <p>Examples:</p>
 	 * <ul>
 	 * <li><code>BigRational.valueOf(3.5).integerPart()</code> returns <code>BigRational.valueOf(3)</code></li>
 	 * </ul>
-	 * </p>
 	 * 
 	 * @return the integer part of this rational number
 	 */
@@ -164,11 +159,10 @@ public class BigRational implements Comparable<BigRational> {
 	/**
 	 * Returns the fraction part of this rational number.
 	 * 
-	 * <p>Examples:
+	 * <p>Examples:</p>
 	 * <ul>
 	 * <li><code>BigRational.valueOf(3.5).integerPart()</code> returns <code>BigRational.valueOf(0.5)</code></li>
 	 * </ul>
-	 * </p>
 	 * 
 	 * @return the fraction part of this rational number
 	 */
@@ -181,11 +175,10 @@ public class BigRational implements Comparable<BigRational> {
 	 * 
 	 * <p>The result has no loss of precision.</p>
 	 * 
-	 * <p>Examples:
+	 * <p>Examples:</p>
 	 * <ul>
 	 * <li><code>BigRational.valueOf(3.5).negate()</code> returns <code>BigRational.valueOf(-3.5)</code></li>
 	 * </ul>
-	 * </p>
 	 * 
 	 * @return the negated rational number
 	 */
@@ -202,12 +195,11 @@ public class BigRational implements Comparable<BigRational> {
 	 * 
 	 * <p>The result has no loss of precision.</p>
 	 * 
-	 * <p>Examples:
+	 * <p>Examples:</p>
 	 * <ul>
 	 * <li><code>BigRational.valueOf(0.5).reciprocal()</code> returns <code>BigRational.valueOf(2)</code></li>
 	 * <li><code>BigRational.valueOf(-2).reciprocal()</code> returns <code>BigRational.valueOf(-0.5)</code></li>
 	 * </ul>
-	 * </p>
 	 * 
 	 * @return the reciprocal rational number
 	 * @throws ArithmeticException if the argument is 0 (division by zero)
@@ -221,12 +213,11 @@ public class BigRational implements Comparable<BigRational> {
 	 * 
 	 * <p>The result has no loss of precision.</p>
 	 * 
-	 * <p>Examples:
+	 * <p>Examples:</p>
 	 * <ul>
 	 * <li><code>BigRational.valueOf(-2).abs()</code> returns <code>BigRational.valueOf(2)</code></li>
 	 * <li><code>BigRational.valueOf(2).abs()</code> returns <code>BigRational.valueOf(2)</code></li>
 	 * </ul>
-	 * </p>
 	 * 
 	 * @return the absolute rational number (positive, or 0 if this rational is 0)
 	 */
@@ -570,7 +561,6 @@ public class BigRational implements Comparable<BigRational> {
 	 *
 	 * @param exponent exponent to which this rational number is to be raised
 	 * @return the resulting rational number
-	 * @see #pow(BigRational, int)
 	 */
 	public BigRational pow(int exponent) {
 		if (exponent == 0) {
@@ -751,13 +741,12 @@ public class BigRational implements Comparable<BigRational> {
 	 * 
 	 * <p>The resulting string is a valid input of the {@link #valueOf(String)} method.</p>
 	 * 
-	 * <p>Examples:
+	 * <p>Examples:</p>
 	 * <ul>
 	 * <li><code>BigRational.valueOf(0.5).toRationalString()</code> returns <code>"1/2"</code></li>
 	 * <li><code>BigRational.valueOf(2).toRationalString()</code> returns <code>"2"</code></li>
 	 * <li><code>BigRational.valueOf(4, 4).toRationalString()</code> returns <code>"4/4"</code> (not reduced)</li>
 	 * </ul>
-	 * </p>
 	 * 
 	 * @return the rational number string representation in the form "numerator/denominator", or "0" if the rational number is 0.
 	 * @see #valueOf(String) 
@@ -944,14 +933,13 @@ public class BigRational implements Comparable<BigRational> {
 	/**
 	 * Creates a rational number of the specified string representation.
 	 * 
-	 * <p>The accepted string representations are:
+	 * <p>The accepted string representations are:</p>
 	 * <ul>
 	 * <li>Output of {@link BigRational#toString()} : "integerPart.fractionPart"</li>
 	 * <li>Output of {@link BigRational#toRationalString()} : "numerator/denominator"</li>
 	 * <li>Output of <code>toString()</code> of {@link BigDecimal}, {@link BigInteger}, {@link Integer}, ...</li>
 	 * <li>Output of <code>toString()</code> of {@link Double}, {@link Float} - except "Infinity", "-Infinity" and "NaN"</li>
 	 * </ul>
-	 * </p>
 	 * 
 	 * @param string the string representation to convert
 	 * @return the rational number
