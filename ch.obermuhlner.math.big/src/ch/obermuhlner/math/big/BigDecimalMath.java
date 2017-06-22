@@ -407,7 +407,9 @@ public class BigDecimalMath {
 		int powerOfThree = 1;
 
 		double value = x.doubleValue();
-		if (value < 0.1) { // never happens when called by logUsingExponent()
+		if (value < 0.01) {
+			// do nothing
+		} else if (value < 0.1) { // never happens when called by logUsingExponent()
 			while (value < 0.6) {
 				value *= 2;
 				factorOfTwo--;

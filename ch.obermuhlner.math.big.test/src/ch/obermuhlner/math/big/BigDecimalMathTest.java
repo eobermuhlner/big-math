@@ -426,6 +426,34 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testLog10WithPositivePowersOfTen() {
+		MathContext mathContext = new MathContext(50);		
+		BigDecimal x = new BigDecimal("1");
+		BigDecimal expectedLog10 = new BigDecimal(0);
+		for (int i = 0; i < 20; i++) {
+			BigDecimal actualLog10 = BigDecimalMath.log10(x, mathContext);
+			assertEquals(true, expectedLog10.compareTo(actualLog10) == 0);
+
+			x = x.multiply(BigDecimal.TEN, mathContext);
+			expectedLog10 = expectedLog10.add(BigDecimal.ONE, mathContext);
+		}
+	}
+	
+	@Test
+	public void testLog10WithNegativePowersOfTen() {
+		MathContext mathContext = new MathContext(50);		
+		BigDecimal x = new BigDecimal("1");
+		BigDecimal expectedLog10 = new BigDecimal(0);
+		for (int i = 0; i < 20; i++) {
+			BigDecimal actualLog10 = BigDecimalMath.log10(x, mathContext);
+			assertEquals(true, expectedLog10.compareTo(actualLog10) == 0);
+
+			x = x.divide(BigDecimal.TEN, mathContext);
+			expectedLog10 = expectedLog10.subtract(BigDecimal.ONE, mathContext);
+		}
+	}
+	
+	@Test
 	public void testLogRandom() {
 		assertRandomCalculation(
 				1000,
