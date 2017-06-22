@@ -34,21 +34,27 @@ public class PerformanceBigDecimalMath {
 //		System.out.println(BigDecimalMathExperimental.logUsingNewtonFixPrecision(BigDecimal.valueOf(3.1), new MathContext(1000)));
 //		System.out.println(BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(BigDecimal.valueOf(3.1), new MathContext(1000), -17));
 
-		performanceReport_Fast_0_to_2();
-		performanceReport_Fast_neg10_to_10();
-		performanceReport_Fast_0_to_10();
-		performanceReport_Fast_0_to_100();
+//		performanceReport_Fast_0_to_2();
+//		performanceReport_Fast_neg10_to_10();
+//		performanceReport_Fast_0_to_10();
+//		performanceReport_Fast_0_to_100();
+//
+//		performanceReport_Trigo_0_to_1();
+//		performanceReport_Hyperbolic_0_to_2();
+//
+//		performanceReport_Slow_0_to_2();
+//		performanceReport_Slow_neg10_to_10();
+//		performanceReport_Slow_0_to_10();
+//		performanceReport_Slow_0_to_100();
 
-		performanceReport_Trigo_0_to_1();
-		performanceReport_Hyperbolic_0_to_2();
+		performanceReport_pow_0_to_100();
 
-		performanceReport_Slow_0_to_2();
-		performanceReport_Slow_neg10_to_10();
-		performanceReport_Slow_0_to_10();
-		performanceReport_Slow_0_to_100();
-		
-		performanceReport_Fast_precision();
-		performanceReport_Slow_precision();
+//		performanceReport_pow_frac_0_to_10000();
+//		performanceReport_pow_int_0_to_10000();
+		performanceReport_pow_int_0_to_100000();
+
+//		performanceReport_Fast_precision();
+//		performanceReport_Slow_precision();
 
 		// --- exp() optimizations:
 //		performanceReportExpOptimization_0_to_4();
@@ -233,9 +239,56 @@ public class PerformanceBigDecimalMath {
 				+100,
 				+0.1,
 				REPEATS,
-				Arrays.asList("exp", "log", "pow"),
+				Arrays.asList("exp", "pow"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
+
+	private static void performanceReport_pow_0_to_100() {
+		performanceReportOverValue(
+				"perf_pow_from_0_to_100.csv",
+				REF_MATHCONTEXT,
+				0,
+				+100,
+				+0.1,
+				REPEATS,
+				Arrays.asList("pow"),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
+
+	private static void performanceReport_pow_frac_0_to_10000() {
+		performanceReportOverValue(
+				"perf_pow_frac_from_0_to_10000.csv",
+				REF_MATHCONTEXT,
+				0.5,
+				+10000,
+				+1,
+				REPEATS,
+				Arrays.asList("pow"),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
+
+	private static void performanceReport_pow_int_0_to_10000() {
+		performanceReportOverValue(
+				"perf_pow_int_from_0_to_10000.csv",
+				REF_MATHCONTEXT,
+				0,
+				+10000,
+				+1,
+				REPEATS,
+				Arrays.asList("pow"),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
+
+	private static void performanceReport_pow_int_0_to_100000() {
+		performanceReportOverValue(
+				"perf_pow_int_from_0_to_100000.csv",
+				REF_MATHCONTEXT,
+				0,
+				+100000,
+				+1,
+				REPEATS,
+				Arrays.asList("pow"),
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
 
@@ -293,7 +346,7 @@ public class PerformanceBigDecimalMath {
 				+1,
 				+0.01,
 				REPEATS,
-				Arrays.asList("sin", "asin", "asinNewton"),
+				Arrays.asList("sin", "asinTaylor", "asinNewton"),
 				(x1, mc1) -> BigDecimalMath.sin(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.asin(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.asinUsingNewton(x1, mc1));
@@ -307,7 +360,7 @@ public class PerformanceBigDecimalMath {
 				+1,
 				+0.01,
 				REPEATS,
-				Arrays.asList("sqrt", "sqrtAdaptive"),
+				Arrays.asList("sqrtFix", "sqrtAdaptive"),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1));
 	}
@@ -434,7 +487,7 @@ REFERENCE github eobermuhlner/big-math
 				+10,
 				+0.05,
 				REPEATS,
-				Arrays.asList("newton", "newtonAdaptive", "root+newton", "primes+newton", "primes+root+newton"),
+				Arrays.asList("newtonFix", "newton", "root+newton", "primes+newton", "primes+root+newton"),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonFixPrecision(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingRoot(x1, mc1,

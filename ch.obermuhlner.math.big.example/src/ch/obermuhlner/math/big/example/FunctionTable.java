@@ -12,9 +12,9 @@ public class FunctionTable {
 
 	public static void main(String[] args) {
 //		printTableLog();
-		printTableLog10();
+//		printTableLog10();
 //		printTableExp();
-//		printTableSin();
+		printTableSin();
 //		printTableAsin();
 //		printTableAcos();
 //		printTableAtan();
