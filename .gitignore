@@ -3,3 +3,15 @@
 /.gradle/
 /build/
 
+# Eclipse IDE stuff
+
+.project
+.classpath
+/bin/
+/.settings/
+
+# IntelliJ IDEA stuff
+
+*.iml
+/.idea/
+
