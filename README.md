@@ -8,9 +8,9 @@ This implementation provides efficient and accurate implementations for:
 
 *   `log(BigDecimal, MathContext)`
 *   `exp(BigDecimal, MathContext)`
-*   `pow(BigDecimal, BigDecimal, MathContext)`
+*   `pow(BigDecimal, BigDecimal, MathContext)` calculates x^y
 *   `sqrt(BigDecimal, BigDecimal, MathContext)`
-*   `root(BigDecimal, BigDecimal, BigDecimal, MathContext)` calculates the n'th root
+*   `root(BigDecimal, BigDecimal, MathContext)` calculates the n'th root of x
 
 *   `sin(BigDecimal, MathContext)`
 *   `cos(BigDecimal, MathContext)`
@@ -44,6 +44,18 @@ For the mathematical background and performance analysis please refer to this ar
 *	[BigDecimalMath](http://obermuhlner.ch/wordpress/2016/06/02/bigdecimalmath/)
 
 Some of the implementation details are explained here: 
-*	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
- 
+*	[Adaptive precision in Newtonâ€™s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
+
+## Performance
+
+The following charts show the time needed to calculate the functions over a range of values with a precision of 300 digits.
+
+![sqrt(), root(), exp(), sin(), cos() 0 to 10](https://raw.githubusercontent.com/eobermuhlner/big-math/master/ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_10.png)
+![sqrt(), root(), exp(), sin(), cos() 0 to 100](https://raw.githubusercontent.com/eobermuhlner/big-math/master/ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_100.png)
+
+![exp(), log(), pow() 0 to 10](https://raw.githubusercontent.com/eobermuhlner/big-math/master/ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_10.png)
+![exp(), log(), pow() 0 to 100](https://raw.githubusercontent.com/eobermuhlner/big-math/master/ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_100.png)
+![]()
+
+
 
