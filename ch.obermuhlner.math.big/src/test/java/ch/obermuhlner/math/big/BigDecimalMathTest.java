@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -375,12 +376,12 @@ public class BigDecimalMathTest {
 				50); // TODO optimize root()
 	}
 
-	//TODO @Test
+	@Test
 	public void testRootRandom() {
 		assertRandomCalculation(
-				10,
+				100,
 				"root",
-				random -> random.nextDouble() * 100 + 0.000001,
+				random -> random.nextDouble() * 10 + 0.000001,
 				random -> random.nextDouble() * 5,
 				null,
 				(x, y, mathContext) -> BigDecimalMath.root(x, y, mathContext));
@@ -844,14 +845,15 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testRootPowRandom() {
-		BigDecimal value = new BigDecimal("2");
-		assertRandomCalculation(
-				1000,
-				"x",
-				"pow(root(x, 2.1),2.1)",
-				(random, mathContext) -> randomBigDecimal(random, mathContext),
-				(x, mathContext) -> x,
-				(x, mathContext) -> BigDecimalMath.pow(BigDecimalMath.root(x, value, mathContext), value, mathContext));
+		for (BigDecimal value : Arrays.asList(new BigDecimal("0.1"), new BigDecimal("1.0"), new BigDecimal("2.1"))) {
+			assertRandomCalculation(
+					1000,
+					"x",
+					"pow(root(x, " + value + ")," + value + ")",
+					(random, mathContext) -> randomBigDecimal(random, mathContext),
+					(x, mathContext) -> x,
+					(x, mathContext) -> BigDecimalMath.pow(BigDecimalMath.root(x, value, mathContext), value, mathContext));
+		}
 	}
 
 	private void assertPrecisionCalculation(BigDecimal expected, Function<MathContext, BigDecimal> precisionCalculation, int startPrecision) {

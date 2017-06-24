@@ -285,6 +285,11 @@ public class BigDecimalMath {
 			throw new ArithmeticException("Illegal root(x) for x < 0: x = " + x);
 		}
 
+		if (n.compareTo(BigDecimal.ONE) <= 0) {
+			MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+			return pow(x, BigDecimal.ONE.divide(n, mc), mathContext);
+		}
+		
 		int maxPrecision = mathContext.getPrecision() + 4;
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
