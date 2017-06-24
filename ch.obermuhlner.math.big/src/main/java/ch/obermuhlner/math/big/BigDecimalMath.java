@@ -271,13 +271,13 @@ public class BigDecimalMath {
 	 * Calculates the n'th root of {@link BigDecimal} x.
 	 * 
 	 * <p>See <a href="http://en.wikipedia.org/wiki/Square_root">Wikipedia: Square root</a></p>
-	 * 
-	 * @param n the {@link BigDecimal} defining the root
 	 * @param x the {@link BigDecimal} value to calculate the n'th root
+	 * @param n the {@link BigDecimal} defining the root
 	 * @param mathContext the {@link MathContext} used for the result
+	 * 
 	 * @return the calculated n'th root of x with the precision specified in the <code>mathContext</code>
 	 */
-	public static BigDecimal root(BigDecimal n, BigDecimal x, MathContext mathContext) {
+	public static BigDecimal root(BigDecimal x, BigDecimal n, MathContext mathContext) {
 		switch (x.signum()) {
 		case 0:
 			return ZERO;
@@ -1074,14 +1074,14 @@ public class BigDecimalMath {
 		
 		/**
 		 * Returns the n'th root of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
-		 * 
-		 * @param n the {@link BigDecimal} n value
 		 * @param x the {@link BigDecimal} x value
+		 * @param n the {@link BigDecimal} n value
+		 * 
 		 * @return the resulting {@link BigDecimal}
 		 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
 		 */
-		public BigDecimal root(BigDecimal n, BigDecimal x) {
-			return BigDecimalMath.root(n, x, mathContext);
+		public BigDecimal root(BigDecimal x, BigDecimal n) {
+			return BigDecimalMath.root(x, n, mathContext);
 		}
 		
 		/**

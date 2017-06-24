@@ -94,8 +94,8 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos", "tan"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(2), calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(3), calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext));
@@ -112,8 +112,8 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos", "tan"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(2), calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(3), calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext));
@@ -130,8 +130,8 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos", "tan"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(2), calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(3), calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext));
@@ -148,8 +148,8 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos", "tan"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(2), calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(3), calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.tan(x, calculationMathContext));
@@ -303,8 +303,8 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList("exp", "sqrt", "root2", "root3", "sin", "cos"),
 				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(2), x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.root(new BigDecimal(3), x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(2), calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.root(x, new BigDecimal(3), calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
 	}

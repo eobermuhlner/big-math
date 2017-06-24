@@ -287,7 +287,7 @@ public class BigDecimalMathExperimental {
 		// log(x) = log(root(r, x)^r) = r * log(root(r, x))
 		BigDecimal r = valueOf(Math.max(2, (int) (Math.log(x.doubleValue()) * 5)));
 
-		BigDecimal result = BigDecimalMath.root(r, x, mc);
+		BigDecimal result = BigDecimalMath.root(x, r, mc);
 		result = logFunction.apply(result, mc).multiply(r, mc);
 
 		return result.round(mathContext);
