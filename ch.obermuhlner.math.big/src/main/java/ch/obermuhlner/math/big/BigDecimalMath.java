@@ -135,6 +135,7 @@ public class BigDecimalMath {
 	 * 
 	 * @param n the {@link BigDecimal}
 	 * @return the factorial {@link BigDecimal}
+	 * @throws ArithmeticException if x < 0
 	 */
 	public static BigDecimal factorial(int n) {
 		if (n < 0) {
@@ -151,6 +152,17 @@ public class BigDecimalMath {
 		return result;
 	}
 
+	/**
+	 * Calculates the Bernoulli number for the specified index.
+	 * 
+	 * <p>This function calculates the <strong>first Bernoulli numbers</strong> and therefore <code>bernoulli(1)</code> returns -0.5</p>
+	 * <p>Note that <code>bernoulli(x)</code> for all odd x > 1 returns 0</p>
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Bernoulli_number">Wikipedia: Bernoulli number</a></p>
+	 * 
+	 * @param n the index of the Bernoulli number to be calculated (starting at 0)
+	 * @return the Bernoulli number for the specified index
+	 * @throws ArithmeticException if x < 0
+	 */
 	public static BigDecimal bernoulli(int n, MathContext mathContext) {
 		if (n < 0) {
 			throw new ArithmeticException("Illegal bernoulli(n) for n < 0: n = " + n);
@@ -238,6 +250,7 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} value to calculate the square root
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated square root of x with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException if x < 0
 	 */
 	public static BigDecimal sqrt(BigDecimal x, MathContext mathContext) {
 		switch (x.signum()) {
@@ -276,6 +289,7 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * 
 	 * @return the calculated n'th root of x with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException if x < 0
 	 */
 	public static BigDecimal root(BigDecimal x, BigDecimal n, MathContext mathContext) {
 		switch (x.signum()) {
@@ -320,7 +334,7 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the natural logarithm for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated natural logarithm {@link BigDecimal} with the precision specified in the <code>mathContext</code>
-	 * @throws ArithmeticException for 0 or negative numbers
+	 * @throws ArithmeticException if x <= 0
 	 */
 	public static BigDecimal log(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Natural_logarithm
@@ -353,10 +367,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the logarithm base 2 for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated natural logarithm {@link BigDecimal} to the base 2 with the precision specified in the <code>mathContext</code>
-	 * @throws ArithmeticException for 0 or negative numbers
+	 * @throws ArithmeticException if x <= 0
 	 */
 	public static BigDecimal log2(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		BigDecimal result = log(x, mc).divide(logTwo(mc), mc);
 		return result.round(mathContext);
@@ -368,7 +382,7 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the logarithm base 10 for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated natural logarithm {@link BigDecimal} to the base 10 with the precision specified in the <code>mathContext</code>
-	 * @throws ArithmeticException for 0 or negative numbers
+	 * @throws ArithmeticException if x <= 0
 	 */
 	public static BigDecimal log10(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
@@ -679,6 +693,7 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the arc sine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException if x > 1 or x < -1
 	 */
 	public static BigDecimal asin(BigDecimal x, MathContext mathContext) {
 		if (x.compareTo(ONE) > 0) {
@@ -732,6 +747,7 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the arc cosine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException if x > 1 or x < -1
 	 */
 	public static BigDecimal acos(BigDecimal x, MathContext mathContext) {
 		if (x.compareTo(ONE) > 0) {
@@ -791,6 +807,7 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the cotangens for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated cotanges {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException if x = 0
 	 */
 	public static BigDecimal cot(BigDecimal x, MathContext mathContext) {
 		if (x.signum() == 0) {
