@@ -202,7 +202,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * </ul>
 	 * 
 	 * @return the reciprocal rational number
-	 * @throws ArithmeticException if the argument is 0 (division by zero)
+	 * @throws ArithmeticException if this number is 0 (division by zero)
 	 */
 	public BigRational reciprocal() {
 		return of(denominator, numerator);
@@ -1098,7 +1098,21 @@ public class BigRational implements Comparable<BigRational> {
 
 	private static List<BigRational> bernoulliCache = new ArrayList<>();
 	
+	/**
+	 * Calculates the Bernoulli number for the specified index.
+	 * 
+	 * <p>This function calculates the <strong>first Bernoulli numbers</strong> and therefore <code>bernoulli(1)</code> returns -0.5</p>
+	 * <p>Note that <code>bernoulli(x)</code> for all odd x > 1 returns 0</p>
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Bernoulli_number">Wikipedia: Bernoulli number</a></p>
+	 * 
+	 * @param n the index of the Bernoulli number to be calculated (starting at 0)
+	 * @return the Bernoulli number for the specified index
+	 * @throws ArithmeticException if x is lesser than 0
+	 */
     public static BigRational bernoulli(int n) {
+		if (n < 0) {
+			throw new ArithmeticException("Illegal bernoulli(n) for n < 0: n = " + n);
+		}
     	if (n == 1) {
     		return valueOf(-1, 2);
     	} else if (n % 2 == 1) {
