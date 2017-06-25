@@ -835,42 +835,105 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
+	/**
+	 * Calculates the hyperbolic sine of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Wikipedia: Hyperbolic function</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the hyperbolic sine for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated hyperbolic sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal sinh(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = SinhCalculator.INSTANCE.calculate(x, mc);
 		return result.round(mathContext);
 	}
 
+	/**
+	 * Calculates the hyperbolic cosine of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Wikipedia: Hyperbolic function</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the hyperbolic cosine for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated hyperbolic cosine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal cosh(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = CoshCalculator.INSTANCE.calculate(x, mc);
 		return result.round(mathContext);
 	}
 
+	/**
+	 * Calculates the hyperbolic tangens of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Wikipedia: Hyperbolic function</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the hyperbolic tangens for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated hyperbolic tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal tanh(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = sinh(x, mc).divide(cosh(x, mc), mc);
 		return result.round(mathContext);
 	}
 	
+	/**
+	 * Calculates the arc hyperbolic sine (inverse hyperbolic sine) of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Wikipedia: Hyperbolic function</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic sine for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated arc hyperbolic sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal asinh(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).add(ONE, mc), mc), mc), mc);
 		return result.round(mathContext);
 	}	
 	
+	/**
+	 * Calculates the arc hyperbolic cosine (inverse hyperbolic cosine) of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Wikipedia: Hyperbolic function</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic cosine for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated arc hyperbolic cosine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal acosh(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).subtract(ONE, mc), mc), mc), mc);
 		return result.round(mathContext);
 	}	
 
+	/**
+	 * Calculates the arc hyperbolic tangens (inverse hyperbolic tangens ) of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Wikipedia: Hyperbolic function</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic tanges for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated arc hyperbolic tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal atanh(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(ONE.add(x, mc).divide(ONE.subtract(x, mc), mc), mc).divide(TWO, mc);
 		return result.round(mathContext);
 	}	
 
+	/**
+	 * Calculates the arc hyperbolic cotangens (inverse hyperbolic cotangens) of {@link BigDecimal} x.
+	 * 
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Wikipedia: Hyperbolic function</a></p>
+	 * 
+	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic cotangens for
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated arc hyperbolic cotangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal acoth(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(ONE, mc).divide(x.subtract(ONE, mc), mc), mc).divide(TWO, mc);
@@ -1229,30 +1292,79 @@ public class BigDecimalMath {
 			return BigDecimalMath.acot(x, mathContext);
 		}
 
+		/**
+		 * Returns the hyperbolic sine of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#sinh(BigDecimal, MathContext)
+		 */
 		public BigDecimal sinh(BigDecimal x) {
 			return BigDecimalMath.sinh(x, mathContext);
 		}
 
+		/**
+		 * Returns the hyperbolic cosine of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#cosh(BigDecimal, MathContext)
+		 */
 		public BigDecimal cosh(BigDecimal x) {
 			return BigDecimalMath.cosh(x, mathContext);
 		}
 
+		/**
+		 * Returns the hyperbolic tangens of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#tanh(BigDecimal, MathContext)
+		 */
 		public BigDecimal tanh(BigDecimal x) {
 			return BigDecimalMath.tanh(x, mathContext);
 		}
 		
+		/**
+		 * Returns the arc hyperbolic sine of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#asinh(BigDecimal, MathContext)
+		 */
 		public BigDecimal asinh(BigDecimal x) {
 			return BigDecimalMath.asinh(x, mathContext);
 		}
 
+		/**
+		 * Returns the arc hyperbolic cosine of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#acosh(BigDecimal, MathContext)
+		 */
 		public BigDecimal acosh(BigDecimal x) {
 			return BigDecimalMath.acosh(x, mathContext);
 		}
 
+		/**
+		 * Returns the arc hyperbolic tangens of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#atanh(BigDecimal, MathContext)
+		 */
 		public BigDecimal atanh(BigDecimal x) {
 			return BigDecimalMath.atanh(x, mathContext);
 		}
 
+		/**
+		 * Returns the arc hyperbolic cotangens of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#acoth(BigDecimal, MathContext)
+		 */
 		public BigDecimal acoth(BigDecimal x) {
 			return BigDecimalMath.acoth(x, mathContext);
 		}
