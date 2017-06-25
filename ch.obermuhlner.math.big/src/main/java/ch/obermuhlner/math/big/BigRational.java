@@ -1102,7 +1102,7 @@ public class BigRational implements Comparable<BigRational> {
 	 * Calculates the Bernoulli number for the specified index.
 	 * 
 	 * <p>This function calculates the <strong>first Bernoulli numbers</strong> and therefore <code>bernoulli(1)</code> returns -0.5</p>
-	 * <p>Note that <code>bernoulli(x)</code> for all odd x > 1 returns 0</p>
+	 * <p>Note that <code>bernoulli(x)</code> for all odd x &gt; 1 returns 0</p>
 	 * <p>See: <a href="https://en.wikipedia.org/wiki/Bernoulli_number">Wikipedia: Bernoulli number</a></p>
 	 * 
 	 * @param n the index of the Bernoulli number to be calculated (starting at 0)
