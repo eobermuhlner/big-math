@@ -1060,7 +1060,29 @@ public class BigDecimalMath {
 		public BigDecimal log(BigDecimal x) {
 			return BigDecimalMath.log(x, mathContext);
 		}
-		
+
+		/**
+		 * Calculates the logarithm of {@link BigDecimal} x to the base 2 using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#log2(BigDecimal, MathContext)
+		 */
+		public BigDecimal log2(BigDecimal x) {
+			return BigDecimalMath.log2(x, mathContext);
+		}
+
+		/**
+		 * Calculates the logarithm of {@link BigDecimal} x to the base 10 using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#log10(BigDecimal, MathContext)
+		 */
+		public BigDecimal log10(BigDecimal x) {
+			return BigDecimalMath.log10(x, mathContext);
+		}
+
 		/**
 		 * Returns the {@link BigDecimal} x to the power of {@link BigDecimal} y using the {@link MathContext} from this {#link Context}.
 		 * 
@@ -1072,7 +1094,19 @@ public class BigDecimalMath {
 		public BigDecimal pow(BigDecimal x, BigDecimal y) {
 			return BigDecimalMath.pow(x, y, mathContext);
 		}
-		
+
+		/**
+		 * Returns the {@link BigDecimal} x to the power of <code>int</code> y using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param x the {@link BigDecimal} x value
+		 * @param y the <code>int</code> value to serve as exponent
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+		 */
+		public BigDecimal pow(BigDecimal x, int y) {
+			return BigDecimalMath.pow(x, y, mathContext);
+		}
+
 		/**
 		 * Returns the natural exponent of {@link BigDecimal} x using the {@link MathContext} from this {#link Context}.
 		 * 
@@ -1137,7 +1171,7 @@ public class BigDecimalMath {
 		 * @see BigDecimalMath#tan(BigDecimal, MathContext)
 		 */
 		public BigDecimal tan(BigDecimal x) {
-			return BigDecimalMath.cos(x, mathContext);
+			return BigDecimalMath.tan(x, mathContext);
 		}
 
 		/**
@@ -1148,7 +1182,7 @@ public class BigDecimalMath {
 		 * @see BigDecimalMath#cot(BigDecimal, MathContext)
 		 */
 		public BigDecimal cot(BigDecimal x) {
-			return BigDecimalMath.cos(x, mathContext);
+			return BigDecimalMath.cot(x, mathContext);
 		}
 
 		/**
@@ -1192,6 +1226,46 @@ public class BigDecimalMath {
 		 * @see BigDecimalMath#acot(BigDecimal, MathContext)
 		 */
 		public BigDecimal acot(BigDecimal x) {
-			return BigDecimalMath.cos(x, mathContext);
+			return BigDecimalMath.acot(x, mathContext);
+		}
+
+		public BigDecimal sinh(BigDecimal x) {
+			return BigDecimalMath.sinh(x, mathContext);
+		}
+
+		public BigDecimal cosh(BigDecimal x) {
+			return BigDecimalMath.cosh(x, mathContext);
+		}
+
+		public BigDecimal tanh(BigDecimal x) {
+			return BigDecimalMath.tanh(x, mathContext);
+		}
+		
+		public BigDecimal asinh(BigDecimal x) {
+			return BigDecimalMath.asinh(x, mathContext);
+		}
+
+		public BigDecimal acosh(BigDecimal x) {
+			return BigDecimalMath.acosh(x, mathContext);
+		}
+
+		public BigDecimal atanh(BigDecimal x) {
+			return BigDecimalMath.atanh(x, mathContext);
+		}
+
+		public BigDecimal acoth(BigDecimal x) {
+			return BigDecimalMath.acoth(x, mathContext);
+		}
+
+		public BigDecimal pi() {
+			return BigDecimalMath.pi(mathContext);
+		}
+
+		public BigDecimal e() {
+			return BigDecimalMath.e(mathContext);
+		}
+
+		public BigDecimal bernoulli(int n) {
+			return BigDecimalMath.bernoulli(n, mathContext);
 		}
 	}}
