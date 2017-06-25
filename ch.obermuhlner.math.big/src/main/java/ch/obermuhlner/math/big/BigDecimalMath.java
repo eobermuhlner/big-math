@@ -537,7 +537,15 @@ public class BigDecimalMath {
 		}
 		return result;
 	}
-	
+
+	/**
+	 * Returns the number pi.
+	 * 
+	 * <p>See <a href="https://en.wikipedia.org/wiki/Pi">Wikipedia: Pi</a></p>
+	 * 
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the number pi with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal pi(MathContext mathContext) {
 		if (mathContext.getPrecision() < PI.precision()) {
 			return PI.round(mathContext);
@@ -588,6 +596,14 @@ public class BigDecimalMath {
 	}
 
 	
+	/**
+	 * Returns the number e.
+	 * 
+	 * <p>See <a href="https://en.wikipedia.org/wiki/E_(mathematical_constant)">Wikipedia: E (mathematical_constant)</a></p>
+	 * 
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the number e with the precision specified in the <code>mathContext</code>
+	 */
 	public static BigDecimal e(MathContext mathContext) {
 		return exp(ONE, mathContext);
 	}
@@ -1369,14 +1385,33 @@ public class BigDecimalMath {
 			return BigDecimalMath.acoth(x, mathContext);
 		}
 
+		/**
+		 * Returns the number pi using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @return the number pi
+		 * @see BigDecimalMath#pi(MathContext)
+		 */
 		public BigDecimal pi() {
 			return BigDecimalMath.pi(mathContext);
 		}
 
+		/**
+		 * Returns the number e using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @return the number e
+		 * @see BigDecimalMath#e(MathContext)
+		 */
 		public BigDecimal e() {
 			return BigDecimalMath.e(mathContext);
 		}
 
+		/**
+		 * Returns the bernoulli number using the {@link MathContext} from this {#link Context}.
+		 * 
+		 * @param n the index of the Bernoulli number to be calculated (starting at 0)
+		 * @return the resulting {@link BigDecimal}
+		 * @see BigDecimalMath#bernoulli(int, MathContext)
+		 */
 		public BigDecimal bernoulli(int n) {
 			return BigDecimalMath.bernoulli(n, mathContext);
 		}
