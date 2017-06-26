@@ -1,10 +1,15 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
+group = 'ch.obermuhlner'
 version = '1.0-beta1'
+archivesBaseName = 'big-math'
 
 repositories {
-	jcenter()
+	mavenLocal()
+	mavenCentral()
 }
 
 dependencies {
@@ -22,6 +27,9 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
-    archives sourcesJar
-    archives javadocJar
+	archives jar
+	archives sourcesJar
+	archives javadocJar
 }
+
+// See http://central.sonatype.org/pages/gradle.html
