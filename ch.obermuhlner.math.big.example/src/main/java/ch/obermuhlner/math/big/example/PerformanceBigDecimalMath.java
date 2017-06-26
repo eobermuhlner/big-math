@@ -16,9 +16,7 @@ import ch.obermuhlner.math.big.internal.ExpCalculator;
 import ch.obermuhlner.math.big.internal.SinCalculator;
 
 /**
- * finding optimum point between 2 and 3
- * // x / 2 - 1 = 1 - x / 3
- *
+ * Performance measurements for the functions in {@link BigDecimalMath}.
  */
 public class PerformanceBigDecimalMath {
 

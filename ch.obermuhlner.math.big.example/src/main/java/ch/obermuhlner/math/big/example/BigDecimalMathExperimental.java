@@ -13,6 +13,9 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import ch.obermuhlner.math.big.internal.AsinCalculator;
 import ch.obermuhlner.math.big.internal.ExpCalculator;
 
+/**
+ * Experimental implementations to find the most efficient algorithms. 
+ */
 public class BigDecimalMathExperimental {
 
 	private static final BigDecimal TWO = valueOf(2);

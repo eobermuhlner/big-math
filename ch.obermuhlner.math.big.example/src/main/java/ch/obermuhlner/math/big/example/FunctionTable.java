@@ -8,6 +8,9 @@ import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
+/**
+ * Prints function tables to compare {@link Math} and {@link BigDecimalMath} functions.
+ */
 public class FunctionTable {
 
 	public static void main(String[] args) {
