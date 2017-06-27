@@ -1,6 +1,0 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
-
-dependencies {
-	compile project(':ch.obermuhlner.math.big')
-}
