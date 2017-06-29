@@ -1,5 +1,9 @@
 language: java
-jdk: oraclejdk8
+jdk:
+  - oraclejdk8
+  
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 # set sudo to required, because this setup gets more memory
 sudo: required
