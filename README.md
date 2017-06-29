@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/eobermuhlner/big-math.svg?branch=master)](https://travis-ci.org/eobermuhlner/big-math)
+
 # big-math
 
 Java math functions for `BigDecimal`.
