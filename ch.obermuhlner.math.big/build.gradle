@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'jacoco'
 
 group = 'ch.obermuhlner'
 version = '1.0-beta2'
@@ -22,6 +23,15 @@ repositories {
 dependencies {
     testCompile 'junit:junit:4.12'
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+check.dependsOn jacocoTestReport
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
