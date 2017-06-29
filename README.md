@@ -46,6 +46,34 @@ For the mathematical background and performance analysis please refer to this ar
 Some of the implementation details are explained here: 
 *	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
 
+## Development
+
+To use the library you can either download the newest version of the .jar file from the
+[published releases](https://github.com/eobermuhlner/big-math/releases/)
+or use the following dependency to
+[Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cbig-math)
+in your build script (please verify the version number to be the newest release):
+
+### Use in Maven Build
+```xml
+<dependency>
+    <groupId>ch.obermuhlner</groupId>
+    <artifactId>big-math</artifactId>
+    <version>1.0-beta2</version>
+</dependency>
+```
+
+### Use in Gradle Build
+```gradle
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'ch.obermuhlner:big-math:1.0-beta2'
+}
+```
+
 ## Performance
 
 The following charts show the time needed to calculate the functions over a range of values with a precision of 300 digits.
