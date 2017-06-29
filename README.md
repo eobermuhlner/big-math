@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/eobermuhlner/big-math.svg?branch=master)](https://travis-ci.org/eobermuhlner/big-math)
+[![Code Coverage](https://img.shields.io/codecov/c/github/eobermuhlner/big-math/develop.svg)](https://codecov.io/github/eobermuhlner/big-math?branch=master)
 
 # big-math
 
