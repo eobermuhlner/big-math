@@ -7,6 +7,13 @@ group = 'ch.obermuhlner'
 version = '1.0-beta2'
 archivesBaseName = 'big-math'
 
+if (!ext.hasProperty('ossrhUsername')) {
+	ext.ossrhUsername = "ossrhUsername_UNDEFINED"
+}
+if (!ext.hasProperty('ossrhPassword')) {
+	ext.ossrhPassword = "ossrhPassword_UNDEFINED"
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -33,7 +40,9 @@ artifacts {
 }
 
 signing {
-    sign configurations.archives
+	if (signing.hasProperty('keyId')) {
+	    sign configurations.archives
+	}
 }
 
 uploadArchives {
