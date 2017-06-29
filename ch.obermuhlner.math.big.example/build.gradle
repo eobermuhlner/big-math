@@ -1,6 +1,12 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
+repositories {
+	mavenCentral()
+}
+
 dependencies {
 	compile project(':ch.obermuhlner.math.big')
+	
+	//compile group: 'ch.obermuhlner', name: 'big-math', version: '1.0-beta2'
 }

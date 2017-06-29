@@ -2,6 +2,7 @@
 
 /.gradle/
 /build/
+/gradle.properties
 
 # Eclipse IDE stuff
 

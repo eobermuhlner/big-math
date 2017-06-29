@@ -4,16 +4,16 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = 'ch.obermuhlner'
-version = '1.0-beta1'
+version = '1.0-beta2'
 archivesBaseName = 'big-math'
 
 repositories {
-	mavenLocal()
-	mavenCentral()
+    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
-	testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -27,9 +27,58 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
-	archives jar
-	archives sourcesJar
-	archives javadocJar
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+	repositories {
+	    mavenDeployer {
+	        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+	
+	        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+	            authentication(userName: ossrhUsername, password: ossrhPassword)
+	        }
+	
+	        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+	            authentication(userName: ossrhUsername, password: ossrhPassword)
+	        }
+	
+	        pom.project {
+	            name 'Big Math'
+	            packaging 'jar'
+	            // optionally artifactId can be defined here 
+	            description 'Math functions for BigDecimal.'
+	            url 'https://github.com/eobermuhlner/big-math'
+	
+	            scm {
+	                connection 'scm:git:git://github.com/big-math.git'
+	                developerConnection 'scm:ssh://github.com:eobermuhlner/big-math.git'
+	                url 'https://github.com/eobermuhlner/big-math/'
+	            }
+	
+	            licenses {
+	                license {
+	                    name 'MIT License'
+	                    url 'https://raw.githubusercontent.com/eobermuhlner/big-math/master/LICENSE.txt'
+	                }
+	            }
+	
+	            developers {
+	                developer {
+	                    id 'eobermuhlner'
+	                    name 'Eric Obermuhlner'
+	                    email 'eobermuhlner@gmail.com'
+	                }
+	            }
+	        }
+	    }
+	}
 }
 
 // See http://central.sonatype.org/pages/gradle.html
