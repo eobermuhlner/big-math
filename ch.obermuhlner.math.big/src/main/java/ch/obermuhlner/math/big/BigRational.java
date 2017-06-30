@@ -958,57 +958,6 @@ public class BigRational implements Comparable<BigRational> {
 		return valueOf(new BigDecimal(string));
 	}
 
-	public static BigRational valueOfSimple2(String string) {
-		boolean positive = true;
-		String integerPart = "";
-		String fractionPart = "";
-		String fractionRepeatPart = "";
-		String exponentPart = "";
-
-		int index = 0;
-		if (string.charAt(index) == '+') {
-			index++;
-		}
-		else if (string.charAt(index) == '-') {
-			index++;
-			positive = false;
-		}
-
-		int pointPos = string.indexOf('.', index);
-		if (pointPos >= 0) {
-			integerPart = string.substring(index, pointPos);
-			index = pointPos;
-		}
-
-		int repeatPos = string.indexOf('[', index);
-		int exponentPos = string.indexOf('E', index);
-
-		if (repeatPos >= 0) {
-			fractionPart = string.substring(index, repeatPos);
-
-			int repeatEndPos = string.indexOf(']', index);
-			if (repeatEndPos == -1) {
-				repeatEndPos = string.length();
-			}
-			fractionRepeatPart = string.substring(repeatPos, repeatEndPos);
-			index = repeatEndPos;
-		}
-		else {
-			if (exponentPos >= 0) {
-				fractionPart = string.substring(repeatPos, exponentPos);
-			}
-			else {
-				fractionPart = string.substring(index);
-			}
-		}
-
-		if (exponentPos >= 0) {
-			exponentPart = string.substring(exponentPos);
-		}
-
-		return valueOf(positive, integerPart, fractionPart, fractionRepeatPart, exponentPart);
-	}
-
 	public static BigRational valueOf(boolean positive, String integerPart, String fractionPart, String fractionRepeatPart, String exponentPart) {
 		BigRational result = ZERO;
 
