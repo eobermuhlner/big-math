@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/eobermuhlner/big-math.svg?branch=master)](https://travis-ci.org/eobermuhlner/big-math)
-[![Code Coverage](https://img.shields.io/codecov/c/github/eobermuhlner/big-math.svg)](https://img.shields.io/codecov/c/github/eobermuhlner/big-math.svg)
-[![Maven Central](https://img.shields.io/maven-central/v/ch.obermuhlner/big-math.svg)]()
+[![Code Coverage](https://img.shields.io/codecov/c/github/eobermuhlner/big-math.svg)](https://codecov.io/gh/eobermuhlner/big-math)
+[![Coverity Scan](https://img.shields.io/coverity/scan/3997.svg)]()
+[![Maven Central](https://img.shields.io/maven-central/v/ch.obermuhlner/big-math.svg)](https://search.maven.org/#search%7Cga%7C1%7Cbig-math)
 
 
 
