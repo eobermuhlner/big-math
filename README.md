@@ -85,12 +85,12 @@ dependencies {
 
 The following charts show the time needed to calculate the functions over a range of values with a precision of 300 digits.
 
-![sqrt(), root(), exp(), sin(), cos() 0 to 10](https://raw.githubusercontent.com/eobermuhlner/big-math/master/ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_10.png)
-![sqrt(), root(), exp(), sin(), cos() 0 to 100](https://raw.githubusercontent.com/eobermuhlner/big-math/master/ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_100.png)
+![sqrt(), root(), exp(), sin(), cos() 0 to 10](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_10.png)
+![sqrt(), root(), exp(), sin(), cos() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_100.png)
 
-![exp(), log(), pow() 0 to 10](https://raw.githubusercontent.com/eobermuhlner/big-math/master/ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_10.png)
-![exp(), log(), pow() 0 to 100](https://raw.githubusercontent.com/eobermuhlner/big-math/master/ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_100.png)
-![]()
+![exp(), log(), pow() 0 to 10](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_10.png)
+![exp(), log(), pow() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_100.png)
+
 
 
 
