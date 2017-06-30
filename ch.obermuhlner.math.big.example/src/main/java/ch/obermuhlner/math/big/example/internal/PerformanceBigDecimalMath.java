@@ -1,4 +1,4 @@
-package ch.obermuhlner.math.big.example;
+package ch.obermuhlner.math.big.example.internal;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
-import ch.obermuhlner.math.big.internal.AsinCalculator;
-import ch.obermuhlner.math.big.internal.CosCalculator;
-import ch.obermuhlner.math.big.internal.ExpCalculator;
-import ch.obermuhlner.math.big.internal.SinCalculator;
+import ch.obermuhlner.math.big.example.StopWatch;
 
 /**
  * Performance measurements for the functions in {@link BigDecimalMath}.
@@ -28,49 +25,49 @@ public class PerformanceBigDecimalMath {
 
 	public static void main(String[] args) {
 
-//		System.out.println(BigDecimalMath.pi(new MathContext(1100)));
-//		System.out.println(BigDecimalMathExperimental.logUsingNewtonFixPrecision(BigDecimal.valueOf(3.1), new MathContext(1000)));
-//		System.out.println(BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(BigDecimal.valueOf(3.1), new MathContext(1000), -17));
+		System.out.println(BigDecimalMath.pi(new MathContext(1100)));
+		System.out.println(BigDecimalMathExperimental.logUsingNewtonFixPrecision(BigDecimal.valueOf(3.1), new MathContext(1000)));
+		System.out.println(BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(BigDecimal.valueOf(3.1), new MathContext(1000), -17));
 
-//		performanceReport_Fast_0_to_2();
-//		performanceReport_Fast_neg10_to_10();
-//		performanceReport_Fast_0_to_10();
-//		performanceReport_Fast_0_to_100();
-//
-//		performanceReport_Trigo_0_to_1();
-//		performanceReport_Hyperbolic_0_to_2();
-//
-//		performanceReport_Slow_0_to_2();
-//		performanceReport_Slow_neg10_to_10();
-//		performanceReport_Slow_0_to_10();
-//		performanceReport_Slow_0_to_100();
+		performanceReport_Fast_0_to_2();
+		performanceReport_Fast_neg10_to_10();
+		performanceReport_Fast_0_to_10();
+		performanceReport_Fast_0_to_100();
+
+		performanceReport_Trigo_0_to_1();
+		performanceReport_Hyperbolic_0_to_2();
+
+		performanceReport_Slow_0_to_2();
+		performanceReport_Slow_neg10_to_10();
+		performanceReport_Slow_0_to_10();
+		performanceReport_Slow_0_to_100();
 
 		performanceReport_pow_0_to_100();
 
-//		performanceReport_pow_frac_0_to_10000();
-//		performanceReport_pow_int_0_to_10000();
+		performanceReport_pow_frac_0_to_10000();
+		performanceReport_pow_int_0_to_10000();
 		performanceReport_pow_int_0_to_100000();
 
-//		performanceReport_Fast_precision();
-//		performanceReport_Slow_precision();
+		performanceReport_Fast_precision();
+		performanceReport_Slow_precision();
 
 		// --- exp() optimizations:
-//		performanceReportExpOptimization_0_to_4();
+		performanceReportExpOptimization_0_to_4();
 		
 		// --- asin() optimizations:
-//		performanceReportAsinOptimization_0_to_1();
+		performanceReportAsinOptimization_0_to_1();
 
 		// --- sqrt() optimizations:
-//		performanceReportSqrtOptimization_0_to_1();
+		performanceReportSqrtOptimization_0_to_1();
 
 		// --- root() optimizations:
-//		performanceReportRootOptimization_0_to_10();
+		performanceReportRootOptimization_0_to_10();
 		
 		// --- log() optimizations:
-//		performanceReportLogNewtonAdaptive_0_to_10();
+		performanceReportLogNewtonAdaptive_0_to_10();
 		
-//		performanceReportLogOptimizationNewton_0_to_10();
-//		performanceReportLogOptimizationNewton_0_to_100();
+		performanceReportLogOptimizationNewton_0_to_10();
+		performanceReportLogOptimizationNewton_0_to_100();
 		
 //		performanceReportLogOptimizationTry();
 //		performanceReportLogOptimization1();
@@ -516,88 +513,6 @@ REFERENCE github eobermuhlner/big-math
 						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x2, mc2, 
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
-
-//	private static void performanceReportLogOptimization1() {
-//		MathContext mathContext = new MathContext(300);
-//
-//		printHeaders("x", "HyperbolicTangent", "Newton");
-//		printHeaders("number", "number", "number");
-//		performanceReportOverValue(
-//				mathContext,
-//				0.01,
-//				10,
-//				0.01,
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logAreaHyperbolicTangent(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingNewton(x, calculationMathContext));
-//	}
-//
-//	private static void performanceReportLogOptimization2() {
-//		MathContext mathContext = new MathContext(300);
-//
-//		printHeaders("x", "HyperbolicTangent", "Exponent+Hyperbolic", "Root");
-//		performanceReportOverValue(
-//				mathContext,
-//				0.01,
-//				10,
-//				+0.01,
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logAreaHyperbolicTangent(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentAndAreaHyperbolicTangent(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
-//	}
-//
-//	private static void performanceReportLogOptimization3() {
-//		MathContext mathContext = new MathContext(300);
-//
-//		printHeaders("x", "Hyperbolic", "ExponentHyperbolic", "Root");
-//		performanceReportOverValue(
-//				mathContext,
-//				0.05,
-//				100,
-//				+0.05,
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logAreaHyperbolicTangent(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentAndAreaHyperbolicTangent(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
-//	}
-//
-//	private static void performanceReportLogOptimization4() {
-//		MathContext mathContext = new MathContext(300);
-//
-//		printHeaders("x", "PowerTwo", "UsingRoot");
-//		performanceReportOverValue(
-//				mathContext,
-//				0.01,
-//				10,
-//				+0.01,
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingPowerTwo(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
-//	}
-//
-//	private static void performanceReportLogOptimization5() {
-//		MathContext mathContext = new MathContext(200);
-//
-//		printHeaders("x", "TwoThree", "UsingRoot");
-//		performanceReportOverValue(
-//				mathContext,
-//				0.1,
-//				2,
-//				+0.001,
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingTwoThree(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
-//	}
-//
-//	private static void performanceReportLogOptimization6() {
-//		MathContext mathContext = new MathContext(300);
-//
-//		printHeaders("x", "ExpPowerTwo", "UsingRoot");
-//		performanceReportOverValue(
-//				mathContext,
-//				0.02,
-//				50,
-//				+0.02,
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingExponentPowerTwo(x, calculationMathContext),
-//				(x, calculationMathContext) -> BigDecimalMathExperimental.logUsingRoot(x, calculationMathContext));
-//	}
-
 
 	@SafeVarargs
 	private static void performanceReportOverValue(String name, MathContext mathContext, double xStart, double xEnd, double xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {

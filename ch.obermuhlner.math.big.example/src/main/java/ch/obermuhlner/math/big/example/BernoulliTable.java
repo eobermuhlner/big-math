@@ -6,6 +6,7 @@ public class BernoulliTable {
 
 	public static void main(String[] args) {
 		printBernoulliTableSimple(500);
+		//printBernoulliTableHtml(500);
 	}
 
 	private static void printBernoulliTableSimple(int n) {
