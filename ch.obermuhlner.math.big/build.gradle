@@ -5,7 +5,7 @@ apply plugin: 'signing'
 apply plugin: 'jacoco'
 
 group = 'ch.obermuhlner'
-version = '1.0-beta2'
+version = '1.0.0'
 archivesBaseName = 'big-math'
 
 if (!ext.hasProperty('ossrhUsername')) {
