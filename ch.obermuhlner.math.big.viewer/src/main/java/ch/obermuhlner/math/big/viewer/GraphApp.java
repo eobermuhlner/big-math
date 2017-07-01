@@ -81,36 +81,37 @@ public class GraphApp extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
-		functionInfos.add(new FunctionInfo("sin(x)", Color.RED, new BigDecimalFunction() {
+		functionInfos.add(new FunctionInfo("sin(x)", Color.RED, new BigDecimalFunction1() {
 			@Override
 			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
 				return BigDecimalMath.sin(value, mathContext);
 			}
 		}));
-		functionInfos.add(new FunctionInfo("sin(1/x)", Color.BLUE, new BigDecimalFunction() {
+		functionInfos.add(new FunctionInfo("sin(1/x)", Color.BLUE, new BigDecimalFunction1() {
 			@Override
 			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
 				return BigDecimalMath.sin(BigDecimal.ONE.divide(value, mathContext), mathContext);
 			}
 		}));
-		functionInfos.add(new FunctionInfo("sin(x)/x", Color.DARKGREEN, new BigDecimalFunction() {
+		functionInfos.add(new FunctionInfo("sin(x)/x", Color.DARKGREEN, new BigDecimalFunction1() {
 			@Override
 			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
 				return BigDecimalMath.sin(value, mathContext).divide(value, mathContext);
 			}
 		}));
-		functionInfos.add(new FunctionInfo("sin(x)+sin(x*10)*0.1", Color.MAGENTA, new BigDecimalFunction() {
+		functionInfos.add(new FunctionInfo("sin(x)+sin(x*10)*0.1", Color.MAGENTA, new BigDecimalFunction1() {
 			@Override
 			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
 				return BigDecimalMath.sin(value, mathContext).add(BigDecimalMath.sin(value.multiply(new BigDecimal("100"), mathContext), mathContext).multiply(new BigDecimal("0.1"), mathContext), mathContext);
 			}
 		}));
-		functionInfos.add(new FunctionInfo("log(x)", Color.YELLOW, new BigDecimalFunction() {
+		functionInfos.add(new FunctionInfo("log(x)", Color.YELLOW, new BigDecimalFunction1() {
 			@Override
 			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
 				return BigDecimalMath.log(value, mathContext);
 			}
 		}));
+		functionInfos.add(new FunctionInfo("f(x)", Color.PURPLE, new FunctionParser("sin 1 swap /")));
 		
 		ChangeListener<? super Number> graphDrawingListener = (observable, oldValue, newValue) -> drawGraph(graphCanvas);
 		xStartProperty.addListener(graphDrawingListener);
@@ -188,13 +189,13 @@ public class GraphApp extends Application {
 
 		MathContext graphMathContext = new MathContext(precisionProperty.get() + 10);
 		
-		BigDecimalFunction toX = new BigDecimalFunction() {
+		BigDecimalFunction1 toX = new BigDecimalFunction1() {
 			@Override
 			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
 				return toPixel(value, xStart, xEnd, bigDecimalWidth, mathContext);
 			}
 		};
-		BigDecimalFunction toY = new BigDecimalFunction() {
+		BigDecimalFunction1 toY = new BigDecimalFunction1() {
 			@Override
 			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
 				return bigDecimalHeight.subtract(toPixel(value, yStart, yEnd, bigDecimalHeight, mathContext), mathContext);
