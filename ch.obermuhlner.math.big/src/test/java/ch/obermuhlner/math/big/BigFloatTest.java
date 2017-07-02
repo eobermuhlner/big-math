@@ -37,6 +37,7 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(0, BigDecimal.ONE.compareTo(context.valueOf(BigDecimal.ONE).toBigDecimal()));
 		assertEquals(0, BigDecimal.ONE.compareTo(context.valueOf(1).toBigDecimal()));
+		assertEquals(0, BigDecimal.ONE.compareTo(context.valueOf(1L).toBigDecimal()));
 		assertEquals(0, BigDecimal.ONE.compareTo(context.valueOf(1.0).toBigDecimal()));
 		
 		Context anotherContext = context(MathContext.DECIMAL64);
@@ -45,6 +46,17 @@ public class BigFloatTest {
 
 		assertEquals(context, context.valueOf(anotherContext.valueOf(1.0)).getContext());
 		assertEquals(anotherContext, anotherContext.valueOf(context.valueOf(1.0)).getContext());
+	}
+	
+	@Test
+	public void testValueOfRounding() {
+		Context context = context(new MathContext(3));
+		
+		assertEquals(0, BigDecimal.valueOf(123000).compareTo(context.valueOf(123456).toBigDecimal()));
+		assertEquals(0, BigDecimal.valueOf(123000).compareTo(context.valueOf(123456L).toBigDecimal()));
+		assertEquals(0, BigDecimal.valueOf(123000).compareTo(context.valueOf(123456.0).toBigDecimal()));
+		assertEquals(0, BigDecimal.valueOf(123000).compareTo(context.valueOf(BigDecimal.valueOf(123456)).toBigDecimal()));
+		assertEquals(0, BigDecimal.valueOf(123000).compareTo(context.valueOf(context(20).valueOf(123456)).toBigDecimal()));
 	}
 
 	@Test

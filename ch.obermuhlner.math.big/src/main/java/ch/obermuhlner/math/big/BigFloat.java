@@ -27,23 +27,23 @@ public class BigFloat implements Comparable<BigFloat> {
 		}
 
 		public BigFloat valueOf(BigFloat value) {
-			return new BigFloat(value.value, this); 
+			return new BigFloat(value.value.round(mathContext), this); 
 		}
 
 		public BigFloat valueOf(BigDecimal value) {
-			return new BigFloat(value, this); 
+			return new BigFloat(value.round(mathContext), this);
 		}
 
 		public BigFloat valueOf(int value) {
-			return valueOf(new BigDecimal(value, mathContext)); 
+			return new BigFloat(new BigDecimal(value, mathContext), this);
 		}
 
 		public BigFloat valueOf(long value) {
-			return valueOf(new BigDecimal(value, mathContext)); 
+			return new BigFloat(new BigDecimal(value, mathContext), this);
 		}
 
 		public BigFloat valueOf(double value) {
-			return valueOf(new BigDecimal(String.valueOf(value), mathContext)); 
+			return new BigFloat(new BigDecimal(String.valueOf(value), mathContext), this); 
 		}
 
 		public BigFloat pi() {
