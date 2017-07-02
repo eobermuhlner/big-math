@@ -152,6 +152,8 @@ The following numbers all have a precision of 3 digits:
 * 0.123
 * 0.0123
 
+To specify the number of digits after the decimal point use `BigDecimal.setScale(scale, mathContext)`.
+
 ### Why are `BigDecimalMath` functions so slow?
 
 The mathematical functions in `BigDecimalMath` are heavily optimized to calculate the result in the specified precision, but in order to calculate them often tens or even hundreds of basic operations (+, -, *, /) using `BigDecimal` are necessary.
