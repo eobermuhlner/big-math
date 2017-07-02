@@ -106,7 +106,7 @@ Some of the implementation details are explained here:
 ## Development
 
 To use the library you can either download the newest version of the .jar file from the
-[published releases](https://github.com/eobermuhlner/big-math/releases/)
+[published releases on Github](https://github.com/eobermuhlner/big-math/releases/)
 or use the following dependency to
 [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cbig-math)
 in your build script (please verify the version number to be the newest release):
