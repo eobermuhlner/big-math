@@ -48,6 +48,10 @@ public class BigFloat implements Comparable<BigFloat> {
 		public BigFloat e() {
 			return valueOf(BigDecimalMath.e(mathContext)); 
 		}
+
+		public BigFloat factorial(int n) {
+			return valueOf(BigDecimalMath.factorial(n));
+		}
 	}
 	
 	private final BigDecimal value;
@@ -203,10 +207,6 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	public BigFloat root(double y) {
 		return root(context.valueOf(y));
-	}
-
-	public BigFloat factorial(int n) {
-		return context.valueOf(factorial(n));
 	}
 
 	@Override
@@ -395,6 +395,38 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	public static BigFloat acot(BigFloat x) {
 		return x.context.valueOf(BigDecimalMath.acot(x.value, x.context.mathContext));
+	}
+
+	public static BigFloat sinh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.sinh(x.value, x.context.mathContext));
+	}
+
+	public static BigFloat cosh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.cosh(x.value, x.context.mathContext));
+	}
+
+	public static BigFloat tanh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.tanh(x.value, x.context.mathContext));
+	}
+
+	public static BigFloat coth(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.coth(x.value, x.context.mathContext));
+	}
+
+	public static BigFloat asinh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.asinh(x.value, x.context.mathContext));
+	}
+
+	public static BigFloat acosh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.acosh(x.value, x.context.mathContext));
+	}
+
+	public static BigFloat atanh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.atanh(x.value, x.context.mathContext));
+	}
+
+	public static BigFloat acoth(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.acoth(x.value, x.context.mathContext));
 	}
 
 	private static Context max(Context left, Context right) {
