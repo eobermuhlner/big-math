@@ -3,8 +3,6 @@
 [![Coverity Scan](https://img.shields.io/coverity/scan/3997.svg)]()
 [![Maven Central](https://img.shields.io/maven-central/v/ch.obermuhlner/big-math.svg)](https://search.maven.org/#search%7Cga%7C1%7Cbig-math)
 
-
-
 # big-math
 
 Advanced Java math functions (`pow`, `sqrt`, `log`, `sin`, ...) for `BigDecimal` using arbitrary precision.
@@ -130,6 +128,35 @@ dependencies {
   compile 'ch.obermuhlner:big-math:1.0.0'
 }
 ```
+
+## FAQ
+
+### Why do I have to pass `MathContext` to most functions?
+
+Many mathematical functions have results that have many digits (often an infinite number of digits).
+When calculating these functions you need to specify the number of digits you need, because calculating an infinite number of digits would take literally forever and consume an infinite amount of memory.
+
+The `MathContext` contains a precision and information on how to round the last digits, so it is an obvious choice to specify the desired precision of mathematical functions.
+
+### I specified a precision of `n` digits, but the results have completely different number of digits after the decimal point. Why?
+
+It is a common misconception that the precision defines the number of digits after the decimal point.
+
+Instead the precision defines the number of relevant digits, independent of the decimal point.
+The following numbers all have a precision of 3 digits:
+* 12300
+* 1230
+* 123
+* 12.3
+* 1.23
+* 0.123
+* 0.0123
+
+### Why are `BigDecimalMath` functions so slow?
+
+The mathematical functions in `BigDecimalMath` are heavily optimized to calculate the result in the specified precision, but in order to calculate them often tens or even hundreds of basic operations (+, -, *, /) using `BigDecimal` are necessary.
+
+If the calculation of your function is too slow for your purpose you should verify whether you really need the full precision in your particular use case. Sometimes you can adapt the precision depending on input factors of your calculation.
 
 ## Performance
 
