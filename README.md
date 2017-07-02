@@ -7,7 +7,7 @@
 
 # big-math
 
-Advanced Java math functions (`log`, `sqrt`, `sin`, ...) for `BigDecimal` using arbitrary precision.
+Advanced Java math functions (`pow`, `sqrt`, `log`, `sin`, ...) for `BigDecimal` using arbitrary precision.
 
 ## Overview BigDecimalMath
 
