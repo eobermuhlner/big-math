@@ -21,6 +21,15 @@ public class BigFloatTest {
 		assertEquals(mathContext, context.getMathContext());
 		assertEquals(mathContext.getPrecision(), context.getPrecision());
 		assertEquals(mathContext.getRoundingMode(), context.getRoundingMode());
+		
+		assertEquals(1000, context(1000).getPrecision());
+		
+		assertEquals(context, context(mathContext));
+		assertEquals(context.hashCode(), context(mathContext).hashCode());
+		assertEquals(context.toString(), context(mathContext).toString());
+
+		assertNotEquals(context, null);
+		assertNotEquals(context, "string");
 	}
 	
 	@Test
@@ -105,11 +114,33 @@ public class BigFloatTest {
 		assertNotEquals(context.valueOf(1234), context.valueOf(9999));
 		assertNotEquals(context.valueOf(9999), context.valueOf(1234));
 		
-		Context anotherContext = context(MathContext.DECIMAL32);
+		Context equalContext = context(MathContext.DECIMAL32);
+		assertEquals(context, equalContext);
+		assertEquals(context.valueOf(1234), equalContext.valueOf(1234));
+		assertEquals(equalContext.valueOf(1234), context.valueOf(1234));
+		
+		Context anotherContext = context(MathContext.DECIMAL64);
+		assertNotEquals(context, anotherContext);
 		assertNotEquals(context.valueOf(1234), anotherContext.valueOf(1234));
 		assertNotEquals(anotherContext.valueOf(1234), context.valueOf(1234));
+
 	}
 
+	@Test
+	public void testHashCode() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(context.valueOf(1).hashCode(), context.valueOf(1).hashCode());
+		assertNotEquals(context.valueOf(1).hashCode(), context.valueOf(999).hashCode());
+
+		Context equalContext = context(MathContext.DECIMAL32);
+		assertEquals(context, equalContext);
+		assertEquals(context.valueOf(1).hashCode(), equalContext.valueOf(1).hashCode());
+		assertNotEquals(context.valueOf(1).hashCode(), equalContext.valueOf(999).hashCode());
+
+		Context anotherContext = context(MathContext.DECIMAL64);
+		assertNotEquals(context.valueOf(1).hashCode(), anotherContext.valueOf(1).hashCode());
+	}
+	
 	@Test
 	public void testPi() {
 		Context context = context(MathContext.DECIMAL32);
@@ -180,6 +211,17 @@ public class BigFloatTest {
 		assertIsEqual(context.valueOf(5), context.valueOf(2).add(context.valueOf(3)));
 	}
 
+	@Test
+	public void testAddBigFloat() {
+		Context smallContext = context(MathContext.DECIMAL32);
+		Context largeContext = context(MathContext.DECIMAL64);
+		
+		assertEquals(smallContext, smallContext.valueOf(2).add(smallContext.valueOf(3)).getContext());
+		assertEquals(largeContext, smallContext.valueOf(2).add(largeContext.valueOf(3)).getContext());
+		assertEquals(largeContext, largeContext.valueOf(2).add(smallContext.valueOf(3)).getContext());
+		assertEquals(largeContext, largeContext.valueOf(2).add(largeContext.valueOf(3)).getContext());
+	}
+	
 	@Test
 	public void testSubtract() {
 		Context context = context(MathContext.DECIMAL32);

@@ -57,6 +57,28 @@ public class BigFloat implements Comparable<BigFloat> {
 		public BigFloat factorial(int n) {
 			return valueOf(BigDecimalMath.factorial(n));
 		}
+		
+		@Override
+		public int hashCode() {
+			return mathContext.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Context other = (Context) obj;
+			return mathContext.equals(other.mathContext);
+		}
+
+		@Override
+		public String toString() {
+			return mathContext.toString();
+		}
 	}
 	
 	private final BigDecimal value;
@@ -69,7 +91,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	
 	public BigFloat add(BigFloat x) {
 		Context c = max(context, x.context);
-		return new BigFloat(value.add(x.value, c.mathContext), c);
+		return c.valueOf(value.add(x.value, c.mathContext));
 	}
 
 	public BigFloat add(BigDecimal x) {
@@ -90,7 +112,7 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	public BigFloat subtract(BigFloat x) {
 		Context c = max(context, x.context);
-		return new BigFloat(value.subtract(x.value, c.mathContext), c);
+		return c.valueOf(value.subtract(x.value, c.mathContext));
 	}
 
 	public BigFloat subtract(BigDecimal x) {
@@ -111,7 +133,7 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	public BigFloat multiply(BigFloat x) {
 		Context c = max(context, x.context);
-		return new BigFloat(value.multiply(x.value, c.mathContext), c);
+		return c.valueOf(value.multiply(x.value, c.mathContext));
 	}
 
 	public BigFloat multiply(BigDecimal x) {
@@ -132,7 +154,7 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	public BigFloat divide(BigFloat x) {
 		Context c = max(context, x.context);
-		return new BigFloat(value.divide(x.value, c.mathContext), c);
+		return c.valueOf(value.divide(x.value, c.mathContext));
 	}
 
 	public BigFloat divide(BigDecimal x) {
@@ -153,7 +175,7 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	public BigFloat remainder(BigFloat x) {
 		Context c = max(context, x.context);
-		return new BigFloat(value.remainder(x.value, c.mathContext), c);
+		return c.valueOf(value.remainder(x.value, c.mathContext));
 	}
 
 	public BigFloat remainder(BigDecimal x) {
@@ -279,10 +301,6 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	public Context getContext() {
 		return context;
-	}
-	
-	public BigFloat withContext(Context otherContext) {
-		return new BigFloat(value.round(otherContext.mathContext), otherContext);
 	}
 	
 	public BigDecimal toBigDecimal() {

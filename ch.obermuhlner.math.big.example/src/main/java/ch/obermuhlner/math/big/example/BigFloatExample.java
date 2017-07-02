@@ -48,6 +48,6 @@ public class BigFloatExample {
 		final BigFloat factor = context.valueOf(426880).multiply(sqrt(context.valueOf(10005)));
 		BigFloat pi = factor.divide(sumA.multiply(13591409).add(sumB.multiply(545140134)));
 		
-		return pi.withContext(context(precision));
+		return context(precision).valueOf(pi);
 	}
 }
