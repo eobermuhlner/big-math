@@ -649,18 +649,12 @@ public class BigDecimalMath {
 		
 		BigDecimal fractionalPart = x.subtract(integralPart);
 
-		MathContext mc = new MathContext(mathContext.getPrecision() + 5, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 9, mathContext.getRoundingMode());
 
         BigDecimal z = ONE.add(fractionalPart.divide(integralPart, mc));
         BigDecimal t = expTaylor(z, mc);
 
-        BigDecimal result = ONE;
-        while (integralPart.compareTo(MAX_INT) >= 0) {
-        	result = result.multiply(pow(t, Integer.MAX_VALUE, mc), mc);
-        	integralPart = integralPart.subtract(MAX_INT);
-        }
-        
-        result = result.multiply(pow(t, integralPart.intValue(), mc));
+        BigDecimal result = pow(t, integralPart.intValue(), mc);
         
 		return result.round(mathContext);
 	}

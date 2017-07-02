@@ -506,6 +506,15 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testExpHuge() {
+		// Largest exp(10^x) that still gives a result on Wolfram Alpha 
+		// exp(1000000000) = 8.00298177066097253304190937436500068878231499717... × 10^434294481
+		BigDecimal expected = new BigDecimal("8.00298177066E434294481");
+		BigDecimal actual = BigDecimalMath.exp(BigDecimal.valueOf(1000000000), new MathContext(12));
+		assertEquals(expected, actual);
+	}
+	
+	@Test
 	public void testExp1E() {
 		for (int precision = 1; precision <= 2001; precision+=100) {
 			MathContext mathContext = new MathContext(precision);
