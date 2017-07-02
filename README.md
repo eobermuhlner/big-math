@@ -47,6 +47,56 @@ This implementation provides efficient and accurate implementations for:
 
 ## Documentation
 
+For calculations with arbitrary precision you need to specify how precise you want a calculated result.
+For `BigDecimal` calculations this is done using the `MathContext`.
+
+```java
+MathContext mathContext = new MathContext(100);
+System.out.println("sqrt(2)        = " + BigDecimalMath.sqrt(BigDecimal.valueOf(2), mathContext));
+System.out.println("log10(2)       = " + BigDecimalMath.log10(BigDecimal.valueOf(2), mathContext));
+System.out.println("exp(2)         = " + BigDecimalMath.exp(BigDecimal.valueOf(2), mathContext));
+System.out.println("sin(2)         = " + BigDecimalMath.sin(BigDecimal.valueOf(2), mathContext));
+```
+will produce the following output on the console:
+```
+sqrt(2)        = 1.414213562373095048801688724209698078569671875376948073176679737990732478462107038850387534327641573
+log10(2)       = 0.3010299956639811952137388947244930267681898814621085413104274611271081892744245094869272521181861720
+exp(2)         = 7.389056098930650227230427460575007813180315570551847324087127822522573796079057763384312485079121795
+sin(2)         = 0.9092974268256816953960198659117448427022549714478902683789730115309673015407835446201266889249593803
+```
+
+Since many mathematical constants have an infinite number of digits you need to specfiy the desired precision for them as well:
+```java
+MathContext mathContext = new MathContext(100);
+System.out.println("pi             = " + BigDecimalMath.pi(mathContext));
+System.out.println("e              = " + BigDecimalMath.e(mathContext));
+```
+will produce the following output on the console:
+```
+pi             = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068
+e              = 2.718281828459045235360287471352662497757247093699959574966967627724076630353547594571382178525166427
+```
+
+Additional `BigDecimalMath` provides several useful methods (that are plain missing for `BigDecimal`):
+```java
+MathContext mathContext = new MathContext(100);
+System.out.println("mantissa(1.456E99)      = " + BigDecimalMath.mantissa(BigDecimal.valueOf(1.456E99)));
+System.out.println("exponent(1.456E99)      = " + BigDecimalMath.exponent(BigDecimal.valueOf(1.456E99)));
+System.out.println("integralPart(123.456)   = " + BigDecimalMath.integralPart(BigDecimal.valueOf(123.456)));
+System.out.println("fractionalPart(123.456) = " + BigDecimalMath.fractionalPart(BigDecimal.valueOf(123.456)));
+System.out.println("isIntValue(123)         = " + BigDecimalMath.isIntValue(BigDecimal.valueOf(123)));
+System.out.println("isIntValue(123.456)     = " + BigDecimalMath.isIntValue(BigDecimal.valueOf(123.456)));
+```
+will produce the following output on the console:
+```
+mantissa(1.456E99)      = 1.456
+exponent(1.456E99)      = 99
+integralPart(123.456)   = 123
+fractionalPart(123.456) = 0.456
+isIntValue(123)         = true
+isIntValue(123.456)     = false
+```
+
 For the mathematical background and performance analysis please refer to this article:
 *	[BigDecimalMath](http://obermuhlner.ch/wordpress/2016/06/02/bigdecimalmath/)
 
