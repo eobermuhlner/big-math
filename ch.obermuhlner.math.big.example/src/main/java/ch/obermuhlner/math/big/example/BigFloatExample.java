@@ -24,17 +24,17 @@ public class BigFloatExample {
 		BigFloat sumB = context.valueOf(0);
 
 		BigFloat a = context.valueOf(1);
-		long dividendTerm1 = 5; // -(6*k - 5)
-		long dividendTerm2 = -1; // 2*k - 1
-		long dividendTerm3 = -1; // 6*k - 1
+		BigFloat dividendTerm1 = context.valueOf(5); // -(6*k - 5)
+		BigFloat dividendTerm2 = context.valueOf(-1); // 2*k - 1
+		BigFloat dividendTerm3 = context.valueOf(-1); // 6*k - 1
 		BigFloat kPower3 = context.valueOf(0);
 		
 		long iterationCount = (context.getPrecision()+13) / 14;
 		for (long k = 1; k <= iterationCount; k++) {
 			BigFloat valueK = context.valueOf(k);
-			dividendTerm1 += -6;
-			dividendTerm2 += 2;
-			dividendTerm3 += 6;
+			dividendTerm1 = dividendTerm1.add(-6);
+			dividendTerm2 = dividendTerm2.add(2);
+			dividendTerm3 = dividendTerm3.add(6);
 			BigFloat dividend = context.valueOf(dividendTerm1).multiply(dividendTerm2).multiply(dividendTerm3);
 			kPower3 = valueK.pow(3);
 			BigFloat divisor = kPower3.multiply(valueDivisor);
@@ -45,9 +45,7 @@ public class BigFloatExample {
 			sumB = sumB.add(b);
 		}
 		
-		final BigFloat value426880 = context.valueOf(426880);
-		final BigFloat value10005 = context.valueOf(10005);
-		final BigFloat factor = value426880.multiply(sqrt(value10005));
+		final BigFloat factor = context.valueOf(426880).multiply(sqrt(context.valueOf(10005)));
 		BigFloat pi = factor.divide(sumA.multiply(13591409).add(sumB.multiply(545140134)));
 		
 		return pi.withContext(context(precision));
