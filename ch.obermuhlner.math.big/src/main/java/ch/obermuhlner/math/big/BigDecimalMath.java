@@ -32,8 +32,6 @@ public class BigDecimalMath {
 	
 	private static final BigDecimal ROUGHLY_TWO_PI = new BigDecimal("3.141592653589793").multiply(TWO);
 	
-	private static final BigDecimal MAX_INT = valueOf(Integer.MAX_VALUE);
-	
 	private static final int EXPECTED_INITIAL_PRECISION = 17;
 	
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
