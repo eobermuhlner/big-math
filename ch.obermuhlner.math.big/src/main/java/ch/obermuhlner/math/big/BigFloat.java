@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class BigFloat implements Comparable<BigFloat> {
@@ -21,8 +22,12 @@ public class BigFloat implements Comparable<BigFloat> {
 			return mathContext.getPrecision();
 		}
 
+		public RoundingMode getRoundingMode() {
+			return mathContext.getRoundingMode();
+		}
+
 		public BigFloat valueOf(BigFloat value) {
-			return new BigFloat(value.value, max(this, value.context)); 
+			return new BigFloat(value.value, this); 
 		}
 
 		public BigFloat valueOf(BigDecimal value) {
@@ -269,7 +274,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	}
 
 	public BigFloat getFractionalPart() {
-		return context.valueOf(BigDecimalMath.integralPart(value));
+		return context.valueOf(BigDecimalMath.fractionalPart(value));
 	}
 
 	public Context getContext() {

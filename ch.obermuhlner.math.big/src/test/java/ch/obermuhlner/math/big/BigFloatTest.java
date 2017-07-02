@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -13,6 +14,16 @@ import static ch.obermuhlner.math.big.BigFloat.*;
 public class BigFloatTest {
 
 	@Test
+	public void testContext() {
+		MathContext mathContext = new MathContext(20);
+		Context context = context(mathContext);
+		
+		assertEquals(mathContext, context.getMathContext());
+		assertEquals(mathContext.getPrecision(), context.getPrecision());
+		assertEquals(mathContext.getRoundingMode(), context.getRoundingMode());
+	}
+	
+	@Test
 	public void testValueOf() {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(0, BigDecimal.ONE.compareTo(context.valueOf(BigDecimal.ONE).toBigDecimal()));
@@ -23,11 +34,82 @@ public class BigFloatTest {
 		assertEquals(0, BigDecimal.ONE.compareTo(context.valueOf(anotherContext.valueOf(1.0)).toBigDecimal()));
 		assertEquals(0, BigDecimal.ONE.compareTo(anotherContext.valueOf(context.valueOf(1.0)).toBigDecimal()));
 
-		assertEquals(anotherContext, context.valueOf(anotherContext.valueOf(1.0)).getContext());
+		assertEquals(context, context.valueOf(anotherContext.valueOf(1.0)).getContext());
 		assertEquals(anotherContext, anotherContext.valueOf(context.valueOf(1.0)).getContext());
+	}
 
+	@Test
+	public void testToDouble() {
+		Context context = context(MathContext.DECIMAL64);
+		assertEquals(3.14, context.valueOf(3.14).toDouble(), 0.0);
 	}
 	
+	@Test
+	public void testToLong() {
+		Context context = context(MathContext.DECIMAL64);
+		assertEquals(1234L, context.valueOf(1234).toLong());
+	}
+	
+	@Test
+	public void testToInt() {
+		Context context = context(MathContext.DECIMAL64);
+		assertEquals(1234, context.valueOf(1234).toInt());
+	}
+
+	@Test
+	public void testIsIntValue() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(true, context.valueOf(0).isIntValue());
+		assertEquals(true, context.valueOf(123).isIntValue());
+
+		assertEquals(false, context.valueOf(123E99).isIntValue());
+		assertEquals(false, context.valueOf(123.456).isIntValue());
+		assertEquals(false, context.valueOf(0.456).isIntValue());
+	}	
+
+	@Test
+	public void testGetMantissa() {
+		Context context = context(MathContext.DECIMAL32);
+		assertIsEqual(context.valueOf(1.23), context.valueOf(1.23E99).getMantissa());
+	}
+	
+	@Test
+	public void testGetExponent() {
+		Context context = context(MathContext.DECIMAL32);
+		assertIsEqual(context.valueOf(99), context.valueOf(1.23E99).getExponent());
+	}
+
+	@Test
+	public void testGetIntegralPart() {
+		Context context = context(MathContext.DECIMAL32);
+		assertIsEqual(context.valueOf(123), context.valueOf(123.456).getIntegralPart());
+	}
+
+	@Test
+	public void testGetFractionalPart() {
+		Context context = context(MathContext.DECIMAL32);
+		assertIsEqual(context.valueOf(0.456), context.valueOf(123.456).getFractionalPart());
+	}
+
+	@Test
+	public void testEquals() {
+		Context context = context(MathContext.DECIMAL32);
+		
+		assertNotEquals(context.valueOf(1234), null);
+		assertNotEquals(context.valueOf(1234), "string");
+
+		BigFloat value1 = context.valueOf(1);
+		assertEquals(value1, value1);
+
+		assertEquals(context.valueOf(1234), context.valueOf(1234));
+		assertNotEquals(context.valueOf(1234), context.valueOf(9999));
+		assertNotEquals(context.valueOf(9999), context.valueOf(1234));
+		
+		Context anotherContext = context(MathContext.DECIMAL32);
+		assertNotEquals(context.valueOf(1234), anotherContext.valueOf(1234));
+		assertNotEquals(anotherContext.valueOf(1234), context.valueOf(1234));
+	}
+
 	@Test
 	public void testPi() {
 		Context context = context(MathContext.DECIMAL32);
