@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.BiFunction;
@@ -796,6 +795,20 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				Math::tanh,
 				(x, mathContext) -> BigDecimalMath.tanh(x, mathContext));
+	}
+
+	@Test
+	public void testCothRandom() {
+		assertRandomCalculation(
+				1000,
+				"tanh",
+				random -> random.nextDouble() * 100 - 50,
+				BigDecimalMathTest::coth,
+				(x, mathContext) -> BigDecimalMath.coth(x, mathContext));
+	}
+
+	private static double coth(double x) {
+		return Math.cosh(x) / Math.sinh(x);
 	}
 
 	@Test
