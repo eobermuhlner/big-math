@@ -6,13 +6,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.obermuhlner.math.big.BigDecimalMath;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -33,7 +34,6 @@ public class GraphApp extends Application {
 	private static final double GRAPH_HEIGHT = 800;
 
 	private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("##0");
-	private static final DecimalFormat DOUBLE_FORMAT = new DecimalFormat("##0.000");
 
 	private static final StringConverter<BigDecimal> BIGDECIMAL_STRING_CONVERTER = new StringConverter<BigDecimal>() {
 		@Override
@@ -56,6 +56,7 @@ public class GraphApp extends Application {
 	ObjectProperty<BigDecimal> yStartProperty = new SimpleObjectProperty<>(new BigDecimal(-2));
 	ObjectProperty<BigDecimal> yEndProperty = new SimpleObjectProperty<>(new BigDecimal(2));
 	IntegerProperty precisionProperty = new SimpleIntegerProperty(20);
+	StringProperty function1Property = new SimpleStringProperty("sin");
 
 	List<FunctionInfo> functionInfos = new ArrayList<>();
 	
@@ -80,38 +81,10 @@ public class GraphApp extends Application {
 		
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		functionInfos.add(new FunctionInfo("sin(x)", Color.RED, new BigDecimalFunction1() {
-			@Override
-			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
-				return BigDecimalMath.sin(value, mathContext);
-			}
-		}));
-		functionInfos.add(new FunctionInfo("sin(1/x)", Color.BLUE, new BigDecimalFunction1() {
-			@Override
-			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
-				return BigDecimalMath.sin(BigDecimal.ONE.divide(value, mathContext), mathContext);
-			}
-		}));
-		functionInfos.add(new FunctionInfo("sin(x)/x", Color.DARKGREEN, new BigDecimalFunction1() {
-			@Override
-			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
-				return BigDecimalMath.sin(value, mathContext).divide(value, mathContext);
-			}
-		}));
-		functionInfos.add(new FunctionInfo("sin(x)+sin(x*10)*0.1", Color.MAGENTA, new BigDecimalFunction1() {
-			@Override
-			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
-				return BigDecimalMath.sin(value, mathContext).add(BigDecimalMath.sin(value.multiply(new BigDecimal("100"), mathContext), mathContext).multiply(new BigDecimal("0.1"), mathContext), mathContext);
-			}
-		}));
-		functionInfos.add(new FunctionInfo("log(x)", Color.YELLOW, new BigDecimalFunction1() {
-			@Override
-			public BigDecimal apply(BigDecimal value, MathContext mathContext) {
-				return BigDecimalMath.log(value, mathContext);
-			}
-		}));
-		functionInfos.add(new FunctionInfo("f(x)", Color.PURPLE, new FunctionParser("sin 1 swap /")));
+				
+		function1Property.addListener((observable, oldValue, newValue) -> {
+			updateFunctions();
+		});
 		
 		ChangeListener<? super Number> graphDrawingListener = (observable, oldValue, newValue) -> drawGraph(graphCanvas);
 		xStartProperty.addListener(graphDrawingListener);
@@ -120,6 +93,13 @@ public class GraphApp extends Application {
 		yEndProperty.addListener(graphDrawingListener);
 		precisionProperty.addListener(graphDrawingListener);
 		
+		updateFunctions();
+	}
+
+	private void updateFunctions() {
+		functionInfos.clear();
+		functionInfos.add(new FunctionInfo(function1Property.get(), Color.RED, new PostfixFunctionParser(function1Property.get()).compile()));
+
 		drawGraph(graphCanvas);
 	}
 
@@ -164,6 +144,12 @@ public class GraphApp extends Application {
 		TextField precisionTextField = new TextField();
 		gridPane.add(precisionTextField, 1, rowIndex);
 		Bindings.bindBidirectional(precisionTextField.textProperty(), precisionProperty, INTEGER_FORMAT);
+		rowIndex++;
+
+		gridPane.add(new Label("Function 1:"), 0, rowIndex);
+		TextField function1TextField = new TextField();
+		gridPane.add(function1TextField, 1, rowIndex);
+		Bindings.bindBidirectional(function1TextField.textProperty(), function1Property);
 		rowIndex++;
 
 		return gridPane;
