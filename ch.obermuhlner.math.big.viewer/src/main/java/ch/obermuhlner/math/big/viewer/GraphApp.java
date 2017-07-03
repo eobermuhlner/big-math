@@ -28,6 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import parser.PostfixFunctionParser;
 
 public class GraphApp extends Application {
 	private static final double GRAPH_WIDTH = 800;
@@ -97,8 +98,10 @@ public class GraphApp extends Application {
 	}
 
 	private void updateFunctions() {
+		PostfixFunctionParser parser = new PostfixFunctionParser();
+
 		functionInfos.clear();
-		functionInfos.add(new FunctionInfo(function1Property.get(), Color.RED, new PostfixFunctionParser(function1Property.get()).compile()));
+		functionInfos.add(new FunctionInfo(function1Property.get(), Color.RED, parser.compile(function1Property.get())));
 
 		drawGraph(graphCanvas);
 	}
