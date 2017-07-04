@@ -302,7 +302,7 @@ public class GraphApp extends Application {
 					BigDecimal y = functionInfo.function.apply(x, mathContext);
 					pixelX = toX.apply(x, graphMathContext);
 					pixelY = toY.apply(y, graphMathContext);
-				} catch (ArithmeticException ex) {
+				} catch (Exception ex) {
 					// TODO better handling
 				}
 
