@@ -59,6 +59,8 @@ public class GraphApp extends Application {
 	ObjectProperty<BigDecimal> yEndProperty = new SimpleObjectProperty<>(new BigDecimal(2));
 	IntegerProperty precisionProperty = new SimpleIntegerProperty(20);
 	StringProperty function1Property = new SimpleStringProperty("sin(x)");
+	StringProperty function2Property = new SimpleStringProperty("");
+	StringProperty function3Property = new SimpleStringProperty("");
 
 	List<FunctionInfo> functionInfos = new ArrayList<>();
 	
@@ -89,6 +91,12 @@ public class GraphApp extends Application {
 		function1Property.addListener((observable, oldValue, newValue) -> {
 			updateFunctions();
 		});
+		function2Property.addListener((observable, oldValue, newValue) -> {
+			updateFunctions();
+		});
+		function3Property.addListener((observable, oldValue, newValue) -> {
+			updateFunctions();
+		});
 		
 		ChangeListener<? super Number> graphDrawingListener = (observable, oldValue, newValue) -> drawGraph(graphCanvas);
 		xStartProperty.addListener(graphDrawingListener);
@@ -101,11 +109,12 @@ public class GraphApp extends Application {
 	}
 
 	private void updateFunctions() {
-		//AbstractFunctionParser parser = new PostfixFunctionParser();
 		AbstractFunctionParser parser = new ExpressionFunctionParser();
 
 		functionInfos.clear();
 		functionInfos.add(new FunctionInfo(function1Property.get(), Color.RED, parser.compile(function1Property.get())));
+		functionInfos.add(new FunctionInfo(function2Property.get(), Color.GREEN, parser.compile(function2Property.get())));
+		functionInfos.add(new FunctionInfo(function3Property.get(), Color.BLUE, parser.compile(function3Property.get())));
 
 		drawGraph(graphCanvas);
 	}
@@ -157,6 +166,18 @@ public class GraphApp extends Application {
 		TextField function1TextField = new TextField();
 		gridPane.add(function1TextField, 1, rowIndex);
 		Bindings.bindBidirectional(function1TextField.textProperty(), function1Property);
+		rowIndex++;
+
+		gridPane.add(new Label("Function 2:"), 0, rowIndex);
+		TextField function2TextField = new TextField();
+		gridPane.add(function2TextField, 1, rowIndex);
+		Bindings.bindBidirectional(function2TextField.textProperty(), function2Property);
+		rowIndex++;
+
+		gridPane.add(new Label("Function 3:"), 0, rowIndex);
+		TextField function3TextField = new TextField();
+		gridPane.add(function3TextField, 1, rowIndex);
+		Bindings.bindBidirectional(function3TextField.textProperty(), function3Property);
 		rowIndex++;
 
 		return gridPane;
