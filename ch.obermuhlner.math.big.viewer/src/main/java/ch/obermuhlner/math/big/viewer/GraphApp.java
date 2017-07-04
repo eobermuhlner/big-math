@@ -28,7 +28,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import parser.PostfixFunctionParser;
+import parser.AbstractFunctionParser;
+import parser.ExpressionFunctionParser;
 
 public class GraphApp extends Application {
 	private static final double GRAPH_WIDTH = 800;
@@ -57,7 +58,7 @@ public class GraphApp extends Application {
 	ObjectProperty<BigDecimal> yStartProperty = new SimpleObjectProperty<>(new BigDecimal(-2));
 	ObjectProperty<BigDecimal> yEndProperty = new SimpleObjectProperty<>(new BigDecimal(2));
 	IntegerProperty precisionProperty = new SimpleIntegerProperty(20);
-	StringProperty function1Property = new SimpleStringProperty("sin");
+	StringProperty function1Property = new SimpleStringProperty("sin(x)");
 
 	List<FunctionInfo> functionInfos = new ArrayList<>();
 	
@@ -80,6 +81,8 @@ public class GraphApp extends Application {
 		graphCanvas = createGraphCanvas();
 		borderPane.setCenter(graphCanvas);
 		
+		graphCanvas.requestFocus();
+
 		primaryStage.setScene(scene);
 		primaryStage.show();
 				
@@ -98,7 +101,8 @@ public class GraphApp extends Application {
 	}
 
 	private void updateFunctions() {
-		PostfixFunctionParser parser = new PostfixFunctionParser();
+		//AbstractFunctionParser parser = new PostfixFunctionParser();
+		AbstractFunctionParser parser = new ExpressionFunctionParser();
 
 		functionInfos.clear();
 		functionInfos.add(new FunctionInfo(function1Property.get(), Color.RED, parser.compile(function1Property.get())));
@@ -161,9 +165,74 @@ public class GraphApp extends Application {
 	private Canvas createGraphCanvas() {
 		Canvas canvas = new Canvas(GRAPH_WIDTH, GRAPH_HEIGHT);
 
+		canvas.setFocusTraversable(true);
+		setupCanvasEventHandlers(canvas);
+		
 		return canvas;
 	}
 	
+	private void setupCanvasEventHandlers(Canvas canvas) {
+		MathContext mathContext = createGraphMathContext();
+
+		BigDecimal stepFactor = BigDecimal.TEN;
+		BigDecimal zoomFactor = BigDecimal.valueOf(2);
+		BigDecimal half = BigDecimal.valueOf(0.5);
+
+		BigDecimal xRange = xEndProperty.get().subtract(xStartProperty.get());
+		BigDecimal xCenter =  xStartProperty.get().add(xRange.multiply(half, mathContext));
+		BigDecimal xStep = xRange.divide(stepFactor, mathContext);
+
+		BigDecimal yRange = yEndProperty.get().subtract(yStartProperty.get());
+		BigDecimal yCenter =  yStartProperty.get().add(yRange.multiply(half, mathContext));
+		BigDecimal yStep = yRange.divide(stepFactor, mathContext);
+
+
+		canvas.setOnKeyPressed(event -> {
+			switch (event.getCode()) {
+			case UP: {
+				BigDecimal xRangeZoomedHalf = xRange.divide(zoomFactor, mathContext).multiply(half, mathContext);
+				BigDecimal yRangeZoomedHalf = yRange.divide(zoomFactor, mathContext).multiply(half, mathContext);
+				
+				xStartProperty.set(xCenter.subtract(xRangeZoomedHalf));
+				yStartProperty.set(yCenter.subtract(yRangeZoomedHalf));
+				
+				xEndProperty.set(xCenter.add(xRangeZoomedHalf).add(xRangeZoomedHalf));
+				yEndProperty.set(yCenter.add(yRangeZoomedHalf).add(yRangeZoomedHalf));
+				break;
+			}
+			case DOWN: {
+				BigDecimal xRangeZoomedHalf = xRange.multiply(zoomFactor).multiply(half, mathContext);
+				BigDecimal yRangeZoomedHalf = yRange.multiply(zoomFactor).multiply(half, mathContext);
+				
+				xStartProperty.set(xCenter.subtract(xRangeZoomedHalf));
+				yStartProperty.set(yCenter.subtract(yRangeZoomedHalf));
+				
+				xEndProperty.set(xCenter.add(xRangeZoomedHalf).add(xRangeZoomedHalf));
+				yEndProperty.set(yCenter.add(yRangeZoomedHalf).add(yRangeZoomedHalf));
+				break;
+			}
+			case W:
+				yStartProperty.set(yStartProperty.get().subtract(yStep));
+				yEndProperty.set(yEndProperty.get().subtract(yStep));
+				break;
+			case A:
+				xStartProperty.set(xStartProperty.get().add(xStep));
+				xEndProperty.set(xEndProperty.get().add(xStep));
+				break;
+			case S:
+				yStartProperty.set(yStartProperty.get().add(yStep));
+				yEndProperty.set(yEndProperty.get().add(yStep));
+				break;
+			case D:
+				xStartProperty.set(xStartProperty.get().subtract(xStep));
+				xEndProperty.set(xEndProperty.get().subtract(xStep));
+				break;
+			default:
+			}
+			event.consume();
+		});
+	}
+
 	private void drawGraph(Canvas canvas) {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		double width = canvas.getWidth();
@@ -176,7 +245,7 @@ public class GraphApp extends Application {
 		BigDecimal yStart = yStartProperty.get();
 		BigDecimal yEnd = yEndProperty.get();
 
-		MathContext graphMathContext = new MathContext(precisionProperty.get() + 10);
+		MathContext graphMathContext = createGraphMathContext();
 		
 		BigDecimalFunction1 toX = new BigDecimalFunction1() {
 			@Override
@@ -224,6 +293,10 @@ public class GraphApp extends Application {
 				lastPixelY = pixelY;
 			}
 		}
+	}
+
+	private MathContext createGraphMathContext() {
+		return new MathContext(precisionProperty.get() + 10);
 	}
 	
 	private static BigDecimal toPixel(BigDecimal value, BigDecimal start, BigDecimal end, BigDecimal pixels, MathContext mathContext) {

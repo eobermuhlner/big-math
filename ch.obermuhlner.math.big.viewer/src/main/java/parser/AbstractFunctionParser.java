@@ -1,9 +1,5 @@
 package parser;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,11 +44,15 @@ public abstract class AbstractFunctionParser {
 		
 		function2Map.put("pow", (x, y, mathContext) -> BigDecimalMath.pow(x, y, mathContext));
 		function2Map.put("root", (x, y, mathContext) -> BigDecimalMath.root(x, y, mathContext));
-		function2Map.put("+", (x, y, mathContext) -> x.add(y, mathContext));
-		function2Map.put("-", (x, y, mathContext) -> x.subtract(y, mathContext));
-		function2Map.put("*", (x, y, mathContext) -> x.multiply(y, mathContext));
-		function2Map.put("/", (x, y, mathContext) -> x.divide(y, mathContext));
-		function2Map.put("%", (x, y, mathContext) -> x.remainder(y, mathContext));
+		function2Map.put("min", (x, y, mathContext) -> x.min(y));
+		function2Map.put("max", (x, y, mathContext) -> x.max(y));
+		
+		function2InfixMap.put("+", (x, y, mathContext) -> x.add(y, mathContext));
+		function2InfixMap.put("-", (x, y, mathContext) -> x.subtract(y, mathContext));
+		function2InfixMap.put("*", (x, y, mathContext) -> x.multiply(y, mathContext));
+		function2InfixMap.put("/", (x, y, mathContext) -> x.divide(y, mathContext));
+		function2InfixMap.put("%", (x, y, mathContext) -> x.remainder(y, mathContext));
+		function2InfixMap.put("^", (x, y, mathContext) -> BigDecimalMath.pow(x, y, mathContext));
 	}
 
 	public abstract BigDecimalFunction1 compile(String expression);
