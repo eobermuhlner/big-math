@@ -65,19 +65,14 @@ public class ExpressionFunctionParser extends AbstractFunctionParser {
 	}
 
 	private BigDecimal executeExpression(List<String> tokens, Map<String, BigDecimal> variables, MathContext mathContext) {
-		try {
-			Deque<String> tokenStack = new ArrayDeque<>(tokens);
-			Deque<BigDecimal> valueStack = new ArrayDeque<>();
-			
-			while (!tokenStack.isEmpty()) {
-				executeExpression(tokenStack, valueStack, variables, mathContext);
-			}
-			
-			return valueStack.pop();
-		} catch (Exception ex) {
-			//System.out.println(ex.getMessage());
-			return BigDecimal.ZERO;
+		Deque<String> tokenStack = new ArrayDeque<>(tokens);
+		Deque<BigDecimal> valueStack = new ArrayDeque<>();
+		
+		while (!tokenStack.isEmpty()) {
+			executeExpression(tokenStack, valueStack, variables, mathContext);
 		}
+		
+		return valueStack.pop();
 	}
 		
 	private void executeExpression(Deque<String> tokenStack, Deque<BigDecimal> valueStack, Map<String, BigDecimal> variables, MathContext mathContext) {
@@ -102,7 +97,7 @@ public class ExpressionFunctionParser extends AbstractFunctionParser {
 			
 			valueStack.push(function2.apply(argument1, argument2, mathContext));
 		} else if (function2Infix != null) {
-			BigDecimal argument1 = valueStack.pop();
+			BigDecimal argument1 = valueStack.isEmpty() ? BigDecimal.ZERO : valueStack.pop();
 			executeExpression(tokenStack, valueStack, variables, mathContext);
 			BigDecimal argument2 = valueStack.pop();
 			
