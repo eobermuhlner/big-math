@@ -234,20 +234,20 @@ public class GraphApp extends Application {
 				break;
 			}
 			case W:
-				yStartProperty.set(yStartProperty.get().subtract(yStep));
-				yEndProperty.set(yEndProperty.get().subtract(yStep));
-				break;
-			case A:
-				xStartProperty.set(xStartProperty.get().add(xStep));
-				xEndProperty.set(xEndProperty.get().add(xStep));
-				break;
-			case S:
 				yStartProperty.set(yStartProperty.get().add(yStep));
 				yEndProperty.set(yEndProperty.get().add(yStep));
 				break;
-			case D:
+			case A:
 				xStartProperty.set(xStartProperty.get().subtract(xStep));
 				xEndProperty.set(xEndProperty.get().subtract(xStep));
+				break;
+			case S:
+				yStartProperty.set(yStartProperty.get().subtract(yStep));
+				yEndProperty.set(yEndProperty.get().subtract(yStep));
+				break;
+			case D:
+				xStartProperty.set(xStartProperty.get().add(xStep));
+				xEndProperty.set(xEndProperty.get().add(xStep));
 				break;
 			default:
 			}
