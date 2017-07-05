@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
@@ -263,8 +264,10 @@ public class GraphApp extends Application {
 		
 		BigDecimal xStart = xStartProperty.get();
 		BigDecimal xEnd = xEndProperty.get();
+		BigDecimal xRange = xEnd.subtract(xStart);
 		BigDecimal yStart = yStartProperty.get();
 		BigDecimal yEnd = yEndProperty.get();
+		BigDecimal yRange = yEnd.subtract(yStart);
 
 		MathContext graphMathContext = createGraphMathContext();
 		
@@ -281,13 +284,41 @@ public class GraphApp extends Application {
 			}
 		};
 		
+		// draw background
 		gc.setFill(Color.WHITE);
 		gc.fillRect(0, 0, width, height);
 		
+		// draw axis
 		gc.setStroke(Color.BLACK);
-		gc.strokeLine(0, toY.apply(BigDecimal.ZERO, graphMathContext).doubleValue(), width, toY.apply(BigDecimal.ZERO, graphMathContext).doubleValue());
-		gc.strokeLine(toX.apply(BigDecimal.ZERO, graphMathContext).doubleValue(), 0, toX.apply(BigDecimal.ZERO, graphMathContext).doubleValue(), height);
+		double pixelAxisY = toY.apply(BigDecimal.ZERO, graphMathContext).doubleValue();
+		gc.strokeLine(0, pixelAxisY, width, pixelAxisY);
+		double pixelAxisX = toX.apply(BigDecimal.ZERO, graphMathContext).doubleValue();
+		gc.strokeLine(pixelAxisX, 0, pixelAxisX, height);
+		
+		// draw grid
+		double tickSize = 5;
+		pixelAxisX = Math.min(Math.max(pixelAxisX, 0), width);
+		pixelAxisY = Math.min(Math.max(pixelAxisY, 0), height);
+		BigDecimal xScaleStep = scaleStep(xRange, graphMathContext);
+		BigDecimal yScaleStep = scaleStep(yRange, graphMathContext);
+		BigDecimal xScale = xEnd.subtract(xScaleStep.multiply(BigDecimal.valueOf(10)));
+		BigDecimal yScale = yEnd.subtract(yScaleStep.multiply(BigDecimal.valueOf(10)));
+		while (xScale.compareTo(xEnd) <= 0) {
+			double pixelScaleX = toX.apply(xScale, graphMathContext).doubleValue();
+			gc.strokeLine(pixelScaleX, pixelAxisY-tickSize, pixelScaleX, pixelAxisY+tickSize);
+			gc.strokeText(xScale.toString(), pixelScaleX, pixelAxisY-tickSize);
+			xScale = xScale.add(xScaleStep);
+		}
+		while (yScale.compareTo(yEnd) <= 0) {
+			double pixelScaleY = toY.apply(yScale, graphMathContext).doubleValue();
+			gc.strokeLine(pixelAxisX-tickSize, pixelScaleY, pixelAxisX+tickSize, pixelScaleY);
+			gc.strokeText(yScale.toString(), pixelAxisX+tickSize, pixelScaleY);
+			yScale = yScale.add(yScaleStep);
+		}
 
+		// draw scale
+
+		// draw functions
 		MathContext mathContext = new MathContext(precisionProperty.get());
 		for (FunctionInfo functionInfo : functionInfos) {
 			gc.setStroke(functionInfo.color);
@@ -314,6 +345,10 @@ public class GraphApp extends Application {
 				lastPixelY = pixelY;
 			}
 		}
+	}
+
+	private BigDecimal scaleStep(BigDecimal range, MathContext mathContext) {
+		return BigDecimalMath.pow(BigDecimal.TEN, BigDecimalMath.integralPart(BigDecimalMath.log10(range, mathContext)), mathContext);
 	}
 
 	private MathContext createGraphMathContext() {
