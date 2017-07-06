@@ -7,6 +7,8 @@
 
 Advanced Java math functions (`pow`, `sqrt`, `log`, `sin`, ...) for `BigDecimal` using arbitrary precision.
 
+This document will focus on the `BigDecimalMath` class. Full documentation can be found [here](docs/manual/toc.md).
+
 ## Overview BigDecimalMath
 
 This implementation provides efficient and accurate implementations for:
