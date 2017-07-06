@@ -194,65 +194,71 @@ public class GraphApp extends Application {
 	}
 	
 	private void setupCanvasEventHandlers(Canvas canvas) {
-		MathContext mathContext = createGraphMathContext();
-
-		BigDecimal stepFactor = BigDecimal.TEN;
-		BigDecimal zoomFactor = BigDecimal.valueOf(2);
-		BigDecimal half = BigDecimal.valueOf(0.5);
-
-		BigDecimal xRange = xEndProperty.get().subtract(xStartProperty.get());
-		BigDecimal xCenter =  xStartProperty.get().add(xRange.multiply(half, mathContext));
-		BigDecimal xStep = xRange.divide(stepFactor, mathContext);
-
-		BigDecimal yRange = yEndProperty.get().subtract(yStartProperty.get());
-		BigDecimal yCenter =  yStartProperty.get().add(yRange.multiply(half, mathContext));
-		BigDecimal yStep = yRange.divide(stepFactor, mathContext);
-
-
 		canvas.setOnKeyPressed(event -> {
 			switch (event.getCode()) {
 			case UP: {
-				BigDecimal xRangeZoomedHalf = xRange.divide(zoomFactor, mathContext).multiply(half, mathContext);
-				BigDecimal yRangeZoomedHalf = yRange.divide(zoomFactor, mathContext).multiply(half, mathContext);
-				
-				xStartProperty.set(xCenter.subtract(xRangeZoomedHalf));
-				yStartProperty.set(yCenter.subtract(yRangeZoomedHalf));
-				
-				xEndProperty.set(xCenter.add(xRangeZoomedHalf).add(xRangeZoomedHalf));
-				yEndProperty.set(yCenter.add(yRangeZoomedHalf).add(yRangeZoomedHalf));
+				zoom(BigDecimal.valueOf(1 / 1.2));
 				break;
 			}
 			case DOWN: {
-				BigDecimal xRangeZoomedHalf = xRange.multiply(zoomFactor).multiply(half, mathContext);
-				BigDecimal yRangeZoomedHalf = yRange.multiply(zoomFactor).multiply(half, mathContext);
-				
-				xStartProperty.set(xCenter.subtract(xRangeZoomedHalf));
-				yStartProperty.set(yCenter.subtract(yRangeZoomedHalf));
-				
-				xEndProperty.set(xCenter.add(xRangeZoomedHalf).add(xRangeZoomedHalf));
-				yEndProperty.set(yCenter.add(yRangeZoomedHalf).add(yRangeZoomedHalf));
+				zoom(BigDecimal.valueOf(1.2));
 				break;
 			}
 			case W:
-				yStartProperty.set(yStartProperty.get().add(yStep));
-				yEndProperty.set(yEndProperty.get().add(yStep));
+				translate(0, 1);
 				break;
 			case A:
-				xStartProperty.set(xStartProperty.get().subtract(xStep));
-				xEndProperty.set(xEndProperty.get().subtract(xStep));
+				translate(-1, 0);
 				break;
 			case S:
-				yStartProperty.set(yStartProperty.get().subtract(yStep));
-				yEndProperty.set(yEndProperty.get().subtract(yStep));
+				translate(0, -1);
 				break;
 			case D:
-				xStartProperty.set(xStartProperty.get().add(xStep));
-				xEndProperty.set(xEndProperty.get().add(xStep));
+				translate(1, 0);
 				break;
 			default:
 			}
 			event.consume();
 		});
+	}
+	
+	private void translate(int deltaX, int deltaY) {
+		MathContext mathContext = createGraphMathContext();
+
+		BigDecimal stepFactor = BigDecimal.TEN;
+
+		BigDecimal xRange = xEndProperty.get().subtract(xStartProperty.get());
+		BigDecimal xStep = xRange.divide(stepFactor, mathContext);
+
+		BigDecimal yRange = yEndProperty.get().subtract(yStartProperty.get());
+		BigDecimal yStep = yRange.divide(stepFactor, mathContext);
+
+		xStartProperty.set(xStartProperty.get().add(xStep.multiply(new BigDecimal(deltaX))));
+		xEndProperty.set(xEndProperty.get().add(xStep.multiply(new BigDecimal(deltaX))));
+
+		yStartProperty.set(yStartProperty.get().add(yStep.multiply(new BigDecimal(deltaY))));
+		yEndProperty.set(yEndProperty.get().add(yStep.multiply(new BigDecimal(deltaY))));
+	}
+	
+	private void zoom(BigDecimal zoomFactor) {
+		MathContext mathContext = createGraphMathContext();
+
+		BigDecimal half = BigDecimal.valueOf(0.5);
+
+		BigDecimal xRange = xEndProperty.get().subtract(xStartProperty.get());
+		BigDecimal xCenter =  xStartProperty.get().add(xRange.multiply(half, mathContext));
+
+		BigDecimal yRange = yEndProperty.get().subtract(yStartProperty.get());
+		BigDecimal yCenter =  yStartProperty.get().add(yRange.multiply(half, mathContext));
+		
+		BigDecimal xRangeZoomedHalf = xRange.multiply(zoomFactor, mathContext).multiply(half, mathContext);
+		BigDecimal yRangeZoomedHalf = yRange.multiply(zoomFactor, mathContext).multiply(half, mathContext);
+		
+		xStartProperty.set(xCenter.subtract(xRangeZoomedHalf));
+		yStartProperty.set(yCenter.subtract(yRangeZoomedHalf));
+		
+		xEndProperty.set(xCenter.add(xRangeZoomedHalf));
+		yEndProperty.set(yCenter.add(yRangeZoomedHalf));
 	}
 
 	private void drawGraph(Canvas canvas) {
@@ -296,28 +302,40 @@ public class GraphApp extends Application {
 		gc.strokeLine(pixelAxisX, 0, pixelAxisX, height);
 		
 		// draw grid
+		// draw scale
 		double tickSize = 5;
+		double smallTickSize = 2;
 		pixelAxisX = Math.min(Math.max(pixelAxisX, 0), width);
 		pixelAxisY = Math.min(Math.max(pixelAxisY, 0), height);
 		BigDecimal xScaleStep = scaleStep(xRange, graphMathContext);
 		BigDecimal yScaleStep = scaleStep(yRange, graphMathContext);
-		BigDecimal xScale = xEnd.subtract(xScaleStep.multiply(BigDecimal.valueOf(10)));
-		BigDecimal yScale = yEnd.subtract(yScaleStep.multiply(BigDecimal.valueOf(10)));
-		while (xScale.compareTo(xEnd) <= 0) {
+		BigDecimal xScaleEnd = xEnd.divideToIntegralValue(BigDecimal.TEN, graphMathContext).multiply(BigDecimal.TEN);
+		BigDecimal yScaleEnd = yEnd.divideToIntegralValue(BigDecimal.TEN, graphMathContext).multiply(BigDecimal.TEN);
+		BigDecimal xScaleStart = xScaleEnd.subtract(xScaleStep.multiply(BigDecimal.TEN));
+		BigDecimal yScaleStart = yScaleEnd.subtract(yScaleStep.multiply(BigDecimal.TEN));
+		
+		for (BigDecimal xScale = xScaleStart; xScale.compareTo(xEnd) <= 0; xScale = xScale.add(xScaleStep)) {
 			double pixelScaleX = toX.apply(xScale, graphMathContext).doubleValue();
 			gc.strokeLine(pixelScaleX, pixelAxisY-tickSize, pixelScaleX, pixelAxisY+tickSize);
 			gc.strokeText(xScale.toString(), pixelScaleX, pixelAxisY-tickSize);
-			xScale = xScale.add(xScaleStep);
 		}
-		while (yScale.compareTo(yEnd) <= 0) {
+		for (BigDecimal yScale = yScaleStart; yScale.compareTo(yEnd) <= 0; yScale = yScale.add(yScaleStep)) {
 			double pixelScaleY = toY.apply(yScale, graphMathContext).doubleValue();
 			gc.strokeLine(pixelAxisX-tickSize, pixelScaleY, pixelAxisX+tickSize, pixelScaleY);
 			gc.strokeText(yScale.toString(), pixelAxisX+tickSize, pixelScaleY);
-			yScale = yScale.add(yScaleStep);
 		}
-
-		// draw scale
-
+		
+		xScaleStep = xScaleStep.divide(BigDecimal.TEN, graphMathContext);
+		yScaleStep = yScaleStep.divide(BigDecimal.TEN, graphMathContext);
+		for (BigDecimal xScale = xScaleStart; xScale.compareTo(xEnd) <= 0; xScale = xScale.add(xScaleStep)) {
+			double pixelScaleX = toX.apply(xScale, graphMathContext).doubleValue();
+			gc.strokeLine(pixelScaleX, pixelAxisY-smallTickSize, pixelScaleX, pixelAxisY+smallTickSize);
+		}
+		for (BigDecimal yScale = yScaleStart; yScale.compareTo(yEnd) <= 0; yScale = yScale.add(yScaleStep)) {
+			double pixelScaleY = toY.apply(yScale, graphMathContext).doubleValue();
+			gc.strokeLine(pixelAxisX-smallTickSize, pixelScaleY, pixelAxisX+smallTickSize, pixelScaleY);
+		}
+		
 		// draw functions
 		MathContext mathContext = new MathContext(precisionProperty.get());
 		for (FunctionInfo functionInfo : functionInfos) {
