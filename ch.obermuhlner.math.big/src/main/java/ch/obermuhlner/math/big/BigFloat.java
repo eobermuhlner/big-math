@@ -26,6 +26,7 @@ import java.util.Objects;
  *   <li><code>pi()</code></li>
  *   <li><code>e()</code></li>
  *   </ul>
+ * </li>
  * <li>All standard operators:
  *   <ul>
  *   <li><code>add(x)</code></li>
@@ -35,6 +36,7 @@ import java.util.Objects;
  *   <li><code>pow(y)</code></li>
  *   <li><code>root(y)</code></li>
  *   </ul>
+ * </li>
  * <li>Calculation methods are overloaded for different value types:
  *   <ul>
  *   <li><code>add(BigFloat)</code></li>
@@ -44,6 +46,7 @@ import java.util.Objects;
  *   <li><code>add(double)</code></li>
  *   <li>...</li>
  *   </ul>
+ * </li>
  * <li>Mathematical functions are written as they are traditionally are written:
  *   <ul>
  *   <li><code>abs(x)</code></li>
@@ -53,6 +56,7 @@ import java.util.Objects;
  *   <li><code>max(x1, x2, ...)</code></li>
  *   <li>...</li>
  *   </ul>
+ * </li>
  * <li>Support for advanced mathematical functions:
  *   <ul>
  *   <li><code>sqrt(x)</code></li>
@@ -63,14 +67,16 @@ import java.util.Objects;
  *   <li><code>tan(x)</code></li>
  *   <li>...</li>
  *   </ul>
- * <li>Methods to access parts of a value:</li>
+ * </li>
+ * <li>Methods to access parts of a value:
  *   <ul>
  *   <li><code>getMantissa()</code></li>
  *   <li><code>getExponent()</code></li>
  *   <li><code>getIntegralPart()</code></li>
- *   <li><code>getFractionalPart</code></li>
+ *   <li><code>getFractionalPart()</code></li>
  *   </ul>
- * <li>Comparison methods:</li>
+ * </li>
+ * <li>Comparison methods:
  *   <ul>
  *   <li><code>isEqual()</code></li>
  *   <li><code>isLessThan()</code></li>
@@ -78,6 +84,7 @@ import java.util.Objects;
  *   <li><code>isGreaterThan()</code></li>
  *   <li><code>isGreaterThanOrEqual()</code></li>
  *   </ul>
+ * </li>
  * </ul>
  * 
  * <h1>Usage</h1>
@@ -717,7 +724,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically less than to the <code>other</code> value.
 	 * 
 	 * @param other the other {@link BigFloat} to compare with
-	 * @return <code>true</code> <code>this</code> value is mathematically less than to the <code>other</code> value (equivalent to <code>this.compareTo(other) < 0</code>
+	 * @return <code>true</code> <code>this</code> value is mathematically less than to the <code>other</code> value (equivalent to <code>this.compareTo(other) &lt; 0</code>
 	 * @see #compareTo(BigFloat)
 	 */
 	public boolean isLessThan(BigFloat other) {
@@ -728,7 +735,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically greater than to the <code>other</code> value.
 	 * 
 	 * @param other the other {@link BigFloat} to compare with
-	 * @return <code>true</code> <code>this</code> value is mathematically greater than to the <code>other</code> value (equivalent to <code>this.compareTo(other) > 0</code>
+	 * @return <code>true</code> <code>this</code> value is mathematically greater than to the <code>other</code> value (equivalent to <code>this.compareTo(other) &gt; 0</code>
 	 * @see #compareTo(BigFloat)
 	 */
 	public boolean isGreaterThan(BigFloat other) {
@@ -739,7 +746,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically less than or equal to the <code>other</code> value.
 	 * 
 	 * @param other the other {@link BigFloat} to compare with
-	 * @return <code>true</code> <code>this</code> value is mathematically less than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) <= 0</code>
+	 * @return <code>true</code> <code>this</code> value is mathematically less than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) &lt;= 0</code>
 	 * @see #compareTo(BigFloat)
 	 * @see #isLessThan(BigFloat)
 	 * @see #isEqual(BigFloat)
@@ -752,7 +759,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically greater than or equal to the <code>other</code> value.
 	 * 
 	 * @param other the other {@link BigFloat} to compare with
-	 * @return <code>true</code> <code>this</code> value is mathematically greater than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) >= 0</code>
+	 * @return <code>true</code> <code>this</code> value is mathematically greater than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) &gt;= 0</code>
 	 * @see #compareTo(BigFloat)
 	 * @see #isGreaterThan(BigFloat)
 	 * @see #isEqual(BigFloat)
@@ -767,7 +774,6 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * 
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#intValueExact()} without fear of an {@link ArithmeticException}.</p>
 	 * 
-	 * @param value the {@link BigDecimal} to check 
 	 * @return <code>true</code> if the value can be represented as <code>int</code> without loss of precision
 	 * @see BigDecimalMath#isIntValue(BigDecimal)
 	 */
@@ -842,9 +848,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	}
 
 	/**
-	 * Returns <code>this</code> value as a <code>double</double> value.
+	 * Returns <code>this</code> value as a <code>double</code> value.
 	 * 
-	 * @return the <code>double</double> value
+	 * @return the <code>double</code> value
 	 * @see BigDecimal#doubleValue()
 	 */
 	public double toDouble() {
@@ -852,9 +858,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	}
 
 	/**
-	 * Returns <code>this</code> value as a <code>long</double> value.
+	 * Returns <code>this</code> value as a <code>long</code> value.
 	 * 
-	 * @return the <code>long</double> value
+	 * @return the <code>long</code> value
 	 * @see BigDecimal#longValue()
 	 */
 	public long toLong() {
@@ -862,9 +868,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	}
 
 	/**
-	 * Returns <code>this</code> value as a <code>int</double> value.
+	 * Returns <code>this</code> value as a <code>int</code> value.
 	 * 
-	 * @return the <code>int</double> value
+	 * @return the <code>int</code> value
 	 * @see BigDecimal#intValue()
 	 */
 	public int toInt() {
