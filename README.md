@@ -7,11 +7,9 @@
 
 Advanced Java math functions (`pow`, `sqrt`, `log`, `sin`, ...) for `BigDecimal` using arbitrary precision.
 
-This document will focus on the `BigDecimalMath` class. Full documentation can be found [here](docs/manual/toc.md).
+## BigDecimalMath
 
-## Overview BigDecimalMath
-
-This implementation provides efficient and accurate implementations for:
+The class `BigDecimalMath` provides efficient and accurate implementations for:
 
 *   `log(BigDecimal, MathContext)`
 *   `exp(BigDecimal, MathContext)`
@@ -45,7 +43,7 @@ This implementation provides efficient and accurate implementations for:
 *   `integralPart(BigDecimal)` extract the integral part from a `BigDecimal` (everything before the decimal point) 
 *   `fractionalPart(BigDecimal)` extract the fractional part from a `BigDecimal` (everything after the decimal point)
 
-## Documentation
+### Usage
 
 For calculations with arbitrary precision you need to specify how precise you want a calculated result.
 For `BigDecimal` calculations this is done using the `MathContext`.
@@ -103,7 +101,140 @@ For the mathematical background and performance analysis please refer to this ar
 Some of the implementation details are explained here: 
 *	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
 
-## Development
+### FAQ
+
+#### Why do I have to pass `MathContext` to most functions?
+
+Many mathematical functions have results that have many digits (often an infinite number of digits).
+When calculating these functions you need to specify the number of digits you need, because calculating an infinite number of digits would take literally forever and consume an infinite amount of memory.
+
+The `MathContext` contains a precision and information on how to round the last digits, so it is an obvious choice to specify the desired precision of mathematical functions.
+
+#### I specified a precision of `n` digits, but the results have completely different number of digits after the decimal point. Why?
+
+It is a common misconception that the precision defines the number of digits after the decimal point.
+
+Instead the precision defines the number of relevant digits, independent of the decimal point.
+The following numbers all have a precision of 3 digits:
+* 12300
+* 1230
+* 123
+* 12.3
+* 1.23
+* 0.123
+* 0.0123
+
+To specify the number of digits after the decimal point use `BigDecimal.setScale(scale, mathContext)`.
+
+#### Why are `BigDecimalMath` functions so slow?
+
+The mathematical functions in `BigDecimalMath` are heavily optimized to calculate the result in the specified precision, but in order to calculate them often tens or even hundreds of basic operations (+, -, *, /) using `BigDecimal` are necessary.
+
+If the calculation of your function is too slow for your purpose you should verify whether you really need the full precision in your particular use case. Sometimes you can adapt the precision depending on input factors of your calculation.
+
+### Performance
+
+The following charts show the time needed to calculate the functions over a range of values with a precision of 300 digits.
+
+![sqrt(), root(), exp(), sin(), cos() 0 to 10](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_10.png)
+![sqrt(), root(), exp(), sin(), cos() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_100.png)
+
+![exp(), log(), pow() 0 to 10](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_10.png)
+![exp(), log(), pow() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_100.png)
+
+
+## BigFloat (available with upcoming release 1.1.0)
+
+The class `BigFloat` is a wrapper around `BigDecimal` which simplifies the consistent usage of the MathContext and provides a simpler API for calculations. 
+
+The API for calculations is simplified and more consistent with the typical mathematical usage.
+* Factory methods for values:
+	* `valueOf(BigFloat)`
+	* `valueOf(BigDecimal)`
+	* `valueOf(int)`
+	* `valueOf(long)`
+	* `valueOf(double)`
+	* `valueOf(String)`
+	* `pi()`
+	* `e()`
+
+* All standard operators:
+	* `add(x)`
+	* `subtract(x)`
+	* `multiply(x)`
+	* `remainder(x)`
+	* `pow(y)`
+	* `root(y)`
+
+* Calculation methods are overloaded for different value types:
+ 	* `add(BigFloat)`
+	* `add(BigDecimal)`
+	* `add(int)`
+	* `add(long)`
+	* `add(double)`
+	* ...
+
+* Mathematical functions are written as they are traditionally are written:
+ 	* `abs(x)`
+	* `log(x)`
+	* `sin(x)`
+	* `min(x1, x2, ...)`
+	* `max(x1, x2, ...)`
+	* ...
+
+* Support for advanced mathematical functions:
+ 	* `sqrt(x)`
+	* `log(x)`
+	* `exp(x)`
+	* `sin(x)`
+	* `cos(x)`
+	* `tan(x)`
+	* ...
+
+* Methods to access parts of a value:
+ 	* `getMantissa()`
+	* `getExponent()`
+	* `getIntegralPart()`
+	* `getFractionalPart()`
+
+* Comparison methods:
+ 	* `isEqual(BigFloat)`
+	* `isLessThan(BigFloat)`
+	* `isLessThanOrEqual(BigFloat)`
+	* `isGreaterThan(BigFloat)`
+	* `isGreaterThanOrEqual(BigFloat)`
+
+
+### Usage
+
+Before doing any calculations you need to create a `Context` specifying the precision used for all calculations.
+```java
+Context context = BigFloat.context(100); // precision of 100 digits
+Context anotherContext = BigFloat.context(new MathContext(10, RoundingMode.HALF_UP); // precision of 10 digits, rounding half up
+```
+
+The `Context` can then be used to create the first value of the calculation:
+```java
+BigFloat value1 = context.valueOf(640320);
+```
+
+The `BigFloat` instance holds a reference to the `Context`. This context is then passed from calculation to calculation.
+```java
+BigFloat value2 = context.valueOf(640320).pow(3).divide(24);
+BigFloat value3 = BigFloat.sin(value2);
+```
+
+
+The `BigFloat` result can be converted to other numerical types:
+```java
+BigDecimal bigDecimalValue = value3.toBigDecimal();
+double doubleValue = value3.toDouble();
+long longValue = value3.toLong();
+int intValue = value3.toInt();
+```
+
+
+## Using big-math in your projects
 
 To use the library you can either download the newest version of the .jar file from the
 [published releases on Github](https://github.com/eobermuhlner/big-math/releases/)
@@ -130,48 +261,5 @@ dependencies {
   compile 'ch.obermuhlner:big-math:1.0.0'
 }
 ```
-
-## FAQ
-
-### Why do I have to pass `MathContext` to most functions?
-
-Many mathematical functions have results that have many digits (often an infinite number of digits).
-When calculating these functions you need to specify the number of digits you need, because calculating an infinite number of digits would take literally forever and consume an infinite amount of memory.
-
-The `MathContext` contains a precision and information on how to round the last digits, so it is an obvious choice to specify the desired precision of mathematical functions.
-
-### I specified a precision of `n` digits, but the results have completely different number of digits after the decimal point. Why?
-
-It is a common misconception that the precision defines the number of digits after the decimal point.
-
-Instead the precision defines the number of relevant digits, independent of the decimal point.
-The following numbers all have a precision of 3 digits:
-* 12300
-* 1230
-* 123
-* 12.3
-* 1.23
-* 0.123
-* 0.0123
-
-To specify the number of digits after the decimal point use `BigDecimal.setScale(scale, mathContext)`.
-
-### Why are `BigDecimalMath` functions so slow?
-
-The mathematical functions in `BigDecimalMath` are heavily optimized to calculate the result in the specified precision, but in order to calculate them often tens or even hundreds of basic operations (+, -, *, /) using `BigDecimal` are necessary.
-
-If the calculation of your function is too slow for your purpose you should verify whether you really need the full precision in your particular use case. Sometimes you can adapt the precision depending on input factors of your calculation.
-
-## Performance
-
-The following charts show the time needed to calculate the functions over a range of values with a precision of 300 digits.
-
-![sqrt(), root(), exp(), sin(), cos() 0 to 10](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_10.png)
-![sqrt(), root(), exp(), sin(), cos() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_100.png)
-
-![exp(), log(), pow() 0 to 10](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_10.png)
-![exp(), log(), pow() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_100.png)
-
-
 
 
