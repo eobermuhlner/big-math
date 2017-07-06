@@ -78,11 +78,11 @@ import java.util.Objects;
  * </li>
  * <li>Comparison methods:
  *   <ul>
- *   <li><code>isEqual()</code></li>
- *   <li><code>isLessThan()</code></li>
- *   <li><code>isLessThanOrEqual()</code></li>
- *   <li><code>isGreaterThan()</code></li>
- *   <li><code>isGreaterThanOrEqual()</code></li>
+ *   <li><code>isEqual(BigFloat)</code></li>
+ *   <li><code>isLessThan(BigFloat)</code></li>
+ *   <li><code>isLessThanOrEqual(BigFloat)</code></li>
+ *   <li><code>isGreaterThan(BigFloat)</code></li>
+ *   <li><code>isGreaterThanOrEqual(BigFloat)</code></li>
  *   </ul>
  * </li>
  * </ul>
