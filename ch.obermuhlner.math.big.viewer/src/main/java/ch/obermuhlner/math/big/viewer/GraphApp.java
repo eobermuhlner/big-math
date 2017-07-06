@@ -301,7 +301,6 @@ public class GraphApp extends Application {
 		double pixelAxisX = toX.apply(BigDecimal.ZERO, graphMathContext).doubleValue();
 		gc.strokeLine(pixelAxisX, 0, pixelAxisX, height);
 		
-		// draw grid
 		// draw scale
 		double tickSize = 5;
 		double smallTickSize = 2;
@@ -317,12 +316,12 @@ public class GraphApp extends Application {
 		for (BigDecimal xScale = xScaleStart; xScale.compareTo(xEnd) <= 0; xScale = xScale.add(xScaleStep)) {
 			double pixelScaleX = toX.apply(xScale, graphMathContext).doubleValue();
 			gc.strokeLine(pixelScaleX, pixelAxisY-tickSize, pixelScaleX, pixelAxisY+tickSize);
-			gc.strokeText(xScale.toString(), pixelScaleX, pixelAxisY-tickSize);
+			gc.strokeText(BigDecimalUtil.toString(xScale), pixelScaleX, pixelAxisY-tickSize);
 		}
 		for (BigDecimal yScale = yScaleStart; yScale.compareTo(yEnd) <= 0; yScale = yScale.add(yScaleStep)) {
 			double pixelScaleY = toY.apply(yScale, graphMathContext).doubleValue();
 			gc.strokeLine(pixelAxisX-tickSize, pixelScaleY, pixelAxisX+tickSize, pixelScaleY);
-			gc.strokeText(yScale.toString(), pixelAxisX+tickSize, pixelScaleY);
+			gc.strokeText(BigDecimalUtil.toString(yScale), pixelAxisX+tickSize, pixelScaleY);
 		}
 		
 		xScaleStep = xScaleStep.divide(BigDecimal.TEN, graphMathContext);
