@@ -1,6 +1,8 @@
+# BigFloat
+
 `BigFloat` is a wrapper around `BigDecimal` which simplifies the consistent usage of the MathContext and provides a simpler API for calculations. 
 
-# Overview
+## Overview
 
 Every BigFloat instance has a reference to a Context that specifies the MathContext to be used for all calculations and values.
 
@@ -62,7 +64,7 @@ The API for calculations is simplified and more consistent with the typical math
 	* `isGreaterThanOrEqual(BigFloat)`
 
 
-# Usage
+## Usage
 
 Before doing any calculations you need to create a `Context` specifying the precision used for all calculations.
 ```java
