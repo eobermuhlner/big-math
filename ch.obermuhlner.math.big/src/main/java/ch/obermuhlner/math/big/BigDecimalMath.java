@@ -110,10 +110,10 @@ public class BigDecimalMath {
 	}
 	
 	/**
-	 * Returns the integral part of the specified {@link BigDecimal} (right of the decimal point).
+	 * Returns the fractional part of the specified {@link BigDecimal} (right of the decimal point).
 	 * 
 	 * @param value the {@link BigDecimal}
-	 * @return the integral part
+	 * @return the fractional part
 	 * @see #integralPart(BigDecimal)
 	 */
 	public static BigDecimal fractionalPart(BigDecimal value) {
