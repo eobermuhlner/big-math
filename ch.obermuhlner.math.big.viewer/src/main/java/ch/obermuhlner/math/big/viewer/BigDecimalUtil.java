@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public class BigDecimalUtil {
 
 	public static String toString(BigDecimal value) {
-		String string = value.toString();
+		String string = value.toPlainString();
 		
 		if (!string.contains(".")) {
 			return string;

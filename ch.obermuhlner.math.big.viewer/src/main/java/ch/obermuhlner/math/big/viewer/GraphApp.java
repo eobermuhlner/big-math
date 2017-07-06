@@ -41,7 +41,7 @@ public class GraphApp extends Application {
 	private static final StringConverter<BigDecimal> BIGDECIMAL_STRING_CONVERTER = new StringConverter<BigDecimal>() {
 		@Override
 		public String toString(BigDecimal object) {
-			return object.toString();
+			return BigDecimalUtil.toString(object);
 		}
 
 		@Override
@@ -197,11 +197,11 @@ public class GraphApp extends Application {
 		canvas.setOnKeyPressed(event -> {
 			switch (event.getCode()) {
 			case UP: {
-				zoom(BigDecimal.valueOf(1 / 1.2));
+				zoom(BigDecimal.valueOf(0.5));
 				break;
 			}
 			case DOWN: {
-				zoom(BigDecimal.valueOf(1.2));
+				zoom(BigDecimal.valueOf(2));
 				break;
 			}
 			case W:
