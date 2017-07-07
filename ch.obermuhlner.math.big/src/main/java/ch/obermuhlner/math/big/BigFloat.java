@@ -1036,6 +1036,36 @@ public class BigFloat implements Comparable<BigFloat> {
 	}
 
 	/**
+	 * Returns the {@link BigFloat} that is <code>pow(x, y)</code>.
+	 * 
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 * 
+	 * @param x the {@link BigFloat} value to take to the power
+	 * @param y the {@link BigFloat} value to serve as exponent
+	 * @return the resulting {@link BigFloat}
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public static BigFloat pow(BigFloat x, BigFloat y) {
+		Context c = max(x.context, y.context);
+		return c.valueOf(BigDecimalMath.pow(x.value, y.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>root(x, y)</code>.
+	 * 
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 * 
+	 * @param x the {@link BigFloat} value to calculate the n'th root
+	 * @param n the {@link BigFloat} defining the root
+	 * @return the resulting {@link BigFloat}
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public static BigFloat root(BigFloat x, BigFloat y) {
+		Context c = max(x.context, y.context);
+		return c.valueOf(BigDecimalMath.root(x.value, y.value, c.mathContext));
+	}
+	
+	/**
 	 * Returns the {@link BigFloat} that is <code>sin(x)</code>.
 	 * 
 	 * @param x the value
