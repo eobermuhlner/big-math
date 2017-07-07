@@ -1056,7 +1056,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
 	 * 
 	 * @param x the {@link BigFloat} value to calculate the n'th root
-	 * @param n the {@link BigFloat} defining the root
+	 * @param y the {@link BigFloat} defining the root
 	 * @return the resulting {@link BigFloat}
 	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
 	 */
