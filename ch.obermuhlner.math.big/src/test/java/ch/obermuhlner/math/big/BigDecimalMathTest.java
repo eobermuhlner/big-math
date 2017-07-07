@@ -807,6 +807,16 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testCothHighAccuracy() {
+		// Result from wolframalpha.com: coth(1.234)
+		BigDecimal expected = new BigDecimal("1.185205324770926556048860223430792270329901540411285137873448359282652953527094889287726814715510048521019659319860676563297837519357735755222676888688329329110303974145134088876752919477109732168023596610148428505480869241099661164811509156002985143871723093089577983606565248689782796839398517745077805743517260787039640386735301278276086876372931112481082107564483405956328739694693730574938024717490194723853249114925227131778575014948071122840812952034872863104176945075471984392801178291333351353562325025835067985454487645827393165057275970686744920047997309198618696444874486121281651600092381786769980527201043162650354454070144174248097841732569004869651674629227052611951971499852906803162445370338547925467890388150946743902496473437710179269365962240697297233777642354604121931412626467105497562707506260133068364009228804583415867970900958121367348411835937666408175088231826400822030426266552");
+		assertPrecisionCalculation(
+				expected,
+				mathContext -> BigDecimalMath.coth(new BigDecimal("1.234"), mathContext),
+				10);
+	}
+
+	@Test
 	public void testCothRandom() {
 		assertRandomCalculation(
 				1000,
@@ -908,17 +918,16 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.atanh(BigDecimalMath.tanh(x, mathContext), mathContext));
 	}
 
-//  TODO missing BigDecimalMath.coth()
-//	@Test
-//	public void testCothAcothRandom() {
-//		assertRandomCalculation(
-//				1000,
-//				"x",
-//				"acoth(coth(x))",
-//				(random, mathContext) -> randomBigDecimal(random, mathContext),
-//				(x, mathContext) -> x,
-//				(x, mathContext) -> BigDecimalMath.acoth(BigDecimalMath.coth(x, mathContext), mathContext));
-//	}
+	@Test
+	public void testCothAcothRandom() {
+		assertRandomCalculation(
+				1000,
+				"x",
+				"acoth(coth(x))",
+				(random, mathContext) -> randomBigDecimal(random, mathContext),
+				(x, mathContext) -> x,
+				(x, mathContext) -> BigDecimalMath.acoth(BigDecimalMath.coth(x, mathContext), mathContext));
+	}
 
 	@Test
 	public void testPow2Random() {
