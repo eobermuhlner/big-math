@@ -59,6 +59,8 @@ public class PerformanceBigDecimalMath {
 
 		// --- sqrt() optimizations:
 		performanceReportSqrtOptimization_0_to_1();
+		performanceReportSqrtOptimization_0_to_100();
+		performanceReportSqrtOptimization_0_to_1000();
 
 		// --- root() optimizations:
 		performanceReportRootOptimization_0_to_10();
@@ -348,6 +350,8 @@ public class PerformanceBigDecimalMath {
 	}
 
 	private static void performanceReportSqrtOptimization_0_to_1() {
+		System.out.println(BigDecimalMathExperimental.sqrtUsingHalley(BigDecimal.valueOf(2), new MathContext(100)));
+		
 		performanceReportOverValue(
 				"test_sqrt_impl_from_0_to_1.csv",
 				REF_MATHCONTEXT,
@@ -355,9 +359,57 @@ public class PerformanceBigDecimalMath {
 				+1,
 				+0.01,
 				REPEATS,
-				Arrays.asList("sqrtFix", "sqrtAdaptive"),
+				Arrays.asList(
+						"sqrtNewtonFix", 
+						"sqrtNewtonAdaptive", 
+						"sqrtNewtonAdaptiveImproved", 
+						"sqrtHalleyFix"),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
-				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1));
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecisionImproved(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingHalley(x1, mc1));
+	}
+
+	private static void performanceReportSqrtOptimization_0_to_100() {
+		System.out.println(BigDecimalMathExperimental.sqrtUsingHalley(BigDecimal.valueOf(2), new MathContext(100)));
+		
+		performanceReportOverValue(
+				"test_sqrt_impl_from_0_to_100.csv",
+				REF_MATHCONTEXT,
+				0,
+				+100,
+				+0.01,
+				REPEATS,
+				Arrays.asList(
+						"sqrtNewtonFix",
+						"sqrtNewtonAdaptive",
+						"sqrtNewtonAdaptiveImproved", 
+						"sqrtHalleyFix"),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecisionImproved(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingHalley(x1, mc1));
+	}
+
+	private static void performanceReportSqrtOptimization_0_to_1000() {
+		System.out.println(BigDecimalMathExperimental.sqrtUsingHalley(BigDecimal.valueOf(2), new MathContext(100)));
+		
+		performanceReportOverValue(
+				"test_sqrt_impl_from_0_to_1000.csv",
+				REF_MATHCONTEXT,
+				0,
+				+1000,
+				+0.1,
+				REPEATS,
+				Arrays.asList(
+						"sqrtNewtonFix",
+						"sqrtNewtonAdaptive",
+						"sqrtNewtonAdaptiveImproved", 
+						"sqrtHalleyFix"),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecisionImproved(x1, mc1),
+				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingHalley(x1, mc1));
 	}
 
 	private static void performanceReportRootOptimization_0_to_10() {

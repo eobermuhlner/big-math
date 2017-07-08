@@ -7,6 +7,7 @@ import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -31,8 +32,30 @@ public class BigDecimalMathExperimental {
 		// prevent instances
 	}
 
+	public static void main(String[] args) {
+		printSqrtConvergence();
+	}
+	
 	// variations on exp()
 	
+	private static void printSqrtConvergence() {
+		int precision = 10000;
+		
+		for (BigDecimal x : Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(16))) {
+			System.out.println("Newton sqrt(" + x +")");
+			sqrtUsingNewtonPrint(x, new MathContext(precision));		
+			System.out.println();
+			
+			System.out.println("Newton adaptive sqrt(" + x +")");
+			sqrtUsingNewtonAdaptivePrecisionPrint(x, new MathContext(precision));		
+			System.out.println();
+			
+			System.out.println("Halley sqrt(" + x +")");
+			sqrtUsingHalleyPrint(x, new MathContext(precision));		
+			System.out.println();
+		}
+	}
+
 	public static BigDecimal exp(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
@@ -149,7 +172,70 @@ public class BigDecimalMathExperimental {
 	}	
 	
 	// variations on sqrt()
-	
+
+	public static BigDecimal sqrtUsingNewtonPrint(BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		BigDecimal last;
+
+		do {
+			last = result;
+			result = x.divide(result, mc).add(last).divide(TWO, mc);
+			System.out.printf("%5d, ", countSameCharacters(last.toPlainString(), result.toPlainString()));
+		} while (result.subtract(last).abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal sqrtUsingNewtonAdaptivePrecisionPrint(BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+		}
+
+		int maxPrecision = mathContext.getPrecision() + 4;
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		int adaptivePrecision = 17;
+		BigDecimal last;
+
+		do {
+			last = result;
+			adaptivePrecision = adaptivePrecision * 2;
+			if (adaptivePrecision > maxPrecision) {
+				adaptivePrecision = maxPrecision;
+			}
+			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+			result = x.divide(result, mc).add(last).divide(TWO, mc);
+			System.out.printf("%5d, ", countSameCharacters(last.toPlainString(), result.toPlainString()));
+		} while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+
+
+	private static Object countSameCharacters(String string1, String string2) {
+		int n = Math.min(string1.length(), string2.length());
+		for (int i = 0; i < n; i++) {
+			if (string1.charAt(i) != string2.charAt(i)) {
+				return i;
+			}
+		}
+		return n;
+	}
+
 	public static BigDecimal sqrtUsingNewton(BigDecimal x, MathContext mathContext) {
 		switch (x.signum()) {
 		case 0:
@@ -194,8 +280,94 @@ public class BigDecimalMathExperimental {
 				adaptivePrecision = maxPrecision;
 			}
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
-			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
+			result = x.divide(result, mc).add(last).divide(TWO, mc);
 		} while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal sqrtUsingNewtonAdaptivePrecisionImproved(BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+		}
+
+		int maxPrecision = mathContext.getPrecision() + 4;
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		
+		if (result.multiply(result, mathContext).compareTo(x) == 0) {
+			return result.round(mathContext); // early exit if x is a square number
+		}
+
+		int adaptivePrecision = 17;
+		BigDecimal last;
+
+		do {
+			last = result;
+			adaptivePrecision = adaptivePrecision * 2;
+			if (adaptivePrecision > maxPrecision) {
+				adaptivePrecision = maxPrecision;
+			}
+			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+			result = x.divide(result, mc).add(last).divide(TWO, mc);
+		} while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal sqrtUsingHalley(BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+		BigDecimal threeX = x.multiply(THREE);
+		
+		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		BigDecimal last;
+
+		do {
+			last = result;
+			BigDecimal resultSquare = result.multiply(result);
+			BigDecimal divisor = resultSquare.multiply(THREE).add(x); 
+			result = resultSquare.add(threeX).multiply(result).divide(divisor, mc);
+		} while (result.subtract(last).abs().compareTo(acceptableError) > 0);
+		
+		return result.round(mathContext);
+	}
+
+	public static BigDecimal sqrtUsingHalleyPrint(BigDecimal x, MathContext mathContext) {
+		switch (x.signum()) {
+		case 0:
+			return ZERO;
+		case -1:
+			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+
+		BigDecimal threeX = x.multiply(THREE);
+		
+		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		BigDecimal last;
+
+		do {
+			last = result;
+			BigDecimal resultSquare = result.multiply(result);
+			BigDecimal divisor = resultSquare.multiply(THREE).add(x); 
+			result = resultSquare.add(threeX).multiply(result).divide(divisor, mc);
+			System.out.printf("%5d, ", countSameCharacters(last.toPlainString(), result.toPlainString()));
+		} while (result.subtract(last).abs().compareTo(acceptableError) > 0);
 		
 		return result.round(mathContext);
 	}
