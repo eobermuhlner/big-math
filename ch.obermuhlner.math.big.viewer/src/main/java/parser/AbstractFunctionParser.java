@@ -37,6 +37,7 @@ public abstract class AbstractFunctionParser {
 		function1Map.put("sinh", (x, mathContext) -> BigDecimalMath.sinh(x, mathContext));
 		function1Map.put("cosh", (x, mathContext) -> BigDecimalMath.cosh(x, mathContext));
 		function1Map.put("tanh", (x, mathContext) -> BigDecimalMath.tanh(x, mathContext));
+		function1Map.put("coth", (x, mathContext) -> BigDecimalMath.coth(x, mathContext));
 		function1Map.put("asinh", (x, mathContext) -> BigDecimalMath.asinh(x, mathContext));
 		function1Map.put("acosh", (x, mathContext) -> BigDecimalMath.acosh(x, mathContext));
 		function1Map.put("atanh", (x, mathContext) -> BigDecimalMath.atanh(x, mathContext));
