@@ -28,6 +28,12 @@ Tip: If your application needs the constant with many different precisions it mi
 
 The constant `e` is now cached with the same strategy as pi and the other mathematical constants. 
 
+## Peformance improvements in `sqrt()`
+
+The `sqrt()` was optimized so that the square root of square numbers is calculated much faster.
+
+The adaptive precision calculation was slightly optimized, assuming that the precision increases every iteration by a factor of ~ 1.8.
+
 
 # Examples
 
