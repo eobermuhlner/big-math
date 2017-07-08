@@ -266,12 +266,17 @@ public class BigDecimalMath {
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		
+		if (result.multiply(result, mathContext).compareTo(x) == 0) {
+			return result.round(mathContext); // early exit if x is a square number
+		}
+
 		int adaptivePrecision = EXPECTED_INITIAL_PRECISION;
 		BigDecimal last;
 
 		do {
 			last = result;
-			adaptivePrecision = adaptivePrecision * 3;
+			adaptivePrecision = adaptivePrecision * 2;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
