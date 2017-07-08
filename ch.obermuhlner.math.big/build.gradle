@@ -5,15 +5,8 @@ apply plugin: 'signing'
 apply plugin: 'jacoco'
 
 group = 'ch.obermuhlner'
-version = '1.0.0'
+version = '1.1.0'
 archivesBaseName = 'big-math'
-
-if (!ext.hasProperty('ossrhUsername')) {
-	ext.ossrhUsername = "ossrhUsername_UNDEFINED"
-}
-if (!ext.hasProperty('ossrhPassword')) {
-	ext.ossrhPassword = "ossrhPassword_UNDEFINED"
-}
 
 repositories {
     mavenLocal()
@@ -49,10 +42,9 @@ artifacts {
     archives javadocJar
 }
 
+/*
 signing {
-	if (signing.hasProperty('keyId')) {
-	    sign configurations.archives
-	}
+    sign configurations.archives
 }
 
 uploadArchives {
@@ -99,5 +91,6 @@ uploadArchives {
 	    }
 	}
 }
+*/
 
 // See http://central.sonatype.org/pages/gradle.html
