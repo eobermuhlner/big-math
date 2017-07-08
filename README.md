@@ -143,7 +143,7 @@ The following charts show the time needed to calculate the functions over a rang
 ![exp(), log(), pow() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_100.png)
 
 
-## BigFloat (available with upcoming release 1.1.0)
+## BigFloat
 
 The class `BigFloat` is a wrapper around `BigDecimal` which simplifies the consistent usage of the MathContext and provides a simpler API for calculations. 
 
@@ -247,7 +247,7 @@ in your build script (please verify the version number to be the newest release)
 <dependency>
     <groupId>ch.obermuhlner</groupId>
     <artifactId>big-math</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -258,7 +258,7 @@ repositories {
 }
 
 dependencies {
-  compile 'ch.obermuhlner:big-math:1.0.0'
+  compile 'ch.obermuhlner:big-math:1.1.0'
 }
 ```
 
