@@ -88,6 +88,8 @@ System.out.println("integralPart(123.456)   = " + BigDecimalMath.integralPart(Bi
 System.out.println("fractionalPart(123.456) = " + BigDecimalMath.fractionalPart(BigDecimal.valueOf(123.456)));
 System.out.println("isIntValue(123)         = " + BigDecimalMath.isIntValue(BigDecimal.valueOf(123)));
 System.out.println("isIntValue(123.456)     = " + BigDecimalMath.isIntValue(BigDecimal.valueOf(123.456)));
+System.out.println("isDoubleValue(123.456)  = " + BigDecimalMath.isDoubleValue(BigDecimal.valueOf(123.456)));
+System.out.println("isDoubleValue(1.23E999) = " + BigDecimalMath.isDoubleValue(new BigDecimal("1.23E999")));
 ```
 will produce the following output on the console:
 ```
@@ -97,6 +99,8 @@ integralPart(123.456)   = 123
 fractionalPart(123.456) = 0.456
 isIntValue(123)         = true
 isIntValue(123.456)     = false
+isDoubleValue(123.456)  = true
+isDoubleValue(1.23E999) = false
 ```
 
 For the mathematical background and performance analysis please refer to this article:
@@ -200,6 +204,10 @@ The API for calculations is simplified and more consistent with the typical math
 	* `getExponent()`
 	* `getIntegralPart()`
 	* `getFractionalPart()`
+
+* Methods to verify value type conversions:
+ 	* `isIntValue()`
+ 	* `isDoubleValue()`
 
 * Comparison methods:
  	* `isEqual(BigFloat)`
