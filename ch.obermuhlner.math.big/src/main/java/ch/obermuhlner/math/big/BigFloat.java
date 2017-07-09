@@ -770,15 +770,23 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	
 	/**
-	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>int</code> without loss of precision.
+	 * Returns whether <code>this</code> value can be represented as <code>int</code>.
 	 * 
-	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#intValueExact()} without fear of an {@link ArithmeticException}.</p>
-	 * 
-	 * @return <code>true</code> if the value can be represented as <code>int</code> without loss of precision
+	 * @return <code>true</code> if the value can be represented as <code>int</code> value
 	 * @see BigDecimalMath#isIntValue(BigDecimal)
 	 */
 	public boolean isIntValue() {
 		return BigDecimalMath.isIntValue(value);
+	}
+
+	/**
+	 * Returns whether <code>this</code> specified {@link BigDecimal} value can be represented as <code>double</code>.
+	 * 
+	 * @return <code>true</code> if the value can be represented as <code>double</code> value 
+	 * @see BigDecimalMath#isDoubleValue(BigDecimal)
+	 */
+	public boolean isDoubleValue() {
+		return BigDecimalMath.isDoubleValue(value);
 	}
 
 	/**
