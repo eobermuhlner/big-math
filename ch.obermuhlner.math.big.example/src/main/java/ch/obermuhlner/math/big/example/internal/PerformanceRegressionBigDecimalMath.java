@@ -2,8 +2,12 @@ package ch.obermuhlner.math.big.example.internal;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import ch.obermuhlner.math.big.BigFloat;
 import ch.obermuhlner.math.big.example.StopWatch;
 
 public class PerformanceRegressionBigDecimalMath {
@@ -31,7 +35,7 @@ public class PerformanceRegressionBigDecimalMath {
 	private static void performanceRegression(int precision) {
 		MathContext mathContext = new MathContext(precision);
 		
-		System.out.printf("%-20s, %15s, %15s, %15s\n", "Name", "Average [ns]", "Min [ns]", "Max [ns]");
+		System.out.printf("%-20s, %15s, %15s, %15s, %15s\n", "Name", "Average [ns]", "Median [ns]", "Min [ns]", "Max [ns]");
 		
 		measurePerformance("log(0.1)", mathContext, () -> BigDecimalMath.log(value0_1, mathContext));
 		measurePerformance("log(0.2)", mathContext, () -> BigDecimalMath.log(value0_2, mathContext));
@@ -73,6 +77,11 @@ public class PerformanceRegressionBigDecimalMath {
 		measurePerformance("atanh(0.1)", mathContext, () -> BigDecimalMath.atanh(value0_1, mathContext));
 		measurePerformance("acoth(2)", mathContext, () -> BigDecimalMath.acoth(value2, mathContext));
 		measurePerformance("coth(2)", mathContext, () -> BigDecimalMath.coth(value2, mathContext));
+		
+		measurePerformance("BigFloat.add", mathContext, () -> BigFloat.context(mathContext).valueOf(123).add(456).toBigDecimal());
+		measurePerformance("BigFloat.subtract", mathContext, () -> BigFloat.context(mathContext).valueOf(123).subtract(456).toBigDecimal());
+		measurePerformance("BigFloat.multiply", mathContext, () -> BigFloat.context(mathContext).valueOf(123).multiply(456).toBigDecimal());
+		measurePerformance("BigFloat.divide", mathContext, () -> BigFloat.context(mathContext).valueOf(123).divide(456).toBigDecimal());
 	}
 
 	private static void measurePerformance(String name, MathContext mathContext, Runnable function) {
@@ -85,6 +94,8 @@ public class PerformanceRegressionBigDecimalMath {
 		long totalNanos = 0;
 		long minNanos = Long.MAX_VALUE;
 		long maxNanos = Long.MIN_VALUE;
+		List<Long> allNanos = new ArrayList<>();
+		
 		for (int i = 0; i < count; i++) {
 			StopWatch stopWatch = new StopWatch();
 			function.run();
@@ -93,9 +104,21 @@ public class PerformanceRegressionBigDecimalMath {
 			totalNanos += nanos;
 			minNanos = Math.min(minNanos, nanos);
 			maxNanos = Math.max(maxNanos, nanos);
+			allNanos.add(nanos);
 		}
 		
 		long avgNanos = totalNanos / count;
-		System.out.printf("%-20s, %15d, %15d, %15d\n", name, avgNanos, minNanos, maxNanos);
+		long medianNanos = median(allNanos);
+		System.out.printf("%-20s, %15d, %15d, %15d, %15d\n", name, avgNanos, medianNanos, minNanos, maxNanos);
+	}
+
+	private static long median(List<Long> values) {
+		Collections.sort(values);
+		int center = values.size() / 2;
+		if (values.size() % 2 == 0) {
+			return (values.get(center) + values.get(center+1)) / 2;
+		} else {
+			return values.get(center);
+		}
 	}
 }
