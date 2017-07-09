@@ -24,6 +24,9 @@ public class BigDecimalMath {
 	private static final BigDecimal THREE = valueOf(3);
 	private static final BigDecimal MINUS_ONE = valueOf(-1);
 
+	private static final BigDecimal DOUBLE_MAX_VALUE = BigDecimal.valueOf(Double.MAX_VALUE);
+	private static final BigDecimal DOUBLE_MIN_VALUE = BigDecimal.valueOf(Double.MIN_VALUE);
+
 	private static volatile BigDecimal log2Cache;
 	private static final Object log2CacheLock = new Object();
 	
@@ -58,12 +61,12 @@ public class BigDecimalMath {
 	}
 
 	/**
-	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>int</code> without loss of precision.
+	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>int</code>.
 	 * 
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#intValueExact()} without fear of an {@link ArithmeticException}.</p>
 	 * 
 	 * @param value the {@link BigDecimal} to check 
-	 * @return <code>true</code> if the value can be represented as <code>int</code> without loss of precision
+	 * @return <code>true</code> if the value can be represented as <code>int</code> value
 	 */
 	public static boolean isIntValue(BigDecimal value) {
 		// TODO impl isIntValue() without exceptions
@@ -76,6 +79,42 @@ public class BigDecimalMath {
 		return false;
 	}
 
+	/**
+	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>double</code>.
+	 * 
+	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#doubleValue()}
+	 * without fear of getting {@link Double#POSITIVE_INFINITY} or {@link Double#NEGATIVE_INFINITY} as result.</p>
+	 * 
+	 * <p>Example: <code>BigDecimalMath.isDoubleValue(new BigDecimal("1E309"))</code> returns <code>false</code>,
+	 * because <code>new BigDecimal("1E309").doubleValue()</code> returns <code>Infinity</code>.</p>
+	 * 
+	 * <p>Note: This method does <strong>not</strong> check for possible loss of precision.</p>
+	 * 
+	 * <p>For example <code>BigDecimalMath.isDoubleValue(new BigDecimal("1.23400000000000000000000000000000001"))</code> will return <code>true</code>,
+	 * because <code>new BigDecimal("1.23400000000000000000000000000000001").doubleValue()</code> returns a valid double value,
+	 * although it loses precision and returns <code>1.234</code>.</p>
+	 * 
+	 * @param value the {@link BigDecimal} to check 
+	 * @return <code>true</code> if the value can be represented as <code>double</code> value 
+	 */
+	public static boolean isDoubleValue(BigDecimal value) {
+		if (value.compareTo(DOUBLE_MAX_VALUE) > 0) {
+			return false;
+		}
+		if (value.signum() > 0 && value.compareTo(DOUBLE_MIN_VALUE) < 0) {
+			return false;
+		}
+
+		if (value.compareTo(DOUBLE_MAX_VALUE.negate()) < 0) {
+			return false;
+		}
+		if (value.signum() < 0 && value.compareTo(DOUBLE_MIN_VALUE.negate()) > 0) {
+			return false;
+		}
+
+		return true;
+	}
+	
 	/**
 	 * Returns the mantissa of the specified {@link BigDecimal} written as <em>mantissa * 10<sup>exponent</sup></em>.
 	 * 
@@ -265,7 +304,12 @@ public class BigDecimalMath {
 		int maxPrecision = mathContext.getPrecision() + 4;
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
-		BigDecimal result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		BigDecimal result;
+		if (isDoubleValue(x)) {
+			result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+		} else {
+			result = x.divide(TWO, mathContext);
+		}
 		
 		if (result.multiply(result, mathContext).compareTo(x) == 0) {
 			return result.round(mathContext); // early exit if x is a square number
@@ -405,8 +449,16 @@ public class BigDecimalMath {
 		int maxPrecision = mathContext.getPrecision() + 4;
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 		
-		BigDecimal result = BigDecimal.valueOf(Math.log(x.doubleValue()));
-		int adaptivePrecision = EXPECTED_INITIAL_PRECISION;
+		BigDecimal result;
+		int adaptivePrecision;
+		if (isDoubleValue(x)) {
+			result = BigDecimal.valueOf(Math.log(x.doubleValue()));
+			adaptivePrecision = EXPECTED_INITIAL_PRECISION;
+		} else {
+			result = x.divide(TWO, mathContext);
+			adaptivePrecision = 1;
+		}
+
 		BigDecimal step;
 		
 		do {

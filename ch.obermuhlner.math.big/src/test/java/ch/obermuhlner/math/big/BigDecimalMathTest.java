@@ -43,6 +43,26 @@ public class BigDecimalMathTest {
 		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(3.333)));
 		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(-5.555)));
 	}
+
+	@Test
+	public void testIsDoubleValue() {
+		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(Double.MIN_VALUE)));
+		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(Double.MAX_VALUE)));
+		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(-Double.MAX_VALUE)));
+		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(-Double.MIN_VALUE)));
+		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(0)));
+		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(-55)));
+		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(33)));
+
+		assertEquals(false, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(Double.MAX_VALUE).add(BigDecimal.valueOf(1))));
+		assertEquals(false, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(-Double.MAX_VALUE).subtract(BigDecimal.valueOf(1))));
+		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("1E309")));
+		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("-1E309")));
+		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("1E-325")));
+		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("1E-325")));
+		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("-1E-325")));
+		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("-1E-325")));
+	}
 	
 	@Test
 	public void testMantissa() {
@@ -341,6 +361,13 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testSqrtHuge() {
+		// Result from wolframalpha.com: sqrt(1e399)
+		BigDecimal expected = new BigDecimal("3.1622776601683793319988935444327185337195551393252168E199");
+		assertEquals(expected.round(MC), BigDecimalMath.sqrt(new BigDecimal("1E399"), MC));
+	}
+
+	@Test
 	public void testSqrtRandom() {
 		assertRandomCalculation(
 				1000,
@@ -349,7 +376,7 @@ public class BigDecimalMathTest {
 				Math::sqrt,
 				(x, mathContext) -> BigDecimalMath.sqrt(x, mathContext));
 	}
-
+	
 	@Test
 	public void testRoot() {
 		for(double value : new double[] { 0.1, 2, 10, 33.3333 }) {
@@ -446,6 +473,13 @@ public class BigDecimalMathTest {
 				expected,
 				mathContext -> BigDecimalMath.log(new BigDecimal("12345.6"), mathContext),
 				10);
+	}
+
+	@Test
+	public void testLogHuge() {
+		// Result from wolframalpha.com: log(1e399)
+		BigDecimal expected = new BigDecimal("918.7314521046242279231785904190613188328394939628804174372");
+		assertEquals(expected.round(MC), BigDecimalMath.log(new BigDecimal("1E399"), MC));
 	}
 
 	@Test
