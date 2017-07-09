@@ -43,6 +43,10 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `integralPart(BigDecimal)` extract the integral part from a `BigDecimal` (everything before the decimal point) 
 *   `fractionalPart(BigDecimal)` extract the fractional part from a `BigDecimal` (everything after the decimal point)
 
+*   `isIntValue(BigDecimal)` checks whether the `BigDecimal` can be represented as an `int` value
+*   `isDoubleValue(BigDecimal)` checks whether the `BigDecimal` can be represented as a `double` value
+
+
 ### Usage
 
 For calculations with arbitrary precision you need to specify how precise you want a calculated result.
@@ -247,7 +251,7 @@ in your build script (please verify the version number to be the newest release)
 <dependency>
     <groupId>ch.obermuhlner</groupId>
     <artifactId>big-math</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -258,7 +262,7 @@ repositories {
 }
 
 dependencies {
-  compile 'ch.obermuhlner:big-math:1.1.0'
+  compile 'ch.obermuhlner:big-math:1.2.0'
 }
 ```
 
