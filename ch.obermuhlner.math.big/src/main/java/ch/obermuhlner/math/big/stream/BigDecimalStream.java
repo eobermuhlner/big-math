@@ -29,33 +29,54 @@ public class BigDecimalStream {
     private static class BigDecimalSpliterator extends AbstractSpliterator<BigDecimal> {
 
 		private BigDecimal value;
-		private BigDecimal endExclusive;
 		private BigDecimal step;
+		private long count;
 		private MathContext mathContext;
 
-		public BigDecimalSpliterator(BigDecimal startInclusive, BigDecimal endExclusive, BigDecimal step, MathContext mathContext) {
-    		super(estimatedCount(startInclusive, endExclusive, step, mathContext).intValue(),
+		public BigDecimalSpliterator(BigDecimal startInclusive, BigDecimal step, long count, MathContext mathContext) {
+    		super(count,
     				Spliterator.SIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED);
 			
     		this.value = startInclusive;
-			this.endExclusive = endExclusive;
 			this.step = step;
+			this.count = count;
 			this.mathContext = mathContext;
 		}
     	
-		private static BigDecimal estimatedCount(BigDecimal startInclusive, BigDecimal endInclusive, BigDecimal step, MathContext mathContext) {
-    		return endInclusive.subtract(startInclusive).divide(step, mathContext);
+		public BigDecimalSpliterator(BigDecimal startInclusive, BigDecimal endExclusive, BigDecimal step, MathContext mathContext) {
+			this(startInclusive, step, estimatedCount(startInclusive, endExclusive, step, mathContext), mathContext);
+		}
+		
+		private static long estimatedCount(BigDecimal startInclusive, BigDecimal endExclusive, BigDecimal step, MathContext mathContext) {
+    		return endExclusive.subtract(startInclusive).divide(step, mathContext).longValue();
 		}
 
 		@Override
 		public boolean tryAdvance(Consumer<? super BigDecimal> action) {
-			if (value.compareTo(endExclusive) >= 0) {
+			if (count == 0) {
 				return false;
 			}
 			
 			action.accept(value);
 			value = value.add(step, mathContext);
+			count--;
 			return true;
+		}
+		
+		@Override
+		public Spliterator<BigDecimal> trySplit() {
+			long firstHalfCount = count / 2;
+			
+			if (firstHalfCount == 0) {
+				return null;
+			}
+			
+			long secondHalfCount = count - firstHalfCount;
+			
+			count = firstHalfCount;
+			BigDecimal startSecondHalf = value.add(step.multiply(new BigDecimal(firstHalfCount), mathContext));
+			
+			return new BigDecimalSpliterator(startSecondHalf, step, secondHalfCount, mathContext);
 		}
     }
 }
