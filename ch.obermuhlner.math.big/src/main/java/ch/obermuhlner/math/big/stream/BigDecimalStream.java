@@ -11,18 +11,32 @@ import java.util.stream.StreamSupport;
 public class BigDecimalStream {
 
     public static Stream<BigDecimal> range(BigDecimal startInclusive, BigDecimal endExclusive, MathContext mathContext) {
-    	return range(startInclusive, endExclusive, BigDecimal.ONE, mathContext);
+    	BigDecimal step = BigDecimal.ONE;
+    	if (endExclusive.subtract(startInclusive).signum() < 0) {
+    		step = step.negate();
+    	}
+    	return range(startInclusive, endExclusive, step, mathContext);
     }
 
     public static Stream<BigDecimal> rangeClosed(BigDecimal startInclusive, BigDecimal endInclusive, MathContext mathContext) {
-    	return rangeClosed(startInclusive, endInclusive, BigDecimal.ONE, mathContext);
+    	BigDecimal step = BigDecimal.ONE;
+    	if (endInclusive.subtract(startInclusive).signum() < 0) {
+    		step = step.negate();
+    	}
+    	return rangeClosed(startInclusive, endInclusive, step, mathContext);
     }
 
     public static Stream<BigDecimal> range(BigDecimal startInclusive, BigDecimal endExclusive, BigDecimal step, MathContext mathContext) {
+    	if (step.signum() == 0) {
+    		throw new IllegalArgumentException("invalid step: 0");
+    	}
     	return StreamSupport.stream(new BigDecimalSpliterator(startInclusive, endExclusive, step, mathContext), false);
     }
     
     public static Stream<BigDecimal> rangeClosed(BigDecimal startInclusive, BigDecimal endInclusive, BigDecimal step, MathContext mathContext) {
+    	if (step.signum() == 0) {
+    		throw new IllegalArgumentException("invalid step: 0");
+    	}
     	return StreamSupport.stream(new BigDecimalSpliterator(startInclusive, endInclusive.add(step, mathContext), step, mathContext), false);
     }
     
@@ -48,6 +62,9 @@ public class BigDecimalStream {
 		}
 		
 		private static long estimatedCount(BigDecimal startInclusive, BigDecimal endExclusive, BigDecimal step, MathContext mathContext) {
+			if (endExclusive.subtract(startInclusive).signum() != step.signum()) {
+				return 0;
+			}
     		return endExclusive.subtract(startInclusive).divide(step, mathContext).longValue();
 		}
 
