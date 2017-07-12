@@ -25,7 +25,6 @@ public class BigDecimalMath {
 	private static final BigDecimal MINUS_ONE = valueOf(-1);
 
 	private static final BigDecimal DOUBLE_MAX_VALUE = BigDecimal.valueOf(Double.MAX_VALUE);
-	private static final BigDecimal DOUBLE_MIN_VALUE = BigDecimal.valueOf(Double.MIN_VALUE);
 
 	private static volatile BigDecimal log2Cache;
 	private static final Object log2CacheLock = new Object();
@@ -94,6 +93,10 @@ public class BigDecimalMath {
 	 * because <code>new BigDecimal("1.23400000000000000000000000000000001").doubleValue()</code> returns a valid double value,
 	 * although it loses precision and returns <code>1.234</code>.</p>
 	 * 
+	 * <p><code>BigDecimalMath.isDoubleValue(new BigDecimal("1E-325"))</code> will return <code>true</code>
+	 * although this value is smaller than {@link Double#MIN_VALUE} (and therefore outside the range of values that can be represented as <code>double</code>)
+	 * because <code>new BigDecimal("1E-325").doubleValue()</code> returns <code>0</code> which is a legal value with loss of precision.</p>
+	 * 
 	 * @param value the {@link BigDecimal} to check 
 	 * @return <code>true</code> if the value can be represented as <code>double</code> value 
 	 */
@@ -101,14 +104,7 @@ public class BigDecimalMath {
 		if (value.compareTo(DOUBLE_MAX_VALUE) > 0) {
 			return false;
 		}
-		if (value.signum() > 0 && value.compareTo(DOUBLE_MIN_VALUE) < 0) {
-			return false;
-		}
-
 		if (value.compareTo(DOUBLE_MAX_VALUE.negate()) < 0) {
-			return false;
-		}
-		if (value.signum() < 0 && value.compareTo(DOUBLE_MIN_VALUE.negate()) > 0) {
 			return false;
 		}
 

@@ -53,15 +53,15 @@ public class BigDecimalMathTest {
 		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(0)));
 		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(-55)));
 		assertEquals(true, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(33)));
+		assertEquals(true, BigDecimalMath.isDoubleValue(new BigDecimal("1E-325")));
+		assertEquals(true, BigDecimalMath.isDoubleValue(new BigDecimal("-1E-325")));
+		assertEquals(true, BigDecimalMath.isDoubleValue(new BigDecimal("1E-325")));
+		assertEquals(true, BigDecimalMath.isDoubleValue(new BigDecimal("-1E-325")));
 
 		assertEquals(false, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(Double.MAX_VALUE).add(BigDecimal.valueOf(1))));
 		assertEquals(false, BigDecimalMath.isDoubleValue(BigDecimal.valueOf(-Double.MAX_VALUE).subtract(BigDecimal.valueOf(1))));
 		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("1E309")));
 		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("-1E309")));
-		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("1E-325")));
-		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("1E-325")));
-		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("-1E-325")));
-		assertEquals(false, BigDecimalMath.isDoubleValue(new BigDecimal("-1E-325")));
 	}
 	
 	@Test
