@@ -91,25 +91,25 @@ public class BigFloatTest {
 	@Test
 	public void testGetMantissa() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(1.23), context.valueOf(1.23E99).getMantissa());
+		assertEquals(context.valueOf(1.23), context.valueOf(1.23E99).getMantissa());
 	}
 	
 	@Test
 	public void testGetExponent() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(99), context.valueOf(1.23E99).getExponent());
+		assertEquals(context.valueOf(99), context.valueOf(1.23E99).getExponent());
 	}
 
 	@Test
 	public void testGetIntegralPart() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(123), context.valueOf(123.456).getIntegralPart());
+		assertEquals(context.valueOf(123), context.valueOf(123.456).getIntegralPart());
 	}
 
 	@Test
 	public void testGetFractionalPart() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(0.456), context.valueOf(123.456).getFractionalPart());
+		assertEquals(context.valueOf(0.456), context.valueOf(123.456).getFractionalPart());
 	}
 
 	@Test
@@ -129,12 +129,14 @@ public class BigFloatTest {
 		Context equalContext = context(MathContext.DECIMAL32);
 		assertEquals(context, equalContext);
 		assertEquals(context.valueOf(1234), equalContext.valueOf(1234));
+		assertEquals(context.valueOf(1234), equalContext.valueOf(1234.0));
+		assertEquals(context.valueOf(1234), equalContext.valueOf("1234.0000"));
 		assertEquals(equalContext.valueOf(1234), context.valueOf(1234));
 		
 		Context anotherContext = context(MathContext.DECIMAL64);
 		assertNotEquals(context, anotherContext);
-		assertNotEquals(context.valueOf(1234), anotherContext.valueOf(1234));
-		assertNotEquals(anotherContext.valueOf(1234), context.valueOf(1234));
+		assertEquals(context.valueOf(1234), anotherContext.valueOf(1234));
+		assertEquals(anotherContext.valueOf(1234), context.valueOf(1234));
 
 	}
 
@@ -147,10 +149,12 @@ public class BigFloatTest {
 		Context equalContext = context(MathContext.DECIMAL32);
 		assertEquals(context, equalContext);
 		assertEquals(context.valueOf(1).hashCode(), equalContext.valueOf(1).hashCode());
+		assertEquals(context.valueOf(1).hashCode(), equalContext.valueOf(1.0).hashCode());
+		assertEquals(context.valueOf(1).hashCode(), equalContext.valueOf("1.0000").hashCode());
 		assertNotEquals(context.valueOf(1).hashCode(), equalContext.valueOf(999).hashCode());
 
 		Context anotherContext = context(MathContext.DECIMAL64);
-		assertNotEquals(context.valueOf(1).hashCode(), anotherContext.valueOf(1).hashCode());
+		assertEquals(context.valueOf(1).hashCode(), anotherContext.valueOf(1).hashCode());
 	}
 	
 	@Test
@@ -216,11 +220,11 @@ public class BigFloatTest {
 	@Test
 	public void testAdd() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(5), context.valueOf(2).add(3));
-		assertIsEqual(context.valueOf(5), context.valueOf(2).add(3L));
-		assertIsEqual(context.valueOf(5), context.valueOf(2).add(3.0));
-		assertIsEqual(context.valueOf(5), context.valueOf(2).add(BigDecimal.valueOf(3)));
-		assertIsEqual(context.valueOf(5), context.valueOf(2).add(context.valueOf(3)));
+		assertEquals(context.valueOf(5), context.valueOf(2).add(3));
+		assertEquals(context.valueOf(5), context.valueOf(2).add(3L));
+		assertEquals(context.valueOf(5), context.valueOf(2).add(3.0));
+		assertEquals(context.valueOf(5), context.valueOf(2).add(BigDecimal.valueOf(3)));
+		assertEquals(context.valueOf(5), context.valueOf(2).add(context.valueOf(3)));
 	}
 
 	@Test
@@ -237,67 +241,67 @@ public class BigFloatTest {
 	@Test
 	public void testSubtract() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(2), context.valueOf(5).subtract(3));
-		assertIsEqual(context.valueOf(2), context.valueOf(5).subtract(3L));
-		assertIsEqual(context.valueOf(2), context.valueOf(5).subtract(3.0));
-		assertIsEqual(context.valueOf(2), context.valueOf(5).subtract(BigDecimal.valueOf(3)));
-		assertIsEqual(context.valueOf(2), context.valueOf(5).subtract(context.valueOf(3)));
+		assertEquals(context.valueOf(2), context.valueOf(5).subtract(3));
+		assertEquals(context.valueOf(2), context.valueOf(5).subtract(3L));
+		assertEquals(context.valueOf(2), context.valueOf(5).subtract(3.0));
+		assertEquals(context.valueOf(2), context.valueOf(5).subtract(BigDecimal.valueOf(3)));
+		assertEquals(context.valueOf(2), context.valueOf(5).subtract(context.valueOf(3)));
 	}
 
 	@Test
 	public void testMultiply() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(6), context.valueOf(2).multiply(3));
-		assertIsEqual(context.valueOf(6), context.valueOf(2).multiply(3L));
-		assertIsEqual(context.valueOf(6), context.valueOf(2).multiply(3.0));
-		assertIsEqual(context.valueOf(6), context.valueOf(2).multiply(BigDecimal.valueOf(3)));
-		assertIsEqual(context.valueOf(6), context.valueOf(2).multiply(context.valueOf(3)));
+		assertEquals(context.valueOf(6), context.valueOf(2).multiply(3));
+		assertEquals(context.valueOf(6), context.valueOf(2).multiply(3L));
+		assertEquals(context.valueOf(6), context.valueOf(2).multiply(3.0));
+		assertEquals(context.valueOf(6), context.valueOf(2).multiply(BigDecimal.valueOf(3)));
+		assertEquals(context.valueOf(6), context.valueOf(2).multiply(context.valueOf(3)));
 	}
 
 	@Test
 	public void testDivide() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(2), context.valueOf(6).divide(3));
-		assertIsEqual(context.valueOf(2), context.valueOf(6).divide(3L));
-		assertIsEqual(context.valueOf(2), context.valueOf(6).divide(3.0));
-		assertIsEqual(context.valueOf(2), context.valueOf(6).divide(BigDecimal.valueOf(3)));
-		assertIsEqual(context.valueOf(2), context.valueOf(6).divide(context.valueOf(3)));
+		assertEquals(context.valueOf(2), context.valueOf(6).divide(3));
+		assertEquals(context.valueOf(2), context.valueOf(6).divide(3L));
+		assertEquals(context.valueOf(2), context.valueOf(6).divide(3.0));
+		assertEquals(context.valueOf(2), context.valueOf(6).divide(BigDecimal.valueOf(3)));
+		assertEquals(context.valueOf(2), context.valueOf(6).divide(context.valueOf(3)));
 	}
 
 	@Test
 	public void testRemainder() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(1), context.valueOf(10).remainder(3));
-		assertIsEqual(context.valueOf(1), context.valueOf(10).remainder(3L));
-		assertIsEqual(context.valueOf(1), context.valueOf(10).remainder(3.0));
-		assertIsEqual(context.valueOf(1), context.valueOf(10).remainder(BigDecimal.valueOf(3)));
-		assertIsEqual(context.valueOf(1), context.valueOf(10).remainder(context.valueOf(3)));
+		assertEquals(context.valueOf(1), context.valueOf(10).remainder(3));
+		assertEquals(context.valueOf(1), context.valueOf(10).remainder(3L));
+		assertEquals(context.valueOf(1), context.valueOf(10).remainder(3.0));
+		assertEquals(context.valueOf(1), context.valueOf(10).remainder(BigDecimal.valueOf(3)));
+		assertEquals(context.valueOf(1), context.valueOf(10).remainder(context.valueOf(3)));
 	}
 
 	@Test
 	public void testPow() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(8), context.valueOf(2).pow(3));
-		assertIsEqual(context.valueOf(8), context.valueOf(2).pow(3L));
-		assertIsEqual(context.valueOf(8), context.valueOf(2).pow(3.0));
-		assertIsEqual(context.valueOf(8), context.valueOf(2).pow(BigDecimal.valueOf(3)));
-		assertIsEqual(context.valueOf(8), context.valueOf(2).pow(context.valueOf(3)));
+		assertEquals(context.valueOf(8), context.valueOf(2).pow(3));
+		assertEquals(context.valueOf(8), context.valueOf(2).pow(3L));
+		assertEquals(context.valueOf(8), context.valueOf(2).pow(3.0));
+		assertEquals(context.valueOf(8), context.valueOf(2).pow(BigDecimal.valueOf(3)));
+		assertEquals(context.valueOf(8), context.valueOf(2).pow(context.valueOf(3)));
 	}
 
 	@Test
 	public void testRoot() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(2), context.valueOf(8).root(3));
-		assertIsEqual(context.valueOf(2), context.valueOf(8).root(3L));
-		assertIsEqual(context.valueOf(2), context.valueOf(8).root(3.0));
-		assertIsEqual(context.valueOf(2), context.valueOf(8).root(BigDecimal.valueOf(3)));
-		assertIsEqual(context.valueOf(2), context.valueOf(8).root(context.valueOf(3)));
+		assertEquals(context.valueOf(2), context.valueOf(8).root(3));
+		assertEquals(context.valueOf(2), context.valueOf(8).root(3L));
+		assertEquals(context.valueOf(2), context.valueOf(8).root(3.0));
+		assertEquals(context.valueOf(2), context.valueOf(8).root(BigDecimal.valueOf(3)));
+		assertEquals(context.valueOf(2), context.valueOf(8).root(context.valueOf(3)));
 	}
 
 	@Test
 	public void testFactorial() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(720), context.factorial(6));
+		assertEquals(context.valueOf(720), context.factorial(6));
 	}
 	
 	@Test
@@ -441,38 +445,34 @@ public class BigFloatTest {
 	@Test
 	public void testAbs() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(3), abs(context.valueOf(3)));
-		assertIsEqual(context.valueOf(3), abs(context.valueOf(-3)));
+		assertEquals(context.valueOf(3), abs(context.valueOf(3)));
+		assertEquals(context.valueOf(3), abs(context.valueOf(-3)));
 	}
 
 	@Test
 	public void testNegate() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(-3), negate(context.valueOf(3)));
-		assertIsEqual(context.valueOf(3), negate(context.valueOf(-3)));
+		assertEquals(context.valueOf(-3), negate(context.valueOf(3)));
+		assertEquals(context.valueOf(3), negate(context.valueOf(-3)));
 	}
 
 	@Test
 	public void testMax() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(9), max(context.valueOf(9), context.valueOf(2)));
-		assertIsEqual(context.valueOf(9), max(context.valueOf(2), context.valueOf(9)));
+		assertEquals(context.valueOf(9), max(context.valueOf(9), context.valueOf(2)));
+		assertEquals(context.valueOf(9), max(context.valueOf(2), context.valueOf(9)));
 		
-		assertIsEqual(context.valueOf(9), max(context.valueOf(2), context.valueOf(9), context.valueOf(3)));
-		assertIsEqual(context.valueOf(9), max(context.valueOf(9), context.valueOf(2), context.valueOf(3)));
+		assertEquals(context.valueOf(9), max(context.valueOf(2), context.valueOf(9), context.valueOf(3)));
+		assertEquals(context.valueOf(9), max(context.valueOf(9), context.valueOf(2), context.valueOf(3)));
 	}
 
 	@Test
 	public void testMin() {
 		Context context = context(MathContext.DECIMAL32);
-		assertIsEqual(context.valueOf(1), min(context.valueOf(1), context.valueOf(2)));
-		assertIsEqual(context.valueOf(1), min(context.valueOf(2), context.valueOf(1)));
+		assertEquals(context.valueOf(1), min(context.valueOf(1), context.valueOf(2)));
+		assertEquals(context.valueOf(1), min(context.valueOf(2), context.valueOf(1)));
 		
-		assertIsEqual(context.valueOf(1), min(context.valueOf(2), context.valueOf(1), context.valueOf(3)));
-		assertIsEqual(context.valueOf(1), min(context.valueOf(1), context.valueOf(2), context.valueOf(3)));
-	}
-	
-	private static void assertIsEqual(BigFloat expected, BigFloat actual) {
-		assertEquals(expected + "=" + actual, true, expected.isEqual(actual));
+		assertEquals(context.valueOf(1), min(context.valueOf(2), context.valueOf(1), context.valueOf(3)));
+		assertEquals(context.valueOf(1), min(context.valueOf(1), context.valueOf(2), context.valueOf(3)));
 	}
 }
