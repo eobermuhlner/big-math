@@ -1,5 +1,6 @@
 # API changes
 
+No API changes.
 
 
 # Bugfixes
@@ -29,3 +30,4 @@ For example
 
 Note: The example code is available on github, but not part of the big-math library.
 
+No changes in the examples.
