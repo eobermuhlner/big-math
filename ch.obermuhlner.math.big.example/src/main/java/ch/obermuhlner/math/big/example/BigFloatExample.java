@@ -12,7 +12,7 @@ public class BigFloatExample {
 	}
 
 	private static void examplePi() {
-		System.out.println(piChudnovski(10));
+		System.out.println(piChudnovski(100));
 	}
 
 	private static BigFloat piChudnovski(int precision) {
@@ -27,7 +27,6 @@ public class BigFloatExample {
 		BigFloat dividendTerm1 = context.valueOf(5); // -(6*k - 5)
 		BigFloat dividendTerm2 = context.valueOf(-1); // 2*k - 1
 		BigFloat dividendTerm3 = context.valueOf(-1); // 6*k - 1
-		BigFloat kPower3 = context.valueOf(0);
 		
 		long iterationCount = (context.getPrecision()+13) / 14;
 		for (long k = 1; k <= iterationCount; k++) {
@@ -35,8 +34,9 @@ public class BigFloatExample {
 			dividendTerm1 = dividendTerm1.add(-6);
 			dividendTerm2 = dividendTerm2.add(2);
 			dividendTerm3 = dividendTerm3.add(6);
-			BigFloat dividend = context.valueOf(dividendTerm1).multiply(dividendTerm2).multiply(dividendTerm3);
-			kPower3 = valueK.pow(3);
+			
+			BigFloat dividend = dividendTerm1.multiply(dividendTerm2).multiply(dividendTerm3);
+			BigFloat kPower3 = valueK.pow(3);
 			BigFloat divisor = kPower3.multiply(valueDivisor);
 			a = a.multiply(dividend).divide(divisor);
 			BigFloat b = valueK.multiply(a);
@@ -45,7 +45,7 @@ public class BigFloatExample {
 			sumB = sumB.add(b);
 		}
 		
-		final BigFloat factor = context.valueOf(426880).multiply(sqrt(context.valueOf(10005)));
+		final BigFloat factor = sqrt(context.valueOf(10005)).multiply(426880);
 		BigFloat pi = factor.divide(sumA.multiply(13591409).add(sumB.multiply(545140134)));
 		
 		return context(precision).valueOf(pi);
