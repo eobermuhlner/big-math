@@ -4,9 +4,9 @@
 
 # Bugfixes
 
-## `isDoubleValue()` to return `true` for values abs(x) < `Double.MIN_VALUE` 
+## `BigDecimalMath.isDoubleValue()` to return `true` for values abs(x) < `Double.MIN_VALUE` 
 
-Fixed `BigDecimalMath.isDoubleValue()` to return `true` for values abs(x) < `Double.MIN_VALUE`.
+Fixed `isDoubleValue()` to return `true` for values abs(x) < `Double.MIN_VALUE`.
 
 For example `BigDecimalMath.isDoubleValue(new BigDecimal("1E-325"))` will return `true`
 although this value is smaller than `Double.MIN_VALUE` (and therefore outside the range of values that can be represented as `double`)
@@ -15,6 +15,14 @@ because `new BigDecimal("1E-325").doubleValue()` returns `0` which is a legal va
 
 # Enhancements
 
+## `BigFloat.equals()` tests mathematical identity, not technical
+
+One of the most common problem for programmers using `BigDecimal` is probably that `BigDecimal.equals()` tests for technical identity,
+not mathematical identity (the common workaround is to use `compareTo()` instead).
+
+`BigFloat.equals()` tests for mathematical identity.
+For example 
+`BigFloat.context(100).valueOf(123).equals(BigFloat.context(10).valueOf(123))` returns `true`.
 
 
 # Examples
