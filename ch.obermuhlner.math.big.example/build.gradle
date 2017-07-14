@@ -2,6 +2,8 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 
+mainClassName = 'ch.obermuhlner.math.big.example.BigDecimalMathExample'
+
 repositories {
 	mavenCentral()
 }
