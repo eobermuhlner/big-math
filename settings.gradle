@@ -2,4 +2,6 @@
 include 'ch.obermuhlner.math.big'
 include 'ch.obermuhlner.math.big.example'
 include 'ch.obermuhlner.math.big.viewer'
+include 'ch.obermuhlner.math.big.kotlin'
+include 'ch.obermuhlner.math.big.kotlin.example'
 

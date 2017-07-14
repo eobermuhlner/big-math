@@ -1,6 +1,8 @@
-apply plugin: 'java'
+apply plugin: 'kotlin'
 apply plugin: 'application'
 apply plugin: 'eclipse'
+
+mainClassName = 'ch.obermuhlner.math.big.kotlin.example.BigFloatKotlinExampleKt'
 
 repositories {
 	mavenCentral()
@@ -9,6 +11,9 @@ repositories {
 dependencies {
 	//compile group: 'ch.obermuhlner', name: 'big-math', version: '1.1.2'
 	compile project(':ch.obermuhlner.math.big')
+
+	//compile group: 'ch.obermuhlner', name: 'big-math-kotlin', version: '0.1'
+	compile project(':ch.obermuhlner.math.big.kotlin')
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }

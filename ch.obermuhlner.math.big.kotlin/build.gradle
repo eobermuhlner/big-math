@@ -1,5 +1,4 @@
-apply plugin: 'java'
-apply plugin: 'application'
+apply plugin: 'kotlin'
 apply plugin: 'eclipse'
 
 repositories {
@@ -11,4 +10,6 @@ dependencies {
 	compile project(':ch.obermuhlner.math.big')
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    testCompile 'junit:junit:4.12'
 }
