@@ -8,8 +8,7 @@ import ch.obermuhlner.math.big.stream.BigDecimalStream;
 public class BigDecimalStreamExample {
 
 	public static void main(String[] args) {
-		BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), MathContext.DECIMAL128)
-			.parallel()
+		BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.valueOf(3), MathContext.DECIMAL128)
 			.forEach(System.out::println);
 	}
 }

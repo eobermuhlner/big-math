@@ -8,6 +8,8 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
+
 public class BigDecimalStream {
 
     public static Stream<BigDecimal> range(BigDecimal startInclusive, BigDecimal endExclusive, MathContext mathContext) {
@@ -30,14 +32,20 @@ public class BigDecimalStream {
     	if (step.signum() == 0) {
     		throw new IllegalArgumentException("invalid step: 0");
     	}
-    	return StreamSupport.stream(new BigDecimalSpliterator(startInclusive, endExclusive, step, mathContext), false);
+		if (endExclusive.subtract(startInclusive).signum() != step.signum()) {
+			return Stream.empty();
+		}
+    	return StreamSupport.stream(new BigDecimalSpliterator(startInclusive, endExclusive, false, step, mathContext), false);
     }
     
     public static Stream<BigDecimal> rangeClosed(BigDecimal startInclusive, BigDecimal endInclusive, BigDecimal step, MathContext mathContext) {
     	if (step.signum() == 0) {
     		throw new IllegalArgumentException("invalid step: 0");
     	}
-    	return StreamSupport.stream(new BigDecimalSpliterator(startInclusive, endInclusive.add(step, mathContext), step, mathContext), false);
+		if (endInclusive.subtract(startInclusive).signum() == -step.signum()) {
+			return Stream.empty();
+		}
+    	return StreamSupport.stream(new BigDecimalSpliterator(startInclusive, endInclusive, true, step, mathContext), false);
     }
     
     private static class BigDecimalSpliterator extends AbstractSpliterator<BigDecimal> {
@@ -57,15 +65,20 @@ public class BigDecimalStream {
 			this.mathContext = mathContext;
 		}
     	
-		public BigDecimalSpliterator(BigDecimal startInclusive, BigDecimal endExclusive, BigDecimal step, MathContext mathContext) {
-			this(startInclusive, step, estimatedCount(startInclusive, endExclusive, step, mathContext), mathContext);
+		public BigDecimalSpliterator(BigDecimal startInclusive, BigDecimal end, boolean inclusive, BigDecimal step, MathContext mathContext) {
+			this(startInclusive, step, estimatedCount(startInclusive, end, inclusive, step, mathContext), mathContext);
 		}
 		
-		private static long estimatedCount(BigDecimal startInclusive, BigDecimal endExclusive, BigDecimal step, MathContext mathContext) {
-			if (endExclusive.subtract(startInclusive).signum() != step.signum()) {
-				return 0;
-			}
-    		return endExclusive.subtract(startInclusive).divide(step, mathContext).longValue();
+		private static long estimatedCount(BigDecimal startInclusive, BigDecimal end, boolean inclusive, BigDecimal step, MathContext mathContext) {
+			BigDecimal count = end.subtract(startInclusive).divide(step, mathContext);
+    		long result = count.longValue();
+    		if (BigDecimalMath.fractionalPart(count).signum() != 0) {
+    			result++;
+    		}
+    		if (inclusive) {
+    			result++;
+    		}
+    		return result;
 		}
 
 		@Override
