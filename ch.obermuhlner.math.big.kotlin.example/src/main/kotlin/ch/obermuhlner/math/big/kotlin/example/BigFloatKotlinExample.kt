@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big.kotlin.example
 
 import ch.obermuhlner.math.big.BigFloat
+import ch.obermuhlner.math.big.BigFloat.*
 import ch.obermuhlner.math.big.kotlin.*
 
 fun main(args: Array<String>) {
@@ -9,7 +10,7 @@ fun main(args: Array<String>) {
 }
 
 fun simpleExample() {
-	val context = BigFloat.context(100)
+	val context = context(100)
 	val v1 = context.valueOf(2) / 3
 
 	println(v1)
@@ -20,7 +21,7 @@ fun piExample() {
 }
 
 fun piChudnovsky(precision: Int) : BigFloat {
-	val context = BigFloat.context(precision + 10)
+	val context = context(precision + 10)
 	
 	val valueDivisor = (context.valueOf(640320) pow 3) / 24
 
@@ -47,8 +48,8 @@ fun piChudnovsky(precision: Int) : BigFloat {
 		sumB += b
 	}
 	
-	val factor = BigFloat.sqrt(context.valueOf(10005)) * 426880;
+	val factor = sqrt(context.valueOf(10005)) * 426880;
 	val pi = factor / (sumA * 13591409 + sumB * 545140134);
 	
-	return BigFloat.context(precision).valueOf(pi);
+	return context(precision).valueOf(pi);
 }
