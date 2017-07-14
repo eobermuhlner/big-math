@@ -5,7 +5,7 @@ apply plugin: 'signing'
 apply plugin: 'jacoco'
 
 group = 'ch.obermuhlner'
-version = '1.2.0'
+version = '1.2.1'
 archivesBaseName = 'big-math'
 
 repositories {
