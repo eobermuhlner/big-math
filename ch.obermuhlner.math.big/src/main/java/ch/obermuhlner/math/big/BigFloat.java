@@ -3,7 +3,6 @@ package ch.obermuhlner.math.big;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Objects;
 
 /**
  * A wrapper around {@link BigDecimal} which simplifies the consistent usage of the {@link MathContext}
@@ -74,6 +73,12 @@ import java.util.Objects;
  *   <li><code>getExponent()</code></li>
  *   <li><code>getIntegralPart()</code></li>
  *   <li><code>getFractionalPart()</code></li>
+ *   </ul>
+ * </li>
+ * <li>Equals and Hashcode methods:
+ *   <ul>
+ *   <li><code>equals(Object)</code> that returns whether two <code>BigFloat</code> values are mathematically the same</li>
+ *   <li><code>hashCode()</code> consistent with <code>equals(Object)</code></li>
  *   </ul>
  * </li>
  * <li>Comparison methods:
@@ -688,7 +693,7 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(value, context);
+		return value.stripTrailingZeros().hashCode();
 	}
 	
 	@Override
@@ -701,7 +706,8 @@ public class BigFloat implements Comparable<BigFloat> {
 			return false;
 		BigFloat other = (BigFloat) obj;
 		
-		return Objects.equals(value, other.value) && Objects.equals(context, other.context); 
+		return value.compareTo(other.value) == 0;
+		//return Objects.equals(value, other.value) && Objects.equals(context, other.context); 
 	}
 
 	@Override
