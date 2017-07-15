@@ -209,6 +209,10 @@ The API for calculations is simplified and more consistent with the typical math
  	* `isIntValue()`
  	* `isDoubleValue()`
 
+* Equals and Hashcode methods:
+	* `equals(Object)` returns whether two `BigFloat` values are mathematically the same
+	* `hashCode()` consistent with `equals(Object)`
+
 * Comparison methods:
  	* `isEqual(BigFloat)`
 	* `isLessThan(BigFloat)`
@@ -245,33 +249,80 @@ long longValue = value3.toLong();
 int intValue = value3.toInt();
 ```
 
+### Usage in Kotlin
+
+If you want to use big-math library in Kotlin you may do so directly, or you use the 
+kotlin-big-math library that provides additional features, like operators.
+
+```kotlin
+import ch.obermuhlner.math.big.BigFloat
+import ch.obermuhlner.math.big.kotlin.*
+
+fun simpleExample() {
+	val context = context(100)
+	val v1 = (context.valueOf(1) + 1) / 3
+
+	println(v1)
+}
+```
 
 ## Using big-math in your projects
 
-To use the library you can either download the newest version of the .jar file from the
+To use the Java library you can either download the newest version of the .jar file from the
 [published releases on Github](https://github.com/eobermuhlner/big-math/releases/)
 or use the following dependency to
 [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cbig-math)
 in your build script (please verify the version number to be the newest release):
 
-### Use in Maven Build
+### Use bit-math in Maven Build
+
 ```xml
 <dependency>
     <groupId>ch.obermuhlner</groupId>
     <artifactId>big-math</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
-### Use in Gradle Build
+### Use bit-math in Gradle Build
+
 ```gradle
 repositories {
   mavenCentral()
 }
 
 dependencies {
-  compile 'ch.obermuhlner:big-math:1.2.0'
+  compile 'ch.obermuhlner:big-math:1.2.1'
 }
 ```
 
+## Using kotlin-big-math in your projects
+
+To use the kotlin library you can either download the newest version of the .jar file from the
+[published releases on Github](https://github.com/eobermuhlner/big-math/releases/)
+or use the following dependency to
+[Maven Central](https://search.maven.org/#search%7Cga%7C1%7Ckotlin-big-math)
+in your build script (please verify the version number to be the newest release):
+
+### Use kotlin-big-math in Maven Build
+
+```xml
+<dependency>
+    <groupId>ch.obermuhlner</groupId>
+    <artifactId>kotlin-big-math</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
+### Use kotlin-big-math in Gradle Build
+
+```gradle
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'ch.obermuhlner:kotlin-big-math:0.0.1'
+}
+```
 
