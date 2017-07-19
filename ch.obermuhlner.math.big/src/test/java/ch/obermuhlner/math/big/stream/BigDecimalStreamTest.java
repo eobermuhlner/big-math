@@ -67,20 +67,20 @@ public class BigDecimalStreamTest {
 		assertEquals(true, list.contains(BigDecimal.valueOf(6)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(9)));
 
-//		assertEquals(0, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(-1), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(1, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(1, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(1), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(1, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(2), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(2, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(3), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(2, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(4), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(2, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(5), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(3, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(6), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(3, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(7), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(3, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(8), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(4, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(9), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(4, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(4, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(11), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
-//		assertEquals(5, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(12), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(0, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(-1), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(1, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(1, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(1), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(1, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(2), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(2, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(3), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(2, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(4), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(2, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(5), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(3, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(6), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(3, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(7), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(3, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(8), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(4, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(9), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(4, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(4, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(11), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
+		assertEquals(5, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(12), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
 	}
 
 	@Test
