@@ -8,22 +8,107 @@ import java.util.stream.StreamSupport;
 
 import ch.obermuhlner.math.big.BigFloat;
 
+/**
+ * Provides constructor methods for streams of {@link BigFloat} elements. 
+ */
 public class BigFloatStream {
 
+    /**
+     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
+     * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of 1.
+     *
+     * @apiNote
+     * <p>An equivalent sequence of increasing values can be produced
+     * sequentially using a {@code for} loop as follows:
+     * <pre>{@code
+     *     for (BigFloat i = startInclusive; i.isLessThan(endExclusive); i = i.add(1)) { ... }
+     * }</pre>
+     *
+     * @param startInclusive the (inclusive) initial value
+     * @param endExclusive the exclusive upper bound
+     * @return a sequential {@code Stream<BigFloat>}
+     */
     public static Stream<BigFloat> range(BigFloat startInclusive, BigFloat endExclusive) {
-    	return range(startInclusive, endExclusive, startInclusive.getContext().valueOf(1));
+    	BigFloat step = startInclusive.getContext().valueOf(1);
+    	if (endExclusive.subtract(startInclusive).isNegative()) {
+    		step = BigFloat.negate(step);
+    	}
+    	return range(startInclusive, endExclusive, step);
     }
 
+    /**
+     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
+     * (inclusive) to {@code endInclusive} (inclusive) by an incremental step of 1.
+     *
+     * @apiNote
+     * <p>An equivalent sequence of increasing values can be produced
+     * sequentially using a {@code for} loop as follows:
+     * <pre>{@code
+     *     for (BigFloat i = startInclusive; i.isLessThanOrEqual(endExclusive); i = i.add(1)) { ... }
+     * }</pre>
+     *
+     * @param startInclusive the (inclusive) initial value
+     * @param endInclusive the inclusive upper bound
+     * @return a sequential {@code Stream<BigFloat>}
+     */
     public static Stream<BigFloat> rangeClosed(BigFloat startInclusive, BigFloat endInclusive) {
-    	return rangeClosed(startInclusive, endInclusive, startInclusive.getContext().valueOf(1));
+    	BigFloat step = startInclusive.getContext().valueOf(1);
+    	if (endInclusive.subtract(startInclusive).isNegative()) {
+    		step = BigFloat.negate(step);
+    	}
+    	return rangeClosed(startInclusive, endInclusive, step);
     }
 
+    /**
+     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
+     * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
+     *
+     * @apiNote
+     * <p>An equivalent sequence of increasing values can be produced
+     * sequentially using a {@code for} loop as follows:
+     * <pre>{@code
+     *     for (BigFloat i = startInclusive; i.isLessThan(endExclusive); i = i.add(step)) { ... }
+     * }</pre>
+     *
+     * @param startInclusive the (inclusive) initial value
+     * @param endExclusive the exclusive upper bound
+     * @param step the step between elements
+     * @return a sequential {@code Stream<BigFloat>}
+     */
     public static Stream<BigFloat> range(BigFloat startInclusive, BigFloat endExclusive, BigFloat step) {
-    	return StreamSupport.stream(new BigFloatSpliterator(startInclusive, endExclusive, step), false);
+    	if (step.isZero()) {
+    		throw new IllegalArgumentException("invalid step: 0");
+    	}
+		if (endExclusive.subtract(startInclusive).signum() != step.signum()) {
+			return Stream.empty();
+		}
+    	return StreamSupport.stream(new BigFloatSpliterator(startInclusive, endExclusive, false, step), false);
     }
     
+    /**
+     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
+     * (inclusive) to {@code endInclusive} (inclusive) by an incremental {@code step}.
+     *
+     * @apiNote
+     * <p>An equivalent sequence of increasing values can be produced
+     * sequentially using a {@code for} loop as follows:
+     * <pre>{@code
+     *     for (BigFloat i = startInclusive; i.isLessThanOrEqual(endInclusive); i = i.add(step)) { ... }
+     * }</pre>
+     *
+     * @param startInclusive the (inclusive) initial value
+     * @param endInclusive the inclusive upper bound
+     * @param step the step between elements
+     * @return a sequential {@code Stream<BigFloat>}
+     */
     public static Stream<BigFloat> rangeClosed(BigFloat startInclusive, BigFloat endInclusive, BigFloat step) {
-    	return StreamSupport.stream(new BigFloatSpliterator(startInclusive, endInclusive.add(step), step), false);
+    	if (step.isZero()) {
+    		throw new IllegalArgumentException("invalid step: 0");
+    	}
+		if (endInclusive.subtract(startInclusive).signum() == -step.signum()) {
+			return Stream.empty();
+		}
+    	return StreamSupport.stream(new BigFloatSpliterator(startInclusive, endInclusive, true, step), false);
     }
     
     private static class BigFloatSpliterator extends AbstractSpliterator<BigFloat> {
@@ -41,12 +126,21 @@ public class BigFloatStream {
 			this.count = count;
 		}
     	
-		public BigFloatSpliterator(BigFloat startInclusive, BigFloat endExclusive, BigFloat step) {
-			this(startInclusive, step, estimatedCount(startInclusive, endExclusive, step));
+		public BigFloatSpliterator(BigFloat startInclusive, BigFloat end, boolean inclusive, BigFloat step) {
+			this(startInclusive, step, estimatedCount(startInclusive, end, inclusive, step));
 		}
 		
-		private static long estimatedCount(BigFloat startInclusive, BigFloat endExclusive, BigFloat step) {
-    		return endExclusive.subtract(startInclusive).divide(step).toLong();
+		private static long estimatedCount(BigFloat startInclusive, BigFloat end, boolean inclusive, BigFloat step) {
+			BigFloat count = end.subtract(startInclusive).divide(step);
+    		long result = count.toLong();
+    		if (count.getFractionalPart().signum() != 0) {
+    			result++;
+    		} else {
+    			if (inclusive) {
+    				result++;
+    			}
+    		}
+    		return result;
 		}
 
 		@Override
