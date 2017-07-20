@@ -17,7 +17,6 @@ public class BigFloatStream {
      * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
      * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of 1.
      *
-     * @apiNote
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
      * <pre>{@code
@@ -40,7 +39,6 @@ public class BigFloatStream {
      * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
      * (inclusive) to {@code endInclusive} (inclusive) by an incremental step of 1.
      *
-     * @apiNote
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
      * <pre>{@code
@@ -63,7 +61,6 @@ public class BigFloatStream {
      * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
      * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
      *
-     * @apiNote
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
      * <pre>{@code
@@ -89,7 +86,6 @@ public class BigFloatStream {
      * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
      * (inclusive) to {@code endInclusive} (inclusive) by an incremental {@code step}.
      *
-     * @apiNote
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
      * <pre>{@code

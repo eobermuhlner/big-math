@@ -19,7 +19,6 @@ public class BigDecimalStream {
      * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
      * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of {@link BigDecimal#ONE}.
      *
-     * @apiNote
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
      * <pre>{@code
@@ -43,7 +42,6 @@ public class BigDecimalStream {
      * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
      * (inclusive) to {@code endInclusive} (inclusive) by an incremental step of {@link BigDecimal#ONE}.
      *
-     * @apiNote
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
      * <pre>{@code
@@ -67,7 +65,6 @@ public class BigDecimalStream {
      * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
      * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
      *
-     * @apiNote
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
      * <pre>{@code
@@ -94,7 +91,6 @@ public class BigDecimalStream {
      * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
      * (inclusive) to {@code endInclusive} (inclusive) by an incremental {@code step}.
      *
-     * @apiNote
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
      * <pre>{@code
