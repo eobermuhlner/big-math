@@ -11,6 +11,4 @@ repositories {
 dependencies {
 	//compile group: 'ch.obermuhlner', name: 'big-math', version: '1.1.2'
 	compile project(':ch.obermuhlner.math.big')
-
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
