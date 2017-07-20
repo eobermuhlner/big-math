@@ -1,18 +1,18 @@
 # gradle stuff
 
-/.gradle/
-/build/
-/gradle.properties
+.gradle
+build
+gradle.properties
 
 # Eclipse IDE stuff
 
 .project
 .classpath
-/bin/
-/.settings/
+bin
+.settings
 
 # IntelliJ IDEA stuff
 
 *.iml
-/.idea/
+.idea
 
