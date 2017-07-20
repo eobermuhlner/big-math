@@ -168,6 +168,58 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.e(context.getMathContext()), context.e().toBigDecimal());
 	}
+
+	@Test
+	public void testSignum() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(-1, context.valueOf("-1E999").signum());
+		assertEquals(-1, context.valueOf("-1E-999").signum());
+		assertEquals(-1, context.valueOf(-5).signum());
+		assertEquals(0, context.valueOf(0).signum());
+		assertEquals(0, context.valueOf("0.000000").signum());
+		assertEquals(1, context.valueOf(5).signum());
+		assertEquals(1, context.valueOf("1E999").signum());
+		assertEquals(1, context.valueOf("1E-999").signum());
+	}
+	
+	@Test
+	public void testIsNegative() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(true, context.valueOf("-1E999").isNegative());
+		assertEquals(true, context.valueOf("-1E-999").isNegative());
+		assertEquals(true, context.valueOf(-5).isNegative());
+		assertEquals(false, context.valueOf(0).isNegative());
+		assertEquals(false, context.valueOf("0.000000").isNegative());
+		assertEquals(false, context.valueOf(5).isNegative());
+		assertEquals(false, context.valueOf("1E999").isNegative());
+		assertEquals(false, context.valueOf("1E-999").isNegative());
+	}
+	
+	@Test
+	public void testIsZero() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(false, context.valueOf("-1E999").isZero());
+		assertEquals(false, context.valueOf("-1E-999").isZero());
+		assertEquals(false, context.valueOf(-5).isZero());
+		assertEquals(true, context.valueOf(0).isZero());
+		assertEquals(true, context.valueOf("0.000000").isZero());
+		assertEquals(false, context.valueOf(5).isZero());
+		assertEquals(false, context.valueOf("1E999").isZero());
+		assertEquals(false, context.valueOf("1E-999").isZero());
+	}
+	
+	@Test
+	public void testIsPositive() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(false, context.valueOf("-1E999").isPositive());
+		assertEquals(false, context.valueOf("-1E-999").isPositive());
+		assertEquals(false, context.valueOf(-5).isPositive());
+		assertEquals(false, context.valueOf(0).isPositive());
+		assertEquals(false, context.valueOf("0.000000").isPositive());
+		assertEquals(true, context.valueOf(5).isPositive());
+		assertEquals(true, context.valueOf("1E999").isPositive());
+		assertEquals(true, context.valueOf("1E-999").isPositive());
+	}
 	
 	@Test
 	public void testIsEqual() {

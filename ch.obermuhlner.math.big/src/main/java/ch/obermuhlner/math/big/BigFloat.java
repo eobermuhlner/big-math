@@ -710,6 +710,42 @@ public class BigFloat implements Comparable<BigFloat> {
 		//return Objects.equals(value, other.value) && Objects.equals(context, other.context); 
 	}
 
+    /**
+     * Returns the signum function of this {@link BigFloat}.
+     *
+     * @return -1, 0, or 1 as the value of this {@link BigDecimal} is negative, zero, or positive.
+     */
+	public int signum() {
+		return value.signum();
+	}
+
+	/**
+	 * Returns whether this {@link BigFloat} is negative.
+	 * 
+	 * @return <code>true</code> if negative, <code>false</code> if 0 or positive
+	 */
+	public boolean isNegative() {
+		return value.signum() < 0;
+	}
+
+	/**
+	 * Returns whether this {@link BigFloat} is 0.
+	 * 
+	 * @return <code>true</code> if 0, <code>false</code> if negative or positive
+	 */
+	public boolean isZero() {
+		return value.signum() == 0;
+	}
+
+	/**
+	 * Returns whether this {@link BigFloat} is positive.
+	 * 
+	 * @return <code>true</code> if positive, <code>false</code> if 0 or negative
+	 */
+	public boolean isPositive() {
+		return value.signum() > 0;
+	}
+	
 	@Override
 	public int compareTo(BigFloat other) {
 		return value.compareTo(other.value);
