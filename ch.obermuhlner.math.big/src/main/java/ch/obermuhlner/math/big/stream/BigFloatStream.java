@@ -93,6 +93,7 @@ public class BigFloatStream {
      * @param startInclusive the (inclusive) initial value
      * @param endExclusive the exclusive upper bound
      * @param step the step between elements
+     * @param context the {@link Context} used to convert the {@code long} values
      * @return a sequential {@code Stream<BigFloat>}
      * @see #range(BigFloat, BigFloat, BigFloat)
      */
@@ -109,6 +110,7 @@ public class BigFloatStream {
      * @param startInclusive the (inclusive) initial value
      * @param endExclusive the exclusive upper bound
      * @param step the step between elements
+     * @param context the {@link Context} used to convert the {@code double} values
      * @return a sequential {@code Stream<BigFloat>}
      * @see #range(BigFloat, BigFloat, BigFloat)
      */
@@ -150,6 +152,7 @@ public class BigFloatStream {
      * @param startInclusive the (inclusive) initial value
      * @param endInclusive the inclusive upper bound
      * @param step the step between elements
+     * @param context the {@link Context} used to convert the {@code long} values
      * @return a sequential {@code Stream<BigFloat>}
      * @see #rangeClosed(BigFloat, BigFloat, BigFloat)
      */
@@ -166,6 +169,7 @@ public class BigFloatStream {
      * @param startInclusive the (inclusive) initial value
      * @param endInclusive the inclusive upper bound
      * @param step the step between elements
+     * @param context the {@link Context} used to convert the {@code double} values
      * @return a sequential {@code Stream<BigFloat>}
      * @see #rangeClosed(BigFloat, BigFloat, BigFloat)
      */
