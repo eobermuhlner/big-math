@@ -152,6 +152,15 @@ public class BigFloatStream {
 		}
 		
 		@Override
+		public void forEachRemaining(Consumer<? super BigFloat> action) {
+			while (count > 0) {
+				action.accept(value);
+				value = value.add(step);
+				count--;
+			}
+		}
+		
+		@Override
 		public Spliterator<BigFloat> trySplit() {
 			long firstHalfCount = count / 2;
 			

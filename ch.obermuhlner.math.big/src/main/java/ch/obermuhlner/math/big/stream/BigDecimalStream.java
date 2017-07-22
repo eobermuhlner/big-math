@@ -229,6 +229,15 @@ public class BigDecimalStream {
 		}
 		
 		@Override
+		public void forEachRemaining(Consumer<? super BigDecimal> action) {
+			while (count > 0) {
+				action.accept(value);
+				value = value.add(step, mathContext);
+				count--;
+			}
+		}
+		
+		@Override
 		public Spliterator<BigDecimal> trySplit() {
 			long firstHalfCount = count / 2;
 			
