@@ -60,11 +60,11 @@ public class BigFloatStreamTest {
 		assertEquals(4, BigFloatStream.range(context.valueOf(0), context.valueOf(11), context.valueOf(3)).collect(Collectors.toList()).size());
 		assertEquals(4, BigFloatStream.range(context.valueOf(0), context.valueOf(12), context.valueOf(3)).collect(Collectors.toList()).size());
 	}
-
+	
 	@Test
-	public void testRangeClosedStep3() {
+	public void testRangeLongStep3() {
 		Context context = BigFloat.context(20);
-		List<BigFloat> list = BigFloatStream.range(context.valueOf(0), context.valueOf(12), context.valueOf(3))
+		List<BigFloat> list = BigFloatStream.range(0, 10, 3, context)
 			.collect(Collectors.toList());
 		
 		assertEquals(4, list.size());
@@ -72,6 +72,33 @@ public class BigFloatStreamTest {
 		assertEquals(true, list.contains(context.valueOf(3)));
 		assertEquals(true, list.contains(context.valueOf(6)));
 		assertEquals(true, list.contains(context.valueOf(9)));
+	}
+
+	@Test
+	public void testRangeDoubleStep3() {
+		Context context = BigFloat.context(20);
+		List<BigFloat> list = BigFloatStream.range(0.0, 10.0, 3.0, context)
+			.collect(Collectors.toList());
+		
+		assertEquals(4, list.size());
+		assertEquals(true, list.contains(context.valueOf(0)));
+		assertEquals(true, list.contains(context.valueOf(3)));
+		assertEquals(true, list.contains(context.valueOf(6)));
+		assertEquals(true, list.contains(context.valueOf(9)));
+	}
+
+	@Test
+	public void testRangeClosedStep3() {
+		Context context = BigFloat.context(20);
+		List<BigFloat> list = BigFloatStream.rangeClosed(context.valueOf(0), context.valueOf(12), context.valueOf(3))
+			.collect(Collectors.toList());
+		
+		assertEquals(5, list.size());
+		assertEquals(true, list.contains(context.valueOf(0)));
+		assertEquals(true, list.contains(context.valueOf(3)));
+		assertEquals(true, list.contains(context.valueOf(6)));
+		assertEquals(true, list.contains(context.valueOf(9)));
+		assertEquals(true, list.contains(context.valueOf(12)));
 
 		assertEquals(0, BigFloatStream.rangeClosed(context.valueOf(0), context.valueOf(-1), context.valueOf(3)).collect(Collectors.toList()).size());
 		assertEquals(1, BigFloatStream.rangeClosed(context.valueOf(0), context.valueOf(0), context.valueOf(3)).collect(Collectors.toList()).size());
@@ -89,6 +116,34 @@ public class BigFloatStreamTest {
 		assertEquals(5, BigFloatStream.rangeClosed(context.valueOf(0), context.valueOf(12), context.valueOf(3)).collect(Collectors.toList()).size());
 	}
 
+	@Test
+	public void testRangeClosedLongStep3() {
+		Context context = BigFloat.context(20);
+		List<BigFloat> list = BigFloatStream.rangeClosed(0, 12, 3, context)
+			.collect(Collectors.toList());
+		
+		assertEquals(5, list.size());
+		assertEquals(true, list.contains(context.valueOf(0)));
+		assertEquals(true, list.contains(context.valueOf(3)));
+		assertEquals(true, list.contains(context.valueOf(6)));
+		assertEquals(true, list.contains(context.valueOf(9)));
+		assertEquals(true, list.contains(context.valueOf(12)));
+	}
+	
+	@Test
+	public void testRangeClosedDoubleStep3() {
+		Context context = BigFloat.context(20);
+		List<BigFloat> list = BigFloatStream.rangeClosed(0.0, 12.0, 3.0, context)
+			.collect(Collectors.toList());
+		
+		assertEquals(5, list.size());
+		assertEquals(true, list.contains(context.valueOf(0)));
+		assertEquals(true, list.contains(context.valueOf(3)));
+		assertEquals(true, list.contains(context.valueOf(6)));
+		assertEquals(true, list.contains(context.valueOf(9)));
+		assertEquals(true, list.contains(context.valueOf(12)));
+	}
+	
 	@Test
 	public void testRangeStep1() {
 		Context context = BigFloat.context(20);

@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import ch.obermuhlner.math.big.BigFloat;
+import ch.obermuhlner.math.big.BigFloat.Context;
 
 /**
  * Provides constructor methods for streams of {@link BigFloat} elements. 
@@ -84,6 +85,38 @@ public class BigFloatStream {
     
     /**
      * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
+     * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
+     *
+     * <p>{@link Context#valueOf(long)} is used to convert the {@code long} values.</p>
+     *
+     * @param startInclusive the (inclusive) initial value
+     * @param endExclusive the exclusive upper bound
+     * @param step the step between elements
+     * @return a sequential {@code Stream<BigFloat>}
+     * @see #range(BigFloat, BigFloat, BigFloat)
+     */
+    public static Stream<BigFloat> range(long startInclusive, long endExclusive, long step, Context context) {
+    	return range(context.valueOf(startInclusive), context.valueOf(endExclusive), context.valueOf(step));
+    }
+    
+    /**
+     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
+     * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
+     *
+     * <p>{@link Context#valueOf(double)} is used to convert the {@code double} values.</p>
+     *
+     * @param startInclusive the (inclusive) initial value
+     * @param endExclusive the exclusive upper bound
+     * @param step the step between elements
+     * @return a sequential {@code Stream<BigFloat>}
+     * @see #range(BigFloat, BigFloat, BigFloat)
+     */
+    public static Stream<BigFloat> range(double startInclusive, double endExclusive, double step, Context context) {
+    	return range(context.valueOf(startInclusive), context.valueOf(endExclusive), context.valueOf(step));
+    }
+    
+    /**
+     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
      * (inclusive) to {@code endInclusive} (inclusive) by an incremental {@code step}.
      *
      * <p>An equivalent sequence of increasing values can be produced
@@ -107,6 +140,38 @@ public class BigFloatStream {
     	return StreamSupport.stream(new BigFloatSpliterator(startInclusive, endInclusive, true, step), false);
     }
     
+    /**
+     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
+     * (inclusive) to {@code endInclusive} (inclusive) by an incremental {@code step}.
+     *
+     * <p>{@link Context#valueOf(long)} is used to convert the {@code long} values.</p>
+     *
+     * @param startInclusive the (inclusive) initial value
+     * @param endInclusive the inclusive upper bound
+     * @param step the step between elements
+     * @return a sequential {@code Stream<BigFloat>}
+     * @see #rangeClosed(BigFloat, BigFloat, BigFloat)
+     */
+    public static Stream<BigFloat> rangeClosed(long startInclusive, long endInclusive, long step, Context context) {
+    	return rangeClosed(context.valueOf(startInclusive), context.valueOf(endInclusive), context.valueOf(step));
+    }
+    
+    /**
+     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
+     * (inclusive) to {@code endInclusive} (inclusive) by an incremental {@code step}.
+     *
+     * <p>{@link Context#valueOf(double)} is used to convert the {@code double} values.</p>
+     *
+     * @param startInclusive the (inclusive) initial value
+     * @param endInclusive the inclusive upper bound
+     * @param step the step between elements
+     * @return a sequential {@code Stream<BigFloat>}
+     * @see #rangeClosed(BigFloat, BigFloat, BigFloat)
+     */
+    public static Stream<BigFloat> rangeClosed(double startInclusive, double endInclusive, double step, Context context) {
+    	return rangeClosed(context.valueOf(startInclusive), context.valueOf(endInclusive), context.valueOf(step));
+    }
+
     private static class BigFloatSpliterator extends AbstractSpliterator<BigFloat> {
 
 		private BigFloat value;
