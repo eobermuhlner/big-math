@@ -162,7 +162,7 @@ public class BigDecimalStream {
      * @see #rangeClosed(BigDecimal, BigDecimal, BigDecimal, MathContext)
      */
     public static Stream<BigDecimal> rangeClosed(long startInclusive, long endInclusive, long step, MathContext mathContext) {
-    	return range(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endInclusive), BigDecimal.valueOf(step), mathContext);
+    	return rangeClosed(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endInclusive), BigDecimal.valueOf(step), mathContext);
     }
 
     /**
@@ -179,7 +179,7 @@ public class BigDecimalStream {
      * @see #rangeClosed(BigDecimal, BigDecimal, BigDecimal, MathContext)
      */
     public static Stream<BigDecimal> rangeClosed(double startInclusive, double endInclusive, double step, MathContext mathContext) {
-    	return range(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endInclusive), BigDecimal.valueOf(step), mathContext);
+    	return rangeClosed(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endInclusive), BigDecimal.valueOf(step), mathContext);
     }
 
     private static class BigDecimalSpliterator extends AbstractSpliterator<BigDecimal> {

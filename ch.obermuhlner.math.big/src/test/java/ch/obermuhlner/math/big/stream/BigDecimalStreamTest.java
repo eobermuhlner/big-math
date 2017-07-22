@@ -82,14 +82,15 @@ public class BigDecimalStreamTest {
 	
 	@Test
 	public void testRangeClosedStep3() {
-		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(12), BigDecimal.valueOf(3), MathContext.DECIMAL64)
+		List<BigDecimal> list = BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(12), BigDecimal.valueOf(3), MathContext.DECIMAL64)
 			.collect(Collectors.toList());
 		
-		assertEquals(4, list.size());
+		assertEquals(5, list.size());
 		assertEquals(true, list.contains(BigDecimal.valueOf(0)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(3)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(6)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(9)));
+		assertEquals(true, list.contains(BigDecimal.valueOf(12)));
 
 		assertEquals(0, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(-1), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
 		assertEquals(1, BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(3), MathContext.DECIMAL64).collect(Collectors.toList()).size());
@@ -109,26 +110,28 @@ public class BigDecimalStreamTest {
 
 	@Test
 	public void testRangeClosedLongStep3() {
-		List<BigDecimal> list = BigDecimalStream.range(0, 12, 3, MathContext.DECIMAL64)
+		List<BigDecimal> list = BigDecimalStream.rangeClosed(0, 12, 3, MathContext.DECIMAL64)
 			.collect(Collectors.toList());
 		
-		assertEquals(4, list.size());
+		assertEquals(5, list.size());
 		assertEquals(true, list.contains(BigDecimal.valueOf(0)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(3)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(6)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(9)));
+		assertEquals(true, list.contains(BigDecimal.valueOf(12)));
 	}
 
 	@Test
 	public void testRangeClosedDoubleStep3() {
-		List<BigDecimal> list = BigDecimalStream.range(0.0, 12.0, 3.0, MathContext.DECIMAL64)
+		List<BigDecimal> list = BigDecimalStream.rangeClosed(0.0, 12.0, 3.0, MathContext.DECIMAL64)
 			.collect(Collectors.toList());
 		
-		assertEquals(4, list.size());
+		assertEquals(5, list.size());
 		assertEquals(true, list.contains(BigDecimal.valueOf(0.0)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(3.0)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(6.0)));
 		assertEquals(true, list.contains(BigDecimal.valueOf(9.0)));
+		assertEquals(true, list.contains(BigDecimal.valueOf(12.0)));
 	}
 
 	@Test
