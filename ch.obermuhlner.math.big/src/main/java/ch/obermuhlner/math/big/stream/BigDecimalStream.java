@@ -86,6 +86,40 @@ public class BigDecimalStream {
 		}
     	return StreamSupport.stream(new BigDecimalSpliterator(startInclusive, endExclusive, false, step, mathContext), false);
     }
+
+    /**
+     * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
+     * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of {@link BigDecimal#ONE}.
+     * 
+     * <p>The {@code long} arguments are converted using {@link BigDecimal#valueOf(long)}.</p>
+     * 
+     * @param startInclusive the (inclusive) initial value
+     * @param endExclusive the exclusive upper bound
+     * @param step the step between elements
+     * @param mathContext the {@link MathContext} used for all mathematical operations
+     * @return a sequential {@code Stream<BigDecimal>}
+     * @see #range(BigDecimal, BigDecimal, BigDecimal, MathContext)
+     */
+    public static Stream<BigDecimal> range(long startInclusive, long endExclusive, long step, MathContext mathContext) {
+    	return range(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endExclusive), BigDecimal.valueOf(step), mathContext);
+    }
+
+    /**
+     * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
+     * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of {@link BigDecimal#ONE}.
+     * 
+     * <p>The {@code double} arguments are converted using {@link BigDecimal#valueOf(double)}.</p>
+     * 
+     * @param startInclusive the (inclusive) initial value
+     * @param endExclusive the exclusive upper bound
+     * @param step the step between elements
+     * @param mathContext the {@link MathContext} used for all mathematical operations
+     * @return a sequential {@code Stream<BigDecimal>}
+     * @see #range(BigDecimal, BigDecimal, MathContext)
+     */
+    public static Stream<BigDecimal> range(double startInclusive, double endExclusive, double step, MathContext mathContext) {
+    	return range(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endExclusive), BigDecimal.valueOf(step), mathContext);
+    }
     
     /**
      * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
@@ -102,6 +136,7 @@ public class BigDecimalStream {
      * @param step the step between elements
      * @param mathContext the {@link MathContext} used for all mathematical operations
      * @return a sequential {@code Stream<BigDecimal>}
+     * @see #range(BigDecimal, BigDecimal, BigDecimal, MathContext)
      */
     public static Stream<BigDecimal> rangeClosed(BigDecimal startInclusive, BigDecimal endInclusive, BigDecimal step, MathContext mathContext) {
     	if (step.signum() == 0) {
@@ -112,7 +147,41 @@ public class BigDecimalStream {
 		}
     	return StreamSupport.stream(new BigDecimalSpliterator(startInclusive, endInclusive, true, step, mathContext), false);
     }
-    
+
+    /**
+     * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
+     * (inclusive) to {@code endInclusive} (inclusive) by an incremental {@code step}.
+     *
+     * <p>The {@code long} arguments are converted using {@link BigDecimal#valueOf(long)}.</p>
+     * 
+     * @param startInclusive the (inclusive) initial value
+     * @param endInclusive the inclusive upper bound
+     * @param step the step between elements
+     * @param mathContext the {@link MathContext} used for all mathematical operations
+     * @return a sequential {@code Stream<BigDecimal>}
+     * @see #rangeClosed(BigDecimal, BigDecimal, BigDecimal, MathContext)
+     */
+    public static Stream<BigDecimal> rangeClosed(long startInclusive, long endInclusive, long step, MathContext mathContext) {
+    	return range(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endInclusive), BigDecimal.valueOf(step), mathContext);
+    }
+
+    /**
+     * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
+     * (inclusive) to {@code endInclusive} (inclusive) by an incremental {@code step}.
+     *
+     * <p>The {@code double} arguments are converted using {@link BigDecimal#valueOf(double)}.</p>
+     * 
+     * @param startInclusive the (inclusive) initial value
+     * @param endInclusive the inclusive upper bound
+     * @param step the step between elements
+     * @param mathContext the {@link MathContext} used for all mathematical operations
+     * @return a sequential {@code Stream<BigDecimal>}
+     * @see #rangeClosed(BigDecimal, BigDecimal, BigDecimal, MathContext)
+     */
+    public static Stream<BigDecimal> rangeClosed(double startInclusive, double endInclusive, double step, MathContext mathContext) {
+    	return range(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endInclusive), BigDecimal.valueOf(step), mathContext);
+    }
+
     private static class BigDecimalSpliterator extends AbstractSpliterator<BigDecimal> {
 
 		private BigDecimal value;
@@ -170,7 +239,7 @@ public class BigDecimalStream {
 			long secondHalfCount = count - firstHalfCount;
 			
 			count = firstHalfCount;
-			BigDecimal startSecondHalf = value.add(step.multiply(new BigDecimal(firstHalfCount), mathContext));
+			BigDecimal startSecondHalf = value.add(step.multiply(new BigDecimal(firstHalfCount), mathContext), mathContext);
 			
 			return new BigDecimalSpliterator(startSecondHalf, step, secondHalfCount, mathContext);
 		}

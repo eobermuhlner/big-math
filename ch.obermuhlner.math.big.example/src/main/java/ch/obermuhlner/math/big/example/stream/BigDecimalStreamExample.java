@@ -10,5 +10,8 @@ public class BigDecimalStreamExample {
 	public static void main(String[] args) {
 		BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.valueOf(3), MathContext.DECIMAL128)
 			.forEach(System.out::println);
+
+		BigDecimalStream.range(0, 10, 3, MathContext.DECIMAL128)
+			.forEach(System.out::println);
 	}
 }
