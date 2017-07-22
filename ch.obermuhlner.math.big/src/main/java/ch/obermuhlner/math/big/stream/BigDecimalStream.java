@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big.stream;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators.AbstractSpliterator;
 import java.util.function.Consumer;
@@ -191,7 +192,7 @@ public class BigDecimalStream {
 
 		public BigDecimalSpliterator(BigDecimal startInclusive, BigDecimal step, long count, MathContext mathContext) {
     		super(count,
-    				Spliterator.SIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED);
+    				Spliterator.SIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SORTED);
 			
     		this.value = startInclusive;
 			this.step = step;
@@ -216,6 +217,14 @@ public class BigDecimalStream {
     		return result;
 		}
 
+		@Override
+		public Comparator<? super BigDecimal> getComparator() {
+			if (step.signum() < 0) {
+				return Comparator.reverseOrder();
+			}
+			return null;
+		}
+		
 		@Override
 		public boolean tryAdvance(Consumer<? super BigDecimal> action) {
 			if (count == 0) {

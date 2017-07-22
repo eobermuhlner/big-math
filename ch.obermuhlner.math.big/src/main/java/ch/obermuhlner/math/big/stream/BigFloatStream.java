@@ -1,5 +1,6 @@
 package ch.obermuhlner.math.big.stream;
 
+import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators.AbstractSpliterator;
 import java.util.function.Consumer;
@@ -180,7 +181,7 @@ public class BigFloatStream {
 
 		public BigFloatSpliterator(BigFloat startInclusive, BigFloat step, long count) {
     		super(count,
-    				Spliterator.SIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED);
+    				Spliterator.SIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SORTED);
 			
     		this.value = startInclusive;
 			this.step = step;
@@ -204,6 +205,14 @@ public class BigFloatStream {
     		return result;
 		}
 
+		@Override
+		public Comparator<? super BigFloat> getComparator() {
+			if (step.signum() < 0) {
+				return Comparator.reverseOrder();
+			}
+			return null;
+		}
+		
 		@Override
 		public boolean tryAdvance(Consumer<? super BigFloat> action) {
 			if (count == 0) {
