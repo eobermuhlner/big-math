@@ -142,7 +142,7 @@ public class BigFloatStream {
 
 		public BigFloatSpliterator(BigFloat startInclusive, BigFloat step, long count) {
     		super(count,
-    				Spliterator.SIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SORTED);
+    				Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SORTED);
 			
     		this.value = startInclusive;
 			this.step = step;

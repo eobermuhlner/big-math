@@ -146,7 +146,7 @@ public class BigDecimalStream {
 
 		public BigDecimalSpliterator(BigDecimal startInclusive, BigDecimal step, long count, MathContext mathContext) {
     		super(count,
-    				Spliterator.SIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SORTED);
+    				Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SORTED);
 			
     		this.value = startInclusive;
 			this.step = step;
