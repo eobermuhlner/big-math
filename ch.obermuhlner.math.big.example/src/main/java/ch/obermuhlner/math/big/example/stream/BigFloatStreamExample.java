@@ -9,13 +9,18 @@ public class BigFloatStreamExample {
 	public static void main(String[] args) {
 		Context context = BigFloat.context(20);
 		
-		System.out.println("Range [0, 10) step 1");
+		System.out.println("Range [0, 10) step 1 (using BigDecimal as input parameters)");
 		BigFloatStream.range(context.valueOf(0), context.valueOf(10), context.valueOf(1))
 			.forEach(System.out::println);
 		System.out.println();
 		
-		System.out.println("Range [0, 10) step 3");
-		BigFloatStream.range(0, 10, 3, context)
+		System.out.println("Range [0, 12] step 3 (using long as input parameters)");
+		BigFloatStream.rangeClosed(0, 12, 3, context)
+			.forEach(System.out::println);
+		System.out.println();
+
+		System.out.println("Range [0, 12] step 3 (using double as input parameters)");
+		BigFloatStream.rangeClosed(0.0, 12.0, 3.0, context)
 			.forEach(System.out::println);
 		System.out.println();
 

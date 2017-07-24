@@ -10,13 +10,13 @@ public class BigDecimalStreamExample {
 	public static void main(String[] args) {
 		MathContext mathContext = MathContext.DECIMAL128;
 
-		System.out.println("Range [0, 10) step 1");
+		System.out.println("Range [0, 10) step 1 (using BigDecimal as input parameters)");
 		BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.ONE, mathContext)
 			.forEach(System.out::println);
 		System.out.println();
 		
-		System.out.println("Range [0, 10) step 3 (using long as input parameters)");
-		BigDecimalStream.range(0, 10, 3, mathContext)
+		System.out.println("Range [0, 12] step 3 (using long as input parameters)");
+		BigDecimalStream.rangeClosed(0, 12, 3, mathContext)
 			.forEach(System.out::println);
 		System.out.println();
 
