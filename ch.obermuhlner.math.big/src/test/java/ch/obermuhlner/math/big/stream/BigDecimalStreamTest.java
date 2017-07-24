@@ -22,8 +22,8 @@ public class BigDecimalStreamTest {
 	}
 
 	@Test
-	public void testRange() {
-		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), MathContext.DECIMAL64)
+	public void testRangeStep1() {
+		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.ONE, MathContext.DECIMAL64)
 			.collect(Collectors.toList());
 		
 		assertList(list, 0, 10);
@@ -135,14 +135,6 @@ public class BigDecimalStreamTest {
 	}
 
 	@Test
-	public void testRangeStep1() {
-		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.ONE, MathContext.DECIMAL64)
-			.collect(Collectors.toList());
-		
-		assertList(list, 0, 10);
-	}
-
-	@Test
 	public void testRangeStepMinus1() {
 		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.ONE.negate(), MathContext.DECIMAL64)
 			.collect(Collectors.toList());
@@ -151,8 +143,8 @@ public class BigDecimalStreamTest {
 	}
 
 	@Test
-	public void testRangeClosed() {
-		List<BigDecimal> list = BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(10), MathContext.DECIMAL64)
+	public void testRangeClosedStep1() {
+		List<BigDecimal> list = BigDecimalStream.rangeClosed(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.ONE, MathContext.DECIMAL64)
 			.collect(Collectors.toList());
 		
 		assertListClosed(list, 0, 10);
@@ -168,7 +160,7 @@ public class BigDecimalStreamTest {
 
 	@Test
 	public void testRangeParallel() {
-		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), MathContext.DECIMAL64)
+		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.ONE, MathContext.DECIMAL64)
 			.parallel()
 			.collect(Collectors.toList());
 		
@@ -177,7 +169,7 @@ public class BigDecimalStreamTest {
 
 	@Test
 	public void testRangeDown() {
-		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(9), BigDecimal.valueOf(-1), MathContext.DECIMAL64)
+		List<BigDecimal> list = BigDecimalStream.range(BigDecimal.valueOf(9), BigDecimal.valueOf(-1), BigDecimal.ONE.negate(), MathContext.DECIMAL64)
 			.collect(Collectors.toList());
 		
 		assertList(list, 0, 10);
@@ -185,7 +177,7 @@ public class BigDecimalStreamTest {
 	
 	@Test
 	public void testRangeClosedDown() {
-		List<BigDecimal> list = BigDecimalStream.rangeClosed(BigDecimal.valueOf(10), BigDecimal.valueOf(0), MathContext.DECIMAL64)
+		List<BigDecimal> list = BigDecimalStream.rangeClosed(BigDecimal.valueOf(10), BigDecimal.valueOf(0), BigDecimal.ONE.negate(), MathContext.DECIMAL64)
 			.collect(Collectors.toList());
 		
 		assertListClosed(list, 0, 10);

@@ -17,50 +17,6 @@ public class BigFloatStream {
 
     /**
      * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
-     * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of 1.
-     *
-     * <p>An equivalent sequence of increasing values can be produced
-     * sequentially using a {@code for} loop as follows:
-     * <pre>{@code
-     *     for (BigFloat i = startInclusive; i.isLessThan(endExclusive); i = i.add(1)) { ... }
-     * }</pre>
-     *
-     * @param startInclusive the (inclusive) initial value
-     * @param endExclusive the exclusive upper bound
-     * @return a sequential {@code Stream<BigFloat>}
-     */
-    public static Stream<BigFloat> range(BigFloat startInclusive, BigFloat endExclusive) {
-    	BigFloat step = startInclusive.getContext().valueOf(1);
-    	if (endExclusive.subtract(startInclusive).isNegative()) {
-    		step = BigFloat.negate(step);
-    	}
-    	return range(startInclusive, endExclusive, step);
-    }
-
-    /**
-     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
-     * (inclusive) to {@code endInclusive} (inclusive) by an incremental step of 1.
-     *
-     * <p>An equivalent sequence of increasing values can be produced
-     * sequentially using a {@code for} loop as follows:
-     * <pre>{@code
-     *     for (BigFloat i = startInclusive; i.isLessThanOrEqual(endExclusive); i = i.add(1)) { ... }
-     * }</pre>
-     *
-     * @param startInclusive the (inclusive) initial value
-     * @param endInclusive the inclusive upper bound
-     * @return a sequential {@code Stream<BigFloat>}
-     */
-    public static Stream<BigFloat> rangeClosed(BigFloat startInclusive, BigFloat endInclusive) {
-    	BigFloat step = startInclusive.getContext().valueOf(1);
-    	if (endInclusive.subtract(startInclusive).isNegative()) {
-    		step = BigFloat.negate(step);
-    	}
-    	return rangeClosed(startInclusive, endInclusive, step);
-    }
-
-    /**
-     * Returns a sequential ordered {@code Stream<BigFloat>} from {@code startInclusive}
      * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
      *
      * <p>An equivalent sequence of increasing values can be produced

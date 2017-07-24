@@ -25,9 +25,9 @@ public class BigFloatStreamTest {
 	}
 
 	@Test
-	public void testRange() {
+	public void testRangeStep1() {
 		Context context = BigFloat.context(20);
-		List<BigFloat> list = BigFloatStream.range(context.valueOf(0), context.valueOf(10))
+		List<BigFloat> list = BigFloatStream.range(context.valueOf(0), context.valueOf(10), context.valueOf(1))
 			.collect(Collectors.toList());
 		
 		assertList(list, 0, 10);
@@ -145,15 +145,6 @@ public class BigFloatStreamTest {
 	}
 	
 	@Test
-	public void testRangeStep1() {
-		Context context = BigFloat.context(20);
-		List<BigFloat> list = BigFloatStream.range(context.valueOf(0), context.valueOf(10), context.valueOf(1))
-			.collect(Collectors.toList());
-		
-		assertList(list, 0, 10);
-	}
-
-	@Test
 	public void testRangeStepMinus1() {
 		Context context = BigFloat.context(20);
 		List<BigFloat> list = BigFloatStream.range(context.valueOf(0), context.valueOf(10), context.valueOf(-1))
@@ -163,9 +154,9 @@ public class BigFloatStreamTest {
 	}
 
 	@Test
-	public void testRangeClosed() {
+	public void testRangeClosedStep1() {
 		Context context = BigFloat.context(20);
-		List<BigFloat> list = BigFloatStream.rangeClosed(context.valueOf(0), context.valueOf(10))
+		List<BigFloat> list = BigFloatStream.rangeClosed(context.valueOf(0), context.valueOf(10), context.valueOf(1))
 			.collect(Collectors.toList());
 		
 		assertListClosed(list, 0, 10);
@@ -183,7 +174,7 @@ public class BigFloatStreamTest {
 	@Test
 	public void testRangeParallel() {
 		Context context = BigFloat.context(20);
-		List<BigFloat> list = BigFloatStream.range(context.valueOf(0), context.valueOf(10))
+		List<BigFloat> list = BigFloatStream.range(context.valueOf(0), context.valueOf(10), context.valueOf(1))
 			.parallel()
 			.collect(Collectors.toList());
 		
@@ -193,7 +184,7 @@ public class BigFloatStreamTest {
 	@Test
 	public void testRangeDown() {
 		Context context = BigFloat.context(20);
-		List<BigFloat> list = BigFloatStream.range(context.valueOf(9), context.valueOf(-1))
+		List<BigFloat> list = BigFloatStream.range(context.valueOf(9), context.valueOf(-1), context.valueOf(-1))
 			.collect(Collectors.toList());
 		
 		assertList(list, 0, 10);
@@ -202,7 +193,7 @@ public class BigFloatStreamTest {
 	@Test
 	public void testRangeClosedDown() {
 		Context context = BigFloat.context(20);
-		List<BigFloat> list = BigFloatStream.rangeClosed(context.valueOf(10), context.valueOf(0))
+		List<BigFloat> list = BigFloatStream.rangeClosed(context.valueOf(10), context.valueOf(0), context.valueOf(-1))
 			.collect(Collectors.toList());
 		
 		assertListClosed(list, 0, 10);

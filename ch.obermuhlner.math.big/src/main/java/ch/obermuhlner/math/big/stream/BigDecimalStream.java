@@ -18,52 +18,6 @@ public class BigDecimalStream {
 
     /**
      * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
-     * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of {@link BigDecimal#ONE}.
-     *
-     * <p>An equivalent sequence of increasing values can be produced
-     * sequentially using a {@code for} loop as follows:
-     * <pre>{@code
-     *     for (BigDecimal i = startInclusive; i.compareTo(endExclusive) &lt; 0; i = i.add(BigDecimal.ONE, mathContext)) { ... }
-     * }</pre>
-     *
-     * @param startInclusive the (inclusive) initial value
-     * @param endExclusive the exclusive upper bound
-     * @param mathContext the {@link MathContext} used for all mathematical operations
-     * @return a sequential {@code Stream<BigDecimal>}
-     */
-    public static Stream<BigDecimal> range(BigDecimal startInclusive, BigDecimal endExclusive, MathContext mathContext) {
-    	BigDecimal step = BigDecimal.ONE;
-    	if (endExclusive.subtract(startInclusive).signum() < 0) {
-    		step = step.negate();
-    	}
-    	return range(startInclusive, endExclusive, step, mathContext);
-    }
-
-    /**
-     * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
-     * (inclusive) to {@code endInclusive} (inclusive) by an incremental step of {@link BigDecimal#ONE}.
-     *
-     * <p>An equivalent sequence of increasing values can be produced
-     * sequentially using a {@code for} loop as follows:
-     * <pre>{@code
-     *     for (BigDecimal i = startInclusive; i.compareTo(endExclusive) &lt;= 0; i = i.add(BigDecimal.ONE, mathContext)) { ... }
-     * }</pre>
-     *
-     * @param startInclusive the (inclusive) initial value
-     * @param endInclusive the inclusive upper bound
-     * @param mathContext the {@link MathContext} used for all mathematical operations
-     * @return a sequential {@code Stream<BigDecimal>}
-     */
-    public static Stream<BigDecimal> rangeClosed(BigDecimal startInclusive, BigDecimal endInclusive, MathContext mathContext) {
-    	BigDecimal step = BigDecimal.ONE;
-    	if (endInclusive.subtract(startInclusive).signum() < 0) {
-    		step = step.negate();
-    	}
-    	return rangeClosed(startInclusive, endInclusive, step, mathContext);
-    }
-
-    /**
-     * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
      * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
      *
      * <p>An equivalent sequence of increasing values can be produced
@@ -90,7 +44,7 @@ public class BigDecimalStream {
 
     /**
      * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
-     * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of {@link BigDecimal#ONE}.
+     * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
      * 
      * <p>The {@code long} arguments are converted using {@link BigDecimal#valueOf(long)}.</p>
      * 
@@ -107,7 +61,7 @@ public class BigDecimalStream {
 
     /**
      * Returns a sequential ordered {@code Stream<BigDecimal>} from {@code startInclusive}
-     * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of {@link BigDecimal#ONE}.
+     * (inclusive) to {@code endExclusive} (exclusive) by an incremental {@code step}.
      * 
      * <p>The {@code double} arguments are converted using {@link BigDecimal#valueOf(double)}.</p>
      * 
