@@ -153,10 +153,10 @@ The following charts show the time needed to calculate the functions over a rang
 
 ## BigFloat
 
-The class `BigFloat` is a wrapper around `BigDecimal` which simplifies the consistent usage of the MathContext and provides a simpler API for calculations. 
+The class `BigFloat` is a wrapper around `BigDecimal` which simplifies the consistent usage of the `MathContext` and provides a simpler API for calculations. 
 
 The API for calculations is simplified and more consistent with the typical mathematical usage.
-* Factory methods for values:
+* Factory methods on the `Context` class for values:
 	* `valueOf(BigFloat)`
 	* `valueOf(BigDecimal)`
 	* `valueOf(int)`
@@ -170,6 +170,7 @@ The API for calculations is simplified and more consistent with the typical math
 	* `add(x)`
 	* `subtract(x)`
 	* `multiply(x)`
+	* `divide(x)`
 	* `remainder(x)`
 	* `pow(y)`
 	* `root(y)`
@@ -182,7 +183,7 @@ The API for calculations is simplified and more consistent with the typical math
 	* `add(double)`
 	* ...
 
-* Mathematical functions are written as they are traditionally are written:
+* Mathematical functions are written in the traditional form:
  	* `abs(x)`
 	* `log(x)`
 	* `sin(x)`
@@ -263,7 +264,7 @@ or use the following dependency to
 [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cbig-math)
 in your build script (please verify the version number to be the newest release):
 
-### Use bit-math in Maven Build
+### Use big-math in Maven Build
 
 ```xml
 <dependency>
@@ -273,7 +274,7 @@ in your build script (please verify the version number to be the newest release)
 </dependency>
 ```
 
-### Use bit-math in Gradle Build
+### Use big-math in Gradle Build
 
 ```gradle
 repositories {
