@@ -22,9 +22,9 @@ public class BigDecimalStream {
      *
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
-     * <pre>{@code
-     *     for (BigDecimal i = startInclusive; i.compareTo(endExclusive) &lt; 0; i = i.add(step, mathContext)) { ... }
-     * }</pre>
+     * <pre>for (BigDecimal i = startInclusive; i.compareTo(endExclusive) &lt; 0; i = i.add(step, mathContext)) {
+    // ...
+}</pre>
      *
      * @param startInclusive the (inclusive) initial value
      * @param endExclusive the exclusive upper bound
@@ -82,9 +82,9 @@ public class BigDecimalStream {
      *
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
-     * <pre>{@code
-     *     for (BigDecimal i = startInclusive; i.compareTo(endInclusive) &lt;= 0; i = i.add(step, mathContext)) { ... }
-     * }</pre>
+     * <pre>for (BigDecimal i = startInclusive; i.compareTo(endInclusive) &lt;= 0; i = i.add(step, mathContext)) {
+    // ...
+}</pre>
      *
      * @param startInclusive the (inclusive) initial value
      * @param endInclusive the inclusive upper bound

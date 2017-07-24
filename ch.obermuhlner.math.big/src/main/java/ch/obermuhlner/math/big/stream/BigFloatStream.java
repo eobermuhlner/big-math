@@ -21,9 +21,9 @@ public class BigFloatStream {
      *
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
-     * <pre>{@code
-     *     for (BigFloat i = startInclusive; i.isLessThan(endExclusive); i = i.add(step)) { ... }
-     * }</pre>
+     * <pre>for (BigFloat i = startInclusive; i.isLessThan(endExclusive); i = i.add(step)) {
+    // ...
+}</pre>
      *
      * @param startInclusive the (inclusive) initial value
      * @param endExclusive the exclusive upper bound
@@ -80,9 +80,10 @@ public class BigFloatStream {
      *
      * <p>An equivalent sequence of increasing values can be produced
      * sequentially using a {@code for} loop as follows:
-     * <pre>{@code
-     *     for (BigFloat i = startInclusive; i.isLessThanOrEqual(endInclusive); i = i.add(step)) { ... }
-     * }</pre>
+     * <pre>for (BigFloat i = startInclusive; i.isLessThanOrEqual(endInclusive); i = i.add(step)) {
+    //...
+}
+</pre>
      *
      * @param startInclusive the (inclusive) initial value
      * @param endInclusive the inclusive upper bound
