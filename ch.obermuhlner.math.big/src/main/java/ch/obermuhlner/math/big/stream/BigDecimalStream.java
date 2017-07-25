@@ -70,7 +70,7 @@ public class BigDecimalStream {
      * @param step the step between elements
      * @param mathContext the {@link MathContext} used for all mathematical operations
      * @return a sequential {@code Stream<BigDecimal>}
-     * @see #range(BigDecimal, BigDecimal, MathContext)
+     * @see #range(BigDecimal, BigDecimal, BigDecimal, MathContext)
      */
     public static Stream<BigDecimal> range(double startInclusive, double endExclusive, double step, MathContext mathContext) {
     	return range(BigDecimal.valueOf(startInclusive), BigDecimal.valueOf(endExclusive), BigDecimal.valueOf(step), mathContext);
