@@ -3,7 +3,9 @@
 [![Coverity Scan](https://img.shields.io/coverity/scan/3997.svg)]()
 [![Maven Central](https://img.shields.io/maven-central/v/ch.obermuhlner/big-math.svg)](https://search.maven.org/#search%7Cga%7C1%7Cbig-math)
 
-# big-math
+<p align="center">
+	<img alt="big-math" src="docs/images/big-math-splashscreen.png">
+</p>
 
 Advanced Java `BigDecimal` math functions (`pow`, `sqrt`, `log`, `sin`, ...) using arbitrary precision.
 
