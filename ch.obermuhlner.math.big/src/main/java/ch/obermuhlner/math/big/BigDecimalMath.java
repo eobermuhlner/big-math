@@ -908,6 +908,44 @@ public class BigDecimalMath {
 	}
 
 	/**
+	 * Calculates the arc tangens (inverted tangens) of {@link BigDecimal} y / x in the range -<i>pi</i> to <i>pi</i>.
+	 *
+	 * <p>This is useful to calculate the angle <i>theta</i> from the conversion of rectangular
+     * coordinates (<code>x</code>,&nbsp;<code>y</code>) to polar coordinates (r,&nbsp;<i>theta</i>).
+	 * 
+	 * <p>See: <a href="http://en.wikipedia.org/wiki/Atan2">Wikipedia: Atan2</a></p>
+	 * 
+	 * @param y the {@link BigDecimal}
+	 * @param x the {@link BigDecimal}
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated arc tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException if x = 0 and y = 0
+	 */
+	public static BigDecimal atan2(BigDecimal y, BigDecimal x, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 3, mathContext.getRoundingMode());
+
+		if (x.signum() > 0) { // x > 0
+			return atan(y.divide(x, 3), mathContext);
+		} else if (x.signum() < 0) {
+			if (y.signum() > 0) {  // x < 0 && y > 0
+				return atan(y.divide(x, mc), mc).add(pi(mc), mathContext);
+			} else if (y.signum() < 0) { // x < 0 && y < 0
+				return atan(y.divide(x, mc), mc).subtract(pi(mc), mathContext);
+			} else { // x < 0 && y = 0
+				return pi(mathContext);
+			}
+		} else {
+			if (y.signum() > 0) { // x == 0 && y > 0
+				return pi(mc).divide(TWO, mathContext);
+			} else if (y.signum() < 0) {  // x == 0 && y < 0
+				return pi(mc).divide(TWO, mathContext).negate();				
+			} else {
+				throw new ArithmeticException("Illegal atan2(y, x) for x = 0; y = 0");
+			}
+		}
+	}
+	
+	/**
 	 * Calculates the cotangens of {@link BigDecimal} x.
 	 * 
 	 * <p>See: <a href="http://en.wikipedia.org/wiki/Cotangens">Wikipedia: Cotangens</a></p>

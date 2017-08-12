@@ -723,7 +723,7 @@ public class BigDecimalMathTest {
 				Math::tan,
 				(x, mathContext) -> BigDecimalMath.tan(x, mathContext));
 	}
-	
+
 	@Test
 	public void testAtanRandom() {
 		assertRandomCalculation(
@@ -733,7 +733,30 @@ public class BigDecimalMathTest {
 				Math::atan,
 				(x, mathContext) -> BigDecimalMath.atan(x, mathContext));
 	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testAtan2ZeroZero() {
+		BigDecimalMath.atan2(BigDecimal.ZERO, BigDecimal.ZERO, MC);
+	}
 	
+	@Test
+	public void testAtan2() {
+		BigDecimal piHalf = BigDecimalMath.pi(new MathContext(MC.getPrecision() + 10)).divide(BigDecimal.valueOf(2), MC);
+		assertEquals(piHalf, BigDecimalMath.atan2(BigDecimal.TEN, BigDecimal.ZERO, MC));
+		assertEquals(piHalf.negate(), BigDecimalMath.atan2(BigDecimal.TEN.negate(), BigDecimal.ZERO, MC));
+	}
+
+	@Test
+	public void testAtan2Random() {
+		assertRandomCalculation(
+				1000,
+				"atan2",
+				random -> random.nextDouble() * 100 - 50,
+				random -> random.nextDouble() * 100 - 50,
+				Math::atan2,
+				(x, y, mathContext) -> BigDecimalMath.atan2(x, y, mathContext));
+	}
+
 	@Test
 	public void testCot() {
 		for(double value : new double[] { 0.5, -0.5 }) {
