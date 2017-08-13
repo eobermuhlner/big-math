@@ -5,7 +5,7 @@ No API changes.
 
 # Bugfixes
 
-No Bugfixes changes.
+No Bugfix changes.
 
 
 # Enhancements
@@ -58,7 +58,7 @@ Range [0, 12] step 3 (using long as input parameters)
 
 The `atan2(y, x)` function calculates the arc tangens (inverted tangens) of y / x in the range -π to π.
 
-This is useful to calculate the angle theta from the conversion of rectangular
+This is useful to calculate the angle θ from the conversion of rectangular
 coordinates (x, y) to polar coordinates (r, θ).
 
 
