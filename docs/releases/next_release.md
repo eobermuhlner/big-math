@@ -56,10 +56,10 @@ Range [0, 12] step 3 (using long as input parameters)
 
 ## Added `BigDecimalMath.atan2(y, x)`
 
-The `atan2(y, x)` function calculates the arc tangens (inverted tangens) of y / x in the range -pi to pi.
+The `atan2(y, x)` function calculates the arc tangens (inverted tangens) of y / x in the range -π to π.
 
 This is useful to calculate the angle theta from the conversion of rectangular
-coordinates (x, y) to polar coordinates (r, theta).
+coordinates (x, y) to polar coordinates (r, θ).
 
 
 ## Added `BigFloat.signum()` and convenience `BigFloat.isNegative()`, `BigFloat.isZero()`, `BigFloat.isPositive()`  
