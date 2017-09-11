@@ -25,10 +25,6 @@ public class PerformanceBigDecimalMath {
 
 	public static void main(String[] args) {
 
-		System.out.println(BigDecimalMath.pi(new MathContext(1100)));
-		System.out.println(BigDecimalMathExperimental.logUsingNewtonFixPrecision(BigDecimal.valueOf(3.1), new MathContext(1000)));
-		System.out.println(BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(BigDecimal.valueOf(3.1), new MathContext(1000), -17));
-
 		performanceReport_Fast_0_to_2();
 		performanceReport_Fast_neg10_to_10();
 		performanceReport_Fast_0_to_10();
@@ -78,6 +74,11 @@ public class PerformanceBigDecimalMath {
 //		performanceReportLogOptimization4();
 //		performanceReportLogOptimization5();
 //		performanceReportLogOptimization6();
+
+		performanceReportAtan2_y_neg10_to_10_x_5();
+		performanceReportAtan2_y_5_x_neg10_to_10();
+		performanceReportAtan2_yx_neg10_to_10();
+		functionValueAtan2_yx_neg10_to_10();
 	}
 
 	private static void performanceReport_Fast_0_to_2() {
@@ -438,6 +439,133 @@ public class PerformanceBigDecimalMath {
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonAdaptivePrecision(x1, mc1, 17));
 	}
 
+	private static void performanceReportAtan2_y_neg10_to_10_x_5() {
+		BigDecimal x = BigDecimal.valueOf(5);
+		performanceReportOverValue(
+				"perf_atan2_y_from_-10_to_10_x_5.csv",
+				REF_MATHCONTEXT,
+				-10,
+				10,
+				+0.1,
+				REPEATS,
+				Arrays.asList("atan2"),
+				(y1, mc1) -> BigDecimalMath.atan2(y1, x, mc1));
+	}
+	
+	private static void performanceReportAtan2_y_5_x_neg10_to_10() {
+		BigDecimal y = BigDecimal.valueOf(5);
+		performanceReportOverValue(
+				"perf_atan2_y_5_x_from_-10_to_10.csv",
+				REF_MATHCONTEXT,
+				-10,
+				10,
+				+0.1,
+				REPEATS,
+				Arrays.asList("atan2"),
+				(x1, mc1) -> BigDecimalMath.atan2(y, x1, mc1));
+	}
+	
+	private static void performanceReportAtan2_yx_neg10_to_10() {
+		MathContext mathContext = REF_MATHCONTEXT;
+		BigDecimal xStart = BigDecimal.valueOf(-10);
+		BigDecimal xEnd = BigDecimal.valueOf(10);
+		BigDecimal xStep = BigDecimal.valueOf(2.0);
+		BigDecimal xStepWarmup = BigDecimal.valueOf(2.0);
+		BigDecimal yStart = BigDecimal.valueOf(-10);
+		BigDecimal yEnd = BigDecimal.valueOf(10);
+		BigDecimal yStep = BigDecimal.valueOf(2.0);
+		BigDecimal yStepWarmup = BigDecimal.valueOf(2.0);
+		int repeats = 3;
+
+		String name = "perf_atan2_yx_from_-10_to_10.csv";
+
+		// warmup
+		for(BigDecimal y = yStart; y.compareTo(yEnd) < 0; y = y.add(yStepWarmup)) {
+			for(BigDecimal x = xStart; x.compareTo(xEnd) < 0; x = x.add(xStepWarmup)) {
+				try {
+					BigDecimalMath.atan2(y, x, mathContext).doubleValue();
+				} catch (Exception ex) {
+					// ignore
+				}
+			}
+		}
+
+		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
+			for(BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+				writer.print(", ");
+				writer.print(x);
+			}
+			writer.println();
+			
+			for(BigDecimal y = yStart; y.compareTo(yEnd) <= 0; y = y.add(yStep)) {
+				writer.print(y);
+				writer.print(", ");
+				for(BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+					if (!x.equals(xStart)) {
+						writer.print(", ");
+					}
+					System.out.println("x = " + x + " y = " + y);
+					double result = Double.MAX_VALUE;
+					try {
+						for (int i = 0; i < repeats; i++) {
+							StopWatch stopWatch = new StopWatch();
+							BigDecimalMath.atan2(y, x, mathContext).doubleValue();
+							result = Math.min(result, stopWatch.getElapsedMillis());
+						}
+					} catch (Exception ex) {
+						result = 0;
+					}
+					writer.print(result);
+				}
+				writer.println();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void functionValueAtan2_yx_neg10_to_10() {
+		MathContext mathContext = MathContext.DECIMAL64;
+		BigDecimal xStart = BigDecimal.valueOf(-10);
+		BigDecimal xEnd = BigDecimal.valueOf(10);
+		BigDecimal xStep = BigDecimal.valueOf(0.2);
+		BigDecimal yStart = BigDecimal.valueOf(-10);
+		BigDecimal yEnd = BigDecimal.valueOf(10);
+		BigDecimal yStep = BigDecimal.valueOf(0.2);
+
+		String name = "values_atan2_yx_from_-10_to_10.csv";
+
+		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
+			for(BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+				writer.print(", ");
+				writer.print(x);
+			}
+			writer.println();
+			
+			for(BigDecimal y = yStart; y.compareTo(yEnd) <= 0; y = y.add(yStep)) {
+				writer.print(y);
+				writer.print(", ");
+				for(BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+					if (!x.equals(xStart)) {
+						writer.print(", ");
+					}
+					System.out.println("x = " + x + " y = " + y);
+					double result;
+					try {
+						result = BigDecimalMath.atan2(y, x, mathContext).doubleValue();
+					} catch (Exception ex) {
+						result = Double.NaN;
+					}
+					writer.print(result);
+				}
+				writer.println();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 	/**
 Writing an implementation of the binary logarithm function with BigDecimal is surprisingly challenging.
 
