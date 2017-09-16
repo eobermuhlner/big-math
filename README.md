@@ -153,12 +153,6 @@ Range [0, 12] step 3 (using long as input parameters)
 12
 ```
 
-For the mathematical background and performance analysis please refer to this article:
-*	[BigDecimalMath](http://obermuhlner.ch/wordpress/2016/06/02/bigdecimalmath/)
-
-Some of the implementation details are explained here: 
-*	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
-
 ### FAQ
 
 #### Why do I have to pass `MathContext` to most functions?
@@ -189,6 +183,15 @@ To specify the number of digits after the decimal point use `BigDecimal.setScale
 The mathematical functions in `BigDecimalMath` are heavily optimized to calculate the result in the specified precision, but in order to calculate them often tens or even hundreds of basic operations (+, -, *, /) using `BigDecimal` are necessary.
 
 If the calculation of your function is too slow for your purpose you should verify whether you really need the full precision in your particular use case. Sometimes you can adapt the precision depending on input factors of your calculation.
+
+#### How are the mathematical functions in `BigDecimalMath` calculated?
+
+For the mathematical background and performance analysis please refer to this article:
+*	[BigDecimalMath](http://obermuhlner.ch/wordpress/2016/06/02/bigdecimalmath/)
+
+Some of the implementation details are explained here: 
+*	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
+
 
 ### Performance
 
