@@ -112,11 +112,11 @@ isDoubleValue(1.23E999) = false
 
 #### Streams of `BigDecimal`
 
-The class `BigDecimalStream` provide factory methods for streams of `BigDecimal` elements.
+The class `BigDecimalStream` provides factory methods for streams of `BigDecimal` elements.
 
-Overloaded variants of `range(start, end, step)` provide sequential elements equivalent to `IntStream.range(start, end)` but with configurable step.
+Overloaded variants of `range(start, end, step)` provide sequential elements equivalent to `IntStream.range(start, end)` but with configurable step (exclusive the end value).
 
-Similar methods for the `rangeClosed()` (inclusive end) are available.
+Similar methods for the `rangeClosed()` (inclusive the end value) are available.
 
 The streams are well behaved when used in parallel mode. 
 
