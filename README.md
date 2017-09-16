@@ -25,6 +25,7 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `asin(BigDecimal, MathContext)`
 *   `acos(BigDecimal, MathContext)`
 *   `atan(BigDecimal, MathContext)`
+*   `atan2(BigDecimal, BigDecimal, MathContext)`
 
 *   `sinh(BigDecimal, MathContext)`
 *   `cosh(BigDecimal, MathContext)`
@@ -50,6 +51,8 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 
 
 ### Usage
+
+#### Mathematical calculations for `BigDecimal`
 
 For calculations with arbitrary precision you need to specify how precise you want a calculated result.
 For `BigDecimal` calculations this is done using the `MathContext`.
@@ -81,6 +84,8 @@ pi             = 3.1415926535897932384626433832795028841971693993751058209749445
 e              = 2.718281828459045235360287471352662497757247093699959574966967627724076630353547594571382178525166427
 ```
 
+#### Convenience methods for `BigDecimal`
+
 Additional `BigDecimalMath` provides several useful methods (that are plain missing for `BigDecimal`):
 ```java
 MathContext mathContext = new MathContext(100);
@@ -103,6 +108,49 @@ isIntValue(123)         = true
 isIntValue(123.456)     = false
 isDoubleValue(123.456)  = true
 isDoubleValue(1.23E999) = false
+```
+
+#### Streams of `BigDecimal`
+
+The class `BigDecimalStream` provide factory methods for streams of `BigDecimal` elements.
+
+Overloaded variants of `range(start, end, step)` provide sequential elements equivalent to `IntStream.range(start, end)` but with configurable step.
+
+Similar methods for the `rangeClosed()` (inclusive end) are available.
+
+The streams are well behaved when used in parallel mode. 
+
+The following code snippet:
+```java
+System.out.println("Range [0, 10) step 1 (using BigDecimal as input parameters)");
+BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.valueOf(1), mathContext)
+	.forEach(System.out::println);
+
+System.out.println("Range [0, 10) step 3 (using long as input parameters)");
+BigDecimalStream.range(0, 10, 3, mathContext)
+	.forEach(System.out::println);
+```
+
+produces this output:
+```
+Range [0, 10) step 1 (using BigDecimal as input parameters)
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+Range [0, 12] step 3 (using long as input parameters)
+0
+3
+6
+9
+12
 ```
 
 For the mathematical background and performance analysis please refer to this article:
@@ -223,6 +271,11 @@ The API for calculations is simplified and more consistent with the typical math
 	* `isGreaterThan(BigFloat)`
 	* `isGreaterThanOrEqual(BigFloat)`
 
+* Sign methods:
+	* `signum()`
+	* `isNegative()`
+	* `isZero()`
+	* `isPositive()`
 
 ### Usage
 
@@ -251,6 +304,8 @@ double doubleValue = value3.toDouble();
 long longValue = value3.toLong();
 int intValue = value3.toInt();
 ```
+
+The `BigFloatStream` provides similar stream factories as `BigDecimalStream` that will produce streams of `BigFloat` elements.
 
 ### Usage in Kotlin
 
