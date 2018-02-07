@@ -757,7 +757,7 @@ public class BigDecimalMath {
         BigDecimal z = ONE.add(fractionalPart.divide(integralPart, mc));
         BigDecimal t = expTaylor(z, mc);
 
-        BigDecimal result = pow(t, integralPart.intValue(), mc);
+        BigDecimal result = pow(t, integralPart.intValueExact(), mc);
         
 		return result.round(mathContext);
 	}

@@ -328,6 +328,11 @@ public class BigDecimalMathTest {
 				mathContext -> BigDecimalMath.pow(new BigDecimal("1234.5"), new BigDecimal("5.4321"), mathContext),
 				10);
 	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testPowOverflow() {
+		BigDecimalMath.pow(new BigDecimal("1.5"), new BigDecimal("1E10"), MC);
+	}
 	
 	@Test
 	public void testPowRandom() {
@@ -339,7 +344,7 @@ public class BigDecimalMathTest {
 				Math::pow,
 				(x, y, mathContext) -> BigDecimalMath.pow(x, y, mathContext));
 	}
-
+	
 	@Test
 	public void testSqrt() {
 		for(double value : new double[] { 0, 0.1, 2, 10, 33.3333 }) {
