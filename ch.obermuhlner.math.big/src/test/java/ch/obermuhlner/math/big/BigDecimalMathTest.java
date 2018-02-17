@@ -329,12 +329,6 @@ public class BigDecimalMathTest {
 				10);
 	}
 
-	@Test(expected = ArithmeticException.class)
-	public void testPowOverflow() {
-		System.out.println(Integer.MAX_VALUE);
-		BigDecimalMath.pow(new BigDecimal("123"), new BigDecimal("1E20"), MC);
-	}
-	
 	@Test
 	public void testPowLargeInt() {
 		BigDecimal x = new BigDecimal("1.5");
@@ -373,6 +367,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				Math::pow,
 				(x, y, mathContext) -> BigDecimalMath.pow(x, y, mathContext));
+	}
+	
+	@Test(expected = ArithmeticException.class)
+	public void testPowOverflow() {
+		BigDecimalMath.pow(new BigDecimal("123"), new BigDecimal("1E20"), MC);
 	}
 	
 	@Test
