@@ -331,7 +331,37 @@ public class BigDecimalMathTest {
 
 	@Test(expected = ArithmeticException.class)
 	public void testPowOverflow() {
-		BigDecimalMath.pow(new BigDecimal("1.5"), new BigDecimal("1E10"), MC);
+		System.out.println(Integer.MAX_VALUE);
+		BigDecimalMath.pow(new BigDecimal("123"), new BigDecimal("1E20"), MC);
+	}
+	
+	@Test
+	public void testPowLargeInt() {
+		BigDecimal x = new BigDecimal("1.5");
+		BigDecimal y = new BigDecimal("1E10"); // still possible with longValueExact()
+		// Result from wolframalpha.com: 1.5 ^ 1E10
+		BigDecimal expected = new BigDecimal("3.60422936590014149127041615892759056162677175765E1760912590");
+		assertEquals(10_000_000_000L, y.longValueExact());
+		assertPrecisionCalculation(
+				expected,
+				mathContext -> {
+					return BigDecimalMath.pow(x, y, mathContext);
+				},
+				20);
+	}
+	
+	@Test
+	public void testPowVeryLargeInt() {
+		BigDecimal x = new BigDecimal("1.00000000000001");
+		BigDecimal y = new BigDecimal("1E20"); // not possible with than longValueExact()
+		// Result from wolframalpha.com: 1.00000001 ^ 1E20
+		BigDecimal expected = new BigDecimal("3.03321538163601059899125791999959844544825181205425E434294");
+		assertPrecisionCalculation(
+				expected,
+				mathContext -> {
+					return BigDecimalMath.pow(x, y, mathContext);
+				},
+				20);
 	}
 	
 	@Test

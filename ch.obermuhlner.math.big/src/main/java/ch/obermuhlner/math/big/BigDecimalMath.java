@@ -79,6 +79,25 @@ public class BigDecimalMath {
 	}
 
 	/**
+	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>long</code>.
+	 * 
+	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#longValueExact()} without fear of an {@link ArithmeticException}.</p>
+	 * 
+	 * @param value the {@link BigDecimal} to check 
+	 * @return <code>true</code> if the value can be represented as <code>long</code> value
+	 */
+	public static boolean isLongValue(BigDecimal value) {
+		// TODO impl isLongValue() without exceptions
+		try {
+			value.longValueExact();
+			return true;
+		} catch (ArithmeticException ex) {
+			// ignored
+		}
+		return false;
+	}
+
+	/**
 	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>double</code>.
 	 * 
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#doubleValue()}
@@ -218,7 +237,6 @@ public class BigDecimalMath {
 	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal pow(BigDecimal x, BigDecimal y, MathContext mathContext) {
-		// x^y = exp(y*log(x))
 
 		if (x.signum() == 0) {
 			switch (y.signum()) {
@@ -226,39 +244,43 @@ public class BigDecimalMath {
 				case 1 : return ZERO;
 			}
 		}
-
+		
 		try {
-			int intValue = y.intValueExact();
-			return pow(x, intValue, mathContext);
+			long longValue = y.longValueExact();
+			return pow(x, longValue, mathContext);
 		} catch (ArithmeticException ex) {
 			// ignored
 		}
+		
+		if (fractionalPart(y).signum() == 0) {
+			return powInteger(x, y, mathContext);
+		}
 
+		// x^y = exp(y*log(x))
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
-
 		BigDecimal result = exp(y.multiply(log(x, mc), mc), mc);
 		
 		return result.round(mathContext);
 	}
 
 	/**
-	 * Calculates {@link BigDecimal} x to the power of <code>int</code> y (x<sup>y</sup>).
+	 * Calculates {@link BigDecimal} x to the power of <code>long</code> y (x<sup>y</sup>).
 	 * 
 	 * <p>The implementation tries to minimize the number of multiplications of {@link BigDecimal x} (using squares whenever possible).</p>
 	 * 
 	 * <p>See: <a href="https://en.wikipedia.org/wiki/Exponentiation#Efficient_computation_with_integer_exponents">Wikipedia: Exponentiation - efficient computation</a></p>
 	 * 
 	 * @param x the {@link BigDecimal} value to take to the power
-	 * @param y the <code>int</code> value to serve as exponent
+	 * @param y the <code>long</code> value to serve as exponent
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
 	 */
-	public static BigDecimal pow(BigDecimal x, int y, MathContext mathContext) {
+	public static BigDecimal pow(BigDecimal x, long y, MathContext mathContext) {
 		if (y < 0) {
 			return ONE.divide(pow(x, -y, mathContext), mathContext);
 		}
 		
-		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 
 		BigDecimal result = ONE;
 		while (y > 0) {
@@ -278,7 +300,51 @@ public class BigDecimalMath {
 
 		return result.round(mathContext);
 	}
-	
+
+	/**
+	 * Calculates {@link BigDecimal} x to the power of the integer value y (x<sup>y</sup>).
+	 * 
+	 * <p>The value y MUST be an integer value.</p>
+	 * 
+	 * @param x the {@link BigDecimal} value to take to the power
+	 * @param y the {@link BigDecimal} <strong>integer</strong> value to serve as exponent
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
+	 * @see #pow(BigDecimal, long, MathContext)
+	 */
+	private static BigDecimal powInteger(BigDecimal x, BigDecimal integerY, MathContext mathContext) {
+		if (fractionalPart(integerY).signum() != 0) {
+			throw new IllegalArgumentException("Not integer value: " + integerY);
+		}
+		
+		if (integerY.signum() < 0) {
+			return ONE.divide(powInteger(x, integerY.negate(), mathContext), mathContext);
+		}
+		
+		MathContext mc = new MathContext(mathContext.getPrecision() + 20, mathContext.getRoundingMode());
+
+		BigDecimal result = ONE;
+		while (integerY.signum() > 0) {
+			BigDecimal halfY = integerY.divide(TWO, mc);
+			
+			if (fractionalPart(halfY).signum() != 0) {
+				// odd exponent -> multiply result with x
+				result = result.multiply(x, mc);
+				integerY = integerY.subtract(ONE);
+				halfY = integerY.divide(TWO, mc);
+			}
+			
+			if (halfY.signum() > 0) {
+				// even exponent -> square x
+				x = x.multiply(x, mc);
+			}
+			
+			integerY = halfY;
+		}
+
+		return result.round(mathContext);
+	}
+
 	/**
 	 * Calculates the square root of {@link BigDecimal} x.
 	 * 
