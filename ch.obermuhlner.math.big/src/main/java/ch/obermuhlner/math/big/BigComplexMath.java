@@ -13,6 +13,14 @@ public class BigComplexMath {
 		return value.conjugate();
 	}
 	
+	public static BigDecimal abs(BigComplex value, MathContext mathContext) {
+		return value.abs(mathContext);
+	}
+	
+	public static BigDecimal angle(BigComplex value, MathContext mathContext) {
+		return value.angle(mathContext);
+	}
+	
 	public static BigComplex exp(BigComplex value, MathContext mathContext) {
 		BigDecimal expRe = BigDecimalMath.exp(value.re, mathContext);
 		return BigComplex.valueOf(
@@ -21,15 +29,19 @@ public class BigComplexMath {
 	}
 	
 	public static BigComplex sin(BigComplex value, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		
 		return BigComplex.valueOf(
-				BigDecimalMath.sin(value.re, mathContext).multiply(BigDecimalMath.cosh(value.im, mathContext), mathContext),
-				BigDecimalMath.cos(value.re, mathContext).multiply(BigDecimalMath.sinh(value.im, mathContext), mathContext));
+				BigDecimalMath.sin(value.re, mc).multiply(BigDecimalMath.cosh(value.im, mc), mathContext),
+				BigDecimalMath.cos(value.re, mc).multiply(BigDecimalMath.sinh(value.im, mc), mathContext));
 	}
 	
 	public static BigComplex cos(BigComplex value, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
 		return BigComplex.valueOf(
-				BigDecimalMath.cos(value.re, mathContext).multiply(BigDecimalMath.cosh(value.im, mathContext), mathContext),
-				BigDecimalMath.sin(value.re, mathContext).multiply(BigDecimalMath.sinh(value.im, mathContext), mathContext).negate());
+				BigDecimalMath.cos(value.re, mc).multiply(BigDecimalMath.cosh(value.im, mc), mathContext),
+				BigDecimalMath.sin(value.re, mc).multiply(BigDecimalMath.sinh(value.im, mc), mathContext).negate());
 	}
 	
 	public static BigComplex tan(BigComplex value, MathContext mathContext) {
@@ -43,8 +55,8 @@ public class BigComplexMath {
 	// https://en.wikipedia.org/wiki/Complex_logarithm
 	public static BigComplex log(BigComplex value, MathContext mathContext) {
 		return BigComplex.valueOf(
-				BigDecimalMath.log(value.getLength(mathContext), mathContext),
-				toRangePi(value.getAngle(mathContext), mathContext));
+				BigDecimalMath.log(value.abs(mathContext), mathContext),
+				toRangePi(value.angle(mathContext), mathContext));
 	}
 
 	private static BigDecimal toRangePi(BigDecimal angle, MathContext mathContext) {
