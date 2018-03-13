@@ -127,6 +127,10 @@ public final class BigComplex {
 	public BigComplex conjugate() {
 		return valueOf(re, im.negate());
 	}
+
+	public BigComplex negate() {
+		return valueOf(re.negate(), im.negate());
+	}
 	
 	public BigDecimal abs(MathContext mathContext) {
 		return BigDecimalMath.sqrt(getScale(mathContext), mathContext);
