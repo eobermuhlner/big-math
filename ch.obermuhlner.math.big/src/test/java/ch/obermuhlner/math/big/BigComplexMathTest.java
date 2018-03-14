@@ -86,6 +86,13 @@ public class BigComplexMathTest {
 	}
 
 	@Test
+	public void testRootComplex() {
+		assertEquals(
+				BigComplex.valueOf("1.4494235461237517229913668192323085954480223365111721042", "0.17040446483770403353362509072059809846680452097000085527", MC), 
+				BigComplexMath.root(BigComplex.valueOf(1.1, 2.2), BigComplex.valueOf(3, 2), MC));
+	}
+
+	@Test
 	public void testAsin() {
 		assertEquals(
 				BigComplex.valueOf("0.42707858639247612548064688331895685930333615088099242008", "1.5285709194809981612724561847936733932886832962358541247", MC), 

@@ -154,6 +154,14 @@ public class BigComplexMath {
 
 		return pow(x, BigDecimal.ONE.divide(n, mc), mathContext);
 	}
+
+	public static BigComplex root(BigComplex x, BigComplex n, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		return pow(x, BigComplex.ONE.divide(n, mc), mathContext);
+	}
+	
+	// TODO add root() for the k'th root - https://math.stackexchange.com/questions/322481/principal-nth-root-of-a-complex-number 
 	
 	private static BigDecimal toRangePi(BigDecimal angle, MathContext mathContext) {
 		BigDecimal pi = BigDecimalMath.pi(mathContext);
