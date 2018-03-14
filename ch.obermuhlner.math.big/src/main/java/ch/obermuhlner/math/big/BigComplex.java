@@ -109,8 +109,8 @@ public final class BigComplex {
 
 	public BigComplex divide(BigDecimal value, MathContext mathContext) {
 		return valueOf(
-				re.divide(value),
-				im.divide(value));
+				re.divide(value, mathContext),
+				im.divide(value, mathContext));
 	}
 
 	public BigComplex divide(double value, MathContext mathContext) {
@@ -118,7 +118,7 @@ public final class BigComplex {
 	}
 	
 	public BigComplex reciprocal(MathContext mathContext) {
-		BigDecimal scale = getScale(mathContext);
+		BigDecimal scale = absSquare(mathContext);
 		return valueOf(
 				re.divide(scale, mathContext),
 				im.negate().divide(scale, mathContext));
@@ -133,19 +133,27 @@ public final class BigComplex {
 	}
 	
 	public BigDecimal abs(MathContext mathContext) {
-		return BigDecimalMath.sqrt(getScale(mathContext), mathContext);
+		return BigDecimalMath.sqrt(absSquare(mathContext), mathContext);
 	}
 	
 	public BigDecimal angle(MathContext mathContext) {
 		return BigDecimalMath.atan2(im, re, mathContext);
 	}
 	
-	private BigDecimal getScale(MathContext mathContext) {
+	public BigDecimal absSquare(MathContext mathContext) {
 		return re.multiply(re, mathContext).add(im.multiply(im, mathContext), mathContext);
 	}
 	
 	public boolean isReal() {
 		return im.signum() == 0;
+	}
+	
+	public BigComplex im() {
+		return valueOf(BigDecimal.ZERO, im);
+	}
+	
+	public BigComplex re() {
+		return valueOf(re, BigDecimal.ZERO);
 	}
 	
 	@Override
@@ -223,10 +231,10 @@ public final class BigComplex {
 		return new BigComplex(real, imaginary);
 	}
 
-	public static BigComplex valueOfPolar(BigDecimal length, BigDecimal angle, MathContext mathContext) {
+	public static BigComplex valueOfPolar(BigDecimal radius, BigDecimal angle, MathContext mathContext) {
 		return valueOf(
-				length.multiply(BigDecimalMath.cos(angle, mathContext), mathContext),
-				length.multiply(BigDecimalMath.sin(angle, mathContext), mathContext));
+				radius.multiply(BigDecimalMath.cos(angle, mathContext), mathContext),
+				radius.multiply(BigDecimalMath.sin(angle, mathContext), mathContext));
 	}
 
 }
