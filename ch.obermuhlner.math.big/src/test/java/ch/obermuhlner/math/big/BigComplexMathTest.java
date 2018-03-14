@@ -72,6 +72,20 @@ public class BigComplexMathTest {
 	}
 
 	@Test
+	public void testPowComplex() {
+		assertEquals(
+				BigComplex.valueOf("0.84004892508974359637454837539731545717714689412422564692", "0.25134081792349062667714080016033852435880339768328815847", MC), 
+				BigComplexMath.pow(BigComplex.valueOf(1.1, 2.2), BigComplex.valueOf(0.1, 0.2), MC));
+	}
+
+	@Test
+	public void testRoot() {
+		assertEquals(
+				BigComplex.valueOf("1.2589858696615772964532950314498058030426856758251923734", "0.48693816197569980888611771300161883360684382303096712193", MC), 
+				BigComplexMath.root(BigComplex.valueOf(1.1, 2.2), BigDecimal.valueOf(3), MC));
+	}
+
+	@Test
 	public void testAsin() {
 		assertEquals(
 				BigComplex.valueOf("0.42707858639247612548064688331895685930333615088099242008", "1.5285709194809981612724561847936733932886832962358541247", MC), 

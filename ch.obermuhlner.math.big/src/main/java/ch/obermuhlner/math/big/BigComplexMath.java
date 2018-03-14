@@ -137,6 +137,24 @@ public class BigComplexMath {
 				BigDecimalMath.sin(angleTimesN, mc)).multiply(BigDecimalMath.pow(x.abs(mc), y, mc), mathContext);
 	}
 
+	public static BigComplex pow(BigComplex x, BigComplex y, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		return exp(y.multiply(log(x, mc), mc), mathContext);
+	}
+	
+	public static BigComplex root_ALTERNATE(BigComplex x, BigDecimal n, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		return BigComplex.valueOfPolar(BigDecimalMath.root(x.abs(mc), n, mc), x.angle(mc).divide(n, mc), mathContext);
+	}
+	
+	public static BigComplex root(BigComplex x, BigDecimal n, MathContext mathContext) {
+		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+
+		return pow(x, BigDecimal.ONE.divide(n, mc), mathContext);
+	}
+	
 	private static BigDecimal toRangePi(BigDecimal angle, MathContext mathContext) {
 		BigDecimal pi = BigDecimalMath.pi(mathContext);
 		
