@@ -9,97 +9,97 @@ public class BigComplexMath {
 
 	private static final BigDecimal TWO = BigDecimal.valueOf(2);
 
-	public static BigComplex reciprocal(BigComplex value, MathContext mathContext) {
-		return value.reciprocal(mathContext);
+	public static BigComplex reciprocal(BigComplex x, MathContext mathContext) {
+		return x.reciprocal(mathContext);
 	}
 
-	public static BigComplex conjugate(BigComplex value) {
-		return value.conjugate();
+	public static BigComplex conjugate(BigComplex x) {
+		return x.conjugate();
 	}
 	
-	public static BigDecimal abs(BigComplex value, MathContext mathContext) {
-		return value.abs(mathContext);
+	public static BigDecimal abs(BigComplex x, MathContext mathContext) {
+		return x.abs(mathContext);
 	}
 	
-	public static BigDecimal angle(BigComplex value, MathContext mathContext) {
-		return value.angle(mathContext);
+	public static BigDecimal angle(BigComplex x, MathContext mathContext) {
+		return x.angle(mathContext);
 	}
 	
-	public static BigComplex exp(BigComplex value, MathContext mathContext) {
+	public static BigComplex exp(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		BigDecimal expRe = BigDecimalMath.exp(value.re, mc);
+		BigDecimal expRe = BigDecimalMath.exp(x.re, mc);
 		return BigComplex.valueOf(
-				expRe.multiply(BigDecimalMath.cos(value.im, mc), mathContext),
-				expRe.multiply(BigDecimalMath.sin(value.im, mc), mathContext));
+				expRe.multiply(BigDecimalMath.cos(x.im, mc), mathContext),
+				expRe.multiply(BigDecimalMath.sin(x.im, mc), mathContext));
 	}
 	
-	public static BigComplex sin(BigComplex value, MathContext mathContext) {
+	public static BigComplex sin(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		
 		return BigComplex.valueOf(
-				BigDecimalMath.sin(value.re, mc).multiply(BigDecimalMath.cosh(value.im, mc), mathContext),
-				BigDecimalMath.cos(value.re, mc).multiply(BigDecimalMath.sinh(value.im, mc), mathContext));
+				BigDecimalMath.sin(x.re, mc).multiply(BigDecimalMath.cosh(x.im, mc), mathContext),
+				BigDecimalMath.cos(x.re, mc).multiply(BigDecimalMath.sinh(x.im, mc), mathContext));
 	}
 	
-	public static BigComplex cos(BigComplex value, MathContext mathContext) {
+	public static BigComplex cos(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		return BigComplex.valueOf(
-				BigDecimalMath.cos(value.re, mc).multiply(BigDecimalMath.cosh(value.im, mc), mathContext),
-				BigDecimalMath.sin(value.re, mc).multiply(BigDecimalMath.sinh(value.im, mc), mathContext).negate());
+				BigDecimalMath.cos(x.re, mc).multiply(BigDecimalMath.cosh(x.im, mc), mathContext),
+				BigDecimalMath.sin(x.re, mc).multiply(BigDecimalMath.sinh(x.im, mc), mathContext).negate());
 	}
 	
 	// 
 	// http://scipp.ucsc.edu/~haber/archives/physics116A10/arc_10.pdf
 	
-	public static BigComplex tan(BigComplex value, MathContext mathContext) {
-		return sin(value, mathContext).divide(cos(value, mathContext), mathContext);
+	public static BigComplex tan(BigComplex x, MathContext mathContext) {
+		return sin(x, mathContext).divide(cos(x, mathContext), mathContext);
 	}
 
-	public static BigComplex atan(BigComplex value, MathContext mathContext) {
+	public static BigComplex atan(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		return log(I.subtract(value, mc).divide(I.add(value, mc), mc), mc).divide(I, mc).divide(TWO, mathContext);
+		return log(I.subtract(x, mc).divide(I.add(x, mc), mc), mc).divide(I, mc).divide(TWO, mathContext);
 	}
 	
-	public static BigComplex acot(BigComplex value, MathContext mathContext) {
+	public static BigComplex acot(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		return log(value.add(I, mc).divide(value.subtract(I, mc), mc), mc).divide(I, mc).divide(TWO, mathContext);
+		return log(x.add(I, mc).divide(x.subtract(I, mc), mc), mc).divide(I, mc).divide(TWO, mathContext);
 	}
 	
 	// https://en.wikipedia.org/wiki/Inverse_trigonometric_functions#Extension_to_complex_plane
-	public static BigComplex asin(BigComplex value, MathContext mathContext) {
+	public static BigComplex asin(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		return I.negate().multiply(log(I.multiply(value, mc).add(sqrt(BigComplex.ONE.subtract(value.multiply(value, mc), mc), mc), mc), mc), mathContext);
+		return I.negate().multiply(log(I.multiply(x, mc).add(sqrt(BigComplex.ONE.subtract(x.multiply(x, mc), mc), mc), mc), mc), mathContext);
 	}
 
-	public static BigComplex acos(BigComplex value, MathContext mathContext) {
+	public static BigComplex acos(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		return I.negate().multiply(log(value.add(sqrt(value.multiply(value, mc).subtract(BigComplex.ONE, mc), mc), mc), mc), mathContext);
+		return I.negate().multiply(log(x.add(sqrt(x.multiply(x, mc).subtract(BigComplex.ONE, mc), mc), mc), mc), mathContext);
 	}
 	
 
 	// https://math.stackexchange.com/questions/44406/how-do-i-get-the-square-root-of-a-complex-number
-	public static BigComplex sqrt(BigComplex value, MathContext mathContext) {
+	public static BigComplex sqrt(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		BigDecimal magnitude = value.abs(mc);
+		BigDecimal magnitude = x.abs(mc);
 
-		BigComplex a = value.add(magnitude, mc);
+		BigComplex a = x.add(magnitude, mc);
 		return a.divide(a.abs(mc), mc).multiply(BigDecimalMath.sqrt(magnitude, mc), mathContext);
 	}
 	
 	// https://en.wikipedia.org/wiki/Complex_logarithm
-	public static BigComplex log(BigComplex value, MathContext mathContext) {
+	public static BigComplex log(BigComplex x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		return BigComplex.valueOf(
-				BigDecimalMath.log(value.abs(mc), mathContext),
-				toRangePi(value.angle(mathContext), mathContext));
+				BigDecimalMath.log(x.abs(mc), mathContext),
+				toRangePi(x.angle(mathContext), mathContext));
 	}
 
 	public static BigComplex pow(BigComplex x, long y, MathContext mathContext) {
@@ -149,7 +149,4 @@ public class BigComplexMath {
 		
 		return angle;
 	}
-	
-
-
 }
