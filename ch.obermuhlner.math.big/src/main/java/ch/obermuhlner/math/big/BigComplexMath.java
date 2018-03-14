@@ -1,9 +1,9 @@
 package ch.obermuhlner.math.big;
 
+import static ch.obermuhlner.math.big.BigComplex.I;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
-import static ch.obermuhlner.math.big.BigComplex.I;
 
 public class BigComplexMath {
 
@@ -103,14 +103,31 @@ public class BigComplexMath {
 	}
 
 	public static BigComplex pow(BigComplex x, long y, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		if (y < 0) {
+			return BigComplex.ONE.divide(pow(x, -y, mathContext), mathContext);
+		}
+		
+		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 
-		BigDecimal angleTimesN = x.angle(mc).multiply(BigDecimal.valueOf(y), mc);
-		return BigComplex.valueOf(
-				BigDecimalMath.cos(angleTimesN, mc),
-				BigDecimalMath.sin(angleTimesN, mc)).multiply(BigDecimalMath.pow(x.abs(mc), y, mc), mathContext);
+		BigComplex result = BigComplex.ONE;
+		while (y > 0) {
+			if ((y & 1) == 1) {
+				// odd exponent -> multiply result with x
+				result = result.multiply(x, mc);
+				y -= 1;
+			}
+			
+			if (y > 0) {
+				// even exponent -> square x
+				x = x.multiply(x, mc);
+			}
+			
+			y >>= 1;
+		}
+
+		return result.round(mathContext);
 	}
-
+	
 	public static BigComplex pow(BigComplex x, BigDecimal y, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 

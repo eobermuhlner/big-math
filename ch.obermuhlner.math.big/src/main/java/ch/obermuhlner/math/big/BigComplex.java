@@ -156,6 +156,10 @@ public final class BigComplex {
 		return valueOf(re, BigDecimal.ZERO);
 	}
 	
+	public BigComplex round(MathContext mathContext) {
+		return valueOf(re.round(mathContext), im.round(mathContext));
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(re, im);

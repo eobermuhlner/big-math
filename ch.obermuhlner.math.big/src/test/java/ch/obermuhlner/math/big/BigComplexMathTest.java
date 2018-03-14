@@ -58,6 +58,10 @@ public class BigComplexMathTest {
 		assertEquals(
 				BigComplex.valueOf("18456.81197182559", "-7537.93433754262", MC), 
 				BigComplexMath.pow(BigComplex.valueOf(1.1, 2.2), 11, MC));
+
+		assertEquals(
+				BigComplex.valueOf("0.00004643522633206022281216609142474444925257050125807831", "0.00001896457999216310228315702790913198870386323455307511", MC), 
+				BigComplexMath.pow(BigComplex.valueOf(1.1, 2.2), -11, MC));
 	}
 	
 	@Test
