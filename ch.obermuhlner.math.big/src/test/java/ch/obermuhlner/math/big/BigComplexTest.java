@@ -12,7 +12,8 @@ import org.junit.Test;
 public class BigComplexTest {
 
 	private static final MathContext MC = MathContext.DECIMAL64;
-	private static final MathContext MC_LARGE = MathContext.DECIMAL128;
+	 private static final MathContext MC_LARGE = MathContext.DECIMAL128;
+	 private static final MathContext MC_SMALL = MathContext.DECIMAL32;
 
 	@Test
 	public void testConstants() {
@@ -97,7 +98,12 @@ public class BigComplexTest {
 		assertEquals(BigComplex.valueOf(0.6, 1.7), BigComplex.valueOf(1.2, 3.4).divide(BigDecimal.valueOf(2.0), MC));
 		assertEquals(BigComplex.valueOf(0.6, 1.7), BigComplex.valueOf(1.2, 3.4).divide(2.0, MC));
 	}
-	
+
+	 @Test
+	 public void testReciprocal() {
+		  assertEquals(BigComplex.valueOf(2.0/(2*2+3*3), -3.0/(2*2+3*3)).round(MC_SMALL), BigComplex.valueOf(2, 3).reciprocal(MC_SMALL));
+	 }
+
 	@Test
 	public void testConjugate() {
 		BigComplex orig = BigComplex.valueOf(1.2, 3.4);
@@ -116,7 +122,7 @@ public class BigComplexTest {
 		assertEquals(BigComplex.valueOf(0.0, -1.0), BigComplex.I.negate());
 		assertEquals(BigComplex.valueOf(-1.2, -3.4), BigComplex.valueOf(1.2, 3.4).negate());
 	}
-	
+
 	@Test
 	public void testAbs() {
 		assertCompareTo(BigDecimal.ZERO, BigComplex.ZERO.abs(MC));
@@ -125,7 +131,14 @@ public class BigComplexTest {
 		assertCompareTo(BigDecimalMath.sqrt(BigDecimal.valueOf(2*2+3*3), MC), BigComplex.valueOf(2, 3).abs(MC));
 	}
 
-	
+	@Test
+	public void testAbsSquare() {
+		assertCompareTo(BigDecimal.ZERO, BigComplex.ZERO.absSquare(MC));
+		assertCompareTo(BigDecimal.ONE, BigComplex.ONE.absSquare(MC));
+		assertCompareTo(BigDecimal.ONE, BigComplex.I.absSquare(MC));
+		assertCompareTo(BigDecimal.valueOf(2*2+3*3), BigComplex.valueOf(2, 3).absSquare(MC));
+	}
+
 	@Test(expected = ArithmeticException.class)
 	public void testAngleFailZero() {
 		assertCompareTo(BigDecimal.ZERO, BigComplex.ZERO.angle(MC));

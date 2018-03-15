@@ -16,11 +16,15 @@ public class BigComplexMath {
 	public static BigComplex conjugate(BigComplex x) {
 		return x.conjugate();
 	}
-	
+
 	public static BigDecimal abs(BigComplex x, MathContext mathContext) {
 		return x.abs(mathContext);
 	}
-	
+
+	public static BigDecimal absSquare(BigComplex x, MathContext mathContext) {
+		return x.absSquare(mathContext);
+	}
+
 	public static BigDecimal angle(BigComplex x, MathContext mathContext) {
 		return x.angle(mathContext);
 	}

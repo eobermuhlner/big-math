@@ -12,6 +12,31 @@ public class BigComplexMathTest {
 	private static final MathContext MC = MathContext.DECIMAL128;
 
 	@Test
+	public void testReciprocal() {
+		assertEquals(BigComplex.valueOf(1.2, 2.3).reciprocal(MC), BigComplexMath.reciprocal(BigComplex.valueOf(1.2, 2.3), MC));
+	}
+
+	@Test
+	public void testConjugate() {
+		assertEquals(BigComplex.valueOf(1.2, 2.3).conjugate(), BigComplexMath.conjugate(BigComplex.valueOf(1.2, 2.3)));
+	}
+
+	@Test
+	public void testAngle() {
+		assertEquals(BigComplex.valueOf(1.2, 2.3).angle(MC), BigComplexMath.angle(BigComplex.valueOf(1.2, 2.3), MC));
+	}
+
+	@Test
+	public void testAbs() {
+		assertEquals(BigComplex.valueOf(1.2, 2.3).abs(MC), BigComplexMath.abs(BigComplex.valueOf(1.2, 2.3), MC));
+	}
+
+	@Test
+	public void testAbsSquare() {
+		assertEquals(BigComplex.valueOf(1.2, 2.3).absSquare(MC), BigComplexMath.absSquare(BigComplex.valueOf(1.2, 2.3), MC));
+	}
+
+	@Test
 	public void testExp() {
 		assertEquals(
 				BigComplex.valueOf("-1.1312043837568136384312552555107947106288679958265257502", "2.4717266720048189276169308935516645327361903692410081842", MC), 
