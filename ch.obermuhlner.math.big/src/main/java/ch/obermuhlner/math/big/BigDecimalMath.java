@@ -244,7 +244,9 @@ public class BigDecimalMath {
 				case 1 : return ZERO;
 			}
 		}
-		
+
+		// TODO optimize y=0, y=1, y=10^k, y=-1, y=-10^k
+
 		try {
 			long longValue = y.longValueExact();
 			return pow(x, longValue, mathContext);
@@ -276,12 +278,14 @@ public class BigDecimalMath {
 	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal pow(BigDecimal x, long y, MathContext mathContext) {
-		if (y < 0) {
-			return ONE.divide(pow(x, -y, mathContext), mathContext);
-		}
-		
 		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 
+		// TODO optimize y=0, y=1, y=10^k, y=-1, y=-10^k
+
+		if (y < 0) {
+			return ONE.divide(pow(x, -y, mc), mc).round(mathContext);
+		}
+		
 		BigDecimal result = ONE;
 		while (y > 0) {
 			if ((y & 1) == 1) {
@@ -307,7 +311,7 @@ public class BigDecimalMath {
 	 * <p>The value y MUST be an integer value.</p>
 	 * 
 	 * @param x the {@link BigDecimal} value to take to the power
-	 * @param y the {@link BigDecimal} <strong>integer</strong> value to serve as exponent
+	 * @param integerY the {@link BigDecimal} <strong>integer</strong> value to serve as exponent
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
 	 * @see #pow(BigDecimal, long, MathContext)
@@ -320,13 +324,13 @@ public class BigDecimalMath {
 		if (integerY.signum() < 0) {
 			return ONE.divide(powInteger(x, integerY.negate(), mathContext), mathContext);
 		}
-		
-		MathContext mc = new MathContext(mathContext.getPrecision() + 20, mathContext.getRoundingMode());
+
+		MathContext mc = new MathContext(Math.max(mathContext.getPrecision(), -integerY.scale()) + 30, mathContext.getRoundingMode());
 
 		BigDecimal result = ONE;
 		while (integerY.signum() > 0) {
 			BigDecimal halfY = integerY.divide(TWO, mc);
-			
+
 			if (fractionalPart(halfY).signum() != 0) {
 				// odd exponent -> multiply result with x
 				result = result.multiply(x, mc);
@@ -363,7 +367,7 @@ public class BigDecimalMath {
 			throw new ArithmeticException("Illegal sqrt(x) for x < 0: x = " + x);
 		}
 
-		int maxPrecision = mathContext.getPrecision() + 4;
+		int maxPrecision = mathContext.getPrecision() + 6;
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal result;
@@ -451,7 +455,9 @@ public class BigDecimalMath {
 	 */
 	public static BigDecimal log(BigDecimal x, MathContext mathContext) {
 		// http://en.wikipedia.org/wiki/Natural_logarithm
-		
+
+		//System.out.println("log(" + x + " " + mathContext + ")");
+
 		if (x.signum() <= 0) {
 			throw new ArithmeticException("Illegal log(x) for x <= 0: x = " + x);
 		}
@@ -468,7 +474,8 @@ public class BigDecimalMath {
 			result = logUsingExponent(x, mathContext);
 			break;
 		default :
-			result = logUsingTwoThree(x, mathContext);
+			//result = logUsingTwoThree(x, mathContext);
+			result = logUsingNewton(x, mathContext);
 		}
 
 		return result.round(mathContext);
@@ -508,9 +515,10 @@ public class BigDecimalMath {
 		// https://en.wikipedia.org/wiki/Natural_logarithm in chapter 'High Precision'
 		// y = y + 2 * (x-exp(y)) / (x+exp(y))
 
-		int maxPrecision = mathContext.getPrecision() + 4;
+		int maxPrecision = mathContext.getPrecision() + 20;
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
-		
+		//System.out.println("logUsingNewton(" + x + " " + mathContext + ") precision " + maxPrecision);
+
 		BigDecimal result;
 		int adaptivePrecision;
 		if (isDoubleValue(x)) {
@@ -532,6 +540,7 @@ public class BigDecimalMath {
 			
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
 			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
+			//System.out.println("  step " + step + " adaptivePrecision=" + adaptivePrecision);
 			result = result.add(step);
 		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
 
@@ -539,7 +548,8 @@ public class BigDecimalMath {
 	}
 
 	private static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() * 19 / 10 + 10, mathContext.getRoundingMode());
+		//System.out.println("logUsingTwoThree(" + x + " " + mathContext + ") precision " + mc);
 
 		int factorOfTwo = 0;
 		int powerOfTwo = 1;
@@ -640,18 +650,24 @@ public class BigDecimalMath {
 			result = result.subtract(logThree(mc).multiply(valueOf(-factorOfThree), mc), mc);
 		}
 
-		result = result.add(logUsingNewton(correctedX, mc));
+		if (x == correctedX && result == ZERO) {
+			return logUsingNewton(x, mathContext);
+		}
+
+		result = result.add(logUsingNewton(correctedX, mc), mc);
 
 		return result;
 	}
 
 	private static BigDecimal logUsingExponent(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() * 2, mathContext.getRoundingMode());
+		//System.out.println("logUsingExponent(" + x + " " + mathContext + ") precision " + mc);
 
 		int exponent = exponent(x);
 		BigDecimal mantissa = mantissa(x);
-		
-		BigDecimal result = logUsingTwoThree(mantissa, mc);
+
+		//BigDecimal result = logUsingTwoThree(mantissa, mc);
+		BigDecimal result = logUsingNewton(mantissa, mc);
 		if (exponent != 0) {
 			result = result.add(valueOf(exponent).multiply(logTen(mc), mc), mc);
 		}
@@ -818,7 +834,7 @@ public class BigDecimalMath {
 		
 		BigDecimal fractionalPart = x.subtract(integralPart);
 
-		MathContext mc = new MathContext(mathContext.getPrecision() + 9, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 
         BigDecimal z = ONE.add(fractionalPart.divide(integralPart, mc));
         BigDecimal t = expTaylor(z, mc);
@@ -829,7 +845,7 @@ public class BigDecimalMath {
 	}
 	
 	private static BigDecimal expTaylor(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		x = x.divide(valueOf(256), mc);
 		
@@ -1116,7 +1132,7 @@ public class BigDecimalMath {
 	 * @return the calculated arc hyperbolic sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 */
 	public static BigDecimal asinh(BigDecimal x, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).add(ONE, mc), mc), mc), mc);
 		return result.round(mathContext);
 	}	
