@@ -35,7 +35,7 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `atanh(BigDecimal, MathContext)`
 
 *   `pow(BigDecimal, int, MathContext)` calculates x^y for `int` y
-*   `factorial(int, MathContext)` calculates n!
+*   `factorial(int)` calculates n!
 *   `bernoulli(int)` calculates Bernoulli numbers
 
 *   `pi(MathContext)` calculates pi to an arbitrary precision
