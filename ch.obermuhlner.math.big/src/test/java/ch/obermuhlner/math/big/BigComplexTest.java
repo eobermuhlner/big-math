@@ -58,8 +58,17 @@ public class BigComplexTest {
 		assertSame(BigComplex.I, BigComplex.valueOf(BigDecimal.ZERO, BigDecimal.ONE));
 		assertSame(BigComplex.I, BigComplex.valueOf(0.0, 1.0));
 	}
-	
-	
+
+	@Test
+	public void testRe() {
+		assertEquals(BigComplex.valueOf(1.1, 0.0), BigComplex.valueOf(1.1, 2.2).re());
+	}
+
+	@Test
+	public void testIm() {
+		assertEquals(BigComplex.valueOf(0.0, 2.2), BigComplex.valueOf(1.1, 2.2).im());
+	}
+
 	@Test
 	public void testAdd() {
 		assertEquals(BigComplex.valueOf(1.7, 4.0), BigComplex.valueOf(1.2, 3.4).add(BigComplex.valueOf(0.5, 0.6), MC));
@@ -99,10 +108,9 @@ public class BigComplexTest {
 		assertEquals(BigComplex.valueOf(0.6, 1.7), BigComplex.valueOf(1.2, 3.4).divide(2.0, MC));
 	}
 
-	 @Test
-	 public void testReciprocal() {
-		  assertEquals(BigComplex.valueOf(2.0/(2*2+3*3), -3.0/(2*2+3*3)).round(MC_SMALL), BigComplex.valueOf(2, 3).reciprocal(MC_SMALL));
-	 }
+	@Test public void testReciprocal () {
+		assertEquals(BigComplex.valueOf(2.0 / (2 * 2 + 3 * 3), -3.0 / (2 * 2 + 3 * 3)).round(MC_SMALL), BigComplex.valueOf(2, 3).reciprocal(MC_SMALL));
+	}
 
 	@Test
 	public void testConjugate() {

@@ -477,7 +477,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testLogRange10() {
-		double step = HEAVY_TEST ? 0.001 : 0.1;
+		double step = HEAVY_TEST ? 0.01 : 0.1;
 		BigDecimalStream.range(step, 10.0, step, MC).forEach(x -> {
 			System.out.println("Testing log(" + x + ")");
 			assertEquals("log(" + x + ")",
