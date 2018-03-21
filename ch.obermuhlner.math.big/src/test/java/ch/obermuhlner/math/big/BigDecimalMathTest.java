@@ -1158,7 +1158,7 @@ public class BigDecimalMathTest {
 					"precision=" + precision, 
 					expected.round(mathContext).toString(),
 					precisionCalculation.apply(mathContext).toString());
-			precision += 5;
+			precision += HEAVY_TEST ? 5 : 20;
 		}
 	}
 	
