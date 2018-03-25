@@ -353,7 +353,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Calculates the angle value (also known as argument) of this complex number.
+	 * Calculates the angle in radians (also known as argument) of this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
