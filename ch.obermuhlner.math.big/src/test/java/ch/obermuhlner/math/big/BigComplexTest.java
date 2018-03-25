@@ -60,6 +60,18 @@ public class BigComplexTest {
 	}
 
 	@Test
+	public void testValueOfPolar() {
+		assertDelta(BigComplex.valueOf(1.0, 0.0), BigComplex.valueOfPolar(1.0, 0.0, MC), BigDecimal.valueOf(1E-10));
+		assertDelta(BigComplex.valueOf(-1.0, 0.0), BigComplex.valueOfPolar(BigDecimal.valueOf(1.0), BigDecimalMath.pi(MC), MC), BigDecimal.valueOf(1E-10));
+	}
+
+	@Test
+	public void testValueOfPolarConstants() {
+		assertSame(BigComplex.ZERO, BigComplex.valueOfPolar(0.0, 1.1, MC));
+		assertSame(BigComplex.ZERO, BigComplex.valueOfPolar(0.0, -9.999, MC));
+	}
+
+	@Test
 	public void testRe() {
 		assertEquals(BigComplex.valueOf(1.1, 0.0), BigComplex.valueOf(1.1, 2.2).re());
 	}
@@ -217,5 +229,17 @@ public class BigComplexTest {
 
 	private void assertCompareTo(BigDecimal expected, BigDecimal actual) {
 		assertEquals(expected + " compareTo(" + actual + ")", 0, expected.compareTo(actual));
+	}
+
+	private void assertDelta(BigDecimal expected, BigDecimal actual, BigDecimal allowedDelta) {
+		BigDecimal diff = actual.subtract(expected).abs();
+		assertEquals("diff=" +diff + " <= allowed=" + allowedDelta + ")", true, diff.compareTo(allowedDelta) <= 0);
+	}
+
+	private void assertDelta(BigComplex expected, BigComplex actual, BigDecimal allowedDelta) {
+		BigDecimal diffRe = actual.re.subtract(expected.re).abs();
+		BigDecimal diffIm = actual.im.subtract(expected.im).abs();
+		assertEquals("Re diff=" +diffRe + " <= allowed=" + allowedDelta + ")", true, diffRe.compareTo(allowedDelta) <= 0);
+		assertEquals("Im diff=" +diffIm + " <= allowed=" + allowedDelta + ")", true, diffIm.compareTo(allowedDelta) <= 0);
 	}
 }
