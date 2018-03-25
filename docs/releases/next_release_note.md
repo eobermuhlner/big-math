@@ -4,7 +4,7 @@
 
 ### Class `BigComplex`
 
-The class `BigComplex` to represent complex numbers in the form `(a + bi)` has been added.
+The class `BigComplex` represents complex numbers in the form `(a + bi)`.
 It follows the design of `BigDecimal` with some convenience improvements like overloaded operator methods.
 
 A big difference to `BigDecimal` is that `BigComplex.equals()` implements the *mathematical* equality
