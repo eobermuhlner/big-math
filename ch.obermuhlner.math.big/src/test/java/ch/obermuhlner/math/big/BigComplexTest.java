@@ -32,9 +32,6 @@ public class BigComplexTest {
 		assertEquals(BigDecimal.valueOf(1.2), BigComplex.valueOf(BigDecimal.valueOf(1.2), BigDecimal.valueOf(3.4)).re);
 		assertEquals(BigDecimal.valueOf(3.4), BigComplex.valueOf(BigDecimal.valueOf(1.2), BigDecimal.valueOf(3.4)).im);
 		
-		assertEquals(BigDecimal.valueOf(1.2), BigComplex.valueOf("1.2", "3.4").re);
-		assertEquals(BigDecimal.valueOf(3.4), BigComplex.valueOf("1.2", "3.4").im);
-		
 		assertEquals(BigDecimal.valueOf(1.2), BigComplex.valueOf(1.2, 3.4).re);
 		assertEquals(BigDecimal.valueOf(3.4), BigComplex.valueOf(1.2, 3.4).im);
 		
@@ -188,7 +185,7 @@ public class BigComplexTest {
 		assertEquals(true, BigComplex.ZERO.equals(BigComplex.ZERO));
 		assertEquals(true, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf(1, 2)));
 		assertEquals(true, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf(1.0, 2.0)));
-		assertEquals(true, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf("1.00000", "2.0000")));
+		assertEquals(true, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf(new BigDecimal("1.00000"), new BigDecimal("2.0000"))));
 	}
 	
 	@Test
@@ -202,8 +199,8 @@ public class BigComplexTest {
 		assertEquals(true, BigComplex.ZERO.strictEquals(BigComplex.ZERO));
 		assertEquals(true, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf(1, 2)));
 		assertEquals(true, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf(1.0, 2.0)));
-		assertEquals(false, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf("1", "2")));
-		assertEquals(false, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf("1.00000", "2.0000")));
+		assertEquals(false, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf(new BigDecimal("1"), new BigDecimal("2"))));
+		assertEquals(false, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf(new BigDecimal("1.00000"), new BigDecimal("2.0000"))));
 	}
 
 	@Test

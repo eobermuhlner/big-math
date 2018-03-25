@@ -498,14 +498,6 @@ public final class BigComplex {
 		return valueOf(BigDecimal.valueOf(real), BigDecimal.valueOf(imaginary));
 	}
 
-	public static BigComplex valueOf(String real, String imaginary) {
-		return valueOf(new BigDecimal(real), new BigDecimal(imaginary));
-	}
-
-	public static BigComplex valueOf(String real, String imaginary, MathContext mathContext) {
-		return valueOf(new BigDecimal(real, mathContext), new BigDecimal(imaginary, mathContext));
-	}
-
 	/**
 	 * Returns a complex number with the specified real and imaginary {@link BigDecimal} parts.
 	 *
