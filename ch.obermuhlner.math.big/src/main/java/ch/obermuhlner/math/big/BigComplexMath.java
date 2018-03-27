@@ -5,6 +5,9 @@ import static ch.obermuhlner.math.big.BigComplex.I;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+/**
+ * Provides advanced functions operating on {@link BigComplex}s.
+ */
 public class BigComplexMath {
 
 	private static final BigDecimal TWO = BigDecimal.valueOf(2);
@@ -60,6 +63,7 @@ public class BigComplexMath {
 	 * Calculates the angle in radians of the given complex number using the specified {@link MathContext}.
 	 *
 	 * @param x the complex number to calculate the angle
+	 * @param mathContext the {@link MathContext} used to calculate the result
 	 * @return the calculated {@link BigComplex} angle in radians
 	 * @see BigComplex#angle(MathContext)
 	 */
@@ -194,7 +198,7 @@ public class BigComplexMath {
 	}
 	
 	/**
-	 * Calculates the square root of {@link BigComplex} x in the complex domain.
+	 * Calculates the square root of {@link BigComplex} x in the complex domain (√x).
 	 *
 	 * <p>See <a href="https://en.wikipedia.org/wiki/Square_root#Square_root_of_an_imaginary_number">Wikipedia: Square root (Square root of an imaginary number)</a></p>
 	 *
@@ -301,7 +305,7 @@ public class BigComplexMath {
 	}
 
 	/**
-	 * Calculates the {@link BigDecimal} n'th root of {@link BigComplex} x.
+	 * Calculates the {@link BigDecimal} n'th root of {@link BigComplex} x (<sup>n</sup>√x).
 	 *
 	 * <p>See <a href="http://en.wikipedia.org/wiki/Square_root">Wikipedia: Square root</a></p>
 	 * @param x the {@link BigComplex} value to calculate the n'th root
@@ -317,7 +321,7 @@ public class BigComplexMath {
 	}
 
 	/**
-	 * Calculates the {@link BigComplex} n'th root of {@link BigComplex} x.
+	 * Calculates the {@link BigComplex} n'th root of {@link BigComplex} x (<sup>n</sup>√x).
 	 *
 	 * <p>See <a href="http://en.wikipedia.org/wiki/Square_root">Wikipedia: Square root</a></p>
 	 * @param x the {@link BigComplex} value to calculate the n'th root

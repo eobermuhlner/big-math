@@ -5,11 +5,11 @@ import java.math.MathContext;
 import java.util.Objects;
 
 /**
- * Represents a complex number consisting of a real and an imaginary {@link BigDecimal} number in the form {@code a + bi}.
+ * Represents a complex number consisting of a real and an imaginary {@link BigDecimal} part in the form {@code a + bi}.
  *
- * <p>It follows the design of {@link BigDecimal} with some convenience improvements like overloaded operator methods.</p>
+ * <p>It generally follows the design of {@link BigDecimal} with some convenience improvements like overloaded operator methods.</p>
  *
- * <p>A big difference to {@link BigDecimal} is that {@link BigComplex#equals(Object) BigComplex.equals(Object)} implements the <strong>mathematical</strong> equality
+ * <p>The biggest difference to {@link BigDecimal} is that {@link BigComplex#equals(Object) BigComplex.equals(Object)} implements the <strong>mathematical</strong> equality
  * and <strong>not</strong> the strict technical equality.
  * This was a difficult decision because it means that {@code BigComplex} behaves slightly different than {@link BigDecimal}
  * but considering that the strange equality of {@link BigDecimal} is a major source of bugs we
@@ -41,7 +41,7 @@ public final class BigComplex {
 	public final BigDecimal re;
 
 	/**
-	 * The imaginary @link BigDecimal} part of this complex number.
+	 * The imaginary {@link BigDecimal} part of this complex number.
 	 */
 	public final BigDecimal im;
 
@@ -51,7 +51,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the addition of the given complex value to this complex number.
+	 * Calculates the addition of the given complex value to this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -65,7 +65,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the addition of the given complex value to this complex number using the specified {@link MathContext}.
+	 * Calculates the addition of the given complex value to this complex number using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -80,7 +80,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the addition of the given real {@link BigDecimal} value to this complex number using the specified {@link MathContext}.
+	 * Calculates the addition of the given real {@link BigDecimal} value to this complex number using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -95,7 +95,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the addition of the given real {@link BigDecimal} value to this complex number.
+	 * Calculates the addition of the given real {@link BigDecimal} value to this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -109,7 +109,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the addition of the given real {@code double} value to this complex number.
+	 * Calculates the addition of the given real {@code double} value to this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -121,7 +121,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the subtraction of the given complex value from this complex number.
+	 * Calculates the subtraction of the given complex value from this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -135,7 +135,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the subtraction of the given complex value from this complex number using the specified {@link MathContext}.
+	 * Calculates the subtraction of the given complex value from this complex number using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -150,7 +150,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the subtraction of the given real {@link BigDecimal} value from this complex number using the specified {@link MathContext}.
+	 * Calculates the subtraction of the given real {@link BigDecimal} value from this complex number using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -165,7 +165,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the subtraction of the given real {@link BigDecimal} value from this complex number.
+	 * Calculates the subtraction of the given real {@link BigDecimal} value from this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -179,7 +179,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the subtraction of the given real {@code double} value from this complex number.
+	 * Calculates the subtraction of the given real {@code double} value from this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -191,7 +191,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the multiplication of the given complex value to this complex number.
+	 * Calculates the multiplication of the given complex value to this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -205,7 +205,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the multiplication of the given complex value with this complex number using the specified {@link MathContext}.
+	 * Calculates the multiplication of the given complex value with this complex number using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -220,7 +220,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the multiplication of the given real {@link BigDecimal} value with this complex number using the specified {@link MathContext}.
+	 * Calculates the multiplication of the given real {@link BigDecimal} value with this complex number using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -235,7 +235,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the multiplication of the given real {@link BigDecimal} value with this complex number.
+	 * Calculates the multiplication of the given real {@link BigDecimal} value with this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -249,7 +249,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns the multiplication of the given real {@code double} value with this complex number.
+	 * Calculates the multiplication of the given real {@code double} value with this complex number.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -261,7 +261,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns this complex number divided by the given complex value using the specified {@link MathContext}.
+	 * Calculates this complex number divided by the given complex value using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -274,7 +274,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns this complex number divided by the given real {@link BigDecimal} value using the specified {@link MathContext}.
+	 * Calculates this complex number divided by the given real {@link BigDecimal} value using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -289,7 +289,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * Returns this complex number divided by the given real {@code double} value using the specified {@link MathContext}.
+	 * Calculates this complex number divided by the given real {@code double} value using the specified {@link MathContext}.
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
@@ -345,6 +345,7 @@ public final class BigComplex {
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
+	 * @param mathContext the {@link MathContext} used to calculate the result
 	 * @return the calculated {@link BigComplex} result
 	 * @see #absSquare(MathContext)
 	 */
@@ -357,6 +358,7 @@ public final class BigComplex {
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
+	 * @param mathContext the {@link MathContext} used to calculate the result
 	 * @return the calculated {@link BigComplex} result
 	 */
 	public BigDecimal angle(MathContext mathContext) {
@@ -370,6 +372,7 @@ public final class BigComplex {
 	 *
 	 * <p>This methods <strong>does not</strong> modify this instance.</p>
 	 *
+	 * @param mathContext the {@link MathContext} used to calculate the result
 	 * @return the calculated {@link BigComplex} result
 	 * @see #abs(MathContext)
 	 */
@@ -387,7 +390,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * The real part of this complex number as {@link BigComplex} number.
+	 * Returns the real part of this complex number as {@link BigComplex} number.
 	 *
 	 * @return the real part as as {@link BigComplex} number
 	 */
@@ -396,7 +399,7 @@ public final class BigComplex {
 	}
 
 	/**
-	 * The imaginary part of this complex number as {@link BigComplex} number.
+	 * Returns the imaginary part of this complex number as {@link BigComplex} number.
 	 *
 	 * @return the imaginary part as as {@link BigComplex} number
 	 */
@@ -404,6 +407,14 @@ public final class BigComplex {
 		return valueOf(BigDecimal.ZERO, im);
 	}
 
+	/**
+	 * Returns this complex nuber rounded to the specified precision.
+	 *
+	 * <p>This methods <strong>does not</strong> modify this instance.</p>
+	 *
+	 * @param mathContext the {@link MathContext} used to calculate the result
+	 * @return the rounded {@link BigComplex} result
+	 */
 	public BigComplex round(MathContext mathContext) {
 		return valueOf(re.round(mathContext), im.round(mathContext));
 	}
@@ -417,7 +428,7 @@ public final class BigComplex {
 	 * {@inheritDoc}
 	 *
 	 * <p>Contrary to {@link BigDecimal#equals(Object)} this method implements <strong>mathematical</strong> equality
-	 * (by calling {@link BigDecimal#compareTo(BigDecimal) on the real and imaginary parts})
+	 * (by calling {@link BigDecimal#compareTo(BigDecimal)} on the real and imaginary parts)
 	 * instead of strict equality.</p>
 	 *
 	 * @see #strictEquals(Object)
@@ -526,6 +537,7 @@ public final class BigComplex {
 	 *
 	 * @param radius the {@link BigDecimal} radius of the polar representation
 	 * @param angle the {@link BigDecimal} angle in radians of the polar representation
+	 * @param mathContext the {@link MathContext} used to calculate the result
 	 * @return the complex number
 	 */
 	public static BigComplex valueOfPolar(BigDecimal radius, BigDecimal angle, MathContext mathContext) {
