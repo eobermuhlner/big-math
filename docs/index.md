@@ -12,5 +12,12 @@ The following javadocs are available:
 
 ## Release Notes
 
-* [Release Note 1.3.0](releases/v1.3.0.html)
+* [Next Release Note](releases/next_release_note.html) (under construction)
 
+* [Release Note 1.3.0](releases/v1.3.0.html)
+* [Release Note 1.2.1](releases/v1.2.1.html)
+* [Release Note 1.2.0](releases/v1.2.0.html)
+* [Release Note 1.1.0](releases/v1.1.0.html)
+* [Release Note 1.0.0](releases/v1.0.0.html)
+* [Release Note 1.0-beta2](releases/v1.0-beta2.html)
+* [Release Note 1.0-beta1](releases/v1.0-beta1.html)
