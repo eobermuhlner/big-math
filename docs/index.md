@@ -12,5 +12,5 @@ The following javadocs are available:
 
 ## Release Notes
 
-* [Release Note 1.3.0](releases/v1.3.0.html/)
+* [Release Note 1.3.0](releases/v1.3.0.html)
 
