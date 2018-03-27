@@ -1,7 +1,7 @@
 # Big-Math Documentation
 
 <p align="center">
-	<img alt="big-math" src="docs/images/big-math-splashscreen.png">
+	<img alt="big-math" src="images/big-math-splashscreen.png">
 </p>
 
 ## Javadoc
