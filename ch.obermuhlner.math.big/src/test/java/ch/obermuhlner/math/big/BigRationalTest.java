@@ -314,7 +314,22 @@ public class BigRationalTest {
 		assertEquals("1 2/3", valueOf(1, 2, 3).toIntegerRationalString());
 		assertEquals("-1 2/3", valueOf(-1, 2, 3).toIntegerRationalString());
 	}
-	
+
+	/**
+	 * Tests {@link BigRational#toPlainString()}.
+	 */
+	@Test
+	public void testToPlainString() {
+		assertEquals("0", valueOf(0).toPlainString());
+		assertEquals("123", valueOf(123).toPlainString());
+		assertEquals("0.5", valueOf(1, 2).toPlainString());
+		assertEquals("-0.5", valueOf(-1, 2).toPlainString());
+		assertEquals("-0.5", valueOf(1, -2).toPlainString());
+		assertEquals("0.6666666666666666666666666666666667", valueOf(2, 3).toPlainString());
+
+		assertEquals("1", valueOf(4, 4).toPlainString());
+	}
+
 	/**
 	 * Tests {@link BigRational#toDouble()}.
 	 */
