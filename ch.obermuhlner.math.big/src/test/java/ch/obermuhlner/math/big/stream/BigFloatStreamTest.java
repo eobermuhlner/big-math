@@ -1,9 +1,14 @@
 package ch.obermuhlner.math.big.stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
+import java.util.Spliterator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -197,6 +202,18 @@ public class BigFloatStreamTest {
 			.collect(Collectors.toList());
 		
 		assertListClosed(list, 0, 10);
+	}
+
+	@Test
+	public void testSingleStep() {
+		Context context = BigFloat.context(20);
+		Stream<BigFloat> stream = BigFloatStream.range(0, 3, 1, context);
+		Spliterator<BigFloat> spliterator = stream.spliterator();
+
+		assertEquals(true, spliterator.tryAdvance(value -> assertEquals(context.valueOf(0), value)));
+		assertEquals(true, spliterator.tryAdvance(value -> assertEquals(context.valueOf(1), value)));
+		assertEquals(true, spliterator.tryAdvance(value -> assertEquals(context.valueOf(2), value)));
+		assertEquals(false, spliterator.tryAdvance(value -> fail("Should not be called")));
 	}
 
 	private void assertList(List<BigFloat> list, long startInclusive, long endExclusive) {
