@@ -44,11 +44,28 @@ public class BigDecimalMathTest {
 		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(-55.0)));
 		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(33.0)));
 
-		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MIN_VALUE - 1L)));
-		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MAX_VALUE + 1L)));
+		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MIN_VALUE).subtract(BigDecimal.ONE)));
+		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MAX_VALUE ).add(BigDecimal.ONE)));
 		
 		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(3.333)));
 		assertEquals(false, BigDecimalMath.isIntValue(BigDecimal.valueOf(-5.555)));
+	}
+
+	@Test
+	public void testIsLongValue() {
+		assertEquals(true, BigDecimalMath.isLongValue(BigDecimal.valueOf(Long.MIN_VALUE)));
+		assertEquals(true, BigDecimalMath.isLongValue(BigDecimal.valueOf(Long.MAX_VALUE)));
+		assertEquals(true, BigDecimalMath.isLongValue(BigDecimal.valueOf(0)));
+		assertEquals(true, BigDecimalMath.isLongValue(BigDecimal.valueOf(-55)));
+		assertEquals(true, BigDecimalMath.isLongValue(BigDecimal.valueOf(33)));
+		assertEquals(true, BigDecimalMath.isLongValue(BigDecimal.valueOf(-55.0)));
+		assertEquals(true, BigDecimalMath.isLongValue(BigDecimal.valueOf(33.0)));
+
+		assertEquals(false, BigDecimalMath.isLongValue(BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE)));
+		assertEquals(false, BigDecimalMath.isLongValue(BigDecimal.valueOf(Long.MAX_VALUE ).add(BigDecimal.ONE)));
+
+		assertEquals(false, BigDecimalMath.isLongValue(BigDecimal.valueOf(3.333)));
+		assertEquals(false, BigDecimalMath.isLongValue(BigDecimal.valueOf(-5.555)));
 	}
 
 	@Test
@@ -602,7 +619,12 @@ public class BigDecimalMathTest {
 				(x) -> Math.log(x) / Math.log(2),
 				(x, mathContext) -> BigDecimalMath.log2(x, mathContext));
 	}
-	
+
+	@Test(expected = ArithmeticException.class)
+	public void testLogNegative() {
+		BigDecimalMath.log(BigDecimal.valueOf(-1), MC);
+	}
+
 	@Test
 	public void testExp() {
 		for(double value : new double[] { -5, -1, 0.1, 2, 10 }) {
@@ -814,9 +836,12 @@ public class BigDecimalMathTest {
 	
 	@Test
 	public void testAtan2() {
+		BigDecimal pi = BigDecimalMath.pi(MC);
 		BigDecimal piHalf = BigDecimalMath.pi(new MathContext(MC.getPrecision() + 10)).divide(BigDecimal.valueOf(2), MC);
+
 		assertEquals(piHalf, BigDecimalMath.atan2(BigDecimal.TEN, BigDecimal.ZERO, MC));
 		assertEquals(piHalf.negate(), BigDecimalMath.atan2(BigDecimal.TEN.negate(), BigDecimal.ZERO, MC));
+		assertEquals(pi, BigDecimalMath.atan2(BigDecimal.ZERO, BigDecimal.TEN.negate(), MC));
 	}
 
 	@Test
