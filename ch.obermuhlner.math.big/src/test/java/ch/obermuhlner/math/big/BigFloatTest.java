@@ -406,127 +406,127 @@ public class BigFloatTest {
 	@Test
 	public void testSqrt() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(sqrt(context.valueOf(3)).toBigDecimal(), BigDecimalMath.sqrt(BigDecimal.valueOf(3), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.sqrt(BigDecimal.valueOf(3), MathContext.DECIMAL32), sqrt(context.valueOf(3)).toBigDecimal());
 	}
 	
 	@Test
 	public void testPow2() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(context.valueOf(2).pow(3).toBigDecimal(), BigDecimalMath.pow(BigDecimal.valueOf(2), BigDecimal.valueOf(3), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.pow(BigDecimal.valueOf(2), BigDecimal.valueOf(3), MathContext.DECIMAL32), context.valueOf(2).pow(3).toBigDecimal());
 	}
 	
 	@Test
 	public void testRoot2() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(context.valueOf(8).root(3).toBigDecimal(), BigDecimalMath.root(BigDecimal.valueOf(8), BigDecimal.valueOf(3), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.root(BigDecimal.valueOf(8), BigDecimal.valueOf(3), MathContext.DECIMAL32), context.valueOf(8).root(3).toBigDecimal());
 	}
 
 	@Test
 	public void testPowStatic() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(pow(context.valueOf(2), context.valueOf(3)).toBigDecimal(), BigDecimalMath.pow(BigDecimal.valueOf(2), BigDecimal.valueOf(3), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.pow(BigDecimal.valueOf(2), BigDecimal.valueOf(3), MathContext.DECIMAL32), pow(context.valueOf(2), context.valueOf(3)).toBigDecimal());
 	}
 
 	@Test
 	public void testRootStatic() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(root(context.valueOf(8), context.valueOf(3)).toBigDecimal(), BigDecimalMath.root(BigDecimal.valueOf(8), BigDecimal.valueOf(3), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.root(BigDecimal.valueOf(8), BigDecimal.valueOf(3), MathContext.DECIMAL32), root(context.valueOf(8), context.valueOf(3)).toBigDecimal());
 	}
 
 	@Test
 	public void testSin() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(sin(context.valueOf(0)).toBigDecimal(), BigDecimalMath.sin(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.sin(BigDecimal.valueOf(0), MathContext.DECIMAL32), sin(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testCos() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(cos(context.valueOf(0)).toBigDecimal(), BigDecimalMath.cos(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.cos(BigDecimal.valueOf(0), MathContext.DECIMAL32), cos(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testTan() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(tan(context.valueOf(0)).toBigDecimal(), BigDecimalMath.tan(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.tan(BigDecimal.valueOf(0), MathContext.DECIMAL32), tan(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testCot() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(cot(context.valueOf(1)).toBigDecimal(), BigDecimalMath.cot(BigDecimal.valueOf(1), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.cot(BigDecimal.valueOf(1), MathContext.DECIMAL32), cot(context.valueOf(1)).toBigDecimal());
 	}
 	
 	@Test
 	public void testAsin() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(asin(context.valueOf(0)).toBigDecimal(), BigDecimalMath.asin(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.asin(BigDecimal.valueOf(0), MathContext.DECIMAL32), asin(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testAcos() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(acos(context.valueOf(0)).toBigDecimal(), BigDecimalMath.acos(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.acos(BigDecimal.valueOf(0), MathContext.DECIMAL32), acos(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testAtan() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(atan(context.valueOf(0)).toBigDecimal(), BigDecimalMath.atan(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.atan(BigDecimal.valueOf(0), MathContext.DECIMAL32), atan(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testAcot() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(acot(context.valueOf(0)).toBigDecimal(), BigDecimalMath.acot(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.acot(BigDecimal.valueOf(0), MathContext.DECIMAL32), acot(context.valueOf(0)).toBigDecimal());
 	}
 
 	@Test
 	public void testSinh() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(sinh(context.valueOf(0)).toBigDecimal(), BigDecimalMath.sinh(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.sinh(BigDecimal.valueOf(0), MathContext.DECIMAL32), sinh(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testCosh() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(cosh(context.valueOf(0)).toBigDecimal(), BigDecimalMath.cosh(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.cosh(BigDecimal.valueOf(0), MathContext.DECIMAL32), cosh(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testCoth() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(coth(context.valueOf(1.1)).toBigDecimal(), BigDecimalMath.coth(BigDecimal.valueOf(1.1), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.coth(BigDecimal.valueOf(1.1), MathContext.DECIMAL32), coth(context.valueOf(1.1)).toBigDecimal());
 	}
 	
 	@Test
 	public void testTanh() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(tanh(context.valueOf(0)).toBigDecimal(), BigDecimalMath.tanh(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.tanh(BigDecimal.valueOf(0), MathContext.DECIMAL32), tanh(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testAsinh() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(asinh(context.valueOf(0)).toBigDecimal(), BigDecimalMath.asinh(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.asinh(BigDecimal.valueOf(0), MathContext.DECIMAL32), asinh(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testAcosh() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(acosh(context.valueOf(1.1)).toBigDecimal(), BigDecimalMath.acosh(BigDecimal.valueOf(1.1), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.acosh(BigDecimal.valueOf(1.1), MathContext.DECIMAL32), acosh(context.valueOf(1.1)).toBigDecimal());
 	}
 	
 	@Test
 	public void testAtanh() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(atanh(context.valueOf(0)).toBigDecimal(), BigDecimalMath.atanh(BigDecimal.valueOf(0), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.atanh(BigDecimal.valueOf(0), MathContext.DECIMAL32), atanh(context.valueOf(0)).toBigDecimal());
 	}
 	
 	@Test
 	public void testAcoth() {
 		Context context = context(MathContext.DECIMAL32);
-		assertEquals(acoth(context.valueOf(1.1)).toBigDecimal(), BigDecimalMath.acoth(BigDecimal.valueOf(1.1), MathContext.DECIMAL32));
+		assertEquals(BigDecimalMath.acoth(BigDecimal.valueOf(1.1), MathContext.DECIMAL32), acoth(context.valueOf(1.1)).toBigDecimal());
 	}
 
 	@Test
@@ -534,6 +534,7 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(context.valueOf(3), abs(context.valueOf(3)));
 		assertEquals(context.valueOf(3), abs(context.valueOf(-3)));
+		assertEquals(context.valueOf(0), abs(context.valueOf(0)));
 	}
 
 	@Test
@@ -541,6 +542,7 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(context.valueOf(-3), negate(context.valueOf(3)));
 		assertEquals(context.valueOf(3), negate(context.valueOf(-3)));
+		assertEquals(context.valueOf(0), negate(context.valueOf(0)));
 	}
 
 	@Test
