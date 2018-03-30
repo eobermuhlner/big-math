@@ -420,7 +420,19 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(context.valueOf(8).root(3).toBigDecimal(), BigDecimalMath.root(BigDecimal.valueOf(8), BigDecimal.valueOf(3), MathContext.DECIMAL32));
 	}
-	
+
+	@Test
+	public void testPowStatic() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(pow(context.valueOf(2), context.valueOf(3)).toBigDecimal(), BigDecimalMath.pow(BigDecimal.valueOf(2), BigDecimal.valueOf(3), MathContext.DECIMAL32));
+	}
+
+	@Test
+	public void testRootStatic() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(root(context.valueOf(8), context.valueOf(3)).toBigDecimal(), BigDecimalMath.root(BigDecimal.valueOf(8), BigDecimal.valueOf(3), MathContext.DECIMAL32));
+	}
+
 	@Test
 	public void testSin() {
 		Context context = context(MathContext.DECIMAL32);
