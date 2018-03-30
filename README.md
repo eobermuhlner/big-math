@@ -162,6 +162,32 @@ When calculating these functions you need to specify the number of digits you ne
 
 The `MathContext` contains a precision and information on how to round the last digits, so it is an obvious choice to specify the desired precision of mathematical functions.
 
+#### Why is there no `setMathContext()` so I do not have to pass `MathContext` all the time?
+
+Maintaining a static default `MathContext` would simplify calling the mathematical functions but it would make the static class stateful
+which is a terrible thing. Imagine two parts of your programming setting the precision differently and the debugging mess you have afterwards, especially if they run in parallel threads.
+
+But there is a trivial solution that might work perfectly fine for your project.
+
+Write your own little wrapper class with your own hardcoded precision.
+This is stable, simple, thread-safe and self-documenting.
+
+```java
+public class HighPrecisionMath {
+	public static MathContext MATH_CONTEXT = new MathContext(100);
+
+	public static BigDecimal PI = BigDecimalMath.pi(MATH_CONTEXT);
+
+	public static BigDecimal pow(BigDecimal x, BigDecimal y) {
+		return BigDecimalMath.pow(x, y, MATH_CONTEXT);
+	}
+
+	public static BigDecimal sin(BigDecimal x) {
+		return BigDecimalMath.sin(x, MATH_CONTEXT);
+	}
+}
+```
+
 #### I specified a precision of `n` digits, but the results have completely different number of digits after the decimal point. Why?
 
 It is a common misconception that the precision defines the number of digits after the decimal point.
