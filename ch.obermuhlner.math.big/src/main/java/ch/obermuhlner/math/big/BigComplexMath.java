@@ -232,7 +232,7 @@ public class BigComplexMath {
 
 		return BigComplex.valueOf(
 				BigDecimalMath.log(x.abs(mc1), mc1).round(mathContext),
-				toRangePi(x.angle(mc2), mc2)).round(mathContext);
+				x.angle(mc2)).round(mathContext);
 	}
 
 	/**
@@ -337,19 +337,4 @@ public class BigComplexMath {
 	}
 	
 	// TODO add root() for the k'th root - https://math.stackexchange.com/questions/322481/principal-nth-root-of-a-complex-number 
-	
-	private static BigDecimal toRangePi(BigDecimal angle, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-
-		BigDecimal pi = BigDecimalMath.pi(mc);
-		
-		if (angle.compareTo(pi.negate()) < 0) {
-			return angle.add(pi, mc).add(pi, mc).round(mathContext);
-		}
-		if (angle.compareTo(pi) > 0) {
-			return angle.subtract(pi, mc).subtract(pi, mc).round(mathContext);
-		}
-		
-		return angle;
-	}
 }

@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -852,7 +853,14 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				random -> random.nextDouble() * 100 - 50,
 				Math::atan2,
-				(x, y, mathContext) -> BigDecimalMath.atan2(x, y, mathContext));
+		   		(x, y, mathContext) -> {
+					BigDecimal pi = BigDecimalMath.pi(mathContext);
+					BigDecimal result = BigDecimalMath.atan(x, mathContext);
+					if (result.compareTo(pi.negate()) < 0 || result.compareTo(pi) > 0) {
+					   fail("outside allowed range: " + y);
+					}
+					return result;
+			   	});
 	}
 
 	@Test
