@@ -170,6 +170,15 @@ public class BigFloatTest {
 		Context anotherContext = context(MathContext.DECIMAL64);
 		assertEquals(context.valueOf(1).hashCode(), anotherContext.valueOf(1).hashCode());
 	}
+
+	@Test
+	public void testToString() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals("0", context.valueOf(0).toString());
+		assertEquals("0.0", context.valueOf(0.0).toString()); // I hate BigDecimal
+		assertEquals("1.234", context.valueOf(1.234).toString());
+		assertEquals("-1.234", context.valueOf(-1.234).toString());
+	}
 	
 	@Test
 	public void testPi() {
