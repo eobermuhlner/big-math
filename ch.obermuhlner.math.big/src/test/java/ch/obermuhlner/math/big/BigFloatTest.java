@@ -86,7 +86,21 @@ public class BigFloatTest {
 		assertEquals(false, context.valueOf(123E99).isIntValue());
 		assertEquals(false, context.valueOf(123.456).isIntValue());
 		assertEquals(false, context.valueOf(0.456).isIntValue());
-	}	
+	}
+
+	@Test
+	public void testIsDoubleValue() {
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(true, context.valueOf(0).isDoubleValue());
+		assertEquals(true, context.valueOf(123).isDoubleValue());
+
+		assertEquals(true, context.valueOf(123E99).isDoubleValue());
+		assertEquals(true, context.valueOf(123.456).isDoubleValue());
+		assertEquals(true, context.valueOf(0.456).isDoubleValue());
+
+		assertEquals(false, context.valueOf("1E309").isDoubleValue());
+		assertEquals(false, context.valueOf("-1E309").isDoubleValue());
+	}
 
 	@Test
 	public void testGetMantissa() {
