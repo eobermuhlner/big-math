@@ -855,7 +855,7 @@ public class BigDecimalMathTest {
 				Math::atan2,
 		   		(x, y, mathContext) -> {
 					BigDecimal pi = BigDecimalMath.pi(mathContext);
-					BigDecimal result = BigDecimalMath.atan(x, mathContext);
+					BigDecimal result = BigDecimalMath.atan2(x, y, mathContext);
 					if (result.compareTo(pi.negate()) < 0 || result.compareTo(pi) > 0) {
 					   fail("outside allowed range: " + y);
 					}
