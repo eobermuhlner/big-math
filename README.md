@@ -20,7 +20,6 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `pow(BigDecimal, BigDecimal, MathContext)` calculates x^y
 *   `sqrt(BigDecimal, BigDecimal, MathContext)`
 *   `root(BigDecimal, BigDecimal, MathContext)` calculates the n'th root of x
-
 *   `sin(BigDecimal, MathContext)`
 *   `cos(BigDecimal, MathContext)`
 *   `tan(BigDecimal, MathContext)`
@@ -28,26 +27,21 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `acos(BigDecimal, MathContext)`
 *   `atan(BigDecimal, MathContext)`
 *   `atan2(BigDecimal, BigDecimal, MathContext)`
-
 *   `sinh(BigDecimal, MathContext)`
 *   `cosh(BigDecimal, MathContext)`
 *   `tanh(BigDecimal, MathContext)`
 *   `asinh(BigDecimal, MathContext)`
 *   `acosh(BigDecimal, MathContext)`
 *   `atanh(BigDecimal, MathContext)`
-
 *   `pow(BigDecimal, int, MathContext)` calculates x^y for `int` y
 *   `factorial(int)` calculates n!
 *   `bernoulli(int)` calculates Bernoulli numbers
-
 *   `pi(MathContext)` calculates pi to an arbitrary precision
 *   `e(MathContext)` calculates e to an arbitrary precision
-
 *   `mantissa(BigDecimal)` extracts the mantissa from a `BigDecimal` (mantissa * 10^exponent)
 *   `exponent(BigDecimal)` extracts the exponent from a `BigDecimal` (mantissa * 10^exponent)
 *   `integralPart(BigDecimal)` extract the integral part from a `BigDecimal` (everything before the decimal point) 
 *   `fractionalPart(BigDecimal)` extract the fractional part from a `BigDecimal` (everything after the decimal point)
-
 *   `isIntValue(BigDecimal)` checks whether the `BigDecimal` can be represented as an `int` value
 *   `isDoubleValue(BigDecimal)` checks whether the `BigDecimal` can be represented as a `double` value
 
