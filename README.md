@@ -230,6 +230,84 @@ The following charts show the time needed to calculate the functions over a rang
 ![exp(), log(), pow() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_slow_funcs_from_0_to_100.png)
 
 
+## BigComplex
+
+The class `BigComplex` represents complex numbers in the form `(a + bi)`.
+It follows the design of `BigDecimal` with some convenience improvements like overloaded operator methods.
+
+A big difference to `BigDecimal` is that `BigComplex.equals()` implements the *mathematical* equality
+and *not* the strict technical equality.
+This was a difficult decision because it means that `BigComplex` behaves slightly different than `BigDecimal`
+but considering that the strange equality of `BigDecimal` is a major source of bugs we
+decided it was worth the slight inconsistency.
+
+If you need the strict equality use `BigComplex.strictEquals()`.
+
+* `re`
+* `im`
+* `add(BigComplex)`
+* `add(BigComplex, MathContext)`
+* `add(BigDecimal)`
+* `add(BigDecimal, MathContext)`
+* `add(double)`
+* `subtract(BigComplex)`
+* `subtract(BigComplex, MathContext)`
+* `subtract(BigDecimal)`
+* `subtract(BigDecimal, MathContext)`
+* `subtract(double)`
+* `multiply(BigComplex)`
+* `multiply(BigComplex, MathContext)`
+* `multiply(BigDecimal)`
+* `multiply(BigDecimal, MathContext)`
+* `multiply(double)`
+* `divide(BigComplex)`
+* `divide(BigComplex, MathContext)`
+* `divide(BigDecimal)`
+* `divide(BigDecimal, MathContext)`
+* `divide(double)`
+* `reciprocal(MathContext)`
+* `conjugate()`
+* `negate()`
+* `abs(MathContext)`
+* `angle(MathContext)`
+* `absSquare(MathContext)`
+* `isReal()`
+* `re()`
+* `im()`
+* `round(MathContext)`
+* `hashCode()`
+* `equals(Object)`
+* `strictEquals(Object)`
+* `toString()`
+* `valueOf(BigDecimal)`
+* `valueOf(double)`
+* `valueOf(BigDecimal, BigDecimal)`
+* `valueOf(double, double)`
+* `valueOfPolar(BigDecimal, BigDecimal, MathContext)`
+* `valueOfPolar(double, double, MathContext`
+
+
+## BigComplexMath
+
+The class `BigComplexMath` is the equivalent of `BigDecimalMath` and contains mathematical functions in the complex domain.
+
+* `sin(BigComplex, MathContext)` 
+* `cos(BigComplex, MathContext)` 
+* `tan(BigComplex, MathContext)` 
+* `asin(BigComplex, MathContext)`
+* `acos(BigComplex, MathContext)`
+* `atan(BigComplex, MathContext)`
+* `acot(BigComplex, MathContext)`
+* `exp(BigComplex, MathContext)`
+* `log(BigComplex, MathContext)`
+* `pow(BigComplex, long, MathContext)` 
+* `pow(BigComplex, BigDecimal, MathContext)` 
+* `pow(BigComplex, BigComplex, MathContext)` 
+* `sqrt(BigComplex, MathContext)` 
+* `root(BigComplex, BigDecimal, MathContext)` 
+* `root(BigComplex, BigComplex, MathContext)` 
+
+
 ## BigFloat
 
 The class `BigFloat` is a wrapper around `BigDecimal` which simplifies the consistent usage of the `MathContext` and provides a simpler API for calculations. 
@@ -356,7 +434,7 @@ in your build script (please verify the version number to be the newest release)
 <dependency>
     <groupId>ch.obermuhlner</groupId>
     <artifactId>big-math</artifactId>
-    <version>1.2.1</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -368,6 +446,6 @@ repositories {
 }
 
 dependencies {
-  compile 'ch.obermuhlner:big-math:1.2.1'
+  compile 'ch.obermuhlner:big-math:2.0.0'
 }
 ```
