@@ -757,6 +757,8 @@ public class BigRationalTest {
 
 		BigRational L1 = valueOf(0.02);
 		assertEquals(L1.multiply(L1).multiply(L1), L1.pow(3));
+
+		assertSame(L1, L1.pow(1));
 	}
 	
 	/**
