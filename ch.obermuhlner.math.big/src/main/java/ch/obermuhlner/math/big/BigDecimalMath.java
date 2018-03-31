@@ -209,11 +209,11 @@ public class BigDecimalMath {
 
 	/**
 	 * Calculates the Bernoulli number for the specified index.
-	 * 
+	 *
 	 * <p>This function calculates the <strong>first Bernoulli numbers</strong> and therefore <code>bernoulli(1)</code> returns -0.5</p>
 	 * <p>Note that <code>bernoulli(x)</code> for all odd x &gt; 1 returns 0</p>
 	 * <p>See: <a href="https://en.wikipedia.org/wiki/Bernoulli_number">Wikipedia: Bernoulli number</a></p>
-	 * 
+	 *
 	 * @param n the index of the Bernoulli number to be calculated (starting at 0)
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the Bernoulli number for the specified index
@@ -521,8 +521,9 @@ public class BigDecimalMath {
 
 		BigDecimal result;
 		int adaptivePrecision;
-		if (isDoubleValue(x)) {
-			result = BigDecimal.valueOf(Math.log(x.doubleValue()));
+		double doubleX = x.doubleValue();
+		if (doubleX > 0.0 && isDoubleValue(x)) {
+			result = BigDecimal.valueOf(Math.log(doubleX));
 			adaptivePrecision = EXPECTED_INITIAL_PRECISION;
 		} else {
 			result = x.divide(TWO, mathContext);

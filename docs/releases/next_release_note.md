@@ -5,7 +5,10 @@ No API changes.
 
 # Bugfixes
 
-No Bugfix changes.
+## Fixed `BigDecimalMath.log(BigDecimal, MathContext)` argument `x` very close to 0
+
+`BigDecimalMath.log(BigDecimal, MathContext)` failed with arguments very close to 0 due to
+`BigDecimal.doubleValue()` rounding down to 0.
 
 
 # Enhancements

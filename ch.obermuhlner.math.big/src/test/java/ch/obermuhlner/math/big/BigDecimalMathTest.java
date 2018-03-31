@@ -224,7 +224,7 @@ public class BigDecimalMathTest {
 	public void testFactorialNegative() {
 		BigDecimalMath.factorial(-1);
 	}
-	
+
 	@Test(expected = ArithmeticException.class)
 	public void testPowIntZeroPowerNegative() {
 		BigDecimalMath.pow(BigDecimal.valueOf(0), -5, MC);
@@ -564,6 +564,13 @@ public class BigDecimalMathTest {
 		   expected,
 		   mathContext -> BigDecimalMath.log(new BigDecimal("3.627"), mathContext),
 		   10);
+	}
+
+	@Test
+	public void testLogSmall() {
+		// Result from wolframalpha.com: log(1e-399)
+		BigDecimal expected = new BigDecimal("-918.731452104624227923178590419061318832839493962880417437");
+		assertEquals(expected.round(MC), BigDecimalMath.log(new BigDecimal("1E-399"), MC));
 	}
 
 	@Test
