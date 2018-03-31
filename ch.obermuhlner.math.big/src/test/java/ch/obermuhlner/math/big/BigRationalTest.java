@@ -801,4 +801,9 @@ public class BigRationalTest {
 		assertEquals("0", bernoulli(17).reduce().toRationalString());
 		assertEquals("43867/798", bernoulli(18).reduce().toRationalString());
 	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testBernoulliNegative() {
+		bernoulli(-1);
+	}
 }
