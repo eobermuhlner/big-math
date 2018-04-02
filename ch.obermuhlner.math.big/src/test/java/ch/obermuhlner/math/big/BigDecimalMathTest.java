@@ -240,7 +240,7 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
-	public void testFactorial() {
+	public void testFactorialInt() {
 		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(0));
 		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(1));
 		assertEquals(new BigDecimal(2), BigDecimalMath.factorial(2));
@@ -254,8 +254,88 @@ public class BigDecimalMathTest {
 	}
 
 	@Test(expected = ArithmeticException.class)
-	public void testFactorialNegative() {
+	public void testFactorialIntNegative() {
 		BigDecimalMath.factorial(-1);
+	}
+
+	@Test
+	public void testFactorial() {
+		// Result from wolframalpha.com: 1.5!
+		BigDecimal expected = new BigDecimal("1.3293403881791370204736256125058588870981620920917903461603558423896834634432741360312129925539084990621701");
+		assertPrecisionCalculation(
+		   expected,
+		   mathContext -> BigDecimalMath.factorial(new BigDecimal("1.5"), mathContext),
+		   10);
+	}
+
+	@Test
+	public void testFactorialNegative() {
+		// Result from wolframalpha.com: (-1.5)!
+		BigDecimal expected = new BigDecimal("-3.544907701811032054596334966682290365595098912244774256427615579705822569182064362749901313477089330832453647248");
+		assertPrecisionCalculation(
+		   expected,
+		   mathContext -> BigDecimalMath.factorial(new BigDecimal("-1.5"), mathContext),
+		   10);
+	}
+
+	@Test
+	public void testFactorialIntegerValues() {
+		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(BigDecimal.valueOf(0), MC));
+		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(BigDecimal.valueOf(1), MC));
+		assertEquals(new BigDecimal(2), BigDecimalMath.factorial(BigDecimal.valueOf(2), MC));
+		assertEquals(new BigDecimal(6), BigDecimalMath.factorial(BigDecimal.valueOf(3), MC));
+		assertEquals(new BigDecimal(24), BigDecimalMath.factorial(BigDecimal.valueOf(4), MC));
+		assertEquals(new BigDecimal(120), BigDecimalMath.factorial(BigDecimal.valueOf(5), MC));
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testFactorialNegative1() {
+		BigDecimalMath.factorial(BigDecimal.valueOf(-1), MC);
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testFactorialNegative2() {
+		BigDecimalMath.factorial(BigDecimal.valueOf(-2), MC);
+	}
+
+	@Test
+	public void testGamma() {
+		// Result from wolframalpha.com: gamma(1.5)
+		BigDecimal expected = new BigDecimal("0.886226925452758013649083741670572591398774728061193564106903894926455642295516090687475328369272332708113411812");
+		assertPrecisionCalculation(
+		   expected,
+		   mathContext -> BigDecimalMath.gamma(new BigDecimal("1.5"), mathContext),
+		   10);
+	}
+
+	@Test
+	public void testGammaSlightlyPositive() {
+		// Result from wolframalpha.com: gamma(0.5)
+		BigDecimal expected = new BigDecimal("1.77245385090551602729816748334114518279754945612238712821380778985291128459103218137495065673854466541622682362428");
+		assertPrecisionCalculation(
+		   expected,
+		   mathContext -> BigDecimalMath.gamma(new BigDecimal("0.5"), mathContext),
+		   10);
+	}
+
+	@Test
+	public void testGammaNegative() {
+		// Result from wolframalpha.com: gamma(-1.5)
+		BigDecimal expected = new BigDecimal("2.36327180120735470306422331112152691039673260816318283761841038647054837945470957516660087565139288722163576483237676");
+		assertPrecisionCalculation(
+		   expected,
+		   mathContext -> BigDecimalMath.gamma(new BigDecimal("-1.5"), mathContext),
+		   10);
+	}
+
+	@Test
+	public void testGammaIntegerValues() {
+		assertEquals(new BigDecimal(1), BigDecimalMath.gamma(BigDecimal.valueOf(1), MC));
+		assertEquals(new BigDecimal(1), BigDecimalMath.gamma(BigDecimal.valueOf(2), MC));
+		assertEquals(new BigDecimal(2), BigDecimalMath.gamma(BigDecimal.valueOf(3), MC));
+		assertEquals(new BigDecimal(6), BigDecimalMath.gamma(BigDecimal.valueOf(4), MC));
+		assertEquals(new BigDecimal(24), BigDecimalMath.gamma(BigDecimal.valueOf(5), MC));
+		assertEquals(new BigDecimal(120), BigDecimalMath.gamma(BigDecimal.valueOf(6), MC));
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -275,7 +355,7 @@ public class BigDecimalMathTest {
 			}
 		}
 	}
-	
+
 	@Test
 	public void testPowIntHighAccuracy() {
 		// Result from wolframalpha.com: 1.000000000000001 ^ 1234567
@@ -1244,7 +1324,7 @@ public class BigDecimalMathTest {
 					"precision=" + precision, 
 					expected.round(mathContext).toString(),
 					precisionCalculation.apply(mathContext).toString());
-			precision += 5;
+			precision += HEAVY_TEST ? 5 : 20;
 		}
 	}
 	

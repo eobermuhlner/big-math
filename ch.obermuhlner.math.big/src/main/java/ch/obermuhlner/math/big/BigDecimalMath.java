@@ -7,6 +7,7 @@ import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.*;
 
 import ch.obermuhlner.math.big.internal.AsinCalculator;
 import ch.obermuhlner.math.big.internal.CosCalculator;
@@ -28,24 +29,25 @@ public class BigDecimalMath {
 
 	private static volatile BigDecimal log2Cache;
 	private static final Object log2CacheLock = new Object();
-	
+
 	private static volatile BigDecimal log3Cache;
 	private static final Object log3CacheLock = new Object();
-	
+
 	private static volatile BigDecimal log10Cache;
 	private static final Object log10CacheLock = new Object();
-	
+
 	private static volatile BigDecimal piCache;
 	private static final Object piCacheLock = new Object();
-	
+
 	private static volatile BigDecimal eCache;
 	private static final Object eCacheLock = new Object();
-	
+
 	private static final BigDecimal ROUGHLY_TWO_PI = new BigDecimal("3.141592653589793").multiply(TWO);
-	
+
 	private static final int EXPECTED_INITIAL_PRECISION = 17;
-	
+
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
+
 	static {
 		BigDecimal result = ONE;
 		factorialCache[0] = result;
@@ -55,16 +57,19 @@ public class BigDecimalMath {
 		}
 	}
 
+	private static final Map<Integer, List<BigDecimal>> spougeFactorialConstantsCache = new HashMap<>();
+	private static final Object spougeFactorialConstantsCacheLock = new Object();
+
 	private BigDecimalMath() {
 		// prevent instances
 	}
 
 	/**
 	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>int</code>.
-	 * 
+	 * <p>
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#intValueExact()} without fear of an {@link ArithmeticException}.</p>
-	 * 
-	 * @param value the {@link BigDecimal} to check 
+	 *
+	 * @param value the {@link BigDecimal} to check
 	 * @return <code>true</code> if the value can be represented as <code>int</code> value
 	 */
 	public static boolean isIntValue(BigDecimal value) {
@@ -80,10 +85,10 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>long</code>.
-	 * 
+	 * <p>
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#longValueExact()} without fear of an {@link ArithmeticException}.</p>
-	 * 
-	 * @param value the {@link BigDecimal} to check 
+	 *
+	 * @param value the {@link BigDecimal} to check
 	 * @return <code>true</code> if the value can be represented as <code>long</code> value
 	 */
 	public static boolean isLongValue(BigDecimal value) {
@@ -99,25 +104,25 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>double</code>.
-	 * 
+	 * <p>
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#doubleValue()}
 	 * without fear of getting {@link Double#POSITIVE_INFINITY} or {@link Double#NEGATIVE_INFINITY} as result.</p>
-	 * 
+	 * <p>
 	 * <p>Example: <code>BigDecimalMath.isDoubleValue(new BigDecimal("1E309"))</code> returns <code>false</code>,
 	 * because <code>new BigDecimal("1E309").doubleValue()</code> returns <code>Infinity</code>.</p>
-	 * 
+	 * <p>
 	 * <p>Note: This method does <strong>not</strong> check for possible loss of precision.</p>
-	 * 
+	 * <p>
 	 * <p>For example <code>BigDecimalMath.isDoubleValue(new BigDecimal("1.23400000000000000000000000000000001"))</code> will return <code>true</code>,
 	 * because <code>new BigDecimal("1.23400000000000000000000000000000001").doubleValue()</code> returns a valid double value,
 	 * although it loses precision and returns <code>1.234</code>.</p>
-	 * 
+	 * <p>
 	 * <p><code>BigDecimalMath.isDoubleValue(new BigDecimal("1E-325"))</code> will return <code>true</code>
 	 * although this value is smaller than {@link Double#MIN_VALUE} (and therefore outside the range of values that can be represented as <code>double</code>)
 	 * because <code>new BigDecimal("1E-325").doubleValue()</code> returns <code>0</code> which is a legal value with loss of precision.</p>
-	 * 
-	 * @param value the {@link BigDecimal} to check 
-	 * @return <code>true</code> if the value can be represented as <code>double</code> value 
+	 *
+	 * @param value the {@link BigDecimal} to check
+	 * @return <code>true</code> if the value can be represented as <code>double</code> value
 	 */
 	public static boolean isDoubleValue(BigDecimal value) {
 		if (value.compareTo(DOUBLE_MAX_VALUE) > 0) {
@@ -129,12 +134,12 @@ public class BigDecimalMath {
 
 		return true;
 	}
-	
+
 	/**
 	 * Returns the mantissa of the specified {@link BigDecimal} written as <em>mantissa * 10<sup>exponent</sup></em>.
-	 * 
+	 * <p>
 	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
-	 * 
+	 *
 	 * @param value the {@link BigDecimal}
 	 * @return the mantissa
 	 * @see #exponent(BigDecimal)
@@ -144,15 +149,15 @@ public class BigDecimalMath {
 		if (exponent == 0) {
 			return value;
 		}
-		
+
 		return value.movePointLeft(exponent);
 	}
-	
+
 	/**
 	 * Returns the exponent of the specified {@link BigDecimal} written as <em>mantissa * 10<sup>exponent</sup></em>.
-	 * 
+	 * <p>
 	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
-	 * 
+	 *
 	 * @param value the {@link BigDecimal}
 	 * @return the exponent
 	 * @see #mantissa(BigDecimal)
@@ -163,10 +168,10 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns the number of significant digits of the specified {@link BigDecimal}.
-	 *
+	 * <p>
 	 * <p>The result contains the number of all digits before the decimal point and
 	 * all digits after the decimal point excluding trailing zeroes.</p>
-	 *
+	 * <p>
 	 * <p>Examples:</p>
 	 * <ul>
 	 * <li><code>significantDigits(new BigDecimal("12300.00"))</code> returns 5</li>
@@ -174,7 +179,7 @@ public class BigDecimalMath {
 	 * <li><code>significantDigits(new BigDecimal("0.00012300"))</code> returns 3</li>
 	 * <li><code>significantDigits(new BigDecimal("12300.4500"))</code> returns 7</li>
 	 * </ul>
-	 *
+	 * <p>
 	 * <p>See: <a href="https://en.wikipedia.org/wiki/Significant_figures">Wikipedia: Significant figures</a></p>
 	 *
 	 * @param value the {@link BigDecimal}
@@ -193,7 +198,7 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns the integral part of the specified {@link BigDecimal} (left of the decimal point).
-	 * 
+	 *
 	 * @param value the {@link BigDecimal}
 	 * @return the integral part
 	 * @see #fractionalPart(BigDecimal)
@@ -201,10 +206,10 @@ public class BigDecimalMath {
 	public static BigDecimal integralPart(BigDecimal value) {
 		return value.setScale(0, BigDecimal.ROUND_DOWN);
 	}
-	
+
 	/**
 	 * Returns the fractional part of the specified {@link BigDecimal} (right of the decimal point).
-	 * 
+	 *
 	 * @param value the {@link BigDecimal}
 	 * @return the fractional part
 	 * @see #integralPart(BigDecimal)
@@ -212,12 +217,12 @@ public class BigDecimalMath {
 	public static BigDecimal fractionalPart(BigDecimal value) {
 		return value.subtract(integralPart(value));
 	}
-	
+
 	/**
-	 * Calculates the factorial of the specified {@link BigDecimal}.
-	 * 
+	 * Calculates the factorial of the specified integer argument.
+	 *
 	 * <p>factorial = 1 * 2 * 3 * ... n</p>
-	 * 
+	 *
 	 * @param n the {@link BigDecimal}
 	 * @return the factorial {@link BigDecimal}
 	 * @throws ArithmeticException if x &lt; 0
@@ -235,6 +240,105 @@ public class BigDecimalMath {
 			result = result.multiply(valueOf(i));
 		}
 		return result;
+	}
+
+	/**
+	 * Calculates the factorial of the specified {@link BigDecimal}.
+	 *
+	 * <p>This implementation uses
+	 * <a href="https://en.wikipedia.org/wiki/Spouge%27s_approximation">Spouge's approximation</a>
+	 * to calculate the factorial for non-integer values.</p>
+	 *
+	 * <p>This involves calculating a series of constants that depend on the desired precision.
+	 * Since this constant calculation is quite expensive (especially for higher precisions),
+	 * the constants for a specific precision will be cached
+	 * and subsequent calls to this method with the same precision will be much faster.</p>
+	 *
+	 * <p>It is therefore recommended to do one call to this method with the standard precision of your application during the startup phase
+	 * and to avoid calling it with many different precisions.</p>
+	 *
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Factorial#Extension_of_factorial_to_non-integer_values_of_argument">Wikipedia: Factorial - Extension of factorial to non-integer values of argument</a></p>
+	 *
+	 * @param x the {@link BigDecimal}
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the factorial {@link BigDecimal}
+	 * @throws ArithmeticException if x is a negative integer value (-1, -2, -3, ...)
+	 * @see #factorial(int)
+	 * @see #gamma(BigDecimal, MathContext)
+	 */
+	public static BigDecimal factorial(BigDecimal x, MathContext mathContext) {
+		if (isIntValue(x)) {
+			return factorial(x.intValueExact()).round(mathContext);
+		}
+
+		// https://en.wikipedia.org/wiki/Spouge%27s_approximation
+		MathContext mc = new MathContext(mathContext.getPrecision() * 2, mathContext.getRoundingMode());
+
+		int a = mathContext.getPrecision() * 13 / 10;
+		List<BigDecimal> constants = getSpougeFactorialConstants(a);
+
+		BigDecimal bigA = BigDecimal.valueOf(a);
+
+		boolean negative = false;
+		BigDecimal factor = constants.get(0);
+		for (int k = 1; k < a; k++) {
+			BigDecimal bigK = BigDecimal.valueOf(k);
+			factor = factor.add(constants.get(k).divide(x.add(bigK), mc), mc);
+			negative = !negative;
+		}
+
+		BigDecimal result = pow(x.add(bigA, mc), x.add(BigDecimal.valueOf(0.5), mc), mc);
+		result = result.multiply(exp(x.negate().subtract(bigA, mc), mc), mc);
+		result = result.multiply(factor, mc);
+
+		return result.round(mathContext);
+	}
+
+	private static List<BigDecimal> getSpougeFactorialConstants(int a) {
+		synchronized (spougeFactorialConstantsCacheLock) {
+			return spougeFactorialConstantsCache.computeIfAbsent(a, key -> {
+				List<BigDecimal> constants = new ArrayList<>(a);
+				MathContext mc = new MathContext(a * 15 / 10);
+
+				BigDecimal c0 = sqrt(pi(mc).multiply(TWO, mc), mc);
+				constants.add(c0);
+
+				boolean negative = false;
+				BigDecimal factor = c0;
+				for (int k = 1; k < a; k++) {
+					BigDecimal bigK = BigDecimal.valueOf(k);
+					BigDecimal ck = pow(BigDecimal.valueOf(a - k), bigK.subtract(BigDecimal.valueOf(0.5), mc), mc);
+					ck = ck.multiply(exp(BigDecimal.valueOf(a - k), mc), mc);
+					ck = ck.divide(factorial(k - 1), mc);
+					if (negative) {
+						ck = ck.negate();
+					}
+					constants.add(ck);
+
+					negative = !negative;
+				}
+
+				return Collections.unmodifiableList(constants);
+			});
+		}
+	}
+
+	/**
+	 * Calculates the gamma function of the specified {@link BigDecimal}.
+	 *
+	 * <p>This implementation uses {@link #factorial(BigDecimal, MathContext)} internally,
+	 * therefore the performance implications described there apply also for this method.
+	 *
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Gamma_function">Wikipedia: Gamma function</a></p>
+	 *
+	 * @param x the {@link BigDecimal}
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the gamma {@link BigDecimal}
+	 * @throws ArithmeticException if x-1 is a negative integer value (-1, -2, -3, ...)
+	 * @see #factorial(BigDecimal, MathContext)
+	 */
+	public static BigDecimal gamma(BigDecimal x, MathContext mathContext) {
+		return factorial(x.subtract(ONE), mathContext);
 	}
 
 	/**
