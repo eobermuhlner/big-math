@@ -8,9 +8,9 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static ch.obermuhlner.math.big.BigDecimalMath.*;
@@ -66,8 +66,8 @@ public class GammaExperiments {
 		return pow(BigDecimal.valueOf(a), BigDecimal.valueOf(-0.5), mc).multiply(pow(TWO.multiply(pi(mc), mc), BigDecimal.valueOf(-a-0.5), mc), mc);
 	}
 
+	// https://en.wikipedia.org/wiki/Spouge%27s_approximation
 	public static BigDecimal factorialUsingSpougeCached(BigDecimal x, MathContext mathContext) {
-		// https://en.wikipedia.org/wiki/Spouge%27s_approximation
 		MathContext mc = new MathContext(mathContext.getPrecision() * 2, mathContext.getRoundingMode());
 
 		int a = mathContext.getPrecision() * 13 / 10;
@@ -90,7 +90,7 @@ public class GammaExperiments {
 		return result.round(mathContext);
 	}
 
-	private static Map<Integer, List<BigDecimal>> spougeFactorialConstantsCache = new ConcurrentHashMap<>();
+	private static Map<Integer, List<BigDecimal>> spougeFactorialConstantsCache = new HashMap<>();
 
 	private static List<BigDecimal> getSpougeFactorialConstants(int a) {
 		return spougeFactorialConstantsCache.computeIfAbsent(a, key -> {
@@ -120,54 +120,60 @@ public class GammaExperiments {
 	}
 
 	public static void main(String[] args) {
-		runFactorialUsingEuler();
+		//runFactorialUsingEuler();
 		//runErrorOfFactorialUsingSpouge();
-		//runFactorialUsingSpouge();
+		runFactorialUsingSpouge();
 		//runFactorialCalculatingSpougeConstants();
-		//runFactorialUsingSpougeCached();
-		//runFactorialUsingSpougeCachedOverPrecision();
+		runFactorialUsingSpougeCached();
+		runFactorialUsingSpougeCachedOverPrecision();
 	}
 
 	private static void runFactorialUsingEuler() {
 		MathContext mc = new MathContext(20);
 
-		System.out.println("5! = " + factorialUsingEuler(BigDecimal.valueOf(5), 10000, mc));
+		System.out.println("5! in       1 steps = " + factorialUsingEuler(BigDecimal.valueOf(5), 1, mc));
+		System.out.println("5! in      10 steps = " + factorialUsingEuler(BigDecimal.valueOf(5), 10, mc));
+		System.out.println("5! in     100 steps = " + factorialUsingEuler(BigDecimal.valueOf(5), 100, mc));
+		System.out.println("5! in    1000 steps = " + factorialUsingEuler(BigDecimal.valueOf(5), 1000, mc));
+		System.out.println("5! in   10000 steps = " + factorialUsingEuler(BigDecimal.valueOf(5), 10000, mc));
+		System.out.println("5! in  100000 steps = " + factorialUsingEuler(BigDecimal.valueOf(5), 100000, mc));
+		System.out.println("5! in 1000000 steps = " + factorialUsingEuler(BigDecimal.valueOf(5), 1000000, mc));
 	}
 
 	private static void runFactorialUsingSpouge() {
 		withPrintWriter("factorial_spouge_prec200.csv", writer -> {
 			MathContext mc = new MathContext(200);
 
-			writer.printf("%5s, %15s, %10s\n", "x", "significant", "ms");
+			writer.printf("%5s, %10s\n", "x", "ms");
 
-			for (int i = 0; i < 400; i++) {
-				BigDecimal f1 = factorial(i);
+			for (int x = 0; x < 100; x++) {
+				BigDecimal f1 = factorial(x);
 
 				StopWatch stopWatch = new StopWatch();
-				BigDecimal f2 = factorialUsingSpouge(BigDecimal.valueOf(i), mc);
+				BigDecimal f2 = factorialUsingSpouge(BigDecimal.valueOf(x), mc);
 				long milliseconds = stopWatch.getElapsedMillis();
 
 				boolean same = f1.compareTo(f2) == 0;
 				int significantDigits = f1.precision();
-				System.out.println(i + "! = " + same + " : " + significantDigits + " in " + milliseconds + " ms");
-				writer.printf("%5d, %15d, %10d\n", i, significantDigits, milliseconds);
+				System.out.println(x + "! = " + same + " : " + significantDigits + " in " + milliseconds + " ms");
+				writer.printf("%5d, %10d\n", x, milliseconds);
 			}
 		});
 	}
 
 	private static void runFactorialCalculatingSpougeConstants() {
+		spougeFactorialConstantsCache.clear();
+
 		withPrintWriter("factorial_calculating_spouge_constants.csv", writer -> {
 			writer.printf("%15s, %10s\n", "precision", "ms");
 
-			for (int precision = 10; precision <= 400; precision+=10) {
-				MathContext mc = new MathContext(precision);
-
+			for (int a = 10; a <= 400; a+=10) {
 				StopWatch stopWatch = new StopWatch();
-				factorialUsingSpougeCached(BigDecimal.valueOf(0), mc);
+				getSpougeFactorialConstants(a);
 				long milliseconds = stopWatch.getElapsedMillis();
 
-				System.out.println(precision + " in " + milliseconds + " ms");
-				writer.printf("%15d, %10d\n", precision, milliseconds);
+				System.out.println("coefficients of " + a + " in " + milliseconds + " ms");
+				writer.printf("%15d, %10d\n", a, milliseconds);
 			}
 		});
 	}
@@ -176,9 +182,9 @@ public class GammaExperiments {
 		withPrintWriter("factorial_spouge_cached_prec200.csv", writer -> {
 			MathContext mc = new MathContext(200);
 
-			factorialUsingSpougeCached(BigDecimal.valueOf(1), mc);
+			factorialUsingSpougeCached(BigDecimal.valueOf(1), mc); // make sure coefficients are calculated
 
-			writer.printf("%5s, %15s, %10s\n", "x", "significant", "ms");
+			writer.printf("%5s, %10s\n", "x", "ms");
 
 			for (int i = 0; i < 100; i++) {
 				BigDecimal f1 = factorial(i);
@@ -190,7 +196,7 @@ public class GammaExperiments {
 				boolean same = f1.compareTo(f2) == 0;
 				int significantDigits = f1.precision();
 				System.out.println(i + "! = " + same + " : " + significantDigits + " in " + milliseconds + " ms");
-				writer.printf("%5d, %15d, %10d\n", i, significantDigits, milliseconds);
+				writer.printf("%5d, %10d\n", i, milliseconds);
 			}
 		});
 	}
@@ -202,10 +208,10 @@ public class GammaExperiments {
 			for (int precision = 0; precision < 400; precision+=10) {
 				MathContext mc = new MathContext(precision);
 
-				factorialUsingSpougeCached(BigDecimal.valueOf(1), mc);
+				factorialUsingSpougeCached(BigDecimal.valueOf(1), mc); // make sure coefficients are calculated
 
 				StopWatch stopWatch = new StopWatch();
-				factorialUsingSpougeCached(BigDecimal.valueOf(precision), mc);
+				factorialUsingSpougeCached(BigDecimal.valueOf(5), mc);
 				long milliseconds = stopWatch.getElapsedMillis();
 
 				System.out.println(precision + " in " + milliseconds + " ms");
