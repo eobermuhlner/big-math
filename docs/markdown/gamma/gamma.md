@@ -13,7 +13,7 @@ is easy to implement but after a 1000 multiplications achieves only 3 digits pre
 This will not work.
 
 
-![Factorial - Euler's definition as infinite product](http://mathurl.com/ycpugx97)
+![Factorial - Euler's definition as infinite product](http://mathurl.com/ycpugx97.png)
 
 
 ## Using Spouge's Approximation
@@ -22,17 +22,17 @@ Probably most useful approximation for arbitrary precision:
 https://en.wikipedia.org/wiki/Spouge%27s_approximation
 
 
-![Factorial - Spouge's approximation](http://mathurl.com/yath3d2p)
+![Factorial - Spouge's approximation](http://mathurl.com/yath3d2p.png)
 
 where `a` is an arbitrary positive integer that can be used to control the precision and the coefficients are given by
 
-![Factorial - Spouge's approximation - c0](http://mathurl.com/ybd4oev2)
+![Factorial - Spouge's approximation - c0](http://mathurl.com/ybd4oev2.png)
 
-![Factorial - Spouge's approximation - ck](http://mathurl.com/y7c3or6k)
+![Factorial - Spouge's approximation - ck](http://mathurl.com/y7c3or6k.png)
 
 The relative error when omitting the epsilon part is bound to
 
-![Factorial - Spouge's approximation - error](http://mathurl.com/ybsk79h7)
+![Factorial - Spouge's approximation - error](http://mathurl.com/ybsk79h7.png)
 
 
 ### Expected error of Spouge's Approximation
