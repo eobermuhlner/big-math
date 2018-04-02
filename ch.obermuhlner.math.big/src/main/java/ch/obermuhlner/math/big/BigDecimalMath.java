@@ -162,6 +162,36 @@ public class BigDecimalMath {
 	}
 
 	/**
+	 * Returns the number of significant digits of the specified {@link BigDecimal}.
+	 *
+	 * <p>The result contains the number of all digits before the decimal point and
+	 * all digits after the decimal point excluding trailing zeroes.</p>
+	 *
+	 * <p>Examples:</p>
+	 * <ul>
+	 * <li><code>significantDigits(new BigDecimal("12300.00"))</code> returns 5</li>
+	 * <li><code>significantDigits(new BigDecimal("1.23000"))</code> returns 3</li>
+	 * <li><code>significantDigits(new BigDecimal("0.00012300"))</code> returns 3</li>
+	 * <li><code>significantDigits(new BigDecimal("12300.4500"))</code> returns 7</li>
+	 * </ul>
+	 *
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Significant_figures">Wikipedia: Significant figures</a></p>
+	 *
+	 * @param value the {@link BigDecimal}
+	 * @return the number of significant digits
+	 * @see BigDecimal#stripTrailingZeros()
+	 * @see BigDecimal#precision()
+	 */
+	public static int significantDigits(BigDecimal value) {
+		BigDecimal stripped = value.stripTrailingZeros();
+		if (stripped.scale() >= 0) {
+			return stripped.precision();
+		} else {
+			return stripped.precision() - stripped.scale();
+		}
+	}
+
+	/**
 	 * Returns the integral part of the specified {@link BigDecimal} (left of the decimal point).
 	 * 
 	 * @param value the {@link BigDecimal}

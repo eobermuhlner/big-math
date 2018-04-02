@@ -124,7 +124,40 @@ public class BigDecimalMathTest {
 		assertEquals(5, BigDecimalMath.exponent(new BigDecimal("123.45E3")));
 		assertEquals(1, BigDecimalMath.exponent(new BigDecimal("0.012345E3")));
 	}
-	
+
+	@Test
+	public void testSignificantDigits() {
+		assertEquals(1, BigDecimalMath.significantDigits(BigDecimal.ZERO));
+
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("123")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("12.3")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("1.23")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("0.123")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("0.0123")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("0.00123")));
+
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("12.300")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("1.2300")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("0.12300")));
+
+		assertEquals(6, BigDecimalMath.significantDigits(new BigDecimal("123000")));
+		assertEquals(6, BigDecimalMath.significantDigits(new BigDecimal("123000.00")));
+
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-123")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-12.3")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-1.23")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-0.123")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-0.0123")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-0.00123")));
+
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-12.300")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-1.2300")));
+		assertEquals(3, BigDecimalMath.significantDigits(new BigDecimal("-0.12300")));
+
+		assertEquals(6, BigDecimalMath.significantDigits(new BigDecimal("-123000")));
+		assertEquals(6, BigDecimalMath.significantDigits(new BigDecimal("-123000.00")));
+	}
+
 	@Test
 	public void testIntegralPart() {
 		assertEquals(0, BigDecimal.ZERO.compareTo(BigDecimalMath.integralPart(BigDecimal.ZERO)));
