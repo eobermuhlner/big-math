@@ -121,9 +121,9 @@ public class GammaExperiments {
 
 	public static void main(String[] args) {
 		//runFactorialUsingEuler();
-		//runErrorOfFactorialUsingSpouge();
+		runErrorOfFactorialUsingSpouge();
 		runFactorialUsingSpouge();
-		//runFactorialCalculatingSpougeConstants();
+		runFactorialCalculatingSpougeConstants();
 		runFactorialUsingSpougeCached();
 		runFactorialUsingSpougeCachedOverPrecision();
 	}
