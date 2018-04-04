@@ -197,12 +197,11 @@ Most important is optimizing the calculation for the special cases of `x` being 
 much faster by calling `BigDecimalMath.factorial(int)`.
 
 Lots of unit tests of course!
-As usual https://www.wolframalpha.com/ provides some nice reference values to prove that the calculations are correct
-(at least for the tested cases).
+As usual [Wolfram Alpha](https://www.wolframalpha.com/) provides some nice reference values to prove that the calculations are correct.
 
 Writing javadoc takes also some time (and thoughts).
 
 You can check out the final version in github:
-https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigComplexMath.java
+[BigComplexMath.java](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigComplexMath.java)
 
 
