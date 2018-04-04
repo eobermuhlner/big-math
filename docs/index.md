@@ -21,3 +21,8 @@
 * [Release Note 1.0.0](releases/v1.0.0.html)
 * [Release Note 1.0-beta2](releases/v1.0-beta2.html)
 * [Release Note 1.0-beta1](releases/v1.0-beta1.html)
+
+## Articles and Blogs
+
+* [Non-integer Factorial and Gamma function](markdown/gamma/gamma.md)
+
