@@ -47,7 +47,7 @@ Running with increasing number of steps shows that this approach will not work s
 
 ## Using Spouge's Approximation
 
-After reading through several pages of related material I finally find a promising approach:
+After reading through several pages of related material I finally found a promising approach:
 [Spouge's approximation](https://en.wikipedia.org/wiki/Spouge%27s_approximation)
 
 ![Factorial - Spouge's approximation](http://mathurl.com/yath3d2p.png)
