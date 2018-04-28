@@ -1030,7 +1030,7 @@ public class BigDecimalMath {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 3, mathContext.getRoundingMode());
 
 		if (x.signum() > 0) { // x > 0
-			return atan(y.divide(x, 3), mathContext);
+			return atan(y.divide(x, mc), mathContext);
 		} else if (x.signum() < 0) {
 			if (y.signum() > 0) {  // x < 0 && y > 0
 				return atan(y.divide(x, mc), mc).add(pi(mc), mathContext);
