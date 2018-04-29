@@ -11,6 +11,11 @@ No API changes.
 `BigDecimal.doubleValue()` rounding down to 0.
 
 
+## Fixed `BigDecimalMath.atan2(BigDecimal, BigDecimal, MathContext)` with positive `x`
+ 
+A stupid typo in a division would give results with wrong precision results with positive `x` arguments. 
+
+
 # Enhancements
 
 ## Added `Example.method(y)`

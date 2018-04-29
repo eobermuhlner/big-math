@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big.example;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.ArrayDeque;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
