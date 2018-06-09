@@ -8,6 +8,10 @@ group = 'ch.obermuhlner'
 version = '2.0.0'
 archivesBaseName = 'big-math'
 
+ext {
+    moduleName = "ch.obermuhlner.math.big"
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -25,6 +29,18 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+jar {
+    manifest {
+        attributes(
+                "Automatic-Module-Name": moduleName,
+                "Bundle-ManifestVersion": 2,
+                "Bundle-Name": archivesBaseName,
+                "Bundle-SymbolicName": moduleName,
+                "Bundle-Version": version,
+                "Export-Package": "ch.obermuhlner.math.big, ch.obermuhlner.math.big.stream")
+    }
+}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'

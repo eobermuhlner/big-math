@@ -1,6 +1,24 @@
 # API changes
 
-No API changes.
+## Module name for Java 9
+
+Not really an API change but rather an API specification.
+
+The deployed big-math Jar file contains now a module name for the Java 9 JigSaw module system.
+
+This allows it to be used as automatic module with a well defined module name instead
+of deriving the name magically from the Jar file name.
+
+The module name follows the reverse domain convention and is: `ch.obermuhlner.math.big`
+
+
+## OSGi support
+
+The big-math Jar file is OSGi compatible.
+
+The `MANIFEST.MF` contains all the necessary headers and exports the public packages
+- ``ch.obermuhlner.math.big`
+- ``ch.obermuhlner.math.big.stream`
 
 
 # Bugfixes
