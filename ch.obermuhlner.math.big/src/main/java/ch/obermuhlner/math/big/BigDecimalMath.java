@@ -66,7 +66,7 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>int</code>.
-	 * <p>
+	 *
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#intValueExact()} without fear of an {@link ArithmeticException}.</p>
 	 *
 	 * @param value the {@link BigDecimal} to check
@@ -85,7 +85,7 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>long</code>.
-	 * <p>
+	 *
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#longValueExact()} without fear of an {@link ArithmeticException}.</p>
 	 *
 	 * @param value the {@link BigDecimal} to check
@@ -104,19 +104,19 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>double</code>.
-	 * <p>
+	 *
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#doubleValue()}
 	 * without fear of getting {@link Double#POSITIVE_INFINITY} or {@link Double#NEGATIVE_INFINITY} as result.</p>
-	 * <p>
+	 *
 	 * <p>Example: <code>BigDecimalMath.isDoubleValue(new BigDecimal("1E309"))</code> returns <code>false</code>,
 	 * because <code>new BigDecimal("1E309").doubleValue()</code> returns <code>Infinity</code>.</p>
-	 * <p>
+	 *
 	 * <p>Note: This method does <strong>not</strong> check for possible loss of precision.</p>
-	 * <p>
+	 *
 	 * <p>For example <code>BigDecimalMath.isDoubleValue(new BigDecimal("1.23400000000000000000000000000000001"))</code> will return <code>true</code>,
 	 * because <code>new BigDecimal("1.23400000000000000000000000000000001").doubleValue()</code> returns a valid double value,
 	 * although it loses precision and returns <code>1.234</code>.</p>
-	 * <p>
+	 *
 	 * <p><code>BigDecimalMath.isDoubleValue(new BigDecimal("1E-325"))</code> will return <code>true</code>
 	 * although this value is smaller than {@link Double#MIN_VALUE} (and therefore outside the range of values that can be represented as <code>double</code>)
 	 * because <code>new BigDecimal("1E-325").doubleValue()</code> returns <code>0</code> which is a legal value with loss of precision.</p>
@@ -137,7 +137,7 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns the mantissa of the specified {@link BigDecimal} written as <em>mantissa * 10<sup>exponent</sup></em>.
-	 * <p>
+	 *
 	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
 	 *
 	 * @param value the {@link BigDecimal}
@@ -155,7 +155,7 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns the exponent of the specified {@link BigDecimal} written as <em>mantissa * 10<sup>exponent</sup></em>.
-	 * <p>
+	 *
 	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
 	 *
 	 * @param value the {@link BigDecimal}
@@ -168,10 +168,10 @@ public class BigDecimalMath {
 
 	/**
 	 * Returns the number of significant digits of the specified {@link BigDecimal}.
-	 * <p>
+	 *
 	 * <p>The result contains the number of all digits before the decimal point and
 	 * all digits after the decimal point excluding trailing zeroes.</p>
-	 * <p>
+	 *
 	 * <p>Examples:</p>
 	 * <ul>
 	 * <li><code>significantDigits(new BigDecimal("12300.00"))</code> returns 5</li>
@@ -179,7 +179,7 @@ public class BigDecimalMath {
 	 * <li><code>significantDigits(new BigDecimal("0.00012300"))</code> returns 3</li>
 	 * <li><code>significantDigits(new BigDecimal("12300.4500"))</code> returns 7</li>
 	 * </ul>
-	 * <p>
+	 *
 	 * <p>See: <a href="https://en.wikipedia.org/wiki/Significant_figures">Wikipedia: Significant figures</a></p>
 	 *
 	 * @param value the {@link BigDecimal}
