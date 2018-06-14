@@ -9,6 +9,6 @@ repositories {
 }
 
 dependencies {
-	//compile group: 'ch.obermuhlner', name: 'big-math', version: '2.0.0'
+	//compile group: 'ch.obermuhlner', name: 'big-math', version: '2.0.1'
 	compile project(':ch.obermuhlner.math.big')
 }
