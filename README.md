@@ -410,6 +410,21 @@ int intValue = value3.toInt();
 
 The `BigFloatStream` provides similar stream factories as `BigDecimalStream` that will produce streams of `BigFloat` elements.
 
+### Usage in Java Module Systems (Jigsaw and OSGi)
+
+Since release 2.0.1 the deployed big-math Jar file contains now a module name for the Jigsaw module system (Java 9 and later).
+
+This allows it to be used as automatic module with a well defined module name instead
+of deriving the name magically from the Jar file name.
+
+The module name follows the reverse domain convention and is: `ch.obermuhlner.math.big`
+
+The big-math Jar file is also OSGi compatible.
+
+The `MANIFEST.MF` contains all the necessary headers and exports the public packages:
+- `ch.obermuhlner.math.big`
+- `ch.obermuhlner.math.big.stream`
+
 ### Usage in Kotlin
 
 If you want to use big-math library in Kotlin you may do so directly, or you use the 
