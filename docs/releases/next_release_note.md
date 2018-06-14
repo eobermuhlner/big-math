@@ -14,11 +14,11 @@ The module name follows the reverse domain convention and is: `ch.obermuhlner.ma
 
 ## OSGi support
 
-The big-math Jar file is OSGi compatible.
+The big-math Jar file is now OSGi compatible.
 
 The `MANIFEST.MF` contains all the necessary headers and exports the public packages
-- ``ch.obermuhlner.math.big`
-- ``ch.obermuhlner.math.big.stream`
+- `ch.obermuhlner.math.big`
+- `ch.obermuhlner.math.big.stream`
 
 
 # Bugfixes
@@ -36,9 +36,7 @@ A stupid typo in a division would give results with wrong precision results with
 
 # Enhancements
 
-## Added `Example.method(y)`
-
-Added `Example.method(y)` 
+No enhancements.
 
 
 # Examples
