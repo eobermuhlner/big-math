@@ -58,6 +58,7 @@ artifacts {
     archives javadocJar
 }
 
+/*
 signing {
     sign configurations.archives
 }
@@ -106,5 +107,6 @@ uploadArchives {
 	    }
 	}
 }
+*/
 
 // See http://central.sonatype.org/pages/gradle.html
