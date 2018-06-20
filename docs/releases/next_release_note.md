@@ -10,9 +10,9 @@ No Bugfix changes.
 
 # Enhancements
 
-## Added `Example.method(y)`
+## Added `BigDecimalMath.reciprocal(x)`
 
-Added `Example.method(y)` 
+The convenience method `BigDecimalMath.reciprocal(BigDecimal, MathContext)` was added.
 
 
 # Examples

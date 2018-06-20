@@ -240,6 +240,17 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testReciprocal() {
+		assertEquals(BigDecimal.ONE, BigDecimalMath.reciprocal(BigDecimal.valueOf(1), MC));
+		assertEquals(BigDecimal.valueOf(0.5), BigDecimalMath.reciprocal(BigDecimal.valueOf(2), MC));
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testReciprocalFail() {
+		assertEquals(BigDecimal.valueOf(123), BigDecimalMath.reciprocal(BigDecimal.ZERO, MC));
+	}
+
+	@Test
 	public void testFactorialInt() {
 		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(0));
 		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(1));

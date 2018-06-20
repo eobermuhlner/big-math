@@ -219,6 +219,18 @@ public class BigDecimalMath {
 	}
 
 	/**
+	 * Calculates the reciprocal of the specified {@link BigDecimal}.
+	 *
+	 * @param x the {@link BigDecimal}
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the reciprocal {@link BigDecimal}
+	 * @throws ArithmeticException if x = 0
+	 */
+	public static BigDecimal reciprocal(BigDecimal x, MathContext mathContext) {
+		return BigDecimal.ONE.divide(x, mathContext);
+	}
+
+	/**
 	 * Calculates the factorial of the specified integer argument.
 	 *
 	 * <p>factorial = 1 * 2 * 3 * ... n</p>
