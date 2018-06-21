@@ -306,7 +306,7 @@ public class BigDecimalMath {
 		return result.round(mathContext);
 	}
 
-	private static List<BigDecimal> getSpougeFactorialConstants(int a) {
+	static List<BigDecimal> getSpougeFactorialConstants(int a) {
 		synchronized (spougeFactorialConstantsCacheLock) {
 			return spougeFactorialConstantsCache.computeIfAbsent(a, key -> {
 				List<BigDecimal> constants = new ArrayList<>(a);

@@ -38,6 +38,23 @@ public class BigComplexMathTest {
 	}
 
 	@Test
+	public void testFactorial() {
+		assertEquals(BigComplex.valueOf(1), BigComplexMath.factorial(BigComplex.valueOf(0), MC));
+		assertEquals(BigComplex.valueOf(120), BigComplexMath.factorial(BigComplex.valueOf(5), MC));
+	}
+
+	@Test
+	public void testFactorialHighPrecision() {
+		// Wolfram Alpha: factorial(1.2 + 2.3 i)
+		assertPrecisionCalculation(
+			BigComplex.valueOf(
+				new BigDecimal("-0.0459981123305585249681603480968269660113873556089014470248069472979754564331678182847798134586963875663871893"),
+				new BigDecimal("0.312560954529664888473258907702587964452355919300835979305316051616804053286423048624964580542939407812546590")),
+				(mc) -> BigComplexMath.factorial(BigComplex.valueOf(1.2, 2.3), mc),
+				5);
+	}
+
+	@Test
 	public void testExp() {
 		assertPrecisionCalculation(
 				BigComplex.valueOf(new BigDecimal("-1.1312043837568136384312552555107947106288679958265257502"), new BigDecimal("2.4717266720048189276169308935516645327361903692410081842")).round(MC),

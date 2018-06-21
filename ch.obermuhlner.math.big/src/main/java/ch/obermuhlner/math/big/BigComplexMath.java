@@ -4,6 +4,9 @@ import static ch.obermuhlner.math.big.BigComplex.I;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Provides advanced functions operating on {@link BigComplex}s.
@@ -70,6 +73,78 @@ public class BigComplexMath {
 	public static BigDecimal angle(BigComplex x, MathContext mathContext) {
 		return x.angle(mathContext);
 	}
+
+	/**
+	 * Calculates the factorial of the specified {@link BigComplex}.
+	 *
+	 * <p>This implementation uses
+	 * <a href="https://en.wikipedia.org/wiki/Spouge%27s_approximation">Spouge's approximation</a>
+	 * to calculate the factorial for non-integer values.</p>
+	 *
+	 * <p>This involves calculating a series of constants that depend on the desired precision.
+	 * Since this constant calculation is quite expensive (especially for higher precisions),
+	 * the constants for a specific precision will be cached
+	 * and subsequent calls to this method with the same precision will be much faster.</p>
+	 *
+	 * <p>It is therefore recommended to do one call to this method with the standard precision of your application during the startup phase
+	 * and to avoid calling it with many different precisions.</p>
+	 *
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Factorial#Extension_of_factorial_to_non-integer_values_of_argument">Wikipedia: Factorial - Extension of factorial to non-integer values of argument</a></p>
+	 *
+	 * @param x the {@link BigComplex}
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the factorial {@link BigComplex}
+	 * @throws ArithmeticException if x is a negative integer value (-1, -2, -3, ...)
+	 * @see BigDecimalMath#factorial(BigDecimal, MathContext)
+	 * @see #gamma(BigComplex, MathContext)
+	 */
+	public static BigComplex factorial(BigComplex x, MathContext mathContext) {
+		if (x.isReal() && BigDecimalMath.isIntValue(x.re)) {
+			return BigComplex.valueOf(BigDecimalMath.factorial(x.re.intValueExact()).round(mathContext));
+		}
+
+		// https://en.wikipedia.org/wiki/Spouge%27s_approximation
+		MathContext mc = new MathContext(mathContext.getPrecision() * 2, mathContext.getRoundingMode());
+
+		int a = mathContext.getPrecision() * 13 / 10;
+		List<BigDecimal> constants = BigDecimalMath.getSpougeFactorialConstants(a);
+
+		BigDecimal bigA = BigDecimal.valueOf(a);
+
+		boolean negative = false;
+		BigComplex factor = BigComplex.valueOf(constants.get(0));
+		for (int k = 1; k < a; k++) {
+			BigDecimal bigK = BigDecimal.valueOf(k);
+			factor = factor.add(BigComplex.valueOf(constants.get(k)).divide(x.add(bigK), mc), mc);
+			negative = !negative;
+		}
+
+		BigComplex result = pow(x.add(bigA, mc), x.add(BigDecimal.valueOf(0.5), mc), mc);
+		result = result.multiply(exp(x.negate().subtract(bigA, mc), mc), mc);
+		result = result.multiply(factor, mc);
+
+		return result.round(mathContext);
+	}
+
+	/**
+	 * Calculates the gamma function of the specified {@link BigComplex}.
+	 *
+	 * <p>This implementation uses {@link #factorial(BigComplex, MathContext)} internally,
+	 * therefore the performance implications described there apply also for this method.
+	 *
+	 * <p>See: <a href="https://en.wikipedia.org/wiki/Gamma_function">Wikipedia: Gamma function</a></p>
+	 *
+	 * @param x the {@link BigComplex}
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the gamma {@link BigComplex}
+	 * @throws ArithmeticException if x-1 is a negative integer value (-1, -2, -3, ...)
+	 * @see BigDecimalMath#gamma(BigDecimal, MathContext)
+	 * @see #factorial(BigComplex, MathContext)
+	 */
+	public static BigComplex gamma(BigComplex x, MathContext mathContext) {
+		return factorial(x.subtract(BigComplex.ONE), mathContext);
+	}
+
 
 	/**
 	 * Calculates the natural exponent of {@link BigComplex} x (e<sup>x</sup>) in the complex domain.

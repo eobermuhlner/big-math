@@ -10,7 +10,7 @@ No Bugfix changes.
 
 # Enhancements
 
-## Added `BigDecimalMath.reciprocal(x)`
+## Added `BigDecimalMath.reciprocal()`
 
 The convenience method `BigDecimalMath.reciprocal(BigDecimal, MathContext)` was added.
 
