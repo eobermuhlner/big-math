@@ -225,6 +225,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the reciprocal {@link BigDecimal}
 	 * @throws ArithmeticException if x = 0
+	 * @throws ArithmeticException if the result is inexact but the
+	 *         rounding mode is {@code UNNECESSARY} or
+	 *         {@code mc.precision == 0} and the quotient has a
+	 *         non-terminating decimal expansion.
 	 */
 	public static BigDecimal reciprocal(BigDecimal x, MathContext mathContext) {
 		return BigDecimal.ONE.divide(x, mathContext);
@@ -275,6 +279,7 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the factorial {@link BigDecimal}
 	 * @throws ArithmeticException if x is a negative integer value (-1, -2, -3, ...)
+	 * @throws UnsupportedOperationException if x is a non-integer value and the {@link MathContext} has unlimited precision
 	 * @see #factorial(int)
 	 * @see #gamma(BigDecimal, MathContext)
 	 */
@@ -284,6 +289,7 @@ public class BigDecimalMath {
 		}
 
 		// https://en.wikipedia.org/wiki/Spouge%27s_approximation
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() * 2, mathContext.getRoundingMode());
 
 		int a = mathContext.getPrecision() * 13 / 10;
@@ -347,6 +353,7 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the gamma {@link BigDecimal}
 	 * @throws ArithmeticException if x-1 is a negative integer value (-1, -2, -3, ...)
+	 * @throws UnsupportedOperationException if x is a non-integer value and the {@link MathContext} has unlimited precision
 	 * @see #factorial(BigDecimal, MathContext)
 	 */
 	public static BigDecimal gamma(BigDecimal x, MathContext mathContext) {
@@ -364,6 +371,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the Bernoulli number for the specified index
 	 * @throws ArithmeticException if x &lt; 0
+	 * @throws ArithmeticException if the result is inexact but the
+	 *         rounding mode is {@code UNNECESSARY} or
+	 *         {@code mc.precision == 0} and the quotient has a
+	 *         non-terminating decimal expansion.
 	 */
 	public static BigDecimal bernoulli(int n, MathContext mathContext) {
 		if (n < 0) {
@@ -381,9 +392,11 @@ public class BigDecimalMath {
 	 * @param y the {@link BigDecimal} value to serve as exponent
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
+	 * @see #pow(BigDecimal, long, MathContext)
 	 */
 	public static BigDecimal pow(BigDecimal x, BigDecimal y, MathContext mathContext) {
-
+		checkMathContext(mathContext);
 		if (x.signum() == 0) {
 			switch (y.signum()) {
 				case 0 : return ONE;
@@ -422,14 +435,21 @@ public class BigDecimalMath {
 	 * @param y the <code>long</code> value to serve as exponent
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated x to the power of y with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException if y is negative and the result is inexact but the
+	 *         rounding mode is {@code UNNECESSARY} or
+	 *         {@code mc.precision == 0} and the quotient has a
+	 *         non-terminating decimal expansion.
+	 * @throws ArithmeticException if the rounding mode is
+	 *         {@code UNNECESSARY} and the
+	 *         {@code BigDecimal}  operation would require rounding.
 	 */
 	public static BigDecimal pow(BigDecimal x, long y, MathContext mathContext) {
-		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
+		MathContext mc = mathContext.getPrecision() == 0 ? mathContext : new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 
 		// TODO optimize y=0, y=1, y=10^k, y=-1, y=-10^k
 
 		if (y < 0) {
-			return ONE.divide(pow(x, -y, mc), mc).round(mathContext);
+			return reciprocal(pow(x, -y, mc), mc).round(mathContext);
 		}
 		
 		BigDecimal result = ONE;
@@ -504,8 +524,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated square root of x with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x &lt; 0
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal sqrt(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		switch (x.signum()) {
 		case 0:
 			return ZERO;
@@ -553,8 +575,10 @@ public class BigDecimalMath {
 	 * 
 	 * @return the calculated n'th root of x with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x &lt; 0
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal root(BigDecimal x, BigDecimal n, MathContext mathContext) {
+		checkMathContext(mathContext);
 		switch (x.signum()) {
 		case 0:
 			return ZERO;
@@ -598,12 +622,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated natural logarithm {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x &lt;= 0
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal log(BigDecimal x, MathContext mathContext) {
-		// http://en.wikipedia.org/wiki/Natural_logarithm
-
-		//System.out.println("log(" + x + " " + mathContext + ")");
-
+		checkMathContext(mathContext);
 		if (x.signum() <= 0) {
 			throw new ArithmeticException("Illegal log(x) for x <= 0: x = " + x);
 		}
@@ -634,8 +656,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated natural logarithm {@link BigDecimal} to the base 2 with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x &lt;= 0
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal log2(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		BigDecimal result = log(x, mc).divide(logTwo(mc), mc);
@@ -649,8 +673,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated natural logarithm {@link BigDecimal} to the base 10 with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x &lt;= 0
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal log10(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
 
 		BigDecimal result = log(x, mc).divide(logTen(mc), mc);
@@ -716,8 +742,10 @@ public class BigDecimalMath {
 	 * 
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the number pi with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal pi(MathContext mathContext) {
+		checkMathContext(mathContext);
 		BigDecimal result = null;
 		
 		synchronized (piCacheLock) {
@@ -731,7 +759,7 @@ public class BigDecimalMath {
 		
 		return result.round(mathContext);
 	}
-	
+
 	private static BigDecimal piChudnovski(MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 
@@ -782,8 +810,10 @@ public class BigDecimalMath {
 	 * 
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the number e with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal e(MathContext mathContext) {
+		checkMathContext(mathContext);
 		BigDecimal result = null;
 		
 		synchronized (eCacheLock) {
@@ -851,8 +881,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the exponent for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated exponent {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal exp(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		if (x.signum() == 0) {
 			return ONE;
 		}
@@ -897,8 +929,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the sine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal sin(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		if (x.abs().compareTo(ROUGHLY_TWO_PI) > 0) {
@@ -919,8 +953,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x &gt; 1 or x &lt; -1
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal asin(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		if (x.compareTo(ONE) > 0) {
 			throw new ArithmeticException("Illegal asin(x) for x > 1: x = " + x);
 		}
@@ -951,8 +987,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the cosine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated cosine {@link BigDecimal}
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal cos(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		if (x.abs().compareTo(ROUGHLY_TWO_PI) > 0) {
@@ -973,8 +1011,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x &gt; 1 or x &lt; -1
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal acos(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		if (x.compareTo(ONE) > 0) {
 			throw new ArithmeticException("Illegal acos(x) for x > 1: x = " + x);
 		}
@@ -996,8 +1036,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the tangens for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal tan(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		if (x.signum() == 0) {
 			return ZERO;
 		}
@@ -1014,8 +1056,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the arc tangens for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal atan(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		x = x.divide(sqrt(ONE.add(x.multiply(x, mc), mc), mc), mc);
@@ -1037,8 +1081,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x = 0 and y = 0
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal atan2(BigDecimal y, BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 3, mathContext.getRoundingMode());
 
 		if (x.signum() > 0) { // x > 0
@@ -1071,8 +1117,10 @@ public class BigDecimalMath {
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated cotanges {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 * @throws ArithmeticException if x = 0
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal cot(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		if (x.signum() == 0) {
 			throw new ArithmeticException("Illegal cot(x) for x = 0");
 		}
@@ -1090,8 +1138,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the arc cotangens for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc cotangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal acot(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = pi(mc).divide(TWO, mc).subtract(atan(x, mc), mc);
 		return result.round(mathContext);
@@ -1105,8 +1155,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the hyperbolic sine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated hyperbolic sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal sinh(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = SinhCalculator.INSTANCE.calculate(x, mc);
 		return result.round(mathContext);
@@ -1120,8 +1172,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the hyperbolic cosine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated hyperbolic cosine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal cosh(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = CoshCalculator.INSTANCE.calculate(x, mc);
 		return result.round(mathContext);
@@ -1135,8 +1189,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the hyperbolic tangens for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated hyperbolic tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal tanh(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = sinh(x, mc).divide(cosh(x, mc), mc);
 		return result.round(mathContext);
@@ -1150,8 +1206,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the hyperbolic cotangens for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated hyperbolic cotangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal coth(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = cosh(x, mc).divide(sinh(x, mc), mc);
 		return result.round(mathContext);
@@ -1165,8 +1223,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic sine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc hyperbolic sine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal asinh(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).add(ONE, mc), mc), mc), mc);
 		return result.round(mathContext);
@@ -1180,8 +1240,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic cosine for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc hyperbolic cosine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal acosh(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).subtract(ONE, mc), mc), mc), mc);
 		return result.round(mathContext);
@@ -1195,8 +1257,10 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic tanges for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc hyperbolic tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal atanh(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(ONE.add(x, mc).divide(ONE.subtract(x, mc), mc), mc).divide(TWO, mc);
 		return result.round(mathContext);
@@ -1210,10 +1274,18 @@ public class BigDecimalMath {
 	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic cotangens for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc hyperbolic cotangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal acoth(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(ONE, mc).divide(x.subtract(ONE, mc), mc), mc).divide(TWO, mc);
 		return result.round(mathContext);
+	}
+
+	private static void checkMathContext (MathContext mathContext) {
+		if (mathContext.getPrecision() == 0) {
+			throw new UnsupportedOperationException("Unlimited MathContext not supported");
+		}
 	}
 }

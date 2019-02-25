@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.BiFunction;
@@ -200,16 +201,25 @@ public class BigDecimalMathTest {
 				10);
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void testEUnlimitedFail() {
+		BigDecimalMath.e(MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testPi() {
 		// Result from wolframalpha.com: pi
 		BigDecimal expected = new BigDecimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989380952572010654858632788659361533818279682303019520353018529689957736225994138912497217752834791315155748572424541506959508295331168617278558890750983817546374649393192550604009277016711390098488240128583616035637076601047101819429555961989467678374494482553797747268471040475346462080466842590694912933136770289891521047521620569660240580381501935112533824300355876402474964732639141992726042699227967823547816360093417216412199245863150302861829745557067498385054945885869269956909272107975093029553211653449872027559602364806654991198818347977535663698074265425278625518184175746728909777727938000816470600161452491921732172147723501414419735685481613611573525521334757418494684385233239073941433345477624168625189835694855620992192221842725502542568876717904946016534668049886272327917860857843838279679766814541009538");
 		assertPrecisionCalculation(
-				expected,
-				mathContext -> BigDecimalMath.pi(mathContext),
-				10);
+			expected,
+			mathContext -> BigDecimalMath.pi(mathContext),
+			10);
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void testPiUnlimitedFail() {
+		BigDecimalMath.pi(MathContext.UNLIMITED);
+	}
 
 	@Test
 	public void testBernoulli() {
@@ -240,9 +250,32 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
+	public void testBernoulliUnlimited() {
+		BigDecimalMath.bernoulli(0, MathContext.UNLIMITED);
+		BigDecimalMath.bernoulli(1, MathContext.UNLIMITED);
+		BigDecimalMath.bernoulli(3, MathContext.UNLIMITED);
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testBernoulliUnlimitedFail() {
+		BigDecimalMath.bernoulli(2, MathContext.UNLIMITED);
+	}
+
+	@Test
 	public void testReciprocal() {
 		assertEquals(BigDecimal.ONE, BigDecimalMath.reciprocal(BigDecimal.valueOf(1), MC));
 		assertEquals(BigDecimal.valueOf(0.5), BigDecimalMath.reciprocal(BigDecimal.valueOf(2), MC));
+	}
+
+	@Test
+	public void testReciprocalUnlimited() {
+		assertEquals(BigDecimal.ONE, BigDecimalMath.reciprocal(BigDecimal.valueOf(1), MathContext.UNLIMITED));
+		assertEquals(BigDecimal.valueOf(0.5), BigDecimalMath.reciprocal(BigDecimal.valueOf(2), MathContext.UNLIMITED));
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testReciprocalUnlimitedFail() {
+		BigDecimalMath.reciprocal(BigDecimal.valueOf(3), MathContext.UNLIMITED);
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -365,6 +398,27 @@ public class BigDecimalMathTest {
 						BigDecimalMath.pow(BigDecimal.valueOf(x), y, MC));
 			}
 		}
+	}
+
+	@Test
+	public void testPowIntUnlimited() {
+		assertEquals(BigDecimal.valueOf(1.44), BigDecimalMath.pow(BigDecimal.valueOf(1.2), 2, MathContext.UNLIMITED));
+		assertEquals(BigDecimal.valueOf(0.25), BigDecimalMath.pow(BigDecimal.valueOf(2), -2, MathContext.UNLIMITED));
+	}
+
+	@Test
+	public void testPowIntUnnecessary() {
+		assertEquals(BigDecimal.valueOf(2.0736), BigDecimalMath.pow(BigDecimal.valueOf(1.2), 4, new MathContext(20, RoundingMode.UNNECESSARY)));
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testPowIntUnnecessaryFail() {
+		BigDecimalMath.pow(BigDecimal.valueOf(1.2), 4, new MathContext(3, RoundingMode.UNNECESSARY));
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testPowIntUnlimitedFail() {
+		BigDecimalMath.pow(BigDecimal.valueOf(1.2), -2, MathContext.UNLIMITED);
 	}
 
 	@Test
@@ -522,7 +576,12 @@ public class BigDecimalMathTest {
 	public void testPowOverflow() {
 		BigDecimalMath.pow(new BigDecimal("123"), new BigDecimal("1E20"), MC);
 	}
-	
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testPowUnlimitedFail() {
+		BigDecimalMath.pow(BigDecimal.valueOf(1.2), BigDecimal.valueOf(1.1), MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testSqrt() {
 		for(double value : new double[] { 0, 0.1, 2, 10, 33.3333 }) {
@@ -531,6 +590,11 @@ public class BigDecimalMathTest {
 					toCheck(Math.sqrt(value)),
 					toCheck(BigDecimalMath.sqrt(BigDecimal.valueOf(value), MC)));
 		}
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testSqrtUnlimitedFail() {
+		BigDecimalMath.sqrt(BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}
 
 	@Test
@@ -560,6 +624,11 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.sqrt(x, mathContext));
 	}
 
+	@Test(expected = ArithmeticException.class)
+	public void testSqrtNegative() {
+		BigDecimalMath.sqrt(new BigDecimal(-1), MC);
+	}
+
 	@Test
 	public void testRoot() {
 		for(double value : new double[] { 0.1, 2, 10, 33.3333 }) {
@@ -574,9 +643,9 @@ public class BigDecimalMathTest {
 		}
 	}
 
-	@Test(expected = ArithmeticException.class)
-	public void testSqrtNegative() {
-		BigDecimalMath.sqrt(new BigDecimal(-1), MC);
+	@Test(expected = UnsupportedOperationException.class)
+	public void testRootUnlimitedFail() {
+		BigDecimalMath.root(BigDecimal.valueOf(1.2), BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}
 
 	@Test
@@ -731,7 +800,12 @@ public class BigDecimalMathTest {
 			expectedLog10 = expectedLog10.subtract(BigDecimal.ONE, mathContext);
 		}
 	}
-	
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testLog10UnlimitedFail() {
+		BigDecimalMath.log10(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testLogRandom() {
 		assertRandomCalculation(
@@ -752,9 +826,19 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.log2(x, mathContext));
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void testLog2UnlimitedFail() {
+		BigDecimalMath.log2(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	@Test(expected = ArithmeticException.class)
 	public void testLogNegative() {
 		BigDecimalMath.log(BigDecimal.valueOf(-1), MC);
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testLogUnlimitedFail() {
+		BigDecimalMath.log(BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}
 
 	@Test
@@ -815,6 +899,11 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.exp(x, mathContext));
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void testExpUnlimitedFail() {
+		BigDecimalMath.exp(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testSin() {
 		for(double value : new double[] { -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
@@ -843,7 +932,12 @@ public class BigDecimalMathTest {
 				Math::sin,
 				(x, mathContext) -> BigDecimalMath.sin(x, mathContext));
 	}
-	
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testSinUnlimitedFail() {
+		BigDecimalMath.sin(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testAsin() {
 		for(double value : new double[] { -1, -0.999, -0.9, -0.1, 0, 0.1, 0.9, 0.999, 1.0 }) {
@@ -873,6 +967,11 @@ public class BigDecimalMathTest {
 		BigDecimalMath.asin(new BigDecimal("-1.00001"), MC);
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void testAsinUnlimitedFail() {
+		BigDecimalMath.asin(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testCos() {
 		for(double value : new double[] { -5, -1, -0.3, 0, 0.1, 2, 10 }) {
@@ -900,6 +999,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				Math::cos,
 				(x, mathContext) -> BigDecimalMath.cos(x, mathContext));
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testCosUnlimitedFail() {
+		BigDecimalMath.cos(BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}
 
 	@Test
@@ -932,6 +1036,11 @@ public class BigDecimalMathTest {
 		BigDecimalMath.acos(new BigDecimal("-1.00001"), MC);
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void testAcosUnlimitedFail() {
+		BigDecimalMath.acos(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testTan() {
 		for(double value : new double[] { 1.1, -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
@@ -949,6 +1058,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				Math::tan,
 				(x, mathContext) -> BigDecimalMath.tan(x, mathContext));
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testTanUnlimitedFail() {
+		BigDecimalMath.tan(BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}
 
 	@Test
@@ -1004,6 +1118,11 @@ public class BigDecimalMathTest {
 			   	});
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void testAtanUnlimitedFail() {
+		BigDecimalMath.atan(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testCot() {
 		for(double value : new double[] { 0.5, -0.5 }) {
@@ -1015,6 +1134,11 @@ public class BigDecimalMathTest {
 
 	private double cot(double x) {
 		return Math.cos(x) / Math.sin(x);
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testCotUnlimitedFail() {
+		BigDecimalMath.cot(BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}
 
 	@Test
@@ -1036,7 +1160,12 @@ public class BigDecimalMathTest {
 				BigDecimalMathTest::asinh,
 				(x, mathContext) -> BigDecimalMath.asinh(x, mathContext));
 	}
-	
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testAsinhUnlimitedFail() {
+		BigDecimalMath.asinh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	public static double asinh(double x) {
 		return Math.log(x + Math.sqrt(x*x + 1));
 	}
@@ -1050,7 +1179,12 @@ public class BigDecimalMathTest {
 				BigDecimalMathTest::acosh,
 				(x, mathContext) -> BigDecimalMath.acosh(x, mathContext));
 	}
-	
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testAcoshUnlimitedFail() {
+		BigDecimalMath.acosh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	public static double acosh(double x) {
 		return Math.log(x + Math.sqrt(x*x - 1));
 	}
@@ -1064,7 +1198,12 @@ public class BigDecimalMathTest {
 				BigDecimalMathTest::atanh,
 				(x, mathContext) -> BigDecimalMath.atanh(x, mathContext));
 	}
-	
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testAtanhUnlimitedFail() {
+		BigDecimalMath.atanh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	public static double atanh(double x) {
 		return Math.log((1+x)/(1-x))/2;
 	}
@@ -1085,7 +1224,12 @@ public class BigDecimalMathTest {
 				BigDecimalMathTest::acoth,
 				(x, mathContext) -> BigDecimalMath.acoth(x, mathContext));
 	}
-	
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testAcothUnlimitedFail() {
+		BigDecimalMath.acoth(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	public static double acoth(double x) {
 		return Math.log((x+1)/(x-1))/2;
 	}
@@ -1099,7 +1243,12 @@ public class BigDecimalMathTest {
 				Math::cosh,
 				(x, mathContext) -> BigDecimalMath.cosh(x, mathContext));
 	}
-	
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testCoshUnlimitedFail() {
+		BigDecimalMath.cosh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+	}
+
 	@Test
 	public void testTanhRandom() {
 		assertRandomCalculation(
@@ -1108,6 +1257,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				Math::tanh,
 				(x, mathContext) -> BigDecimalMath.tanh(x, mathContext));
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testTanhUnlimitedFail() {
+		BigDecimalMath.tanh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}
 
 	@Test
@@ -1128,6 +1282,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				BigDecimalMathTest::coth,
 				(x, mathContext) -> BigDecimalMath.coth(x, mathContext));
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testCothUnlimitedFail() {
+		BigDecimalMath.coth(BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}
 
 	private static double coth(double x) {
