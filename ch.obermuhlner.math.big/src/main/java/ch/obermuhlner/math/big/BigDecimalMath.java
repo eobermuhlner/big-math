@@ -802,7 +802,6 @@ public class BigDecimalMath {
 		return pi.round(mathContext);
 	}
 
-	
 	/**
 	 * Returns the number e.
 	 * 
@@ -986,7 +985,7 @@ public class BigDecimalMath {
 	 * 
 	 * @param x the {@link BigDecimal} to calculate the cosine for
 	 * @param mathContext the {@link MathContext} used for the result
-	 * @return the calculated cosine {@link BigDecimal}
+	 * @return the calculated cosine {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal cos(BigDecimal x, MathContext mathContext) {
@@ -1250,11 +1249,11 @@ public class BigDecimalMath {
 	}	
 
 	/**
-	 * Calculates the arc hyperbolic tangens (inverse hyperbolic tangens ) of {@link BigDecimal} x.
+	 * Calculates the arc hyperbolic tangens (inverse hyperbolic tangens) of {@link BigDecimal} x.
 	 * 
 	 * <p>See: <a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Wikipedia: Hyperbolic function</a></p>
 	 * 
-	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic tanges for
+	 * @param x the {@link BigDecimal} to calculate the arc hyperbolic tangens for
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the calculated arc hyperbolic tangens {@link BigDecimal} with the precision specified in the <code>mathContext</code>
 	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
