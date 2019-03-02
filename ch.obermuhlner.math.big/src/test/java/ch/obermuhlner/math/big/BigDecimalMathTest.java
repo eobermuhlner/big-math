@@ -461,7 +461,7 @@ public class BigDecimalMathTest {
 		// 0^x for x < 0 is undefined
 		System.out.println(BigDecimalMath.pow(BigDecimal.valueOf(0), -5, MC));
 	}
-	
+
 	@Test
 	public void testPowPositiveX() {
 		for(double x : new double[] { 1, 1.5, 2, 2.5, 3, 4, 5 }) {
