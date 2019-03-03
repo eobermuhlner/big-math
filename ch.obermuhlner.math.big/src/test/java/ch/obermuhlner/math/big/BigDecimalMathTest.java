@@ -1581,8 +1581,8 @@ public class BigDecimalMathTest {
 			BigDecimal error = y2.subtract(y1, calculationMathContext).abs();
 			BigDecimal acceptableError = BigDecimalMath.pow(BigDecimal.TEN, -numberPrecision, calculationMathContext); 
 			
-			String description = "x=(" + x + ") " + function1Name + "=" + y1 + " " + function2Name + "=" + y2;
-			assertEquals(description + " precision=" + numberPrecision, true, error.compareTo(acceptableError) <= 0);
+			String description = "x=(" + x + ") " + function1Name + "=" + y1 + " " + function2Name + "=" + y2 + " precision=" + numberPrecision + " error=" + error + " acceptableError=" + acceptableError;
+			assertEquals(description, true, error.compareTo(acceptableError) <= 0);
 		}		
 	}
 	
