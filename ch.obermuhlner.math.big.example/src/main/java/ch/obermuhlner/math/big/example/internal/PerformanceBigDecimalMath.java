@@ -24,7 +24,12 @@ public class PerformanceBigDecimalMath {
 	private static final String OUTPUT_DIRECTORY = "docu/benchmarks/";
 
 	public static void main(String[] args) {
+		fullReport();
 
+		//performanceReport_Java9_sqrt();
+	}
+
+	public static void fullReport() {
 		performanceReport_Fast_0_to_2();
 		performanceReport_Fast_neg10_to_10();
 		performanceReport_Fast_0_to_10();
@@ -693,6 +698,21 @@ REFERENCE github eobermuhlner/big-math
 						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x2, mc2, 
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
+
+	/*
+	private static void performanceReport_Java9_sqrt() {
+		performanceReportOverPrecision(
+				"perf_java9_sqrt.csv",
+				BigDecimal.valueOf(3.1),
+				10,
+				1000,
+				10,
+				REPEATS,
+				Arrays.asList("sqrt", "java11_sqrt"),
+				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
+				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
+	}
+	*/
 
 	@SafeVarargs
 	private static void performanceReportOverValue(String name, MathContext mathContext, double xStart, double xEnd, double xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
