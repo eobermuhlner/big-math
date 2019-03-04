@@ -191,6 +191,23 @@ public class BigDecimalMathTest {
 		assertEquals(0, new BigDecimal("123E-987").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("123E-987"))));
 	}
 
+    @Test
+    public void testRound() {
+        MathContext mc = new MathContext(5);
+        assertEquals("0.0000", BigDecimalMath.round(new BigDecimal("0"), mc).toString());
+        assertEquals("0.0000", BigDecimalMath.round(new BigDecimal("0.00000000000"), mc).toString());
+
+        assertEquals("1.2345", BigDecimalMath.round(new BigDecimal("1.2345"), mc).toString());
+        assertEquals("123.45", BigDecimalMath.round(new BigDecimal("123.45"), mc).toString());
+        assertEquals("0.0012345", BigDecimalMath.round(new BigDecimal("0.0012345"), mc).toString());
+
+        assertEquals("1.2346", BigDecimalMath.round(new BigDecimal("1.234567"), mc).toString());
+        assertEquals("1.2300", BigDecimalMath.round(new BigDecimal("1.23"), mc).toString());
+        assertEquals("1.2300", BigDecimalMath.round(new BigDecimal("1.230000"), mc).toString());
+        assertEquals("123.46", BigDecimalMath.round(new BigDecimal("123.4567"), mc).toString());
+        assertEquals("0.0012346", BigDecimalMath.round(new BigDecimal("0.001234567"), mc).toString());
+    }
+
 	@Test
 	public void testE() {
 		// Result from wolframalpha.com: exp(1)
@@ -1599,7 +1616,7 @@ public class BigDecimalMathTest {
 			assertEquals(description, true, error.compareTo(acceptableError) <= 0);
 		}		
 	}
-	
+
 	private static BigDecimal randomBigDecimal(Random random, MathContext mathContext) {
 		char[] digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 		StringBuilder stringNumber = new StringBuilder();

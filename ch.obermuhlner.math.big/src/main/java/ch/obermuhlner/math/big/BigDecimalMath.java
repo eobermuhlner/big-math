@@ -219,6 +219,41 @@ public class BigDecimalMath {
 	}
 
 	/**
+	 * Rounds the specified {@link BigDecimal} according the specified {@link MathContext} including trailing zeroes.
+	 *
+	 * <p>This method is similar to {@linkBigDecimal#round(BigDecimal, MathContext)} but does <strong>not</strong> remove the trailing zeroes.</p>
+	 *
+	 * <p>Example:</p>
+<pre>
+MathContext mc = new MathContext(5);
+
+System.out.println(BigDecimalMath.round(new BigDecimal("1.234567"), mc));    // prints 1.2346
+System.out.println(BigDecimalMath.round(new BigDecimal("123.4567"), mc));    // prints 123.46
+System.out.println(BigDecimalMath.round(new BigDecimal("1.23"), mc));        // prints 1.2300
+System.out.println(BigDecimalMath.round(new BigDecimal("1.230000"), mc));    // prints 1.2300
+System.out.println(BigDecimalMath.round(new BigDecimal("0.001234567"), mc)); // prints 0.0012346
+System.out.println(BigDecimalMath.round(new BigDecimal("0"), mc));           // prints 0.0000
+System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // prints 0.0000
+</pre>
+	 *
+	 * @param value the {@link BigDecimal} to round
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the rounded {@link BigDecimal} value including trailing zeroes
+	 * @see BigDecimal#round(MathContext)
+	 */
+	public static BigDecimal round(BigDecimal value, MathContext mathContext) {
+		if (value.precision() == mathContext.getPrecision()) {
+			return value;
+		}
+		if (value.signum() == 0) {
+			return BigDecimal.ZERO.setScale(mathContext.getPrecision() - 1);
+		}
+
+		int precisionAfterDecimalPoint = mathContext.getPrecision() - value.scale() + 1;
+		return value.add(BigDecimal.ZERO.setScale(precisionAfterDecimalPoint), mathContext);
+	}
+
+	/**
 	 * Calculates the reciprocal of the specified {@link BigDecimal}.
 	 *
 	 * @param x the {@link BigDecimal}
@@ -420,7 +455,7 @@ public class BigDecimalMath {
 		// x^y = exp(y*log(x))
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = exp(y.multiply(log(x, mc), mc), mc);
-		
+
 		return result.round(mathContext);
 	}
 
@@ -449,7 +484,8 @@ public class BigDecimalMath {
 		// TODO optimize y=0, y=1, y=10^k, y=-1, y=-10^k
 
 		if (y < 0) {
-			return reciprocal(pow(x, -y, mc), mc).round(mathContext);
+			BigDecimal value = reciprocal(pow(x, -y, mc), mc);
+			return value.round(mathContext);
 		}
 		
 		BigDecimal result = ONE;
@@ -561,7 +597,7 @@ public class BigDecimalMath {
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
 			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
 		} while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
-		
+
 		return result.round(mathContext);
 	}
 	
@@ -609,7 +645,7 @@ public class BigDecimalMath {
 			step = x.divide(pow(result, nMinus1, mc), mc).subtract(result, mc).divide(n, mc);
 			result = result.add(step, mc);
 		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
-		
+
 		return result.round(mathContext);
 	}
 
@@ -756,7 +792,7 @@ public class BigDecimalMath {
 				return piCache;
 			}
 		}
-		
+
 		return result.round(mathContext);
 	}
 
@@ -798,7 +834,7 @@ public class BigDecimalMath {
 		final BigDecimal value10005 = BigDecimal.valueOf(10005);
 		final BigDecimal factor = value426880.multiply(sqrt(value10005, mc));
 		BigDecimal pi = factor.divide(value13591409.multiply(sumA, mc).add(value545140134.multiply(sumB, mc)), mc);
-		
+
 		return pi.round(mathContext);
 	}
 
@@ -823,7 +859,7 @@ public class BigDecimalMath {
 				return eCache;
 			}
 		}
-		
+
 		return result.round(mathContext);
 	}
 	
@@ -838,7 +874,7 @@ public class BigDecimalMath {
 				return log10Cache;
 			}
 		}
-		
+
 		return result.round(mathContext);
 	}
 	
@@ -853,7 +889,7 @@ public class BigDecimalMath {
 				return log2Cache;
 			}
 		}
-		
+
 		return result.round(mathContext);
 	}
 
@@ -868,7 +904,7 @@ public class BigDecimalMath {
 				return log3Cache;
 			}
 		}
-		
+
 		return result.round(mathContext);
 	}
 
@@ -906,7 +942,7 @@ public class BigDecimalMath {
         BigDecimal t = expTaylor(z, mc);
 
         BigDecimal result = pow(t, integralPart.intValueExact(), mc);
-        
+
 		return result.round(mathContext);
 	}
 	
@@ -1044,7 +1080,8 @@ public class BigDecimalMath {
 		}
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		return sin(x, mc).divide(cos(x, mc), mc).round(mathContext);
+		BigDecimal result = sin(x, mc).divide(cos(x, mc), mc);
+		return result.round(mathContext);
 	}
 	
 	/**
@@ -1125,7 +1162,7 @@ public class BigDecimalMath {
 		}
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		BigDecimal result = cos(x, mc).divide(sin(x, mc), mc).round(mathContext);
+		BigDecimal result = cos(x, mc).divide(sin(x, mc), mc);
 		return result.round(mathContext);
 	}
 
@@ -1229,7 +1266,7 @@ public class BigDecimalMath {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).add(ONE, mc), mc), mc), mc);
 		return result.round(mathContext);
-	}	
+	}
 	
 	/**
 	 * Calculates the arc hyperbolic cosine (inverse hyperbolic cosine) of {@link BigDecimal} x.
@@ -1246,7 +1283,7 @@ public class BigDecimalMath {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).subtract(ONE, mc), mc), mc), mc);
 		return result.round(mathContext);
-	}	
+	}
 
 	/**
 	 * Calculates the arc hyperbolic tangens (inverse hyperbolic tangens) of {@link BigDecimal} x.
@@ -1263,7 +1300,7 @@ public class BigDecimalMath {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(ONE.add(x, mc).divide(ONE.subtract(x, mc), mc), mc).divide(TWO, mc);
 		return result.round(mathContext);
-	}	
+	}
 
 	/**
 	 * Calculates the arc hyperbolic cotangens (inverse hyperbolic cotangens) of {@link BigDecimal} x.
