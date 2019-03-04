@@ -219,9 +219,9 @@ public class BigDecimalMath {
 	}
 
 	/**
-	 * Rounds the specified {@link BigDecimal} according the specified {@link MathContext} including trailing zeroes.
+	 * Rounds the specified {@link BigDecimal} to the precision of the specified {@link MathContext} including trailing zeroes.
 	 *
-	 * <p>This method is similar to {@linkBigDecimal#round(BigDecimal, MathContext)} but does <strong>not</strong> remove the trailing zeroes.</p>
+	 * <p>This method is similar to {@link BigDecimal#round(MathContext)} but does <strong>not</strong> remove the trailing zeroes.</p>
 	 *
 	 * <p>Example:</p>
 <pre>
@@ -320,7 +320,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 	 */
 	public static BigDecimal factorial(BigDecimal x, MathContext mathContext) {
 		if (isIntValue(x)) {
-			return factorial(x.intValueExact()).round(mathContext);
+			return round(factorial(x.intValueExact()), mathContext);
 		}
 
 		// https://en.wikipedia.org/wiki/Spouge%27s_approximation
@@ -344,7 +344,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		result = result.multiply(exp(x.negate().subtract(bigA, mc), mc), mc);
 		result = result.multiply(factor, mc);
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	static List<BigDecimal> getSpougeFactorialConstants(int a) {
@@ -434,8 +434,8 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		if (x.signum() == 0) {
 			switch (y.signum()) {
-				case 0 : return ONE;
-				case 1 : return ZERO;
+				case 0 : return round(ONE, mathContext);
+				case 1 : return round(ZERO, mathContext);
 			}
 		}
 
@@ -456,7 +456,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = exp(y.multiply(log(x, mc), mc), mc);
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -485,7 +485,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 
 		if (y < 0) {
 			BigDecimal value = reciprocal(pow(x, -y, mc), mc);
-			return value.round(mathContext);
+			return round(value, mathContext);
 		}
 		
 		BigDecimal result = ONE;
@@ -504,7 +504,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			y >>= 1;
 		}
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -548,7 +548,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			integerY = halfY;
 		}
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -582,7 +582,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		}
 		
 		if (result.multiply(result, mathContext).compareTo(x) == 0) {
-			return result.round(mathContext); // early exit if x is a square number
+			return round(result, mathContext); // early exit if x is a square number
 		}
 
 		int adaptivePrecision = EXPECTED_INITIAL_PRECISION;
@@ -598,7 +598,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
 		} while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	/**
@@ -646,7 +646,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			result = result.add(step, mc);
 		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -682,7 +682,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			result = logUsingNewton(x, mathContext);
 		}
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -699,7 +699,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		BigDecimal result = log(x, mc).divide(logTwo(mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	/**
@@ -716,7 +716,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 2, mathContext.getRoundingMode());
 
 		BigDecimal result = log(x, mc).divide(logTen(mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	private static BigDecimal logUsingNewton(BigDecimal x, MathContext mathContext) {
@@ -793,7 +793,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			}
 		}
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	private static BigDecimal piChudnovski(MathContext mathContext) {
@@ -835,7 +835,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		final BigDecimal factor = value426880.multiply(sqrt(value10005, mc));
 		BigDecimal pi = factor.divide(value13591409.multiply(sumA, mc).add(value545140134.multiply(sumB, mc)), mc);
 
-		return pi.round(mathContext);
+		return round(pi, mathContext);
 	}
 
 	/**
@@ -860,7 +860,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			}
 		}
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	private static BigDecimal logTen(MathContext mathContext) {
@@ -875,7 +875,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			}
 		}
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	private static BigDecimal logTwo(MathContext mathContext) {
@@ -890,7 +890,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			}
 		}
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	private static BigDecimal logThree(MathContext mathContext) {
@@ -905,7 +905,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			}
 		}
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -943,7 +943,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 
         BigDecimal result = pow(t, integralPart.intValueExact(), mc);
 
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	private static BigDecimal expTaylor(BigDecimal x, MathContext mathContext) {
@@ -953,7 +953,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		
 		BigDecimal result = ExpCalculator.INSTANCE.calculate(x, mc);
 		result = BigDecimalMath.pow(result, 256, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -976,7 +976,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		}
 
 		BigDecimal result = SinCalculator.INSTANCE.calculate(x, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	/**
@@ -1011,7 +1011,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		}
 
 		BigDecimal result = AsinCalculator.INSTANCE.calculate(x, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	/**
@@ -1034,7 +1034,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		}
 		
 		BigDecimal result = CosCalculator.INSTANCE.calculate(x, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1060,7 +1060,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		BigDecimal result = pi(mc).divide(TWO, mc).subtract(asin(x, mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1081,7 +1081,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = sin(x, mc).divide(cos(x, mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	/**
@@ -1101,7 +1101,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		x = x.divide(sqrt(ONE.add(x.multiply(x, mc), mc), mc), mc);
 
 		BigDecimal result = asin(x, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1163,7 +1163,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = cos(x, mc).divide(sin(x, mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1180,7 +1180,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = pi(mc).divide(TWO, mc).subtract(atan(x, mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1197,7 +1197,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = SinhCalculator.INSTANCE.calculate(x, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1214,7 +1214,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		BigDecimal result = CoshCalculator.INSTANCE.calculate(x, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1231,7 +1231,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = sinh(x, mc).divide(cosh(x, mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1248,7 +1248,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = cosh(x, mc).divide(sinh(x, mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1265,7 +1265,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).add(ONE, mc), mc), mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 	
 	/**
@@ -1282,7 +1282,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).subtract(ONE, mc), mc), mc), mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1299,7 +1299,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(ONE.add(x, mc).divide(ONE.subtract(x, mc), mc), mc).divide(TWO, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	/**
@@ -1316,7 +1316,7 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(ONE, mc).divide(x.subtract(ONE, mc), mc), mc).divide(TWO, mc);
-		return result.round(mathContext);
+		return round(result, mathContext);
 	}
 
 	private static void checkMathContext (MathContext mathContext) {
