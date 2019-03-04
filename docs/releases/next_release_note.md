@@ -1,7 +1,31 @@
 # API changes
 
-No API changes.
+## Use `DefaultBigDecimalMath` to avoid passing `MathContext`
 
+Due to popular demand a convenience class `DefaultBigDecimalMath` was added that provides mathematical function
+where the `MathContext` must not be passed every time.
+
+Instead it uses a default `MathContext` that will be used by every method.
+
+The default `MathContext` can be defined in three ways:
+* the initial default is equivalent to `MathContext.DECIMAL128`
+* specifying system properties during the start of the application
+* programmatically using `DefaultBigDecimalMath.setDefaultMathContext()`
+
+### System properties for default `MathContext`
+
+`ch.obermuhlner.math.big.default.precision`
+`ch.obermuhlner.math.big.default.rounding`
+
+### Using `DefaultBigDecimalMath.setDefaultMathContext()`
+
+The static method `DefaultBigDecimalMath.setDefaultMathContext()` can be used to set the new default `MathContext`.
+
+This call should be done as early as possible during application start, so that all calculations use the same precision.
+
+*Important*: Avoid the pitfall of setting the precision temporarily for a calculation.
+This can lead to race conditions and calculations with the wrong precision
+if other threads in your application do the same thing.
 
 # Bugfixes
 

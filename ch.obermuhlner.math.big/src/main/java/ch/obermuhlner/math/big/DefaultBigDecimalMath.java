@@ -7,10 +7,21 @@ import java.util.Objects;
 /**
  * A wrapper around {@link BigDecimalMath} that passes always the same default {@link MathContext} to the
  * functions that need a {@link MathContext} argument.
+ *
+ * <p>This class is designed for applications that will always need the same precision in all calculations.
+ * Set the desired precision in the {@link MathContext} early in the startup of the application.</p>
+ *
+ * <p>Important: Avoid the pitfall of setting the precision temporarily for a calculation.
+ * This can lead to race conditions and calculations with the wrong precision
+ * if other threads in your application do the same thing.</p>
  */
 public class DefaultBigDecimalMath {
 
-    private static MathContext defaultMathContext = MathContext.DECIMAL128;
+    private static MathContext defaultMathContext = createDefaultMathContext();
+
+    private static MathContext createDefaultMathContext() {
+        return MathContext.DECIMAL128;
+    }
 
     /**
      * Sets the default {@link MathContext} used for all mathematical functions in this class.
