@@ -249,8 +249,12 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 			return BigDecimal.ZERO.setScale(mathContext.getPrecision() - 1);
 		}
 
-		int precisionAfterDecimalPoint = mathContext.getPrecision() - value.scale() + 1;
-		return value.add(BigDecimal.ZERO.setScale(precisionAfterDecimalPoint), mathContext);
+		try {
+            BigDecimal stripped = value.stripTrailingZeros();
+            return value.add(BigDecimal.ZERO.setScale(mathContext.getPrecision() - stripped.scale() + stripped.precision()), mathContext);
+        } catch (ArithmeticException ex) {
+		    return value.round(mathContext);
+        }
 	}
 
 	/**

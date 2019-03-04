@@ -194,6 +194,7 @@ public class BigDecimalMathTest {
     @Test
     public void testRound() {
         MathContext mc = new MathContext(5);
+
         assertEquals("0.0000", BigDecimalMath.round(new BigDecimal("0"), mc).toString());
         assertEquals("0.0000", BigDecimalMath.round(new BigDecimal("0.00000000000"), mc).toString());
 
@@ -206,6 +207,16 @@ public class BigDecimalMathTest {
         assertEquals("1.2300", BigDecimalMath.round(new BigDecimal("1.230000"), mc).toString());
         assertEquals("123.46", BigDecimalMath.round(new BigDecimal("123.4567"), mc).toString());
         assertEquals("0.0012346", BigDecimalMath.round(new BigDecimal("0.001234567"), mc).toString());
+        //assertEquals("0.0012300", BigDecimalMath.round(new BigDecimal("0.00123"), mc).toString());
+
+        assertEquals("1.2346E+100", BigDecimalMath.round(new BigDecimal("1.234567E+100"), mc).toString());
+        assertEquals("1.2346E-100", BigDecimalMath.round(new BigDecimal("1.234567E-100"), mc).toString());
+        assertEquals("1.2300E+100", BigDecimalMath.round(new BigDecimal("1.23E+100"), mc).toString());
+        //assertEquals("1.2300E-100", BigDecimalMath.round(new BigDecimal("1.23E-100"), mc).toString());
+        assertEquals("1.2346E+999999999", BigDecimalMath.round(new BigDecimal("1.234567E+999999999"), mc).toString());
+        assertEquals("1.2346E-999999999", BigDecimalMath.round(new BigDecimal("1.234567E-999999999"), mc).toString());
+        assertEquals("1.2300E+999999999", BigDecimalMath.round(new BigDecimal("1.23E+999999999"), mc).toString());
+        //assertEquals("1.2300E-999999999", BigDecimalMath.round(new BigDecimal("1.23E-999999999"), mc).toString());
     }
 
 	@Test
@@ -341,12 +352,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testFactorialIntegerValues() {
-		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(BigDecimal.valueOf(0), MC));
-		assertEquals(new BigDecimal(1), BigDecimalMath.factorial(BigDecimal.valueOf(1), MC));
-		assertEquals(new BigDecimal(2), BigDecimalMath.factorial(BigDecimal.valueOf(2), MC));
-		assertEquals(new BigDecimal(6), BigDecimalMath.factorial(BigDecimal.valueOf(3), MC));
-		assertEquals(new BigDecimal(24), BigDecimalMath.factorial(BigDecimal.valueOf(4), MC));
-		assertEquals(new BigDecimal(120), BigDecimalMath.factorial(BigDecimal.valueOf(5), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(1), MC), BigDecimalMath.factorial(BigDecimal.valueOf(0), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(1), MC), BigDecimalMath.factorial(BigDecimal.valueOf(1), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(2), MC), BigDecimalMath.factorial(BigDecimal.valueOf(2), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(6), MC), BigDecimalMath.factorial(BigDecimal.valueOf(3), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(24), MC), BigDecimalMath.factorial(BigDecimal.valueOf(4), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(120), MC), BigDecimalMath.factorial(BigDecimal.valueOf(5), MC));
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -391,12 +402,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testGammaIntegerValues() {
-		assertEquals(new BigDecimal(1), BigDecimalMath.gamma(BigDecimal.valueOf(1), MC));
-		assertEquals(new BigDecimal(1), BigDecimalMath.gamma(BigDecimal.valueOf(2), MC));
-		assertEquals(new BigDecimal(2), BigDecimalMath.gamma(BigDecimal.valueOf(3), MC));
-		assertEquals(new BigDecimal(6), BigDecimalMath.gamma(BigDecimal.valueOf(4), MC));
-		assertEquals(new BigDecimal(24), BigDecimalMath.gamma(BigDecimal.valueOf(5), MC));
-		assertEquals(new BigDecimal(120), BigDecimalMath.gamma(BigDecimal.valueOf(6), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(1), MC), BigDecimalMath.gamma(BigDecimal.valueOf(1), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(1), MC), BigDecimalMath.gamma(BigDecimal.valueOf(2), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(2), MC), BigDecimalMath.gamma(BigDecimal.valueOf(3), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(6), MC), BigDecimalMath.gamma(BigDecimal.valueOf(4), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(24), MC), BigDecimalMath.gamma(BigDecimal.valueOf(5), MC));
+		assertEquals(BigDecimalMath.round(new BigDecimal(120), MC), BigDecimalMath.gamma(BigDecimal.valueOf(6), MC));
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -411,7 +422,7 @@ public class BigDecimalMathTest {
 			for(int y : new int[] { 0, 1, 2, 3, 4, 5 }) {
 				assertEquals(
 						x + "^" + y,
-						BigDecimal.valueOf((int) Math.pow(x, y)),
+                        BigDecimalMath.round(BigDecimal.valueOf((int) Math.pow(x, y)), MC),
 						BigDecimalMath.pow(BigDecimal.valueOf(x), y, MC));
 			}
 		}
@@ -425,7 +436,8 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testPowIntUnnecessary() {
-		assertEquals(BigDecimal.valueOf(2.0736), BigDecimalMath.pow(BigDecimal.valueOf(1.2), 4, new MathContext(20, RoundingMode.UNNECESSARY)));
+        MathContext mathContext = new MathContext(20, RoundingMode.UNNECESSARY);
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(2.0736), mathContext), BigDecimalMath.pow(BigDecimal.valueOf(1.2), 4, mathContext));
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -455,7 +467,7 @@ public class BigDecimalMathTest {
 			for(int y : new int[] { -5, -4, -3, -2, -1}) {
 				assertEquals(
 						x + "^" + y,
-						BigDecimal.ONE.divide(BigDecimal.valueOf((int) Math.pow(x, -y)), MC),
+						BigDecimalMath.round(BigDecimal.ONE.divide(BigDecimal.valueOf((int) Math.pow(x, -y)), MC), MC),
 						BigDecimalMath.pow(BigDecimal.valueOf(x), y, MC));
 			}
 		}
@@ -464,13 +476,13 @@ public class BigDecimalMathTest {
 	@Test
 	public void testPowIntSpecialCases() {
 		// 0^0 = 1
-		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(0), 0, MC));
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(1), MC), BigDecimalMath.pow(BigDecimal.valueOf(0), 0, MC));
 		// 0^x = 0 for x > 0
-		assertEquals(BigDecimal.valueOf(0), BigDecimalMath.pow(BigDecimal.valueOf(0), +5, MC));
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(0), MC), BigDecimalMath.pow(BigDecimal.valueOf(0), +5, MC));
 
 		// x^0 = 1 for all x
-		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(-5), 0, MC));
-		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(+5), 0, MC));
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(1), MC), BigDecimalMath.pow(BigDecimal.valueOf(-5), 0, MC));
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(1), MC), BigDecimalMath.pow(BigDecimal.valueOf(+5), 0, MC));
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -514,13 +526,13 @@ public class BigDecimalMathTest {
 	@Test
 	public void testPowSpecialCases() {
 		// 0^0 = 1
-		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(0), BigDecimal.valueOf(0), MC));
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(1), MC), BigDecimalMath.pow(BigDecimal.valueOf(0), BigDecimal.valueOf(0), MC));
 		// 0^x = 0 for x > 0
-		assertEquals(BigDecimal.valueOf(0), BigDecimalMath.pow(BigDecimal.valueOf(0), BigDecimal.valueOf(+5), MC));
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(0), MC), BigDecimalMath.pow(BigDecimal.valueOf(0), BigDecimal.valueOf(+5), MC));
 
 		// x^0 = 1 for all x
-		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(-5), BigDecimal.valueOf(0), MC));
-		assertEquals(BigDecimal.valueOf(1), BigDecimalMath.pow(BigDecimal.valueOf(+5), BigDecimal.valueOf(0), MC));
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(1), MC), BigDecimalMath.pow(BigDecimal.valueOf(-5), BigDecimal.valueOf(0), MC));
+		assertEquals(BigDecimalMath.round(BigDecimal.valueOf(1), MC), BigDecimalMath.pow(BigDecimal.valueOf(+5), BigDecimal.valueOf(0), MC));
 	}
 
 	@Test(expected = ArithmeticException.class)
