@@ -191,32 +191,43 @@ public class BigDecimalMathTest {
 		assertEquals(0, new BigDecimal("123E-987").compareTo(BigDecimalMath.fractionalPart(new BigDecimal("123E-987"))));
 	}
 
+
     @Test
     public void testRound() {
         MathContext mc = new MathContext(5);
 
-        assertEquals("0.0000", BigDecimalMath.round(new BigDecimal("0"), mc).toString());
-        assertEquals("0.0000", BigDecimalMath.round(new BigDecimal("0.00000000000"), mc).toString());
+        for (String s : Arrays.asList("1.234567", "1.23", "12.34567", "0.001234567")) {
+            BigDecimal value = new BigDecimal(s);
+            assertEquals(value.round(mc), BigDecimalMath.round(value, mc));
+        }
+    }
 
-        assertEquals("1.2345", BigDecimalMath.round(new BigDecimal("1.2345"), mc).toString());
-        assertEquals("123.45", BigDecimalMath.round(new BigDecimal("123.45"), mc).toString());
-        assertEquals("0.0012345", BigDecimalMath.round(new BigDecimal("0.0012345"), mc).toString());
+    @Test
+    public void testRoundWithTrailingZeroes() {
+        MathContext mc = new MathContext(5);
 
-        assertEquals("1.2346", BigDecimalMath.round(new BigDecimal("1.234567"), mc).toString());
-        assertEquals("1.2300", BigDecimalMath.round(new BigDecimal("1.23"), mc).toString());
-        assertEquals("1.2300", BigDecimalMath.round(new BigDecimal("1.230000"), mc).toString());
-        assertEquals("123.46", BigDecimalMath.round(new BigDecimal("123.4567"), mc).toString());
-        assertEquals("0.0012346", BigDecimalMath.round(new BigDecimal("0.001234567"), mc).toString());
-        //assertEquals("0.0012300", BigDecimalMath.round(new BigDecimal("0.00123"), mc).toString());
+        assertEquals("0.0000", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0"), mc).toString());
+        assertEquals("0.0000", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.00000000000"), mc).toString());
 
-        assertEquals("1.2346E+100", BigDecimalMath.round(new BigDecimal("1.234567E+100"), mc).toString());
-        assertEquals("1.2346E-100", BigDecimalMath.round(new BigDecimal("1.234567E-100"), mc).toString());
-        assertEquals("1.2300E+100", BigDecimalMath.round(new BigDecimal("1.23E+100"), mc).toString());
-        //assertEquals("1.2300E-100", BigDecimalMath.round(new BigDecimal("1.23E-100"), mc).toString());
-        assertEquals("1.2346E+999999999", BigDecimalMath.round(new BigDecimal("1.234567E+999999999"), mc).toString());
-        assertEquals("1.2346E-999999999", BigDecimalMath.round(new BigDecimal("1.234567E-999999999"), mc).toString());
-        assertEquals("1.2300E+999999999", BigDecimalMath.round(new BigDecimal("1.23E+999999999"), mc).toString());
-        //assertEquals("1.2300E-999999999", BigDecimalMath.round(new BigDecimal("1.23E-999999999"), mc).toString());
+        assertEquals("1.2345", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.2345"), mc).toString());
+        assertEquals("123.45", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("123.45"), mc).toString());
+        assertEquals("0.0012345", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0012345"), mc).toString());
+
+        assertEquals("1.2346", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.234567"), mc).toString());
+        assertEquals("1.2300", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.23"), mc).toString());
+        assertEquals("1.2300", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.230000"), mc).toString());
+        assertEquals("123.46", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("123.4567"), mc).toString());
+        assertEquals("0.0012346", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.001234567"), mc).toString());
+        assertEquals("0.0012300", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.00123"), mc).toString());
+
+        assertEquals("1.2346E+100", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.234567E+100"), mc).toString());
+        assertEquals("1.2346E-100", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.234567E-100"), mc).toString());
+        assertEquals("1.2300E+100", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.23E+100"), mc).toString());
+        assertEquals("1.2300E-100", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.23E-100"), mc).toString());
+        assertEquals("1.2346E+999999999", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.234567E+999999999"), mc).toString());
+        assertEquals("1.2346E-999999999", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.234567E-999999999"), mc).toString());
+        assertEquals("1.2300E+999999999", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.23E+999999999"), mc).toString());
+        assertEquals("1.2300E-999999999", BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.23E-999999999"), mc).toString());
     }
 
 	@Test

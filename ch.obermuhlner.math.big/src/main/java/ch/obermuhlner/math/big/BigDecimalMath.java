@@ -218,6 +218,21 @@ public class BigDecimalMath {
 		return value.subtract(integralPart(value));
 	}
 
+    /**
+     * Rounds the specified {@link BigDecimal} to the precision of the specified {@link MathContext}.
+     *
+     * <p>This method calls {@link BigDecimal#round(MathContext)}.</p>
+     *
+     * @param value the {@link BigDecimal} to round
+     * @param mathContext the {@link MathContext} used for the result
+     * @return the rounded {@link BigDecimal} value
+     * @see BigDecimal#round(MathContext)
+     * @see BigDecimalMath#roundWithTrailingZeroes(BigDecimal, MathContext)
+     */
+    public static BigDecimal round(BigDecimal value, MathContext mathContext) {
+	    return value.round(mathContext);
+    }
+
 	/**
 	 * Rounds the specified {@link BigDecimal} to the precision of the specified {@link MathContext} including trailing zeroes.
 	 *
@@ -226,22 +241,23 @@ public class BigDecimalMath {
 	 * <p>Example:</p>
 <pre>
 MathContext mc = new MathContext(5);
-
-System.out.println(BigDecimalMath.round(new BigDecimal("1.234567"), mc));    // prints 1.2346
-System.out.println(BigDecimalMath.round(new BigDecimal("123.4567"), mc));    // prints 123.46
-System.out.println(BigDecimalMath.round(new BigDecimal("1.23"), mc));        // prints 1.2300
-System.out.println(BigDecimalMath.round(new BigDecimal("1.230000"), mc));    // prints 1.2300
-System.out.println(BigDecimalMath.round(new BigDecimal("0.001234567"), mc)); // prints 0.0012346
-System.out.println(BigDecimalMath.round(new BigDecimal("0"), mc));           // prints 0.0000
-System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // prints 0.0000
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.234567"), mc));    // 1.2346
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("123.4567"), mc));    // 123.46
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.001234567"), mc)); // 0.0012346
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.23"), mc));        // 1.2300
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.230000"), mc));    // 1.2300
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.00123"), mc));     // 0.0012300
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0"), mc));           // 0.0000
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.00000000"), mc));  // 0.0000
 </pre>
 	 *
 	 * @param value the {@link BigDecimal} to round
 	 * @param mathContext the {@link MathContext} used for the result
 	 * @return the rounded {@link BigDecimal} value including trailing zeroes
 	 * @see BigDecimal#round(MathContext)
+     * @see BigDecimalMath#round(BigDecimal, MathContext)
 	 */
-	public static BigDecimal round(BigDecimal value, MathContext mathContext) {
+	public static BigDecimal roundWithTrailingZeroes(BigDecimal value, MathContext mathContext) {
 		if (value.precision() == mathContext.getPrecision()) {
 			return value;
 		}
@@ -251,7 +267,15 @@ System.out.println(BigDecimalMath.round(new BigDecimal("0.00000000"), mc));  // 
 
 		try {
             BigDecimal stripped = value.stripTrailingZeros();
-            return value.add(BigDecimal.ZERO.setScale(mathContext.getPrecision() - stripped.scale() + stripped.precision()), mathContext);
+            int exponentStripped = exponent(stripped); // value.precision() - value.scale() - 1;
+
+            BigDecimal zero;
+            if (exponentStripped < -1) {
+                zero = BigDecimal.ZERO.setScale(mathContext.getPrecision() - exponentStripped);
+            } else {
+                zero = BigDecimal.ZERO.setScale(mathContext.getPrecision() + exponentStripped + 1);
+            }
+            return stripped.add(zero, mathContext);
         } catch (ArithmeticException ex) {
 		    return value.round(mathContext);
         }

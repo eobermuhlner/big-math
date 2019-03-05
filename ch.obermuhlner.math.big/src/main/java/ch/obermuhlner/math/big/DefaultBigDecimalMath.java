@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
@@ -19,8 +20,31 @@ public class DefaultBigDecimalMath {
 
     private static MathContext defaultMathContext = createDefaultMathContext();
 
-    private static MathContext createDefaultMathContext() {
-        return MathContext.DECIMAL128;
+    private static MathContext createDefaultMathContext () {
+        int precision = getIntSystemProperty("ch.obermuhlner.math.big.default.precision", MathContext.DECIMAL128.getPrecision());
+        RoundingMode rounding = getRoundingModeSystemProperty("ch.obermuhlner.math.big.default.rounding", MathContext.DECIMAL128.getRoundingMode());
+
+        return new MathContext(precision, rounding);
+    }
+
+    private static int getIntSystemProperty(String propertyKey, int defaultValue) {
+        String propertyValue = System.getProperty(propertyKey, Integer.toString(defaultValue));
+        try {
+            return Integer.parseInt(propertyValue);
+        } catch(NumberFormatException ex) {
+            System.err.println("Property '" + propertyKey + "' is not valid: " + propertyValue + " (using " + defaultValue + " instead)");
+            return defaultValue;
+        }
+    }
+
+    private static RoundingMode getRoundingModeSystemProperty(String propertyKey, RoundingMode defaultValue) {
+        String propertyValue = System.getProperty(propertyKey, defaultValue.name());
+        try {
+            return RoundingMode.valueOf(propertyValue);
+        } catch(IllegalArgumentException ex) {
+            System.err.println("Property '" + propertyKey + "' is not valid: " + propertyValue + " (using " + defaultValue + " instead)");
+            return defaultValue;
+        }
     }
 
     /**
