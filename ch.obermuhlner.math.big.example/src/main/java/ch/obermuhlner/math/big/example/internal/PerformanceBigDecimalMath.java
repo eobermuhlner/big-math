@@ -19,7 +19,7 @@ public class PerformanceBigDecimalMath {
 
 	private static MathContext REF_MATHCONTEXT = new MathContext(300);
 	
-	private static int REPEATS = 10;
+	private static int REPEATS = 100;
 	
 	private static final String OUTPUT_DIRECTORY = "docu/benchmarks/";
 
@@ -699,10 +699,49 @@ REFERENCE github eobermuhlner/big-math
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
 
-	/*
+/*
 	private static void performanceReport_Java9_sqrt() {
+		performanceReportOverValue(
+				"perf_java9_sqrt_from_0_to_10.csv",
+				REF_MATHCONTEXT,
+				0,
+				+10,
+				+0.01,
+				REPEATS,
+				Arrays.asList(
+						"sqrt",
+						"java11_sqrt"),
+				(x1, mc1) -> BigDecimalMath.sqrt(x1, mc1),
+				(x1, mc1) -> x1.sqrt(mc1));
+
+		performanceReportOverValue(
+				"perf_java9_sqrt_from_0_to_100.csv",
+				REF_MATHCONTEXT,
+				0,
+				+100,
+				+0.1,
+				REPEATS,
+				Arrays.asList(
+						"sqrt",
+						"java11_sqrt"),
+				(x1, mc1) -> BigDecimalMath.sqrt(x1, mc1),
+				(x1, mc1) -> x1.sqrt(mc1));
+
+		performanceReportOverValue(
+				"perf_java9_sqrt_from_0_to_10000.csv",
+				REF_MATHCONTEXT,
+				0,
+				+10000,
+				+10,
+				REPEATS,
+				Arrays.asList(
+						"sqrt",
+						"java11_sqrt"),
+				(x1, mc1) -> BigDecimalMath.sqrt(x1, mc1),
+				(x1, mc1) -> x1.sqrt(mc1));
+
 		performanceReportOverPrecision(
-				"perf_java9_sqrt.csv",
+				"perf_java9_sqrt_precisions_to_1000.csv",
 				BigDecimal.valueOf(3.1),
 				10,
 				1000,
@@ -711,8 +750,19 @@ REFERENCE github eobermuhlner/big-math
 				Arrays.asList("sqrt", "java11_sqrt"),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
+
+		performanceReportOverPrecision(
+				"perf_java9_sqrt_precisions_to_10000.csv",
+				BigDecimal.valueOf(3.1),
+				10,
+				10000,
+				10,
+				REPEATS,
+				Arrays.asList("sqrt", "java11_sqrt"),
+				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
+				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
 	}
-	*/
+*/
 
 	@SafeVarargs
 	private static void performanceReportOverValue(String name, MathContext mathContext, double xStart, double xEnd, double xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
