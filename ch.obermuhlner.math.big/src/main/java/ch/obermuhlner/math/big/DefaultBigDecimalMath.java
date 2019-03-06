@@ -9,8 +9,17 @@ import java.util.Objects;
  * A wrapper around {@link BigDecimalMath} that passes always the same default {@link MathContext} to the
  * functions that need a {@link MathContext} argument.
  *
- * <p>This class is designed for applications that will always need the same precision in all calculations.
- * Set the desired precision in the {@link MathContext} early in the startup of the application.</p>
+ * <p>This class is designed for applications that will always need the same precision in all calculations.</p>
+ *
+ * <p>The initial default {@link MathContext} is equivalent to {@link MathContext#DECIMAL128}
+ * but this can be overridden by setting the following system properties:</p>
+ * <ul>
+ *     <li><code>ch.obermuhlner.math.big.default.precision</code> to a positive integer precision (default=34)</li>
+ *     <li><code>ch.obermuhlner.math.big.default.rounding</code> to a {@link RoundingMode} name (default=HALF_UP) </li>
+ * </ul>
+ *
+ * <p>It is also possible to set the default {@link MathContext} using {@link #setDefaultMathContext(MathContext)}.
+ * It is recommended to set the desired precision in the {@link MathContext} early in the startup of the application.</p>
  *
  * <p>Important: Avoid the pitfall of setting the precision temporarily for a calculation.
  * This can lead to race conditions and calculations with the wrong precision
@@ -64,6 +73,30 @@ public class DefaultBigDecimalMath {
      */
     public static MathContext getDefaultMathContext() {
         return defaultMathContext;
+    }
+
+    /**
+     * Rounds the specified {@link BigDecimal} to the precision of the default {@link MathContext}.
+     *
+     * @param value the {@link BigDecimal} to round
+     * @return the rounded {@link BigDecimal} value
+     * @see #setDefaultMathContext(MathContext)
+     * @see BigDecimalMath#round(BigDecimal, MathContext)
+     */
+    public static BigDecimal round(BigDecimal value) {
+        return  BigDecimalMath.round(value, defaultMathContext);
+    }
+
+    /**
+     * Rounds the specified {@link BigDecimal} to the precision of the default {@link MathContext} including trailing zeroes.
+     *
+     * @param value the {@link BigDecimal} to round
+     * @return the rounded {@link BigDecimal} value including trailing zeroes
+     * @see #setDefaultMathContext(MathContext)
+     * @see BigDecimalMath#roundWithTrailingZeroes(BigDecimal, MathContext)
+     */
+    public static BigDecimal roundWithTrailingZeroes(BigDecimal value) {
+        return BigDecimalMath.roundWithTrailingZeroes(value, defaultMathContext);
     }
 
     /**

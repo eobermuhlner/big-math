@@ -20,6 +20,20 @@ public class DefaultBigDecimalMathTest {
     }
 
     @Test
+    public void testRound() {
+        assertEquals(
+                BigDecimalMath.round(BigDecimal.valueOf(1.23456), DefaultBigDecimalMath.getDefaultMathContext()),
+                DefaultBigDecimalMath.round(BigDecimal.valueOf(1.23456)));
+    }
+
+    @Test
+    public void testRoundWithTrailingZeroes() {
+        assertEquals(
+                BigDecimalMath.roundWithTrailingZeroes(BigDecimal.valueOf(1.23456), DefaultBigDecimalMath.getDefaultMathContext()),
+                DefaultBigDecimalMath.roundWithTrailingZeroes(BigDecimal.valueOf(1.23456)));
+    }
+
+    @Test
     public void testAdd() {
         assertEquals(
                 BigDecimal.valueOf(2).add(BigDecimal.valueOf(3), DefaultBigDecimalMath.getDefaultMathContext()),
