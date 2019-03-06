@@ -5,12 +5,22 @@
 Due to popular demand a convenience class `DefaultBigDecimalMath` was added that provides mathematical function
 where the `MathContext` must not be passed every time.
 
-Instead it uses a default `MathContext` that will be used by every method.
+The class `DefaultBigDecimalMath` is a wrapper around `BigDecimalMath` that passes always the same default `MathContext` to the
+functions that need a `MathContext` argument.
 
-The default `MathContext` can be defined in three ways:
-* the initial default is equivalent to `MathContext.DECIMAL128`
-* specifying system properties during the start of the application
-* programmatically using `DefaultBigDecimalMath.setDefaultMathContext()`
+This class is designed for applications that will always need the same precision in all calculations.
+
+The initial default `MathContext` is equivalent to `MathContext#DECIMAL128`
+but this can be overridden by setting the following system properties:
+* `ch.obermuhlner.math.big.default.precision` to a positive integer precision (default=34)
+* `ch.obermuhlner.math.big.default.rounding` to a `RoundingMode` name (default=HALF_UP)
+
+It is also possible to set the default `MathContext` using `DefaultBigDecimalMath.setDefaultMathContext(MathContext)`.
+It is recommended tp set the desired precision in the `MathContext` early in the startup of the application.
+
+Important: Avoid the pitfall of setting the precision temporarily for a calculation.
+This can lead to race conditions and calculations with the wrong precision
+if other threads in your application do the same thing.
 
 ### System properties for default `MathContext`
 
@@ -26,6 +36,26 @@ This call should be done as early as possible during application start, so that 
 *Important*: Avoid the pitfall of setting the precision temporarily for a calculation.
 This can lead to race conditions and calculations with the wrong precision
 if other threads in your application do the same thing.
+
+## Improved rounding with `BigDecimalMath.roundWithTrailingZeroes()`
+
+The new function `BigDecimalMath.roundWithTrailingZeroes()` rounds the specified `BigDecimal` to the precision of the specified `MathContext` including trailing zeroes.
+
+Example:
+```
+MathContext mc = new MathContext(5);
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.234567"), mc));    // 1.2346
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("123.4567"), mc));    // 123.46
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.001234567"), mc)); // 0.0012346
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.23"), mc));        // 1.2300
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("1.230000"), mc));    // 1.2300
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.00123"), mc));     // 0.0012300
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0"), mc));           // 0.0000
+System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.00000000"), mc));  // 0.0000
+```
+
+For consistency the normal `BigDecimal.round()` function has also been provided in `BigDecimalMath`. 
+
 
 # Bugfixes
 
