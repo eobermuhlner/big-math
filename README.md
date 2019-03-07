@@ -32,17 +32,18 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `asinh(BigDecimal, MathContext)`
 *   `acosh(BigDecimal, MathContext)`
 *   `atanh(BigDecimal, MathContext)`
-*   `pow(BigDecimal, int, MathContext)` calculates x^y for `int` y
+*   `pow(BigDecimal, long, MathContext)` calculates x^y for `long` y
 *   `factorial(int)` calculates n!
 *   `bernoulli(int)` calculates Bernoulli numbers
 *   `pi(MathContext)` calculates pi to an arbitrary precision
 *   `e(MathContext)` calculates e to an arbitrary precision
 *   `mantissa(BigDecimal)` extracts the mantissa from a `BigDecimal` (mantissa * 10^exponent)
 *   `exponent(BigDecimal)` extracts the exponent from a `BigDecimal` (mantissa * 10^exponent)
-*   `integralPart(BigDecimal)` extract the integral part from a `BigDecimal` (everything before the decimal point) 
-*   `fractionalPart(BigDecimal)` extract the fractional part from a `BigDecimal` (everything after the decimal point)
+*   `integralPart(BigDecimal)` extracts the integral part from a `BigDecimal` (everything before the decimal point) 
+*   `fractionalPart(BigDecimal)` extracts the fractional part from a `BigDecimal` (everything after the decimal point)
 *   `isIntValue(BigDecimal)` checks whether the `BigDecimal` can be represented as an `int` value
 *   `isDoubleValue(BigDecimal)` checks whether the `BigDecimal` can be represented as a `double` value
+*   `roundWithTrailingZeroes(BigDecimal, MathContext)` rounds a `BigDecimal` to an arbitrary precision with trailing zeroes.
 
 
 ### Usage
@@ -157,31 +158,15 @@ When calculating these functions you need to specify the number of digits you ne
 
 The `MathContext` contains a precision and information on how to round the last digits, so it is an obvious choice to specify the desired precision of mathematical functions.
 
-#### Why is there no `setMathContext()` so I do not have to pass `MathContext` all the time?
+#### What if I really do not want to pass the `MathContext` everytime?
 
-Maintaining a static default `MathContext` would simplify calling the mathematical functions but it would make the static class stateful
-which is a terrible thing. Imagine two parts of your programming setting the precision differently and the debugging mess you have afterwards, especially if they run in parallel threads.
+The convenience class `DefaultBigDecimalMath` was added that provides mathematical functions
+where the `MathContext` must not be passed every time.
 
-But there is a trivial solution that might work perfectly fine for your project.
+The class `DefaultBigDecimalMath` is a wrapper around `BigDecimalMath` that passes always the same default `MathContext` to the
+functions that need a `MathContext` argument.
 
-Write your own little wrapper class with your own hardcoded precision.
-This is stable, simple, thread-safe and self-documenting.
-
-```java
-public class HighPrecisionMath {
-	public static final MathContext MATH_CONTEXT = new MathContext(100);
-
-	public static final BigDecimal PI = BigDecimalMath.pi(MATH_CONTEXT);
-
-	public static BigDecimal pow(BigDecimal x, BigDecimal y) {
-		return BigDecimalMath.pow(x, y, MATH_CONTEXT);
-	}
-
-	public static BigDecimal sin(BigDecimal x) {
-		return BigDecimalMath.sin(x, MATH_CONTEXT);
-	}
-}
-```
+It is possible to control the default `MathContext` programmatically, or specify it at start time using system properties.
 
 #### I specified a precision of `n` digits, but the results have completely different number of digits after the decimal point. Why?
 
@@ -212,6 +197,22 @@ For the mathematical background and performance analysis please refer to this ar
 
 Some of the implementation details are explained here: 
 *	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
+
+#### I only need a `sqrt` function - should I use this library?
+
+With Java 9 the `BigDecimal` class has a new function `sqrt(BigDecimal, MathContext)`.
+If you only need the square root function then by all means use the provided standard function instead of this library.
+
+If you need any other high level function then you should still consider using this library.
+
+For high precision (above 300 digits) the current implementation of
+Java 9 `BigDecimal.sqrt()` becomes increasingly slower than `BigDecimalMath.sqrt()`.
+You should consider whether the increased performance is worth having an additional dependency.  
+
+The following charts shows the time needed to calculate the square root of 3.1 with increasing precision.
+
+![Java9 sqrt vs. sqrt()](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_java9_sqrt_precisions_to_1000.png)
+![Java9 sqrt vs. sqrt()](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_java9_sqrt_precisions_to_10000.png)
 
 
 ### Performance
