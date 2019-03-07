@@ -710,7 +710,7 @@ REFERENCE github eobermuhlner/big-math
 				REPEATS,
 				Arrays.asList(
 						"sqrt",
-						"java11_sqrt"),
+						"java9_sqrt"),
 				(x1, mc1) -> BigDecimalMath.sqrt(x1, mc1),
 				(x1, mc1) -> x1.sqrt(mc1));
 
@@ -723,7 +723,7 @@ REFERENCE github eobermuhlner/big-math
 				REPEATS,
 				Arrays.asList(
 						"sqrt",
-						"java11_sqrt"),
+						"java9_sqrt"),
 				(x1, mc1) -> BigDecimalMath.sqrt(x1, mc1),
 				(x1, mc1) -> x1.sqrt(mc1));
 
@@ -736,7 +736,7 @@ REFERENCE github eobermuhlner/big-math
 				REPEATS,
 				Arrays.asList(
 						"sqrt",
-						"java11_sqrt"),
+						"java9_sqrt"),
 				(x1, mc1) -> BigDecimalMath.sqrt(x1, mc1),
 				(x1, mc1) -> x1.sqrt(mc1));
 
@@ -747,7 +747,7 @@ REFERENCE github eobermuhlner/big-math
 				1000,
 				10,
 				REPEATS,
-				Arrays.asList("sqrt", "java11_sqrt"),
+				Arrays.asList("sqrt", "java9_sqrt"),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
 
@@ -758,7 +758,7 @@ REFERENCE github eobermuhlner/big-math
 				10000,
 				10,
 				REPEATS,
-				Arrays.asList("sqrt", "java11_sqrt"),
+				Arrays.asList("sqrt", "java9_sqrt"),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
 	}
