@@ -624,7 +624,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testSqrt() {
-		for(double value : new double[] { 0, 0.1, 2, 10, 33.3333 }) {
+		for(double value : new double[] { 0, 0.1, 2, 4, 10, 16, 33.3333 }) {
 			assertEquals(
 					"sqrt(" + value + ")",
 					toCheck(Math.sqrt(value)),
