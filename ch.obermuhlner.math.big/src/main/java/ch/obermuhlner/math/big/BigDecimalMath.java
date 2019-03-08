@@ -24,6 +24,7 @@ public class BigDecimalMath {
 	private static final BigDecimal TWO = valueOf(2);
 	private static final BigDecimal THREE = valueOf(3);
 	private static final BigDecimal MINUS_ONE = valueOf(-1);
+	private static final BigDecimal ONE_HALF = valueOf(0.5);
 
 	private static final BigDecimal DOUBLE_MAX_VALUE = BigDecimal.valueOf(Double.MAX_VALUE);
 
@@ -44,7 +45,7 @@ public class BigDecimalMath {
 
 	private static final BigDecimal ROUGHLY_TWO_PI = new BigDecimal("3.141592653589793").multiply(TWO);
 
-	private static final int EXPECTED_INITIAL_PRECISION = 17;
+	private static final int EXPECTED_INITIAL_PRECISION = 15;
 
 	private static BigDecimal[] factorialCache = new BigDecimal[100];
 
@@ -388,7 +389,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 				BigDecimal factor = c0;
 				for (int k = 1; k < a; k++) {
 					BigDecimal bigK = BigDecimal.valueOf(k);
-					BigDecimal ck = pow(BigDecimal.valueOf(a - k), bigK.subtract(BigDecimal.valueOf(0.5), mc), mc);
+					BigDecimal ck = pow(BigDecimal.valueOf(a - k), bigK.subtract(ONE_HALF, mc), mc);
 					ck = ck.multiply(exp(BigDecimal.valueOf(a - k), mc), mc);
 					ck = ck.divide(factorial(k - 1), mc);
 					if (negative) {
@@ -616,15 +617,17 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		int adaptivePrecision = EXPECTED_INITIAL_PRECISION;
 		BigDecimal last;
 
+		int maxPrecisionCount = 0;
 		do {
 			last = result;
 			adaptivePrecision = adaptivePrecision * 2;
 			if (adaptivePrecision > maxPrecision) {
+				maxPrecisionCount++;
 				adaptivePrecision = maxPrecision;
 			}
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
-			result = x.divide(result, mc).add(last, mc).divide(TWO, mc);
-		} while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
+			result = x.divide(result, mc).add(last, mc).multiply(ONE_HALF, mc);
+		} while (adaptivePrecision < maxPrecision || maxPrecisionCount < 2 || result.subtract(last).abs().compareTo(acceptableError) > 0);
 
 		return round(result, mathContext);
 	}
