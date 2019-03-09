@@ -610,7 +610,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 			result = x.divide(TWO, mathContext);
 		}
 		
-		if (result.multiply(result, mathContext).compareTo(x) == 0) {
+		if (result.multiply(result).compareTo(x) == 0) {
 			return round(result, mathContext); // early exit if x is a square number
 		}
 

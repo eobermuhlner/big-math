@@ -657,7 +657,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSqrtRandom() {
 		assertRandomCalculation(
-				1000,
+				10000,
 				"sqrt",
 				random -> random.nextDouble() * 100 + 0.000001,
 				Math::sqrt,
