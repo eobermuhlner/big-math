@@ -44,6 +44,19 @@ For consistency the normal `BigDecimal.round()` function has also been provided 
 
 # Bugfixes
 
+## Fix `sqrt()` sometimes wrong in last digit with low precision.
+
+Calculation of square root with low precision (16 digits and less) could sometimes
+calculate the last digit wrong.
+
+For example:
+```java
+BigDecimalMath.sqrt(new BigDecimal("43.79427225801566", new MathContext(16)));
+```
+returns `6.617724099568950` instead of `6.617724099568949`
+
+This has been fixed.
+
 ## Fix `BigDecimalMath` functions with `MathContext.UNLIMITED`
 
 The behaviour of the `BigDecimalMath` functions when being used with the `MathContext.UNLIMITED` was badly defined.
