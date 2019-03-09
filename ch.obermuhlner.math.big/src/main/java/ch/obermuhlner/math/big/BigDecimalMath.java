@@ -604,30 +604,35 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal result;
+		int adaptivePrecision;
 		if (isDoubleValue(x)) {
 			result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+			adaptivePrecision = EXPECTED_INITIAL_PRECISION;
 		} else {
 			result = x.divide(TWO, mathContext);
+			adaptivePrecision = 1;
 		}
 		
 		if (result.multiply(result).compareTo(x) == 0) {
 			return round(result, mathContext); // early exit if x is a square number
 		}
 
-		int adaptivePrecision = EXPECTED_INITIAL_PRECISION;
 		BigDecimal last;
 
-		int maxPrecisionCount = 0;
-		do {
-			last = result;
-			adaptivePrecision = adaptivePrecision * 2;
-			if (adaptivePrecision > maxPrecision) {
-				maxPrecisionCount++;
-				adaptivePrecision = maxPrecision;
+		if (adaptivePrecision < maxPrecision) {
+			int maxPrecisionCount = 0;
+			do {
+				last = result;
+				adaptivePrecision = adaptivePrecision * 2;
+				if (adaptivePrecision > maxPrecision) {
+					maxPrecisionCount++;
+					adaptivePrecision = maxPrecision;
+				}
+				MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+				result = x.divide(result, mc).add(last, mc).multiply(ONE_HALF, mc);
 			}
-			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
-			result = x.divide(result, mc).add(last, mc).multiply(ONE_HALF, mc);
-		} while (adaptivePrecision < maxPrecision || maxPrecisionCount < 2 || result.subtract(last).abs().compareTo(acceptableError) > 0);
+			while (adaptivePrecision < maxPrecision || maxPrecisionCount < 2 || result.subtract(last).abs().compareTo(acceptableError) > 0);
+		}
 
 		return round(result, mathContext);
 	}
