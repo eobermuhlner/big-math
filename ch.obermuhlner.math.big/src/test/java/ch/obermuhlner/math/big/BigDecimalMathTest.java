@@ -17,17 +17,20 @@ import org.junit.Test;
 
 public class BigDecimalMathTest {
 
-	// IMPORTANT: commit always with false!
-	private static final boolean HEAVY_TEST = false;
+    public enum TestLevel {
+        Fast,
+        Medium,
+        Slow
+    }
 
-    private static final int HEAVY_FACTOR = 10;
+	private static final TestLevel TEST_LEVEL = getTestLevel();
 
 	private static final MathContext MC = MathContext.DECIMAL128;
 
-	private static final MathContext MC_CHECK_DOUBLE = new MathContext(12);
+	private static final MathContext MC_CHECK_DOUBLE = new MathContext(10);
 
-	private static final int AUTO_TEST_MAX_PRECISION = HEAVY_TEST ? 1000 : 200;
-	private static final int RANDOM_MAX_PRECISION = HEAVY_TEST ? 1000 : 200;
+	private static final int AUTO_TEST_MAX_PRECISION = getMaxPrecision();
+	private static final int RANDOM_MAX_PRECISION = getMaxPrecision();
 
 	@Test
 	public void testInternals() {
@@ -755,7 +758,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testLogRange10() {
-		double step = HEAVY_TEST ? 0.01 : 0.1;
+		double step = getRangeStep(0.1);
 		BigDecimalStream.range(step, 10.0, step, MC).forEach(x -> {
 			System.out.println("Testing log(" + x + ")");
 			assertBigDecimal("log(" + x + ")",
@@ -772,7 +775,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testLogRange100() {
-		double step = HEAVY_TEST ? 0.1 : 1.0;
+		double step = getRangeStep(1.0);
 		BigDecimalStream.range(step, 100.0, step, MC).forEach(x -> {
 			System.out.println("Testing log(" + x + ")");
 			assertBigDecimal("log(" + x + ")",
@@ -1594,7 +1597,7 @@ public class BigDecimalMathTest {
 					expected.round(mathContext),
 					precisionCalculation.apply(mathContext),
                     mathContext);
-			precision += HEAVY_TEST ? 5 : 20;
+			precision += getPrecisionStep();
 		}
 	}
 	
@@ -1721,13 +1724,68 @@ public class BigDecimalMathTest {
 
 	private static BigDecimal toCheck(BigDecimal value) {
 		return BigDecimal.valueOf(value.round(MC_CHECK_DOUBLE).doubleValue());
-		//return value.setScale(MC_CHECK_DOUBLE.getPrecision(), MC_CHECK_DOUBLE.getRoundingMode());
 	}
 
     private int adaptCount(int count) {
-        if (HEAVY_TEST) {
-            return count * HEAVY_FACTOR;
+	    switch(TEST_LEVEL) {
+            case Fast:
+                return count;
+            case Medium:
+                return count * 10;
+            case Slow:
+                return count * 100;
         }
         return count;
+    }
+
+    private static TestLevel getTestLevel() {
+	    TestLevel level = TestLevel.Fast;
+
+	    String envTestLevel = System.getenv("BIGDECIMALTEST_LEVEL");
+	    if (envTestLevel != null) {
+            try {
+                level = TestLevel.valueOf(envTestLevel);
+            } catch (IllegalArgumentException ex) {
+                System.err.println("Illegal env var TEST_LEVEL: " + envTestLevel);
+            }
+        }
+
+        return level;
+    }
+
+    private static int getMaxPrecision() {
+        switch(TEST_LEVEL) {
+            case Fast:
+                return 100;
+            case Medium:
+                return 200;
+            case Slow:
+                return 1000;
+        }
+        return 100;
+    }
+
+    private static int getPrecisionStep() {
+        switch(TEST_LEVEL) {
+            case Fast:
+                return 50;
+            case Medium:
+                return 20;
+            case Slow:
+                return 5;
+        }
+        return 30;
+    }
+
+    private static double getRangeStep(double step) {
+        switch(TEST_LEVEL) {
+            case Fast:
+                return step;
+            case Medium:
+                return step / 2;
+            case Slow:
+                return step / 10;
+        }
+        return step;
     }
 }

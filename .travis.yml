@@ -1,3 +1,6 @@
+env:
+  - BIGDECIMALTEST_LEVEL=Medium
+
 language: java
 jdk:
   - oraclejdk8
