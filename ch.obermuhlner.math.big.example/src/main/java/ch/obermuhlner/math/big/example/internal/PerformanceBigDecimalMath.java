@@ -18,15 +18,26 @@ import ch.obermuhlner.math.big.example.StopWatch;
 public class PerformanceBigDecimalMath {
 
 	private static MathContext REF_MATHCONTEXT = new MathContext(300);
-	
-	private static int REPEATS = 100;
-	
+	private static int REPEATS = 20;
+	private static int FAST_REPEATS = 200;
+
+	private static final MathContext WARMUP_MATHCONTEXT = MathContext.DECIMAL128;
+	private static final int WARMUP_LOOP_REPEATS = 10;
+	private static final int WARMUP_REPEATS = 1000;
+
+	private static final double AVERAGE_PERCENTILE = 0.50;
+
 	private static final String OUTPUT_DIRECTORY = "docu/benchmarks/";
 
 	public static void main(String[] args) {
-		fullReport();
+		StopWatch stopWatch = new StopWatch();
 
-		//performanceReport_Java9_sqrt();
+        //fullReport();
+        //fullOptimizationReport();
+
+		performanceReport_Java9_sqrt();
+
+		System.out.println("Finished all in " + stopWatch);
 	}
 
 	public static void fullReport() {
@@ -52,26 +63,35 @@ public class PerformanceBigDecimalMath {
 		performanceReport_Fast_precision();
 		performanceReport_Slow_precision();
 
-		// --- exp() optimizations:
-		performanceReportExpOptimization_0_to_4();
-		
-		// --- asin() optimizations:
-		performanceReportAsinOptimization_0_to_1();
+		performanceReportAtan2_y_neg10_to_10_x_5();
+		performanceReportAtan2_y_5_x_neg10_to_10();
+		performanceReportAtan2_yx_neg10_to_10();
+		functionValueAtan2_yx_neg10_to_10();
 
-		// --- sqrt() optimizations:
-		performanceReportSqrtOptimization_0_to_1();
-		performanceReportSqrtOptimization_0_to_100();
-		performanceReportSqrtOptimization_0_to_1000();
+        performanceReport_Java9_sqrt();
+	}
 
-		// --- root() optimizations:
-		performanceReportRootOptimization_0_to_10();
-		
-		// --- log() optimizations:
-		performanceReportLogNewtonAdaptive_0_to_10();
-		
-		performanceReportLogOptimizationNewton_0_to_10();
-		performanceReportLogOptimizationNewton_0_to_100();
-		
+    public static void fullOptimizationReport() {
+        // --- exp() optimizations:
+        performanceReportExpOptimization_0_to_4();
+
+        // --- asin() optimizations:
+        performanceReportAsinOptimization_0_to_1();
+
+        // --- sqrt() optimizations:
+        performanceReportSqrtOptimization_0_to_1();
+        performanceReportSqrtOptimization_0_to_100();
+        performanceReportSqrtOptimization_0_to_1000();
+
+        // --- root() optimizations:
+        performanceReportRootOptimization_0_to_10();
+
+        // --- log() optimizations:
+        performanceReportLogNewtonAdaptive_0_to_10();
+
+        performanceReportLogOptimizationNewton_0_to_10();
+        performanceReportLogOptimizationNewton_0_to_100();
+
 //		performanceReportLogOptimizationTry();
 //		performanceReportLogOptimization1();
 //		performanceReportLogOptimization2();
@@ -79,12 +99,7 @@ public class PerformanceBigDecimalMath {
 //		performanceReportLogOptimization4();
 //		performanceReportLogOptimization5();
 //		performanceReportLogOptimization6();
-
-		performanceReportAtan2_y_neg10_to_10_x_5();
-		performanceReportAtan2_y_5_x_neg10_to_10();
-		performanceReportAtan2_yx_neg10_to_10();
-		functionValueAtan2_yx_neg10_to_10();
-	}
+    }
 
 	private static void performanceReport_Fast_0_to_2() {
 		performanceReportOverValue(
@@ -699,15 +714,15 @@ REFERENCE github eobermuhlner/big-math
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
 
-/*
 	private static void performanceReport_Java9_sqrt() {
+/*
 		performanceReportOverValue(
 				"perf_java9_sqrt_from_0_to_10.csv",
 				REF_MATHCONTEXT,
 				0,
 				+10,
 				+0.01,
-				REPEATS,
+				FAST_REPEATS,
 				Arrays.asList(
 						"sqrt",
 						"java9_sqrt"),
@@ -720,7 +735,7 @@ REFERENCE github eobermuhlner/big-math
 				0,
 				+100,
 				+0.1,
-				REPEATS,
+				FAST_REPEATS,
 				Arrays.asList(
 						"sqrt",
 						"java9_sqrt"),
@@ -733,20 +748,31 @@ REFERENCE github eobermuhlner/big-math
 				0,
 				+10000,
 				+10,
-				REPEATS,
+				FAST_REPEATS,
 				Arrays.asList(
 						"sqrt",
 						"java9_sqrt"),
 				(x1, mc1) -> BigDecimalMath.sqrt(x1, mc1),
 				(x1, mc1) -> x1.sqrt(mc1));
-
+*/
+		performanceReportOverPrecision(
+				"perf_java9_sqrt_precisions_to_200.csv",
+				BigDecimal.valueOf(3.1),
+				1,
+				200,
+				1,
+				FAST_REPEATS,
+				Arrays.asList("sqrt", "java9_sqrt"),
+				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
+				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
+/*
 		performanceReportOverPrecision(
 				"perf_java9_sqrt_precisions_to_1000.csv",
 				BigDecimal.valueOf(3.1),
 				10,
 				1000,
-				10,
-				REPEATS,
+				2,
+				FAST_REPEATS,
 				Arrays.asList("sqrt", "java9_sqrt"),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
@@ -761,8 +787,8 @@ REFERENCE github eobermuhlner/big-math
 				Arrays.asList("sqrt", "java9_sqrt"),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
-	}
 */
+	}
 
 	@SafeVarargs
 	private static void performanceReportOverValue(String name, MathContext mathContext, double xStart, double xEnd, double xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
@@ -771,14 +797,16 @@ REFERENCE github eobermuhlner/big-math
 
 	@SafeVarargs
 	private static void performanceReportOverValue(String name, MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
+		StopWatch stopWatch = new StopWatch();
 		System.out.println("Writing  " + name);
+
 		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
 			performanceReportOverValue(writer, mathContext, xStart, xEnd, xStep, repeats, functionNames, calculations);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 		
-		System.out.println("Finished ");
+		System.out.println("Finished in " + stopWatch);
 	}
 	
 	@SafeVarargs
@@ -788,13 +816,15 @@ REFERENCE github eobermuhlner/big-math
 		}
 		
 		// warmup
-		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
-			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : functions) {
-				try {
-					calculation.apply(x, MathContext.DECIMAL32);
-				}
-				catch (ArithmeticException ex) {
-					// ignore
+		for (int i = 0; i < WARMUP_LOOP_REPEATS; i++) {
+			for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+				for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : functions) {
+					try {
+						calculation.apply(x, WARMUP_MATHCONTEXT);
+					}
+					catch (ArithmeticException ex) {
+						// ignore
+					}
 				}
 			}
 		}
@@ -857,8 +887,8 @@ REFERENCE github eobermuhlner/big-math
 				writer.printf("%8.3f", x);
 				for (int fIndex = 0; fIndex < functions.length; fIndex++) {
 					writer.print(",");
-					long elapsedNanos = median(nanosFunctionValueRepeat[fIndex][xIndex]);
-					writer.printf("%8d", elapsedNanos);
+					double elapsedNanos = averagePercentile(AVERAGE_PERCENTILE, nanosFunctionValueRepeat[fIndex][xIndex]);
+					writer.printf("%8.3f", elapsedNanos);
 				}
 				writer.println();
 				
@@ -878,27 +908,44 @@ REFERENCE github eobermuhlner/big-math
 		}
 	}
 
+	private static double averagePercentile(double percentile, long[] values) {
+		Arrays.sort(values);
+
+		int startIndex = (int) (values.length / 2 - values.length * percentile / 2);
+		int endIndex = (int) (values.length / 2 + values.length * percentile / 2);
+
+		double sum = 0;
+		for (int i = startIndex; i < endIndex; i++) {
+			sum += values[i];
+		}
+
+		return (sum / (endIndex - startIndex));
+	}
+
+
 	@SafeVarargs
 	private static void performanceReportOverPrecision(String name, BigDecimal value, int precisionStart, int precisionEnd, int precisionStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... calculations) {
-		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out));
-		
+		StopWatch stopWatch = new StopWatch();
 		System.out.println("Writing  " + name);
+
 		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
 			performanceReportOverPrecision(writer, value, precisionStart, precisionEnd, precisionStep, repeats, functionNames, calculations);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 		
-		System.out.println("Finished ");
+		System.out.println("Finished in " + stopWatch);
 	}
 	
 	@SafeVarargs
 	private static void performanceReportOverPrecision(PrintWriter writer, BigDecimal value, int precisionStart, int precisionEnd, int precisionStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
+		int innerRepeats = 10;
+
 		// warmup
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < WARMUP_REPEATS; i++) {
 			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : functions) {
 				try {
-					calculation.apply(value, MathContext.DECIMAL32);
+					calculation.apply(value, WARMUP_MATHCONTEXT);
 				}
 				catch (ArithmeticException ex) {
 					// ignore
@@ -924,7 +971,7 @@ REFERENCE github eobermuhlner/big-math
 
 		// prepare data storage
 		int pCount = 0;
-		for (int precision = precisionStart; precision < precisionEnd; precision += precisionStep) {
+		for (int precision = precisionStart; precision <= precisionEnd; precision += precisionStep) {
 			pCount++;
 		}
 		
@@ -941,14 +988,16 @@ REFERENCE github eobermuhlner/big-math
 		for (int rIndex = 0; rIndex < repeats; rIndex++) {
 			for (int fIndex = 0; fIndex < functions.length; fIndex++) {
 				int pIndex = 0;
-				for (int precision = precisionStart; precision < precisionEnd; precision += precisionStep) {
+				for (int precision = precisionStart; precision <= precisionEnd; precision += precisionStep) {
 					MathContext mathContext = new MathContext(precision);
 				
 					BiFunction<BigDecimal, MathContext, BigDecimal> calculation = functions[fIndex];
 
 					try {
 						StopWatch stopWatch = new StopWatch();
-						calculation.apply(value, mathContext);
+						for (int innerIndex = 0; innerIndex < innerRepeats; innerIndex++) {
+							calculation.apply(value, mathContext);
+						}
 						nanosFunctionPrecisionRepeat[fIndex][pIndex][rIndex] = stopWatch.getElapsedNanos();
 					}
 					catch (ArithmeticException ex) {
@@ -965,12 +1014,12 @@ REFERENCE github eobermuhlner/big-math
 		// write report
 		{
 			int p = 0;
-			for (int precision = precisionStart; precision < precisionEnd; precision += precisionStep) {
+			for (int precision = precisionStart; precision <= precisionEnd; precision += precisionStep) {
 				writer.printf("%8d", precision);
 				for (int fIndex = 0; fIndex < functions.length; fIndex++) {
 					writer.print(",");
-					long elapsedNanos = median(nanosFunctionPrecisionRepeat[fIndex][p]);
-					writer.printf("%8d", elapsedNanos);
+					double elapsedNanos = averagePercentile(AVERAGE_PERCENTILE, nanosFunctionPrecisionRepeat[fIndex][p]) / innerRepeats;
+					writer.printf("%8.3f", elapsedNanos);
 				}
 				p++;
 				writer.println();

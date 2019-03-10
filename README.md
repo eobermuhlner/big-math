@@ -205,14 +205,14 @@ If you only need the square root function then by all means use the provided sta
 
 If you need any other high level function then you should still consider using this library.
 
-For high precision (above 300 digits) the current implementation of
+For high precision (above 150 digits) the current implementation of
 Java 9 `BigDecimal.sqrt()` becomes increasingly slower than `BigDecimalMath.sqrt()`.
 You should consider whether the increased performance is worth having an additional dependency.  
 
 The following charts shows the time needed to calculate the square root of 3.1 with increasing precision.
 
+![Java9 sqrt vs. sqrt()](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_java9_sqrt_precisions_to_200.png)
 ![Java9 sqrt vs. sqrt()](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_java9_sqrt_precisions_to_1000.png)
-![Java9 sqrt vs. sqrt()](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_java9_sqrt_precisions_to_10000.png)
 
 
 ### Performance

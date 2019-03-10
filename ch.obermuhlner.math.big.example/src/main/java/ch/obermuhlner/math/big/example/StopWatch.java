@@ -12,6 +12,10 @@ public class StopWatch {
 		startNanos = System.nanoTime();
 	}
 
+	public double getElapsedSeconds() {
+		return getElapsedNanos() / 1000_000.0;
+	}
+
 	public long getElapsedMillis() {
 		return getElapsedNanos() / 1000;
 	}
@@ -23,7 +27,7 @@ public class StopWatch {
 
 	@Override
 	public String toString() {
-		return getElapsedNanos() + " ns";
+		return getElapsedSeconds() + " s";
 	}
 
 }
