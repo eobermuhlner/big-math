@@ -609,34 +609,32 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 			result = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
 			adaptivePrecision = EXPECTED_INITIAL_PRECISION;
 		} else {
-			result = x.divide(TWO, mathContext);
+			result = x.multiply(ONE_HALF, mathContext);
 			adaptivePrecision = 1;
 		}
 		
-		if (result.multiply(result).compareTo(x) == 0) {
-			return round(result, mathContext); // early exit if x is a square number
-		}
-
 		BigDecimal last;
 
 		if (adaptivePrecision < maxPrecision) {
-			int maxPrecisionCount = 0;
+			if (result.multiply(result).compareTo(x) == 0) {
+				return round(result, mathContext); // early exit if x is a square number
+			}
+
 			do {
 				last = result;
 				adaptivePrecision = adaptivePrecision * 2;
 				if (adaptivePrecision > maxPrecision) {
-					maxPrecisionCount++;
 					adaptivePrecision = maxPrecision;
 				}
 				MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
 				result = x.divide(result, mc).add(last, mc).multiply(ONE_HALF, mc);
 			}
-			while (adaptivePrecision < maxPrecision || maxPrecisionCount < 2 || result.subtract(last).abs().compareTo(acceptableError) > 0);
+			while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
 		}
 
 		return round(result, mathContext);
 	}
-	
+
 	/**
 	 * Calculates the n'th root of {@link BigDecimal} x.
 	 * 
