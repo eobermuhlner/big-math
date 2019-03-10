@@ -1005,8 +1005,9 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		if (x.abs().compareTo(ROUGHLY_TWO_PI) > 0) {
-			BigDecimal twoPi = TWO.multiply(pi(mc), mc);
-			x = x.remainder(twoPi, mc);
+			MathContext mc2 = new MathContext(mc.getPrecision() + 4, mathContext.getRoundingMode());
+			BigDecimal twoPi = TWO.multiply(pi(mc2), mc2);
+			x = x.remainder(twoPi, mc2);
 		}
 
 		BigDecimal result = SinCalculator.INSTANCE.calculate(x, mc);
@@ -1063,8 +1064,9 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		if (x.abs().compareTo(ROUGHLY_TWO_PI) > 0) {
-			BigDecimal twoPi = TWO.multiply(pi(mc), mc);
-			x = x.remainder(twoPi, mc);
+			MathContext mc2 = new MathContext(mc.getPrecision() + 4, mathContext.getRoundingMode());
+			BigDecimal twoPi = TWO.multiply(pi(mc2), mc2);
+			x = x.remainder(twoPi, mc2);
 		}
 		
 		BigDecimal result = CosCalculator.INSTANCE.calculate(x, mc);
