@@ -56,7 +56,8 @@ public class PerformanceBigDecimalMath {
 
 		performanceReport_pow_0_to_100();
 
-		performanceReport_pow_frac_0_to_10000();
+		performanceReport_pow_frac_0_to_1000();
+
 		performanceReport_pow_int_0_to_10000();
 		performanceReport_pow_int_0_to_100000();
 
@@ -274,13 +275,13 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
 
-	private static void performanceReport_pow_frac_0_to_10000() {
+	private static void performanceReport_pow_frac_0_to_1000() {
 		performanceReportOverValue(
-				"perf_pow_frac_from_0_to_10000.csv",
+				"perf_pow_frac_from_0_to_1000.csv",
 				REF_MATHCONTEXT,
 				0.5,
-				+10000,
-				+1,
+				+1000,
+				+5,
 				REPEATS,
 				Arrays.asList("pow"),
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
@@ -489,11 +490,11 @@ public class PerformanceBigDecimalMath {
 		MathContext mathContext = REF_MATHCONTEXT;
 		BigDecimal xStart = BigDecimal.valueOf(-10);
 		BigDecimal xEnd = BigDecimal.valueOf(10);
-		BigDecimal xStep = BigDecimal.valueOf(2.0);
+		BigDecimal xStep = BigDecimal.valueOf(1.0);
 		BigDecimal xStepWarmup = BigDecimal.valueOf(2.0);
 		BigDecimal yStart = BigDecimal.valueOf(-10);
 		BigDecimal yEnd = BigDecimal.valueOf(10);
-		BigDecimal yStep = BigDecimal.valueOf(2.0);
+		BigDecimal yStep = BigDecimal.valueOf(1.0);
 		BigDecimal yStepWarmup = BigDecimal.valueOf(2.0);
 		int repeats = 3;
 
