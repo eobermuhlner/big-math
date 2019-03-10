@@ -1537,7 +1537,7 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.log(BigDecimalMath.exp(x, mathContext), mathContext));
 	}
 
-	//@Test
+	@Test
 	public void testLog2PowRandom() {
 		assertRandomCalculation(
                 adaptCount(1000),
@@ -1548,20 +1548,6 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.log2(BigDecimalMath.pow(new BigDecimal(2), x, mathContext), mathContext));
 	}
 
-    @Test
-    public void testLog2PowRandomSpecial1() {
-	    MathContext mc = new MathContext(86+10);
-        BigDecimal x = new BigDecimal("0.87344468893732422696209498372540635905450777208072365658944016386845896582721178218599");
-        System.out.println("x  = " + x);
-        BigDecimal p = BigDecimalMath.pow(BigDecimal.valueOf(2), x, mc);
-		System.out.println("p  = " + p);
-        BigDecimal x2 = BigDecimalMath.log2(p, mc);
-        System.out.println("x2 = " + x2);
-		BigDecimal x3 = x2.round(new MathContext(86));
-		System.out.println("x3 = " + x3);
-		assertEquals("x="+x+" p="+p+" x2="+x2+" x3="+x3,
-				x, x3);
-    }
 	@Test
 	public void testLog10PowRandom() {
 		assertRandomCalculation(
