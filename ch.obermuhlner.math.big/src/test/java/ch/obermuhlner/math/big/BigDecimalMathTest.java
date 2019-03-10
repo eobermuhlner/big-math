@@ -688,9 +688,18 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.sqrt(x, mathContext));
 	}
 
+	/*
     @Test
-    public void testSpecial() {
+    public void testSqrtJava9Random() {
+        assertRandomCalculation(
+                adaptCount(1000),
+                "sqrt(x)",
+                "java9 sqrt(x)",
+                (random, mathContext) -> randomBigDecimal(random, mathContext),
+                (x, mathContext) -> BigDecimalMath.sqrt(x, mathContext),
+                (x, mathContext) -> x.sqrt(mathContext));
     }
+    */
 
 	@Test(expected = ArithmeticException.class)
 	public void testSqrtNegative() {
@@ -1564,19 +1573,6 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.log10(BigDecimalMath.pow(BigDecimal.TEN, x, mathContext), mathContext));
 	}
 
-	private void assertDelta(BigDecimal expected, BigDecimal actual, BigDecimal allowedDelta) {
-		BigDecimal diff = actual.subtract(expected).abs();
-		assertEquals("diff=" +diff + " <= allowed=" + allowedDelta + ")", true, diff.compareTo(allowedDelta) <= 0);
-	}
-
-	private void assertCompareTo(BigDecimal expected, BigDecimal actual) {
-		assertEquals(expected + " compareTo(" + actual + ")", 0, expected.compareTo(actual));
-	}
-
-	private void assertCompareTo(String message, BigDecimal expected, BigDecimal actual) {
-		assertEquals(message + " " + expected + " compareTo(" + actual + ")", 0, expected.compareTo(actual));
-	}
-
 	private void assertPrecisionCalculation(Function<MathContext, BigDecimal> precisionCalculation, int startPrecision, int endPrecision) {
 		BigDecimal expected = precisionCalculation.apply(new MathContext(endPrecision * 2));
 		//System.out.println("reference expected:      " + expected);
@@ -1697,7 +1693,7 @@ public class BigDecimalMathTest {
         return error.signum() == 0;
     }
 
-	private static BigDecimal randomBigDecimal(Random random, MathContext mathContext) {
+    private static BigDecimal randomBigDecimal(Random random, MathContext mathContext) {
 		char[] digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 		StringBuilder stringNumber = new StringBuilder();
 		stringNumber.append("0.");
@@ -1709,7 +1705,12 @@ public class BigDecimalMathTest {
 		return new BigDecimal(stringNumber.toString(), mathContext);
 	}
 
-	private static BigDecimal toCheck(double value) {
+    private static BigDecimal randomBigDecimalWithExponent(Random random, MathContext mathContext) {
+        int exponent = random.nextInt(200) - 100;
+        return randomBigDecimal(random, mathContext).multiply(new BigDecimal("1E" + exponent, mathContext), mathContext);
+    }
+
+    private static BigDecimal toCheck(double value) {
 		long longValue = (long) value;
 		if (value == (double)longValue) {
 			return BigDecimal.valueOf(longValue);
