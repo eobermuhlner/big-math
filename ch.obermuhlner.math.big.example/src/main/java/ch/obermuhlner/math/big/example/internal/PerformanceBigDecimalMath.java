@@ -32,10 +32,10 @@ public class PerformanceBigDecimalMath {
 	public static void main(String[] args) {
 		StopWatch stopWatch = new StopWatch();
 
-        //fullReport();
+        fullReport();
         //fullOptimizationReport();
 
-		performanceReport_Java9_sqrt();
+		//performanceReport_Java9_sqrt();
 
 		System.out.println("Finished all in " + stopWatch);
 	}
@@ -754,7 +754,7 @@ REFERENCE github eobermuhlner/big-math
 						"java9_sqrt"),
 				(x1, mc1) -> BigDecimalMath.sqrt(x1, mc1),
 				(x1, mc1) -> x1.sqrt(mc1));
-*/
+
 		performanceReportOverPrecision(
 				"perf_java9_sqrt_precisions_to_200.csv",
 				BigDecimal.valueOf(3.1),
@@ -765,7 +765,7 @@ REFERENCE github eobermuhlner/big-math
 				Arrays.asList("sqrt", "java9_sqrt"),
 				(x, calculationMathContext) -> BigDecimalMath.sqrt(x, calculationMathContext),
 				(x, calculationMathContext) -> x.sqrt(calculationMathContext));
-/*
+
 		performanceReportOverPrecision(
 				"perf_java9_sqrt_precisions_to_1000.csv",
 				BigDecimal.valueOf(3.1),
