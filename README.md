@@ -219,6 +219,7 @@ The following charts shows the time needed to calculate the square root of 3.1 w
 
 The following charts show the time needed to calculate the functions over a range of values with a precision of 300 digits.
 
+![sqrt(), root(), exp(), sin(), cos() -10 to 10](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_-10_to_10.png)
 ![sqrt(), root(), exp(), sin(), cos() 0 to 10](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_10.png)
 ![sqrt(), root(), exp(), sin(), cos() 0 to 100](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_fast_funcs_from_0_to_100.png)
 
