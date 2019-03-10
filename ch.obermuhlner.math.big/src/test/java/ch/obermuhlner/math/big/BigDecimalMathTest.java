@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
@@ -19,24 +20,40 @@ public class BigDecimalMathTest {
 	// IMPORTANT: commit always with false!
 	private static final boolean HEAVY_TEST = false;
 
+    private static final int HEAVY_FACTOR = 10;
+
 	private static final MathContext MC = MathContext.DECIMAL128;
 
-	private static final MathContext MC_CHECK_DOUBLE = MathContext.DECIMAL32;
+	private static final MathContext MC_CHECK_DOUBLE = new MathContext(12);
 
 	private static final int AUTO_TEST_MAX_PRECISION = HEAVY_TEST ? 1000 : 200;
 	private static final int RANDOM_MAX_PRECISION = HEAVY_TEST ? 1000 : 200;
 
 	@Test
 	public void testInternals() {
-		assertEquals(toCheck(2.0), toCheck(BigDecimal.valueOf(2)));
-		assertEquals(toCheck(2.0), toCheck(BigDecimal.valueOf(2.0)));
-
 		assertEquals(null, toCheck(Double.NaN));
 		assertEquals(null, toCheck(Double.NEGATIVE_INFINITY));
 		assertEquals(null, toCheck(Double.POSITIVE_INFINITY));
+
+        assertBigDecimal(new BigDecimal("1.23"), new BigDecimal("1.23"), new MathContext(3));
+        assertBigDecimal(new BigDecimal("1.23"), new BigDecimal("1.23"), new MathContext(2));
+        assertBigDecimal(new BigDecimal("1.23"), new BigDecimal("1.23"), new MathContext(1));
+
+        assertBigDecimal(new BigDecimal("1.24"), new BigDecimal("1.23"), new MathContext(3));
+        assertBigDecimal(new BigDecimal("1.23"), new BigDecimal("1.24"), new MathContext(3));
 	}
 
-	@Test
+    @Test(expected = java.lang.AssertionError.class)
+    public void testInternalsFail1() {
+        assertBigDecimal(new BigDecimal("1.25"), new BigDecimal("1.23"), new MathContext(3));
+    }
+
+    @Test(expected = java.lang.AssertionError.class)
+    public void testInternalsFail2() {
+        assertBigDecimal(new BigDecimal("1.23"), new BigDecimal("1.25"), new MathContext(3));
+    }
+
+    @Test
 	public void testIsIntValue() {
 		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MIN_VALUE)));
 		assertEquals(true, BigDecimalMath.isIntValue(BigDecimal.valueOf(Integer.MAX_VALUE)));
@@ -262,25 +279,25 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testBernoulli() {
-		assertEquals(toCheck(1),			toCheck(BigDecimalMath.bernoulli(0, MathContext.DECIMAL64)));
-		assertEquals(toCheck(-1.0/2),		toCheck(BigDecimalMath.bernoulli(1, MathContext.DECIMAL64)));
-		assertEquals(toCheck(1.0/6),		toCheck(BigDecimalMath.bernoulli(2, MathContext.DECIMAL64)));
-		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(3, MathContext.DECIMAL64)));
-		assertEquals(toCheck(-1.0/30),		toCheck(BigDecimalMath.bernoulli(4, MathContext.DECIMAL64)));
-		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(5, MathContext.DECIMAL64)));
-		assertEquals(toCheck(1.0/42),		toCheck(BigDecimalMath.bernoulli(6, MathContext.DECIMAL64)));
-		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(7, MathContext.DECIMAL64)));
-		assertEquals(toCheck(-1.0/30),		toCheck(BigDecimalMath.bernoulli(8, MathContext.DECIMAL64)));
-		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(9, MathContext.DECIMAL64)));
-		assertEquals(toCheck(5.0/66),		toCheck(BigDecimalMath.bernoulli(10, MathContext.DECIMAL64)));
-		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(11, MathContext.DECIMAL64)));
-		assertEquals(toCheck(-691.0/2730),	toCheck(BigDecimalMath.bernoulli(12, MathContext.DECIMAL64)));
-		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(13, MathContext.DECIMAL64)));
-		assertEquals(toCheck(7.0/6),		toCheck(BigDecimalMath.bernoulli(14, MathContext.DECIMAL64)));
-		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(15, MathContext.DECIMAL64)));
-		assertEquals(toCheck(-3617.0/510),	toCheck(BigDecimalMath.bernoulli(16, MathContext.DECIMAL64)));
-		assertEquals(toCheck(0),			toCheck(BigDecimalMath.bernoulli(17, MathContext.DECIMAL64)));
-		assertEquals(toCheck(43867.0/798),	toCheck(BigDecimalMath.bernoulli(18, MathContext.DECIMAL64)));
+        assertBigDecimal(toCheck(1),			BigDecimalMath.bernoulli(0, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(-1.0/2),		BigDecimalMath.bernoulli(1, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(1.0/6),		BigDecimalMath.bernoulli(2, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(0),			BigDecimalMath.bernoulli(3, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(-1.0/30),	BigDecimalMath.bernoulli(4, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(0),			BigDecimalMath.bernoulli(5, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(1.0/42),		BigDecimalMath.bernoulli(6, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(0),			BigDecimalMath.bernoulli(7, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(-1.0/30),	BigDecimalMath.bernoulli(8, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(0),			BigDecimalMath.bernoulli(9, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(5.0/66),		BigDecimalMath.bernoulli(10, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(0),			BigDecimalMath.bernoulli(11, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(-691.0/2730),BigDecimalMath.bernoulli(12, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(0),			BigDecimalMath.bernoulli(13, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(7.0/6),		BigDecimalMath.bernoulli(14, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(0),			BigDecimalMath.bernoulli(15, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(-3617.0/510),BigDecimalMath.bernoulli(16, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(0),			BigDecimalMath.bernoulli(17, MC), MC_CHECK_DOUBLE);
+        assertBigDecimal(toCheck(43867.0/798),BigDecimalMath.bernoulli(18, MC), MC_CHECK_DOUBLE);
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -506,18 +523,20 @@ public class BigDecimalMathTest {
 	public void testPowPositiveX() {
 		for(double x : new double[] { 1, 1.5, 2, 2.5, 3, 4, 5 }) {
 			for(double y : new double[] { -5, -4, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5 }) {
-				assertEquals(
+				assertBigDecimal(
 						x + "^" + y,
 						toCheck(Math.pow(x, y)),
-						toCheck(BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC)));
+						BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC),
+                        MC_CHECK_DOUBLE);
 			}
 		}
 		for(double x : new double[] { 0 }) {
 			for(double y : new double[] { 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5 }) {
-				assertEquals(
+				assertBigDecimal(
 						x + "^" + y,
 						toCheck(Math.pow(x, y)),
-						toCheck(BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC)));
+						BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC),
+                        MC_CHECK_DOUBLE);
 			}
 		}
 	}
@@ -526,10 +545,11 @@ public class BigDecimalMathTest {
 	public void testPowNegativeX() {
 		for(double x : new double[] { -2, -1 }) {
 			for(double y : new double[] { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 }) {
-				assertEquals(
+				assertBigDecimal(
 						x + "^" + y,
 						toCheck(Math.pow(x, y)),
-						toCheck(BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC)));
+						BigDecimalMath.pow(BigDecimal.valueOf(x), BigDecimal.valueOf(y), MC),
+                        MC);
 			}
 		}
 	}
@@ -604,15 +624,15 @@ public class BigDecimalMathTest {
 	@Test
 	public void testPowRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"pow",
 				random -> random.nextDouble() * 100 + 0.000001,
 				random -> random.nextDouble() * 100 - 50,
 				Math::pow,
 				(x, y, mathContext) -> BigDecimalMath.pow(x, y, mathContext));
 	}
-	
-	@Test(expected = ArithmeticException.class)
+
+    @Test(expected = ArithmeticException.class)
 	public void testPowOverflow() {
 		BigDecimalMath.pow(new BigDecimal("123"), new BigDecimal("1E20"), MC);
 	}
@@ -625,10 +645,11 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSqrt() {
 		for(double value : new double[] { 0, 0.1, 2, 4, 10, 16, 33.3333 }) {
-			assertEquals(
+			assertBigDecimal(
 					"sqrt(" + value + ")",
 					toCheck(Math.sqrt(value)),
-					toCheck(BigDecimalMath.sqrt(BigDecimal.valueOf(value), MC)));
+					BigDecimalMath.sqrt(BigDecimal.valueOf(value), MC),
+                    MC_CHECK_DOUBLE);
 		}
 	}
 
@@ -657,12 +678,16 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSqrtRandom() {
 		assertRandomCalculation(
-				10000,
+                adaptCount(1000),
 				"sqrt",
 				random -> random.nextDouble() * 100 + 0.000001,
 				Math::sqrt,
 				(x, mathContext) -> BigDecimalMath.sqrt(x, mathContext));
 	}
+
+    @Test
+    public void testSpecial() {
+    }
 
 	@Test(expected = ArithmeticException.class)
 	public void testSqrtNegative() {
@@ -672,14 +697,16 @@ public class BigDecimalMathTest {
 	@Test
 	public void testRoot() {
 		for(double value : new double[] { 0.1, 2, 10, 33.3333 }) {
-			assertEquals(
+			assertBigDecimal(
 					"root(2," + value + ")",
 					toCheck(Math.sqrt(value)),
-					toCheck(BigDecimalMath.root(BigDecimal.valueOf(value), BigDecimal.valueOf(2), MC)));
-			assertEquals(
+					BigDecimalMath.root(BigDecimal.valueOf(value), BigDecimal.valueOf(2), MC),
+                    MC_CHECK_DOUBLE);
+			assertBigDecimal(
 					"root(3," + value + ")",
 					toCheck(Math.cbrt(value)),
-					toCheck(BigDecimalMath.root(BigDecimal.valueOf(value), BigDecimal.valueOf(3), MC)));
+					BigDecimalMath.root(BigDecimal.valueOf(value), BigDecimal.valueOf(3), MC),
+                    MC_CHECK_DOUBLE);
 		}
 	}
 
@@ -713,7 +740,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testRootRandom() {
 		assertRandomCalculation(
-				100,
+                adaptCount(100),
 				"root",
 				random -> random.nextDouble() * 10 + 0.000001,
 				random -> random.nextDouble() * 5,
@@ -731,14 +758,15 @@ public class BigDecimalMathTest {
 		double step = HEAVY_TEST ? 0.01 : 0.1;
 		BigDecimalStream.range(step, 10.0, step, MC).forEach(x -> {
 			System.out.println("Testing log(" + x + ")");
-			assertEquals("log(" + x + ")",
-			   toCheck(Math.log(x.doubleValue())),
-			   toCheck(BigDecimalMath.log(x, MC)));
+			assertBigDecimal("log(" + x + ")",
+                    toCheck(Math.log(x.doubleValue())),
+                    BigDecimalMath.log(x, MC),
+                    MC_CHECK_DOUBLE);
 
 			BigDecimal finalX = x;
 			assertPrecisionCalculation(
-			   mathContext -> BigDecimalMath.log(finalX, mathContext),
-			   10, AUTO_TEST_MAX_PRECISION);
+			        mathContext -> BigDecimalMath.log(finalX, mathContext),
+                    10, AUTO_TEST_MAX_PRECISION);
 		});
 	}
 
@@ -747,9 +775,10 @@ public class BigDecimalMathTest {
 		double step = HEAVY_TEST ? 0.1 : 1.0;
 		BigDecimalStream.range(step, 100.0, step, MC).forEach(x -> {
 			System.out.println("Testing log(" + x + ")");
-			assertEquals("log(" + x + ")",
-			   toCheck(Math.log(x.doubleValue())),
-			   toCheck(BigDecimalMath.log(x, MC)));
+			assertBigDecimal("log(" + x + ")",
+                    toCheck(Math.log(x.doubleValue())),
+                    BigDecimalMath.log(x, MC),
+                    MC_CHECK_DOUBLE);
 
 			BigDecimal finalX = x;
 			assertPrecisionCalculation(
@@ -849,7 +878,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testLogRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"log",
 				random -> random.nextDouble() * 100 + 0.00001,
 				Math::log,
@@ -859,7 +888,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testLog2Random() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"log",
 				random -> random.nextDouble() * 100 + 0.00001,
 				(x) -> Math.log(x) / Math.log(2),
@@ -884,9 +913,10 @@ public class BigDecimalMathTest {
 	@Test
 	public void testExp() {
 		for(double value : new double[] { -5, -1, 0.1, 2, 10 }) {
-			assertEquals("exp(" + value + ")",
+			assertBigDecimal("exp(" + value + ")",
 					toCheck(Math.exp(value)),
-					toCheck(BigDecimalMath.exp(BigDecimal.valueOf(value), MC)));
+					BigDecimalMath.exp(BigDecimal.valueOf(value), MC),
+                    MC_CHECK_DOUBLE);
 		}
 	}
 
@@ -932,7 +962,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testExpRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"exp",
 				random -> random.nextDouble() * 100 - 50,
 				Math::exp,
@@ -947,9 +977,10 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSin() {
 		for(double value : new double[] { -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
-			assertEquals("sin(" + value + ")",
+			assertBigDecimal("sin(" + value + ")",
 					toCheck(Math.sin(value)),
-					toCheck(BigDecimalMath.sin(BigDecimal.valueOf(value), MC)));
+					BigDecimalMath.sin(BigDecimal.valueOf(value), MC),
+                    MC_CHECK_DOUBLE);
 		}
 	}
 
@@ -966,7 +997,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSinRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"sin",
 				random -> random.nextDouble() * 100 - 50,
 				Math::sin,
@@ -981,16 +1012,17 @@ public class BigDecimalMathTest {
 	@Test
 	public void testAsin() {
 		for(double value : new double[] { -1, -0.999, -0.9, -0.1, 0, 0.1, 0.9, 0.999, 1.0 }) {
-			assertEquals("asin(" + value + ")",
+			assertBigDecimal("asin(" + value + ")",
 					toCheck(Math.asin(value)),
-					toCheck(BigDecimalMath.asin(BigDecimal.valueOf(value), MC)));
+					BigDecimalMath.asin(BigDecimal.valueOf(value), MC),
+                    MC_CHECK_DOUBLE);
 		}
 	}
 
 	@Test
 	public void testAsinRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"asin",
 				random -> random.nextDouble() * 2 - 1,
 				Math::asin,
@@ -1015,9 +1047,10 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCos() {
 		for(double value : new double[] { -5, -1, -0.3, 0, 0.1, 2, 10 }) {
-			assertEquals("cos(" + value + ")",
+			assertBigDecimal("cos(" + value + ")",
 					toCheck(Math.cos(value)),
-					toCheck(BigDecimalMath.cos(BigDecimal.valueOf(value), MC)));
+					BigDecimalMath.cos(BigDecimal.valueOf(value), MC),
+                    MC_CHECK_DOUBLE);
 		}
 	}
 
@@ -1034,7 +1067,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCosRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"cos",
 				random -> random.nextDouble() * 100 - 50,
 				Math::cos,
@@ -1049,7 +1082,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testAcosRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"acos",
 				random -> random.nextDouble() * 2 - 1,
 				Math::acos,
@@ -1084,16 +1117,17 @@ public class BigDecimalMathTest {
 	@Test
 	public void testTan() {
 		for(double value : new double[] { 1.1, -10, -5, -1, -0.3, 0, 0.1, 2, 10, 20, 222 }) {
-			assertEquals("tan(" + value + ")",
+			assertBigDecimal("tan(" + value + ")",
 					toCheck(Math.tan(value)),
-					toCheck(BigDecimalMath.tan(BigDecimal.valueOf(value), MC)));
+					BigDecimalMath.tan(BigDecimal.valueOf(value), MC),
+                    MC_CHECK_DOUBLE);
 		}
 	}
 
 	@Test
 	public void testTanRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"tan",
 				random -> random.nextDouble() * 100 - 50,
 				Math::tan,
@@ -1108,7 +1142,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testAtanRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"atan",
 				random -> random.nextDouble() * 100 - 50,
 				Math::atan,
@@ -1143,7 +1177,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testAtan2Random() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"atan2",
 				random -> random.nextDouble() * 100 - 50,
 				random -> random.nextDouble() * 100 - 50,
@@ -1166,9 +1200,10 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCot() {
 		for(double value : new double[] { 0.5, -0.5 }) {
-			assertEquals("cot(" + value + ")",
+			assertBigDecimal("cot(" + value + ")",
 					toCheck(cot(value)),
-					toCheck(BigDecimalMath.cot(BigDecimal.valueOf(value), MC)));
+					BigDecimalMath.cot(BigDecimal.valueOf(value), MC),
+                    MC_CHECK_DOUBLE);
 		}
 	}
 
@@ -1184,7 +1219,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSinhRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"sinh",
 				random -> random.nextDouble() * 100 - 50,
 				Math::sinh,
@@ -1194,7 +1229,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testAsinhRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"asinh",
 				random -> random.nextDouble() * 100 - 50,
 				BigDecimalMathTest::asinh,
@@ -1213,7 +1248,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testAcoshRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"acosh",
 				random -> random.nextDouble() * 100 + 1,
 				BigDecimalMathTest::acosh,
@@ -1232,7 +1267,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testAtanhRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"atanh",
 				random -> random.nextDouble() * 1.9999 - 1,
 				BigDecimalMathTest::atanh,
@@ -1251,7 +1286,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testAcothRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"acoth",
 				random -> random.nextDouble() * 100 + 1,
 				BigDecimalMathTest::acoth,
@@ -1277,7 +1312,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCoshRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"cosh",
 				random -> random.nextDouble() * 100 - 50,
 				Math::cosh,
@@ -1292,7 +1327,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testTanhRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"tanh",
 				random -> random.nextDouble() * 100 - 50,
 				Math::tanh,
@@ -1317,7 +1352,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCothRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(100),
 				"tanh",
 				random -> random.nextDouble() * 100 - 50,
 				BigDecimalMathTest::coth,
@@ -1336,7 +1371,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSinAsinRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"asin(sin(x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1347,7 +1382,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCosAcosRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"acos(cos(x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1358,7 +1393,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testTanAtanRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"atan(tan(x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1369,7 +1404,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCotAcotRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"acot(cot(x))",
 				(random, mathContext) -> {
@@ -1391,7 +1426,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSinhAsinhRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"asinh(sinh(x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1402,7 +1437,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCoshAcoshRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"acosh(cosh(x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1413,7 +1448,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testTanhAtanhRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"atan(tan(x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1424,7 +1459,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testCothAcothRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"acoth(coth(x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext).add(BigDecimal.valueOf(0.0000001)),
@@ -1435,7 +1470,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testPow2Random() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x*x",
 				"pow(x,2)",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1446,7 +1481,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testSqrtPow2Random() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"pow(sqrt(x),2)",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1458,7 +1493,7 @@ public class BigDecimalMathTest {
 	public void testSqrtRootRandom() {
 		BigDecimal value2 = new BigDecimal("2");
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"sqrt(x)",
 				"root(x, 2)",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1470,7 +1505,7 @@ public class BigDecimalMathTest {
 	public void testRootPowRandom() {
 		for (BigDecimal value : Arrays.asList(new BigDecimal("0.1"), new BigDecimal("1.0"), new BigDecimal("2.1"))) {
 			assertRandomCalculation(
-					1000,
+                    adaptCount(100),
 					"x",
 					"pow(root(x, " + value + ")," + value + ")",
 					(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1482,7 +1517,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testLogExpRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"log(exp(x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1493,7 +1528,7 @@ public class BigDecimalMathTest {
 	//@Test
 	public void testLog2PowRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"log2(pow(2,x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1518,7 +1553,7 @@ public class BigDecimalMathTest {
 	@Test
 	public void testLog10PowRandom() {
 		assertRandomCalculation(
-				1000,
+                adaptCount(1000),
 				"x",
 				"log10(pow(10,x))",
 				(random, mathContext) -> randomBigDecimal(random, mathContext),
@@ -1554,10 +1589,11 @@ public class BigDecimalMathTest {
 		while (precision <= endPrecision) {
 			MathContext mathContext = new MathContext(precision);
 			System.out.println("Testing precision=" + precision);
-			assertEquals(
+			assertBigDecimal(
 					"precision=" + precision, 
-					expected.round(mathContext).toString(),
-					precisionCalculation.apply(mathContext).toString());
+					expected.round(mathContext),
+					precisionCalculation.apply(mathContext),
+                    mathContext);
 			precision += HEAVY_TEST ? 5 : 20;
 		}
 	}
@@ -1568,7 +1604,7 @@ public class BigDecimalMathTest {
 	
 	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, Function<Double, Double> doubleFunction, BiFunction<BigDecimal, MathContext, BigDecimal> calculation) {
 		Random random = new Random(1);
-		
+
 		for (int i = 0; i < count; i++) {
 			int precision = random.nextInt(RANDOM_MAX_PRECISION) + 1;
 			Double xDouble = xFunction.apply(random);
@@ -1580,16 +1616,18 @@ public class BigDecimalMathTest {
 			MathContext mathContext = new MathContext(precision);
 			BigDecimal result = calculation.apply(x, mathContext);
 
-			if (doubleFunction != null && precision > MC_CHECK_DOUBLE.getPrecision() + 2) {
-				assertEquals(description + " vs. double function : " + result, toCheck(doubleFunction.apply(xDouble)), toCheck(result));
+			if (doubleFunction != null && precision > MC_CHECK_DOUBLE.getPrecision() + 4) {
+                BigDecimal doubleResult = toCheck(doubleFunction.apply(xDouble));
+                if (doubleResult != null) {
+                    String doubleDescription = description + " vs. double function ";
+                    assertBigDecimal(doubleDescription, doubleResult, result, MC_CHECK_DOUBLE);
+                }
 			}
 
 			MathContext referenceMathContext = new MathContext(precision * 2 + 20);
 			BigDecimal referenceResult = calculation.apply(x, referenceMathContext);
 			BigDecimal expected = referenceResult.round(mathContext);
-			if (expected.compareTo(result) != 0) {
-				assertEquals(description + " referencePrecision=" + referenceMathContext.getPrecision() + " referenceResult=" + referenceResult, expected.toString(), result.toString());
-			}
+            assertBigDecimal(description, expected, result, mathContext);
 		}
 	}
 
@@ -1605,16 +1643,19 @@ public class BigDecimalMathTest {
 			BigDecimal y = BigDecimal.valueOf(yDouble);
 			
 			String description = functionName + "(" + x + "," + y + ")";
-			
+			System.out.println("Testing " + description + " precision=" + precision);
+
 			MathContext mathContext = new MathContext(precision);
 			BigDecimal result = calculation.apply(x, y, mathContext);
 			
-			if (doubleFunction != null && precision > MC_CHECK_DOUBLE.getPrecision() + 2) {
-				assertEquals(description + " vs. double function : " + result, toCheck(doubleFunction.apply(xDouble, yDouble)), toCheck(result));
+			if (doubleFunction != null && precision > MC_CHECK_DOUBLE.getPrecision() + 4) {
+                BigDecimal doubleResult = toCheck(doubleFunction.apply(xDouble, yDouble));
+                String doubleDescription = description + " vs. double function : " + result;
+                assertBigDecimal(doubleDescription, doubleResult, result, MC_CHECK_DOUBLE);
 			}
 
-			BigDecimal expected = calculation.apply(x, y, new MathContext(precision + 20, mathContext.getRoundingMode())).round(mathContext);
-			assertEquals(description + " precision=" + precision + " : " + result, expected.toString(), result.toString());
+            BigDecimal expected = calculation.apply(x, y, new MathContext(precision + 20, mathContext.getRoundingMode()));
+            assertBigDecimal(description, expected, result, mathContext);
 		}
 	}
 
@@ -1631,14 +1672,27 @@ public class BigDecimalMathTest {
 			MathContext calculationMathContext = new MathContext(calculationPrecision);
 			BigDecimal y1 = calculation1.apply(x, calculationMathContext);
 			BigDecimal y2 = calculation2.apply(x, calculationMathContext);
-			
-			BigDecimal error = y2.subtract(y1, calculationMathContext).abs();
-			BigDecimal acceptableError = BigDecimalMath.pow(BigDecimal.TEN, -numberPrecision, calculationMathContext); 
-			
-			String description = "x=(" + x + ") " + function1Name + "=" + y1 + " " + function2Name + "=" + y2 + " precision=" + numberPrecision + " error=" + error + " acceptableError=" + acceptableError;
-			assertEquals(description, true, error.compareTo(acceptableError) <= 0);
-		}		
+
+            String description = "x=" + x + " " + function1Name + "=" + y1 + " " + function2Name + "=" + y2;
+			System.out.println("Testing " + description + " precision=" + numberPrecision);
+
+			assertBigDecimal(description, y1, y2, numberMathContext);
+		}
 	}
+
+    private static boolean assertBigDecimal(BigDecimal expected, BigDecimal actual, MathContext mathContext) {
+	    return assertBigDecimal("", expected, actual, mathContext);
+    }
+
+    private static boolean assertBigDecimal(String description, BigDecimal expected, BigDecimal actual, MathContext mathContext) {
+        MathContext calculationMathContext = new MathContext(mathContext.getPrecision() + 10);
+        BigDecimal error = expected.subtract(actual, calculationMathContext).abs();
+        BigDecimal acceptableError = actual.round(mathContext).ulp();
+
+        String fullDescription = description + " expected=" + expected + " actual=" + actual + " precision=" + mathContext.getPrecision() + " error=" + error + " acceptableError=" + acceptableError;
+        assertTrue(fullDescription, error.compareTo(acceptableError) <= 0);
+        return error.signum() == 0;
+    }
 
 	private static BigDecimal randomBigDecimal(Random random, MathContext mathContext) {
 		char[] digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -1655,11 +1709,11 @@ public class BigDecimalMathTest {
 	private static BigDecimal toCheck(double value) {
 		long longValue = (long) value;
 		if (value == (double)longValue) {
-			return toCheck(BigDecimal.valueOf(longValue));
+			return BigDecimal.valueOf(longValue);
 		}
 		
 		if (Double.isFinite(value)) {
-			return toCheck(BigDecimal.valueOf(value));
+			return BigDecimal.valueOf(value);
 		}
 		
 		return null;
@@ -1669,4 +1723,11 @@ public class BigDecimalMathTest {
 		return BigDecimal.valueOf(value.round(MC_CHECK_DOUBLE).doubleValue());
 		//return value.setScale(MC_CHECK_DOUBLE.getPrecision(), MC_CHECK_DOUBLE.getRoundingMode());
 	}
+
+    private int adaptCount(int count) {
+        if (HEAVY_TEST) {
+            return count * HEAVY_FACTOR;
+        }
+        return count;
+    }
 }
