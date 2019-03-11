@@ -1286,7 +1286,17 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.atanh(x, mathContext));
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
+    @Test(expected = ArithmeticException.class)
+    public void testAtanhFailOne() {
+        BigDecimalMath.atanh(BigDecimal.ONE, MC);
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void testAtanhFailMinusOne() {
+        BigDecimalMath.atanh(BigDecimal.ONE.negate(), MC);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
 	public void testAtanhUnlimitedFail() {
 		BigDecimalMath.atanh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
 	}

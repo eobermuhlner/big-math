@@ -1332,9 +1332,16 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal atanh(BigDecimal x, MathContext mathContext) {
+        if (x.compareTo(BigDecimal.ONE) >= 0) {
+            throw new ArithmeticException("Illegal atanh(x) for x >= 1: x = " + x);
+        }
+        if (x.compareTo(MINUS_ONE) <= 0) {
+            throw new ArithmeticException("Illegal atanh(x) for x <= -1: x = " + x);
+        }
+
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
-		BigDecimal result = log(ONE.add(x, mc).divide(ONE.subtract(x, mc), mc), mc).divide(TWO, mc);
+		BigDecimal result = log(ONE.add(x, mc).divide(ONE.subtract(x, mc), mc), mc).multiply(ONE_HALF, mc);
 		return round(result, mathContext);
 	}
 
