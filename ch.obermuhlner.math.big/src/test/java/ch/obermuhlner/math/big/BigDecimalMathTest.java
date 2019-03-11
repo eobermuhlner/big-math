@@ -1298,7 +1298,7 @@ public class BigDecimalMathTest {
 
     @Test(expected = UnsupportedOperationException.class)
 	public void testAtanhUnlimitedFail() {
-		BigDecimalMath.atanh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
+		BigDecimalMath.atanh(BigDecimal.valueOf(0), MathContext.UNLIMITED);
 	}
 
 	public static double atanh(double x) {
