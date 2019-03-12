@@ -35,8 +35,6 @@ public class PerformanceBigDecimalMath {
         fullReport();
         //fullOptimizationReport();
 
-		//performanceReport_Java9_sqrt();
-
 		System.out.println("Finished all in " + stopWatch);
 	}
 
@@ -52,7 +50,8 @@ public class PerformanceBigDecimalMath {
 		performanceReport_Slow_0_to_2();
 		performanceReport_Slow_neg10_to_10();
 		performanceReport_Slow_0_to_10();
-		performanceReport_Slow_0_to_100();
+        performanceReport_Slow_0_to_100();
+        performanceReport_Slow_0_to_1000();
 
 		performanceReport_pow_0_to_100();
 
@@ -250,20 +249,35 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
 
-	private static void performanceReport_Slow_0_to_100() {
-		performanceReportOverValue(
-				"perf_slow_funcs_from_0_to_100.csv",
-				REF_MATHCONTEXT,
-				0,
-				+100,
-				+0.1,
-				REPEATS,
-				Arrays.asList("exp", "pow"),
-				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
-				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
-	}
+    private static void performanceReport_Slow_0_to_100() {
+        performanceReportOverValue(
+                "perf_slow_funcs_from_0_to_100.csv",
+                REF_MATHCONTEXT,
+                0,
+                +100,
+                +0.1,
+                REPEATS,
+                Arrays.asList("exp", "log", "pow"),
+                (x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+                (x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+                (x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+    }
 
-	private static void performanceReport_pow_0_to_100() {
+    private static void performanceReport_Slow_0_to_1000() {
+        performanceReportOverValue(
+                "perf_slow_funcs_from_0_to_1000.csv",
+                REF_MATHCONTEXT,
+                0,
+                +1000,
+                5,
+                REPEATS,
+                Arrays.asList("exp", "log", "pow"),
+                (x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+                (x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+                (x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+    }
+
+    private static void performanceReport_pow_0_to_100() {
 		performanceReportOverValue(
 				"perf_pow_from_0_to_100.csv",
 				REF_MATHCONTEXT,
