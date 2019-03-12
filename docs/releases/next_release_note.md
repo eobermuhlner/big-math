@@ -44,6 +44,14 @@ For consistency the normal `BigDecimal.round()` function has also been provided 
 
 # Bugfixes
 
+## Performance improvement in `log()`
+
+In release 2.0.0 the calculation precision was improved at the cost of calculation performance.
+
+The calculation performance has now again been improved by factor 5 and is practically back to pre-2.0.0 levels,
+while the calculations are still correct to the specified precision.
+
+
 ## Fix `sqrt()` sometimes wrong in last digit with low precision.
 
 Calculation of square root with low precision (16 digits and less) could sometimes
