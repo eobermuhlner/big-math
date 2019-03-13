@@ -66,6 +66,173 @@ public class BigDecimalMath {
 	}
 
 	/**
+	 * Creates a {@link BigDecimal} from the specified <code>String</code> representation.
+	 *
+	 * <p>This method is equivalent to the String constructor {@link BigDecimal#BigDecimal(String)}
+	 * but has been optimized for large strings (several thousand digits).</p>
+	 *
+	 * @param string the String representation
+	 * @return the created {@link BigDecimal}
+	 * @throws NumberFormatException if <code>string</code> is not a valid representation of a {@link BigDecimal}
+	 * @see BigDecimal#BigDecimal(String)
+	 * @see #toBigDecimal(String, MathContext)
+	 */
+	public static BigDecimal toBigDecimal(String string) {
+		return toBigDecimal(string, MathContext.UNLIMITED);
+	}
+
+	/**
+	 * Creates a {@link BigDecimal} from the specified <code>String</code> representation.
+	 *
+	 * <p>This method is equivalent to the String constructor {@link BigDecimal#BigDecimal(String, MathContext)}
+	 * but has been optimized for large strings (several thousand digits).</p>
+	 *
+	 * @param string the string representation
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return the created {@link BigDecimal}
+	 * @throws NumberFormatException if <code>string</code> is not a valid representation of a {@link BigDecimal}
+	 * @throws ArithmeticException if the result is inexact but the rounding mode is {@code UNNECESSARY}
+	 * @see BigDecimal#BigDecimal(String, MathContext)
+	 * @see #toBigDecimal(String)
+	 */
+	public static BigDecimal toBigDecimal(String string, MathContext mathContext) {
+		int len = string.length();
+		if (len < 500) {
+			return new BigDecimal(string, mathContext);
+		}
+
+		int splitLength = len / 10;
+		return toBigDecimal(string, mathContext, splitLength);
+	}
+
+	static BigDecimal toBigDecimal(String string, MathContext mathContext, int splitLength) {
+		int len = string.length();
+
+		if (len < splitLength) {
+			return new BigDecimal(string, mathContext);
+		}
+
+		char[] chars = string.toCharArray();
+
+		boolean numberHasSign = false;
+		boolean negative = false;
+		int numberIndex = 0;
+		int dotIndex = -1;
+		int expIndex = -1;
+		boolean expHasSign = false;
+		int scale = 0;
+
+		for (int i = 0; i < len; i++) {
+			char c = chars[i];
+			switch (c) {
+				case '+':
+					if (expIndex >= 0) {
+						if (expHasSign) {
+							throw new NumberFormatException("Multiple signs in exponent");
+						}
+						expHasSign = true;
+					} else {
+						if (numberHasSign) {
+							throw new NumberFormatException("Multiple signs in number");
+						}
+						numberHasSign = true;
+						numberIndex = i + 1;
+					}
+					break;
+				case '-':
+					if (expIndex >= 0) {
+						if (expHasSign) {
+							throw new NumberFormatException("Multiple signs in exponent");
+						}
+						expHasSign = true;
+					} else {
+						if (numberHasSign) {
+							throw new NumberFormatException("Multiple signs in number");
+						}
+						numberHasSign = true;
+						negative = true;
+						numberIndex = i + 1;
+					}
+					break;
+				case 'e':
+				case 'E':
+					if (expIndex >= 0) {
+						throw new NumberFormatException("Multiple exponent markers");
+					}
+					expIndex = i;
+					break;
+				case '.':
+					if (dotIndex >= 0) {
+						throw new NumberFormatException("Multiple decimal points");
+					}
+					dotIndex = i;
+					break;
+				default:
+					if (dotIndex >= 0 && expIndex == -1) {
+						scale++;
+					}
+			}
+		}
+
+		int numberEndIndex;
+		int exp = 0;
+		if (expIndex >= 0) {
+			numberEndIndex = expIndex;
+			String expString = new String(chars, expIndex + 1, len - expIndex - 1);
+			exp = Integer.parseInt(expString);
+			scale = adjustScale(scale, exp);
+		} else {
+			numberEndIndex = len;
+		}
+
+		BigDecimal result;
+
+		if (dotIndex >= 0) {
+			int leftLength = dotIndex - numberIndex;
+			BigDecimal bigDecimalLeft = toBigDecimalRecursive(chars, numberIndex, leftLength, exp, splitLength);
+			int rightLength = numberEndIndex - dotIndex - 1;
+			BigDecimal bigDecimalRight = toBigDecimalRecursive(chars, dotIndex + 1, rightLength, exp-rightLength, splitLength);
+			result = bigDecimalLeft.add(bigDecimalRight);
+		} else {
+			result = toBigDecimalRecursive(chars, numberIndex, numberEndIndex - numberIndex, exp, splitLength);
+		}
+
+		if (scale != 0) {
+			result = result.setScale(scale);
+		}
+
+		if (negative) {
+			result = result.negate();
+		}
+
+		if (mathContext.getPrecision() != 0) {
+			result = result.round(mathContext);
+		}
+
+		return result;
+	}
+
+	private static int adjustScale(int scale, long exp) {
+		long adjustedScale = scale - exp;
+		if (adjustedScale > Integer.MAX_VALUE || adjustedScale < Integer.MIN_VALUE)
+			throw new NumberFormatException("Scale out of range: " + adjustedScale + " while adjusting scale " + scale + " to exponent " + exp);
+		return (int) adjustedScale;
+	}
+
+	private static BigDecimal toBigDecimalRecursive(char[] chars, int offset, int length, int scale, int splitLength) {
+		if (length > splitLength) {
+			int mid = length / 2;
+			BigDecimal bigDecimalLeft = toBigDecimalRecursive(chars, offset, mid, scale + length - mid, splitLength);
+			BigDecimal bigDecimalRight = toBigDecimalRecursive(chars, offset + mid, length - mid, scale, splitLength);
+			return bigDecimalLeft.add(bigDecimalRight);
+		}
+		if (length == 0) {
+			return BigDecimal.ZERO;
+		}
+		return new BigDecimal(chars, offset, length).movePointRight(scale);
+	}
+
+	/**
 	 * Returns whether the specified {@link BigDecimal} value can be represented as <code>int</code>.
 	 *
 	 * <p>If this returns <code>true</code> you can call {@link BigDecimal#intValueExact()} without fear of an {@link ArithmeticException}.</p>
