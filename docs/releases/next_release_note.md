@@ -48,7 +48,7 @@ For consistency the normal `BigDecimal.round()` function has also been provided 
 
 In release 2.0.0 the calculation precision was improved at the cost of calculation performance.
 
-The calculation performance has now again been improved by factor 5 and is practically back to pre-2.0.0 levels,
+The calculation performance has now again been improved by up to factor 5 and is practically back to pre-2.0.0 levels,
 while the calculations are still correct to the specified precision.
 
 
