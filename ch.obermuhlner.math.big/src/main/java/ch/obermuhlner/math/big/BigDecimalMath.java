@@ -97,11 +97,11 @@ public class BigDecimalMath {
 	 */
 	public static BigDecimal toBigDecimal(String string, MathContext mathContext) {
 		int len = string.length();
-		if (len < 500) {
+		if (len < 600) {
 			return new BigDecimal(string, mathContext);
 		}
 
-		int splitLength = len / 5;
+		int splitLength = len / (len >= 10000 ? 8 : 5);
 		return toBigDecimal(string, mathContext, splitLength);
 	}
 
