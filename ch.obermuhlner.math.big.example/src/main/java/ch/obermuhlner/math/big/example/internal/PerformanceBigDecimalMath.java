@@ -36,8 +36,8 @@ public class PerformanceBigDecimalMath {
         //fullReport();
         //fullOptimizationReport();
 
-		performanceReport_toBigDecimal_optimization();
-		performanceReport_toBigDecimal();
+		//performanceReport_toBigDecimal_optimization();
+		//performanceReport_toBigDecimal();
 
 		System.out.println("Finished all in " + stopWatch);
 	}
@@ -751,15 +751,14 @@ REFERENCE github eobermuhlner/big-math
 	}
 
 	private static void performanceReport_toBigDecimal_optimization() {
+
 		performanceReportOverLambda(
 				"perf_bigdec_string_impl_precisions_to_2000.csv",
 				2000,
 				1,
 				REPEATS,
 				(i) -> createStringNumber(i),
-				Arrays.asList(/*"BigDecimal(String)", */"toBigDecimal 500", "toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
-				//(s) -> new BigDecimal(s),
-				(s) -> BigDecimalMathExperimental.toBigDecimalSplitLength(s, MathContext.UNLIMITED, 500),
+				Arrays.asList("toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 3),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 4),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 5),
@@ -772,9 +771,7 @@ REFERENCE github eobermuhlner/big-math
 				200,
 				REPEATS,
 				(i) -> createStringNumber(i),
-				Arrays.asList(/*"BigDecimal(String)", */"toBigDecimal 1000", "toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
-				//(s) -> new BigDecimal(s),
-				(s) -> BigDecimalMathExperimental.toBigDecimalSplitLength(s, MathContext.UNLIMITED, 100),
+				Arrays.asList("toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 3),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 4),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 5),
@@ -787,14 +784,10 @@ REFERENCE github eobermuhlner/big-math
 				10000,
 				REPEATS,
 				(i) -> createStringNumber(i),
-				Arrays.asList(/*"BigDecimal(String)", */"toBigDecimal 2000", "toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
-				//(s) -> new BigDecimal(s),
-				(s) -> BigDecimalMathExperimental.toBigDecimalSplitLength(s, MathContext.UNLIMITED, 2000),
-				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 3),
+				Arrays.asList("toBigDecimal/4", "toBigDecimal/8", "toBigDecimal/16"),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 4),
-				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 5),
-				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 6),
-				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 8));
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 8),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 16));
 	}
 
 	private static void performanceReport_toBigDecimal() {
