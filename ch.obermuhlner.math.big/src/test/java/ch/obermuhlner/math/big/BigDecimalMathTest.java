@@ -76,7 +76,12 @@ public class BigDecimalMathTest {
 
     @Test
     public void testToBigDecimalFails() {
+        assertToBigDecimalThrows("");
         assertToBigDecimalThrows("x");
+        assertToBigDecimalThrows(" ");
+        assertToBigDecimalThrows("1x");
+        assertToBigDecimalThrows("1.2x");
+        assertToBigDecimalThrows("1.2E3x");
 
         assertToBigDecimalThrows("1..2");
         assertToBigDecimalThrows("1.2.3");
@@ -92,6 +97,7 @@ public class BigDecimalMathTest {
 
         assertToBigDecimalThrows("1EE2");
 
+        assertToBigDecimalThrows("1E2.3");
         assertToBigDecimalThrows("1E++2");
         assertToBigDecimalThrows("1E+2+3");
         assertToBigDecimalThrows("1E--2");
@@ -108,7 +114,10 @@ public class BigDecimalMathTest {
     @Test
     public void testToBigDecimal() {
         assertToBigDecimal("0");
+        assertToBigDecimal("00");
+        assertToBigDecimal("0.0");
         assertToBigDecimal("0.00");
+        assertToBigDecimal("00.00");
         assertToBigDecimal("+0");
         assertToBigDecimal("-0");
         assertToBigDecimal("+0E123");
@@ -118,10 +127,17 @@ public class BigDecimalMathTest {
         assertToBigDecimal("123.");
 
         assertToBigDecimal("1");
+        assertToBigDecimal("1.0");
         assertToBigDecimal("1.23");
         assertToBigDecimal("1.2300");
         assertToBigDecimal("1234567890");
         assertToBigDecimal("1234567890.1234567890123456789");
+
+        assertToBigDecimal("001");
+        assertToBigDecimal("001.23");
+        assertToBigDecimal("001.2300");
+        assertToBigDecimal("001234567890");
+        assertToBigDecimal("001234567890.1234567890123456789");
 
         assertToBigDecimal("+1");
         assertToBigDecimal("+1.23");
