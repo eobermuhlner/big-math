@@ -101,7 +101,7 @@ public class BigDecimalMath {
 			return new BigDecimal(string, mathContext);
 		}
 
-		int splitLength = len / 10;
+		int splitLength = len / 5;
 		return toBigDecimal(string, mathContext, splitLength);
 	}
 

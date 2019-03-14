@@ -8,6 +8,7 @@ import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import ch.obermuhlner.math.big.example.StopWatch;
@@ -32,10 +33,26 @@ public class PerformanceBigDecimalMath {
 	public static void main(String[] args) {
 		StopWatch stopWatch = new StopWatch();
 
-        fullReport();
+        //fullReport();
         //fullOptimizationReport();
 
+		performanceReport_toBigDecimal_optimization();
+		performanceReport_toBigDecimal();
+
 		System.out.println("Finished all in " + stopWatch);
+	}
+
+	private static String createStringNumber (int length) {
+		StringBuilder result = new StringBuilder();
+
+		if (length == 0) {
+			result.append("0");
+		}
+
+		for (int i = 0; i < length; i++) {
+			result.append(i % 10);
+		}
+		return result.toString();
 	}
 
 	public static void fullReport() {
@@ -68,6 +85,8 @@ public class PerformanceBigDecimalMath {
 		performanceReportAtan2_yx_neg10_to_10();
 		functionValueAtan2_yx_neg10_to_10();
 
+		performanceReport_toBigDecimal();
+
         performanceReport_Java9_sqrt();
 	}
 
@@ -99,6 +118,8 @@ public class PerformanceBigDecimalMath {
 //		performanceReportLogOptimization4();
 //		performanceReportLogOptimization5();
 //		performanceReportLogOptimization6();
+
+		performanceReport_toBigDecimal_optimization();
     }
 
 	private static void performanceReport_Fast_0_to_2() {
@@ -729,6 +750,85 @@ REFERENCE github eobermuhlner/big-math
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
 
+	private static void performanceReport_toBigDecimal_optimization() {
+		performanceReportOverLambda(
+				"perf_bigdec_string_impl_precisions_to_2000.csv",
+				2000,
+				1,
+				REPEATS,
+				(i) -> createStringNumber(i),
+				Arrays.asList(/*"BigDecimal(String)", */"toBigDecimal 500", "toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
+				//(s) -> new BigDecimal(s),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitLength(s, MathContext.UNLIMITED, 500),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 3),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 4),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 5),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 6),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 8));
+
+		performanceReportOverLambda(
+				"perf_bigdec_string_impl_precisions_to_10000.csv",
+				20000,
+				200,
+				REPEATS,
+				(i) -> createStringNumber(i),
+				Arrays.asList(/*"BigDecimal(String)", */"toBigDecimal 1000", "toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
+				//(s) -> new BigDecimal(s),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitLength(s, MathContext.UNLIMITED, 100),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 3),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 4),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 5),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 6),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 8));
+
+		performanceReportOverLambda(
+				"perf_bigdec_string_impl_precisions_to_100000.csv",
+				100000,
+				10000,
+				REPEATS,
+				(i) -> createStringNumber(i),
+				Arrays.asList(/*"BigDecimal(String)", */"toBigDecimal 2000", "toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
+				//(s) -> new BigDecimal(s),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitLength(s, MathContext.UNLIMITED, 2000),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 3),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 4),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 5),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 6),
+				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 8));
+	}
+
+	private static void performanceReport_toBigDecimal() {
+		performanceReportOverLambda(
+				"perf_bigdec_string_precisions_to_2000.csv",
+				2000,
+				1,
+				REPEATS,
+				(i) -> createStringNumber(i),
+				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
+				(s) -> new BigDecimal(s),
+				(s) -> BigDecimalMath.toBigDecimal(s));
+
+		performanceReportOverLambda(
+				"perf_bigdec_string_precisions_to_10000.csv",
+				20000,
+				200,
+				REPEATS,
+				(i) -> createStringNumber(i),
+				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
+				(s) -> new BigDecimal(s),
+				(s) -> BigDecimalMath.toBigDecimal(s));
+
+		performanceReportOverLambda(
+				"perf_bigdec_string_precisions_to_100000.csv",
+				100000,
+				1000,
+				REPEATS,
+				(i) -> createStringNumber(i),
+				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
+				(s) -> new BigDecimal(s),
+				(s) -> BigDecimalMath.toBigDecimal(s));
+	}
+
 	private static void performanceReport_Java9_sqrt() {
 /*
 		performanceReportOverValue(
@@ -1037,6 +1137,111 @@ REFERENCE github eobermuhlner/big-math
 					writer.printf("%8.3f", elapsedNanos);
 				}
 				p++;
+				writer.println();
+			}
+		}
+	}
+
+	public static <T, U> void performanceReportOverLambda(String name, int count, int repeats, Function<Integer, T> convert, List<String> functionNames, Function<T, U>... functions) {
+		performanceReportOverLambda(name, count, 1, repeats, convert, functionNames, functions);
+	}
+
+	public static <T, U> void performanceReportOverLambda(String name, int count, int countStep, int repeats, Function<Integer, T> convert, List<String> functionNames, Function<T, U>... functions) {
+		StopWatch stopWatch = new StopWatch();
+		System.out.println("Writing  " + name);
+
+		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
+			performanceReportOverLambda(writer, count, countStep, repeats, convert, functionNames, functions);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		System.out.println("Finished in " + stopWatch);
+	}
+
+	public static <T, U> void performanceReportOverLambda(PrintWriter writer, int count, int countStep, int repeats, Function<Integer, T> convert, List<String> functionNames, Function<T, U>... functions) {
+		int innerRepeats = 10;
+
+		int warmupValueCount = 10;
+
+		// warmup
+		for (int warmupCount = 0; warmupCount < WARMUP_REPEATS; warmupCount++) {
+			for (int valueIndex = 0; valueIndex < warmupValueCount; valueIndex++) {
+				for (Function<T, U> function : functions) {
+					T value = convert.apply(valueIndex);
+					function.apply(value);
+				}
+			}
+		}
+
+		// print headers
+		writer.printf("%8s", "value");
+		for (int fIndex = 0; fIndex < functionNames.size(); fIndex++) {
+			writer.print(",");
+			writer.printf("%8s", functionNames.get(fIndex));
+		}
+		writer.println();
+
+		// print types
+		writer.printf("%8s", "number");
+		for (int fIndex = 0; fIndex < functionNames.size(); fIndex++) {
+			writer.print(",");
+			writer.printf("%8s", "number");
+		}
+		writer.println();
+
+		// prepare data storage
+		int pCount = 0;
+		for (int valueIndex = 0; valueIndex <= count; valueIndex += countStep) {
+			pCount++;
+		}
+
+		long[][][] nanosFunctionValueRepeat = new long[functions.length][][];
+		for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+			nanosFunctionValueRepeat[fIndex] = new long[pCount][];
+
+			for (int pIndex = 0; pIndex < pCount; pIndex++) {
+				nanosFunctionValueRepeat[fIndex][pIndex] = new long[repeats];
+			}
+		}
+
+		// real measurement
+		for (int rIndex = 0; rIndex < repeats; rIndex++) {
+			for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+				int pIndex = 0;
+				for (int valueIndex = 0; valueIndex < count; valueIndex+=countStep) {
+					Function<T, U> calculation = functions[fIndex];
+					T value = convert.apply(valueIndex);
+
+					try {
+						StopWatch stopWatch = new StopWatch();
+						for (int innerIndex = 0; innerIndex < innerRepeats; innerIndex++) {
+							calculation.apply(value);
+						}
+						nanosFunctionValueRepeat[fIndex][pIndex][rIndex] = stopWatch.getElapsedNanos();
+					}
+					catch (Exception ex) {
+						// ignore
+					}
+					pIndex++;
+				}
+
+			}
+			System.out.print(".");
+		}
+		System.out.println();
+
+		// write report
+		{
+			int pIndex = 0;
+			for (int valueIndex = 0; valueIndex < count; valueIndex+=countStep) {
+				writer.printf("%8d", valueIndex);
+				for (int fIndex = 0; fIndex < functions.length; fIndex++) {
+					writer.print(",");
+					double elapsedNanos = averagePercentile(AVERAGE_PERCENTILE, nanosFunctionValueRepeat[fIndex][pIndex]) / innerRepeats;
+					writer.printf("%8.3f", elapsedNanos);
+				}
+				pIndex++;
 				writer.println();
 			}
 		}
