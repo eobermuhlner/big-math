@@ -470,8 +470,14 @@ public class BigDecimalMathTest {
 		assertEquals(new BigDecimal(120), BigDecimalMath.factorial(5));
 		
 		assertEquals(
-				new BigDecimal("9425947759838359420851623124482936749562312794702543768327889353416977599316221476503087861591808346911623490003549599583369706302603264000000000000000000000000"),
+				BigDecimalMath.toBigDecimal("9425947759838359420851623124482936749562312794702543768327889353416977599316221476503087861591808346911623490003549599583369706302603264000000000000000000000000"),
 				BigDecimalMath.factorial(101));
+
+        BigDecimal expected = BigDecimal.ONE;
+        for (int n = 1; n < 1000; n++) {
+            expected = expected.multiply(BigDecimal.valueOf(n));
+            assertEquals(expected, BigDecimalMath.factorial(n));
+        }
 	}
 
 	@Test(expected = ArithmeticException.class)

@@ -483,11 +483,34 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		}
 
 		BigDecimal result = factorialCache[factorialCache.length - 1];
-		for (int i = factorialCache.length; i <= n; i++) {
-			result = result.multiply(valueOf(i));
-		}
-		return result;
+		return result.multiply(factorialRecursion(factorialCache.length, n));
 	}
+
+    private static BigDecimal factorialLoop(int n1, final int n2) {
+		//final long limit = Long.MAX_VALUE >> (32 - Integer.numberOfLeadingZeros(n2));
+		final long limit = Long.MAX_VALUE / n2;
+        long accu = 1;
+        BigDecimal result = BigDecimal.ONE;
+        while (n1 <= n2) {
+            if (accu <= limit) {
+                accu *= n1;
+            } else {
+                result = result.multiply(BigDecimal.valueOf(accu));
+                accu = n1;
+            }
+            n1++;
+        }
+        return result.multiply(BigDecimal.valueOf(accu));
+    }
+
+    private static BigDecimal factorialRecursion(final int n1, final int n2) {
+		int threshold = n1 > 200 ? 80 : 150;
+        if (n2 - n1 < threshold) {
+            return factorialLoop(n1, n2);
+        }
+        final int mid = (n1 + n2) >> 1;
+        return factorialRecursion(mid + 1, n2).multiply(factorialRecursion(n1, mid));
+    }
 
 	/**
 	 * Calculates the factorial of the specified {@link BigDecimal}.
