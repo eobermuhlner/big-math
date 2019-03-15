@@ -487,7 +487,6 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	}
 
     private static BigDecimal factorialLoop(int n1, final int n2) {
-		//final long limit = Long.MAX_VALUE >> (32 - Integer.numberOfLeadingZeros(n2));
 		final long limit = Long.MAX_VALUE / n2;
         long accu = 1;
         BigDecimal result = BigDecimal.ONE;
