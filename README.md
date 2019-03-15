@@ -37,7 +37,7 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `bernoulli(int)` calculates Bernoulli numbers
 *   `pi(MathContext)` calculates pi to an arbitrary precision
 *   `e(MathContext)` calculates e to an arbitrary precision
-*   `toBigDecimal(String)` creates a `BigDecimal` from string representation (faster then `BigDecimal(String)`)
+*   `toBigDecimal(String)` creates a `BigDecimal` from string representation (faster than `BigDecimal(String)`)
 *   `mantissa(BigDecimal)` extracts the mantissa from a `BigDecimal` (mantissa * 10^exponent)
 *   `exponent(BigDecimal)` extracts the exponent from a `BigDecimal` (mantissa * 10^exponent)
 *   `integralPart(BigDecimal)` extracts the integral part from a `BigDecimal` (everything before the decimal point) 
