@@ -6,6 +6,7 @@ import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.function.BiFunction;
@@ -33,11 +34,16 @@ public class BigDecimalMathExperimental {
 	}
 
 	public static void main(String[] args) {
-		printSqrtConvergence();
+		printFactorial();
+		//printSqrtConvergence();
+	}
+
+	private static void printFactorial() {
+		System.out.println(factorialLoop(100));
 	}
 
 	// variations on exp()
-	
+
 	private static void printSqrtConvergence() {
 		int precision = 10000;
 		
@@ -863,5 +869,85 @@ public class BigDecimalMathExperimental {
 			return BigDecimal.ZERO;
 		}
 		return new BigDecimal(chars, offset, length).movePointRight(scale);
+	}
+
+	public static BigDecimal factorialSimple(int n) {
+		BigDecimal result = BigDecimal.ONE;
+		for (int i = 2; i <= n; i++) {
+			result = result.multiply(valueOf(i));
+		}
+		return result;
+	}
+
+	// Based on: https://github.com/plokhotnyuk/scala-vs-java/blob/master/src/main/java/com/github/plokhotnyuk/scala_vs_java/JavaFactorial.java#L35
+
+	public static BigDecimal factorialLoop(int n) {
+		return loopShiftLimit(1, n);
+	}
+
+	public static BigDecimal factorialLoopDivLimit(int n) {
+		return loopDivLimit(1, n);
+	}
+
+	public static BigDecimal factorialSwitchLoop(int n) {
+		return n > 20 ? loopShiftLimit(1, n) : BigDecimal.valueOf(fastLoop(1, n));
+	}
+
+	public static BigDecimal factorialRecursion(int n) {
+		return n > 20 ? recursion(1, n, -1) : BigDecimal.valueOf(fastLoop(1, n));
+	}
+
+	public static BigDecimal factorialRecursionAdaptive(int n, int adaptSplitLength) {
+		return n > 20 ? recursion(1, n, adaptSplitLength) : BigDecimal.valueOf(fastLoop(1, n));
+	}
+
+	private static long fastLoop(final int n1, int n2) {
+		long p = n1;
+		while (n2 > n1) {
+			p = p * n2;
+			n2--;
+		}
+		return p;
+	}
+
+	private static BigDecimal loopShiftLimit(int n1, final int n2) {
+		final long l = Long.MAX_VALUE >> (32 - Integer.numberOfLeadingZeros(n2));
+		long p = 1;
+		BigDecimal r = BigDecimal.ONE;
+		while (n1 <= n2) {
+			if (p <= l) {
+				p *= n1;
+			} else {
+				r = r.multiply(BigDecimal.valueOf(p));
+				p = n1;
+			}
+			n1++;
+		}
+		return r.multiply(BigDecimal.valueOf(p));
+	}
+
+	private static BigDecimal loopDivLimit(int n1, final int n2) {
+		final long l = Long.MAX_VALUE / (n2 == 0 ? 1 : n2);
+		long p = 1;
+		BigDecimal r = BigDecimal.ONE;
+		while (n1 <= n2) {
+			if (p <= l) {
+				p *= n1;
+			} else {
+				r = r.multiply(BigDecimal.valueOf(p));
+				p = n1;
+			}
+			n1++;
+		}
+		return r.multiply(BigDecimal.valueOf(p));
+	}
+
+	private static BigDecimal recursion(final int n1, final int n2, int adaptSplitLength) {
+		int splitLength = adaptSplitLength > 0? (n1 > 200 ? adaptSplitLength : 150) : 65;
+		if (n2 - n1 < splitLength) {
+			return loopShiftLimit(n1, n2);
+		}
+		final int nm = (n1 + n2) >> 1;
+		return recursion(nm + 1, n2, adaptSplitLength).multiply(recursion(n1, nm, adaptSplitLength));
 	}
 }

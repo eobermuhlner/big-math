@@ -33,16 +33,18 @@ public class PerformanceBigDecimalMath {
 	public static void main(String[] args) {
 		StopWatch stopWatch = new StopWatch();
 
-        //fullReport();
-        //fullOptimizationReport();
+		//fullReport();
+		//fullOptimizationReport();
 
 		//performanceReport_toBigDecimal_optimization();
 		//performanceReport_toBigDecimal();
 
+		performanceReport_factorial_optimization();
+
 		System.out.println("Finished all in " + stopWatch);
 	}
 
-	private static String createStringNumber (int length) {
+	private static String createStringNumber(int length) {
 		StringBuilder result = new StringBuilder();
 
 		if (length == 0) {
@@ -67,8 +69,8 @@ public class PerformanceBigDecimalMath {
 		performanceReport_Slow_0_to_2();
 		performanceReport_Slow_neg10_to_10();
 		performanceReport_Slow_0_to_10();
-        performanceReport_Slow_0_to_100();
-        performanceReport_Slow_0_to_1000();
+		performanceReport_Slow_0_to_100();
+		performanceReport_Slow_0_to_1000();
 
 		performanceReport_pow_0_to_100();
 
@@ -87,29 +89,29 @@ public class PerformanceBigDecimalMath {
 
 		performanceReport_toBigDecimal();
 
-        performanceReport_Java9_sqrt();
+		performanceReport_Java9_sqrt();
 	}
 
-    public static void fullOptimizationReport() {
-        // --- exp() optimizations:
-        performanceReportExpOptimization_0_to_4();
+	public static void fullOptimizationReport() {
+		// --- exp() optimizations:
+		performanceReportExpOptimization_0_to_4();
 
-        // --- asin() optimizations:
-        performanceReportAsinOptimization_0_to_1();
+		// --- asin() optimizations:
+		performanceReportAsinOptimization_0_to_1();
 
-        // --- sqrt() optimizations:
-        performanceReportSqrtOptimization_0_to_1();
-        performanceReportSqrtOptimization_0_to_100();
-        performanceReportSqrtOptimization_0_to_1000();
+		// --- sqrt() optimizations:
+		performanceReportSqrtOptimization_0_to_1();
+		performanceReportSqrtOptimization_0_to_100();
+		performanceReportSqrtOptimization_0_to_1000();
 
-        // --- root() optimizations:
-        performanceReportRootOptimization_0_to_10();
+		// --- root() optimizations:
+		performanceReportRootOptimization_0_to_10();
 
-        // --- log() optimizations:
-        performanceReportLogNewtonAdaptive_0_to_10();
+		// --- log() optimizations:
+		performanceReportLogNewtonAdaptive_0_to_10();
 
-        performanceReportLogOptimizationNewton_0_to_10();
-        performanceReportLogOptimizationNewton_0_to_100();
+		performanceReportLogOptimizationNewton_0_to_10();
+		performanceReportLogOptimizationNewton_0_to_100();
 
 //		performanceReportLogOptimizationTry();
 //		performanceReportLogOptimization1();
@@ -120,7 +122,7 @@ public class PerformanceBigDecimalMath {
 //		performanceReportLogOptimization6();
 
 		performanceReport_toBigDecimal_optimization();
-    }
+	}
 
 	private static void performanceReport_Fast_0_to_2() {
 		performanceReportOverValue(
@@ -270,35 +272,35 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
 	}
 
-    private static void performanceReport_Slow_0_to_100() {
-        performanceReportOverValue(
-                "perf_slow_funcs_from_0_to_100.csv",
-                REF_MATHCONTEXT,
-                0,
-                +100,
-                +0.1,
-                REPEATS,
-                Arrays.asList("exp", "log", "pow"),
-                (x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
-                (x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
-                (x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
-    }
+	private static void performanceReport_Slow_0_to_100() {
+		performanceReportOverValue(
+				"perf_slow_funcs_from_0_to_100.csv",
+				REF_MATHCONTEXT,
+				0,
+				+100,
+				+0.1,
+				REPEATS,
+				Arrays.asList("exp", "log", "pow"),
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
 
-    private static void performanceReport_Slow_0_to_1000() {
-        performanceReportOverValue(
-                "perf_slow_funcs_from_0_to_1000.csv",
-                REF_MATHCONTEXT,
-                0,
-                +1000,
-                5,
-                REPEATS,
-                Arrays.asList("exp", "log", "pow"),
-                (x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
-                (x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
-                (x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
-    }
+	private static void performanceReport_Slow_0_to_1000() {
+		performanceReportOverValue(
+				"perf_slow_funcs_from_0_to_1000.csv",
+				REF_MATHCONTEXT,
+				0,
+				+1000,
+				5,
+				REPEATS,
+				Arrays.asList("exp", "log", "pow"),
+				(x, calculationMathContext) -> BigDecimalMath.exp(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.log(x, calculationMathContext),
+				(x, calculationMathContext) -> BigDecimalMath.pow(BigDecimal.valueOf(123.456), x, calculationMathContext));
+	}
 
-    private static void performanceReport_pow_0_to_100() {
+	private static void performanceReport_pow_0_to_100() {
 		performanceReportOverValue(
 				"perf_pow_from_0_to_100.csv",
 				REF_MATHCONTEXT,
@@ -362,7 +364,7 @@ public class PerformanceBigDecimalMath {
 				(x, calculationMathContext) -> BigDecimalMath.sin(x, calculationMathContext),
 				(x, calculationMathContext) -> BigDecimalMath.cos(x, calculationMathContext));
 	}
-	
+
 	private static void performanceReport_Slow_precision() {
 		performanceReportOverPrecision(
 				"perf_slow_funcs_precisions_to_1000.csv",
@@ -408,7 +410,7 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReportSqrtOptimization_0_to_1() {
 		System.out.println(BigDecimalMathExperimental.sqrtUsingHalley(BigDecimal.valueOf(2), new MathContext(100)));
-		
+
 		performanceReportOverValue(
 				"test_sqrt_impl_from_0_to_1.csv",
 				REF_MATHCONTEXT,
@@ -417,9 +419,9 @@ public class PerformanceBigDecimalMath {
 				+0.01,
 				REPEATS,
 				Arrays.asList(
-						"sqrtNewtonFix", 
-						"sqrtNewtonAdaptive", 
-						"sqrtNewtonAdaptiveImproved", 
+						"sqrtNewtonFix",
+						"sqrtNewtonAdaptive",
+						"sqrtNewtonAdaptiveImproved",
 						"sqrtHalleyFix"),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1),
@@ -429,7 +431,7 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReportSqrtOptimization_0_to_100() {
 		System.out.println(BigDecimalMathExperimental.sqrtUsingHalley(BigDecimal.valueOf(2), new MathContext(100)));
-		
+
 		performanceReportOverValue(
 				"test_sqrt_impl_from_0_to_100.csv",
 				REF_MATHCONTEXT,
@@ -440,7 +442,7 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList(
 						"sqrtNewtonFix",
 						"sqrtNewtonAdaptive",
-						"sqrtNewtonAdaptiveImproved", 
+						"sqrtNewtonAdaptiveImproved",
 						"sqrtHalleyFix"),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1),
@@ -450,7 +452,7 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReportSqrtOptimization_0_to_1000() {
 		System.out.println(BigDecimalMathExperimental.sqrtUsingHalley(BigDecimal.valueOf(2), new MathContext(100)));
-		
+
 		performanceReportOverValue(
 				"test_sqrt_impl_from_0_to_1000.csv",
 				REF_MATHCONTEXT,
@@ -461,7 +463,7 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList(
 						"sqrtNewtonFix",
 						"sqrtNewtonAdaptive",
-						"sqrtNewtonAdaptiveImproved", 
+						"sqrtNewtonAdaptiveImproved",
 						"sqrtHalleyFix"),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewton(x1, mc1),
 				(x1, mc1) -> BigDecimalMathExperimental.sqrtUsingNewtonAdaptivePrecision(x1, mc1),
@@ -507,7 +509,7 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList("atan2"),
 				(y1, mc1) -> BigDecimalMath.atan2(y1, x, mc1));
 	}
-	
+
 	private static void performanceReportAtan2_y_5_x_neg10_to_10() {
 		BigDecimal y = BigDecimal.valueOf(5);
 		performanceReportOverValue(
@@ -520,7 +522,7 @@ public class PerformanceBigDecimalMath {
 				Arrays.asList("atan2"),
 				(x1, mc1) -> BigDecimalMath.atan2(y, x1, mc1));
 	}
-	
+
 	private static void performanceReportAtan2_yx_neg10_to_10() {
 		MathContext mathContext = REF_MATHCONTEXT;
 		BigDecimal xStart = BigDecimal.valueOf(-10);
@@ -536,8 +538,8 @@ public class PerformanceBigDecimalMath {
 		String name = "perf_atan2_yx_from_-10_to_10.csv";
 
 		// warmup
-		for(BigDecimal y = yStart; y.compareTo(yEnd) < 0; y = y.add(yStepWarmup)) {
-			for(BigDecimal x = xStart; x.compareTo(xEnd) < 0; x = x.add(xStepWarmup)) {
+		for (BigDecimal y = yStart; y.compareTo(yEnd) < 0; y = y.add(yStepWarmup)) {
+			for (BigDecimal x = xStart; x.compareTo(xEnd) < 0; x = x.add(xStepWarmup)) {
 				try {
 					BigDecimalMath.atan2(y, x, mathContext).doubleValue();
 				} catch (Exception ex) {
@@ -547,16 +549,16 @@ public class PerformanceBigDecimalMath {
 		}
 
 		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
-			for(BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+			for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
 				writer.print(", ");
 				writer.print(x);
 			}
 			writer.println();
-			
-			for(BigDecimal y = yStart; y.compareTo(yEnd) <= 0; y = y.add(yStep)) {
+
+			for (BigDecimal y = yStart; y.compareTo(yEnd) <= 0; y = y.add(yStep)) {
 				writer.print(y);
 				writer.print(", ");
-				for(BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+				for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
 					if (!x.equals(xStart)) {
 						writer.print(", ");
 					}
@@ -592,16 +594,16 @@ public class PerformanceBigDecimalMath {
 		String name = "values_atan2_yx_from_-10_to_10.csv";
 
 		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
-			for(BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+			for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
 				writer.print(", ");
 				writer.print(x);
 			}
 			writer.println();
-			
-			for(BigDecimal y = yStart; y.compareTo(yEnd) <= 0; y = y.add(yStep)) {
+
+			for (BigDecimal y = yStart; y.compareTo(yEnd) <= 0; y = y.add(yStep)) {
 				writer.print(y);
 				writer.print(", ");
-				for(BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
+				for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
 					if (!x.equals(xStart)) {
 						writer.print(", ");
 					}
@@ -621,94 +623,94 @@ public class PerformanceBigDecimalMath {
 		}
 	}
 
-	
+
 	/**
-Writing an implementation of the binary logarithm function with BigDecimal is surprisingly challenging.
-
-The first step is to decide between the basic approach.
-Here are the two basic formulas I found that converge reasonably fast:
-Hyperbolic tangent area:
-CODE logHyperbolic
-
-Newton's method:
-CODE logNewton
-
-The following graph shows the time in nanoseconds necessary to calculate the log(x) to a precision of 300 significant digits.
-CHART hyperbolic, newton x=0.01 - 10
-
-The hyperbolic tangent area approach wins hands down.
-
-Both approaches have in common that they converge much faster when x is close to 1.0 and become increasingly slower the farther away we get from 1.0.  
-CHART hyperbolic x=0.01 - 10
-CHART hyperbolic x=0.1 - 100
-
-In order to optimize this calculation we must bring the argument x closer to 1.0 and correct this outside of the logarithm in the appropriate manner.
-The Wikipedia article http://en.wikipedia.org/wiki/Natural_logarithm mentions the following trick:
-We write the value x in the exponential form
-	x = a * 10<sup>b</sup>
-then we can say that
-	log(x) = log(a) + log(10) * b
-Since we can precalculate log(10) for reasonable precision this can be implemented very efficiently with BigDecimal.
-
-CODE logUsingExponent
-
-CHART logHyperbolic, logUsingExponent x=0.1 - 100
-
-The argument of the log() can now only be in the range from 0.1 to 10, which is already an improvement.
-How can we further reduce the input range of log() and get even closer to the optimum value of 1.0?
-
-For values > 1.0 we can try to divide by powers of 2.
-For example the worst case values in the range from 6.0 to 10.0 can be divided by (2*2*2), which gives us a range from 0.75 to 1.25, another improvement.
-This factor can be applied outside the log() function:
- log(10.0) = log(10.0 / 8) + log(2)*3
-To be efficient we must precalculate log(2).
-
-The same logic applies to values > 1.0 but in this case we multiply with powers of 2.
- log(0.1) = log(0.1 * 8) - log(2)*3
-
-CODE logUsingPowerTwo
-
-CHART logUsingExponent, logUsingPowerTwo  x=0.1 - 2
-
-The powers of 2 come in a pretty good sequence in the value range between 1.0 and 10.0: (2, 4, 8).
-Unfortunately this leaves a gaping whole around 6.0 so that the values in this area can not be efficiently optimized.
-If we do the same trick by multiplying combinations of the prim factors 2 and 3 we get a nicer sequence that leaves less holes:
-(2, 3, 2*2, 2*3, 2*2*2, 3*3) = (2, 3, 4, 6, 8, 9)
-While this becomes a bit more complex to implement that just the powers of 2 it is still simple enough that we can hardcode all the combinations. 
-
-CHART logUsingExponent, logUsingTwoThree  x=0.1 - 2
-
-
-Another approach that does not need all the tricks with exponential form and combinations of 2 and 3.
-REFERENCE https://github.com/miraclefoxx/bigdecimal-math/blob/master/src/main/java/io/github/miraclefoxx/math/BigDecimalMath.java
-This needs another function root(n, x) which calculates the n'th root of the value x.
-It follows the same recipe of bringing the argument of the log() function closer to 1 by writing it in this form:
- log(x) = log(root(r, x)^r) = r * log(root(r, x))
-By estimating r correctly we can bring the argument to log() reasonably close.
-
-CODE  root
-CODE  logUsingRoot
-
-CHART logHyperbolic, logUsingRoot  x=0.1 - 10
-
-Looks very nice, the calculation becomes essentially independent of the distance to 1.0.
-
-Lets compare the two approaches (assuming precalculated log(10), log(2), log(3)):
-CHART logUsingRoot, logUsingTwoThree  x=0.1 - 10
-
-Nobody stops us from combining the two approaches, we calculate the final step
-(after using exponential form and combinations of 2 and 3) calling logRoot().
-This gives us:
-CHART logUsingRoot, logUsingTwoThreeRoot  x=0.1 - 10
-
-If we cannot precalculate log(10), log(2) and  log(3) (or the desired precision is outside the precalculated range)
-then the root() approach becomes more efficient: 
-CHART logUsingRoot, logUsingTwoThreeNotPrecalculated  x=0.1 - 10
-
-This gives us the final solution:
-If we are inside the precalculated precision we use logUsingTwoThreeRoot, otherwise logUsingRoot.
-
-REFERENCE github eobermuhlner/big-math
+	 * Writing an implementation of the binary logarithm function with BigDecimal is surprisingly challenging.
+	 * <p>
+	 * The first step is to decide between the basic approach.
+	 * Here are the two basic formulas I found that converge reasonably fast:
+	 * Hyperbolic tangent area:
+	 * CODE logHyperbolic
+	 * <p>
+	 * Newton's method:
+	 * CODE logNewton
+	 * <p>
+	 * The following graph shows the time in nanoseconds necessary to calculate the log(x) to a precision of 300 significant digits.
+	 * CHART hyperbolic, newton x=0.01 - 10
+	 * <p>
+	 * The hyperbolic tangent area approach wins hands down.
+	 * <p>
+	 * Both approaches have in common that they converge much faster when x is close to 1.0 and become increasingly slower the farther away we get from 1.0.
+	 * CHART hyperbolic x=0.01 - 10
+	 * CHART hyperbolic x=0.1 - 100
+	 * <p>
+	 * In order to optimize this calculation we must bring the argument x closer to 1.0 and correct this outside of the logarithm in the appropriate manner.
+	 * The Wikipedia article http://en.wikipedia.org/wiki/Natural_logarithm mentions the following trick:
+	 * We write the value x in the exponential form
+	 * x = a * 10<sup>b</sup>
+	 * then we can say that
+	 * log(x) = log(a) + log(10) * b
+	 * Since we can precalculate log(10) for reasonable precision this can be implemented very efficiently with BigDecimal.
+	 * <p>
+	 * CODE logUsingExponent
+	 * <p>
+	 * CHART logHyperbolic, logUsingExponent x=0.1 - 100
+	 * <p>
+	 * The argument of the log() can now only be in the range from 0.1 to 10, which is already an improvement.
+	 * How can we further reduce the input range of log() and get even closer to the optimum value of 1.0?
+	 * <p>
+	 * For values > 1.0 we can try to divide by powers of 2.
+	 * For example the worst case values in the range from 6.0 to 10.0 can be divided by (2*2*2), which gives us a range from 0.75 to 1.25, another improvement.
+	 * This factor can be applied outside the log() function:
+	 * log(10.0) = log(10.0 / 8) + log(2)*3
+	 * To be efficient we must precalculate log(2).
+	 * <p>
+	 * The same logic applies to values > 1.0 but in this case we multiply with powers of 2.
+	 * log(0.1) = log(0.1 * 8) - log(2)*3
+	 * <p>
+	 * CODE logUsingPowerTwo
+	 * <p>
+	 * CHART logUsingExponent, logUsingPowerTwo  x=0.1 - 2
+	 * <p>
+	 * The powers of 2 come in a pretty good sequence in the value range between 1.0 and 10.0: (2, 4, 8).
+	 * Unfortunately this leaves a gaping whole around 6.0 so that the values in this area can not be efficiently optimized.
+	 * If we do the same trick by multiplying combinations of the prim factors 2 and 3 we get a nicer sequence that leaves less holes:
+	 * (2, 3, 2*2, 2*3, 2*2*2, 3*3) = (2, 3, 4, 6, 8, 9)
+	 * While this becomes a bit more complex to implement that just the powers of 2 it is still simple enough that we can hardcode all the combinations.
+	 * <p>
+	 * CHART logUsingExponent, logUsingTwoThree  x=0.1 - 2
+	 * <p>
+	 * <p>
+	 * Another approach that does not need all the tricks with exponential form and combinations of 2 and 3.
+	 * REFERENCE https://github.com/miraclefoxx/bigdecimal-math/blob/master/src/main/java/io/github/miraclefoxx/math/BigDecimalMath.java
+	 * This needs another function root(n, x) which calculates the n'th root of the value x.
+	 * It follows the same recipe of bringing the argument of the log() function closer to 1 by writing it in this form:
+	 * log(x) = log(root(r, x)^r) = r * log(root(r, x))
+	 * By estimating r correctly we can bring the argument to log() reasonably close.
+	 * <p>
+	 * CODE  root
+	 * CODE  logUsingRoot
+	 * <p>
+	 * CHART logHyperbolic, logUsingRoot  x=0.1 - 10
+	 * <p>
+	 * Looks very nice, the calculation becomes essentially independent of the distance to 1.0.
+	 * <p>
+	 * Lets compare the two approaches (assuming precalculated log(10), log(2), log(3)):
+	 * CHART logUsingRoot, logUsingTwoThree  x=0.1 - 10
+	 * <p>
+	 * Nobody stops us from combining the two approaches, we calculate the final step
+	 * (after using exponential form and combinations of 2 and 3) calling logRoot().
+	 * This gives us:
+	 * CHART logUsingRoot, logUsingTwoThreeRoot  x=0.1 - 10
+	 * <p>
+	 * If we cannot precalculate log(10), log(2) and  log(3) (or the desired precision is outside the precalculated range)
+	 * then the root() approach becomes more efficient:
+	 * CHART logUsingRoot, logUsingTwoThreeNotPrecalculated  x=0.1 - 10
+	 * <p>
+	 * This gives us the final solution:
+	 * If we are inside the precalculated precision we use logUsingTwoThreeRoot, otherwise logUsingRoot.
+	 * <p>
+	 * REFERENCE github eobermuhlner/big-math
 	 */
 	private static void performanceReportLogOptimizationNewton_0_to_10() {
 		performanceReportOverValue(
@@ -726,7 +728,7 @@ REFERENCE github eobermuhlner/big-math
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1,
 						BigDecimalMathExperimental::logUsingNewtonAdaptivePrecision),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1,
-						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x1, mc2, 
+						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x1, mc2,
 								BigDecimalMathExperimental::logUsingNewtonAdaptivePrecision)));
 	}
 
@@ -740,13 +742,13 @@ REFERENCE github eobermuhlner/big-math
 				REPEATS,
 				Arrays.asList("newton", "root+newton", "exp+primes+newton", "primes+root+newton"),
 				(x1, mc1) -> BigDecimalMathExperimental.logUsingNewtonFixPrecision(x1, mc1),
-				(x1, mc1) -> BigDecimalMathExperimental.logUsingRoot(x1, mc1, 
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingRoot(x1, mc1,
 						BigDecimalMathExperimental::logUsingNewtonFixPrecision),
-				(x1, mc1) -> BigDecimalMathExperimental.logUsingExponent(x1, mc1, 
-						(x2, mc2) -> BigDecimalMathExperimental.logUsingPrimes(x2, mc2, 
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingExponent(x1, mc1,
+						(x2, mc2) -> BigDecimalMathExperimental.logUsingPrimes(x2, mc2,
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)),
-				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1, 
-						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x2, mc2, 
+				(x1, mc1) -> BigDecimalMathExperimental.logUsingPrimes(x1, mc1,
+						(x2, mc2) -> BigDecimalMathExperimental.logUsingRoot(x2, mc2,
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
 
@@ -820,6 +822,87 @@ REFERENCE github eobermuhlner/big-math
 				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
 				(s) -> new BigDecimal(s),
 				(s) -> BigDecimalMath.toBigDecimal(s));
+	}
+
+	private static void performanceReport_factorial_optimization() {
+		performanceReportOverLambda(
+				"perf_factorial_impl_values_to_100.csv",
+				100,
+				1,
+				FAST_REPEATS,
+				(i) -> i,
+				Arrays.asList("loop", "switchloop", "recursion"),
+				(n) -> BigDecimalMathExperimental.factorialLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialSwitchLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialRecursion(n));
+
+		performanceReportOverLambda(
+				"perf_factorial_impl_values_to_200.csv",
+				200,
+				1,
+				REPEATS,
+				(i) -> i,
+				Arrays.asList("loop", "switchloop", "recursion"),
+				(n) -> BigDecimalMathExperimental.factorialLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialSwitchLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialRecursion(n));
+
+		performanceReportOverLambda(
+				"perf_factorial_impl_values_to_500.csv",
+				500,
+				5,
+				FAST_REPEATS,
+				(i) -> i,
+				Arrays.asList("loop", "switchloop", "recursion"),
+				(n) -> BigDecimalMathExperimental.factorialLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialSwitchLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialRecursion(n));
+
+		performanceReportOverLambda(
+				"perf_factorial_impl_values_to_1000.csv",
+				1000,
+				1,
+				REPEATS,
+				(i) -> i,
+				Arrays.asList("loop", "switchloop", "recursion", "simple", "loopDivLimit"),
+				(n) -> BigDecimalMathExperimental.factorialLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialSwitchLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialRecursion(n),
+				(n) -> BigDecimalMathExperimental.factorialSimple(n),
+				(n) -> BigDecimalMathExperimental.factorialLoopDivLimit(n));
+
+		performanceReportOverLambda(
+				"perf_factorial_impl_loops_values_to_1000.csv",
+				1000,
+				1,
+				REPEATS,
+				(i) -> i,
+				Arrays.asList("loop", "loopDivLimit"),
+				(n) -> BigDecimalMathExperimental.factorialLoop(n),
+				(n) -> BigDecimalMathExperimental.factorialLoopDivLimit(n));
+
+		performanceReportOverLambda(
+				"perf_factorial_impl_recursion_values_to_100.csv",
+				100,
+				1,
+				FAST_REPEATS,
+				(i) -> i,
+				Arrays.asList("recursion", "recursionAdaptive_65"),
+				(n) -> BigDecimalMathExperimental.factorialRecursion(n),
+				(n) -> BigDecimalMathExperimental.factorialRecursionAdaptive(n, 65));
+
+		performanceReportOverLambda(
+				"perf_factorial_impl_recursion_values_to_1000.csv",
+				1000,
+				1,
+				FAST_REPEATS,
+				(i) -> i,
+				Arrays.asList("recursion", "recursionAdaptive_40", "recursionAdaptive_60", "recursionAdaptive_80", "recursionAdaptive_100"),
+				(n) -> BigDecimalMathExperimental.factorialRecursion(n),
+				(n) -> BigDecimalMathExperimental.factorialRecursionAdaptive(n, 40),
+				(n) -> BigDecimalMathExperimental.factorialRecursionAdaptive(n, 60),
+				(n) -> BigDecimalMathExperimental.factorialRecursionAdaptive(n, 80),
+				(n) -> BigDecimalMathExperimental.factorialRecursionAdaptive(n, 100));
 	}
 
 	private static void performanceReport_Java9_sqrt() {
@@ -913,24 +996,23 @@ REFERENCE github eobermuhlner/big-math
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-		
+
 		System.out.println("Finished in " + stopWatch);
 	}
-	
+
 	@SafeVarargs
 	private static void performanceReportOverValue(PrintWriter writer, MathContext mathContext, BigDecimal xStart, BigDecimal xEnd, BigDecimal xStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
 		if (functionNames.size() != functions.length) {
 			throw new IllegalArgumentException("Must be same number of functionNames (" + functionNames.size() + ") and functions (" + functions.length + ")");
 		}
-		
+
 		// warmup
 		for (int i = 0; i < WARMUP_LOOP_REPEATS; i++) {
 			for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
 				for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : functions) {
 					try {
 						calculation.apply(x, WARMUP_MATHCONTEXT);
-					}
-					catch (ArithmeticException ex) {
+					} catch (ArithmeticException ex) {
 						// ignore
 					}
 				}
@@ -950,7 +1032,7 @@ REFERENCE github eobermuhlner/big-math
 		for (int i = 0; i < functionNames.size(); i++) {
 			writer.print(",");
 			writer.printf("%8s", "number");
-		}		
+		}
 		writer.println();
 
 		// prepare data storage
@@ -958,7 +1040,7 @@ REFERENCE github eobermuhlner/big-math
 		for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
 			xCount++;
 		}
-		
+
 		long[][][] nanosFunctionValueRepeat = new long[functions.length][][];
 		for (int fIndex = 0; fIndex < functions.length; fIndex++) {
 			nanosFunctionValueRepeat[fIndex] = new long[xCount][];
@@ -966,7 +1048,7 @@ REFERENCE github eobermuhlner/big-math
 				nanosFunctionValueRepeat[fIndex][xIndex] = new long[repeats];
 			}
 		}
-		
+
 		// real measurements
 		for (int rIndex = 0; rIndex < repeats; rIndex++) {
 			int xIndex = 0;
@@ -977,8 +1059,7 @@ REFERENCE github eobermuhlner/big-math
 						StopWatch stopWatch = new StopWatch();
 						function.apply(x, mathContext);
 						nanosFunctionValueRepeat[fIndex][xIndex][rIndex] = stopWatch.getElapsedNanos();
-					}
-					catch (ArithmeticException ex) {
+					} catch (ArithmeticException ex) {
 						// ignore
 					}
 				}
@@ -999,7 +1080,7 @@ REFERENCE github eobermuhlner/big-math
 					writer.printf("%8.3f", elapsedNanos);
 				}
 				writer.println();
-				
+
 				xIndex++;
 			}
 		}
@@ -1010,8 +1091,7 @@ REFERENCE github eobermuhlner/big-math
 		int halfIndex = values.length / 2;
 		if (values.length > 1 && values.length % 2 == 0) {
 			return (values[halfIndex] + values[halfIndex + 1]) / 2;
-		}
-		else {
+		} else {
 			return values[halfIndex];
 		}
 	}
@@ -1041,10 +1121,10 @@ REFERENCE github eobermuhlner/big-math
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-		
+
 		System.out.println("Finished in " + stopWatch);
 	}
-	
+
 	@SafeVarargs
 	private static void performanceReportOverPrecision(PrintWriter writer, BigDecimal value, int precisionStart, int precisionEnd, int precisionStep, int repeats, List<String> functionNames, BiFunction<BigDecimal, MathContext, BigDecimal>... functions) {
 		int innerRepeats = 10;
@@ -1054,8 +1134,7 @@ REFERENCE github eobermuhlner/big-math
 			for (BiFunction<BigDecimal, MathContext, BigDecimal> calculation : functions) {
 				try {
 					calculation.apply(value, WARMUP_MATHCONTEXT);
-				}
-				catch (ArithmeticException ex) {
+				} catch (ArithmeticException ex) {
 					// ignore
 				}
 			}
@@ -1074,7 +1153,7 @@ REFERENCE github eobermuhlner/big-math
 		for (int fIndex = 0; fIndex < functionNames.size(); fIndex++) {
 			writer.print(",");
 			writer.printf("%8s", "number");
-		}		
+		}
 		writer.println();
 
 		// prepare data storage
@@ -1082,7 +1161,7 @@ REFERENCE github eobermuhlner/big-math
 		for (int precision = precisionStart; precision <= precisionEnd; precision += precisionStep) {
 			pCount++;
 		}
-		
+
 		long[][][] nanosFunctionPrecisionRepeat = new long[functions.length][][];
 		for (int fIndex = 0; fIndex < functions.length; fIndex++) {
 			nanosFunctionPrecisionRepeat[fIndex] = new long[pCount][];
@@ -1091,14 +1170,14 @@ REFERENCE github eobermuhlner/big-math
 				nanosFunctionPrecisionRepeat[fIndex][pIndex] = new long[repeats];
 			}
 		}
-		
+
 		// real measurement
 		for (int rIndex = 0; rIndex < repeats; rIndex++) {
 			for (int fIndex = 0; fIndex < functions.length; fIndex++) {
 				int pIndex = 0;
 				for (int precision = precisionStart; precision <= precisionEnd; precision += precisionStep) {
 					MathContext mathContext = new MathContext(precision);
-				
+
 					BiFunction<BigDecimal, MathContext, BigDecimal> calculation = functions[fIndex];
 
 					try {
@@ -1107,18 +1186,17 @@ REFERENCE github eobermuhlner/big-math
 							calculation.apply(value, mathContext);
 						}
 						nanosFunctionPrecisionRepeat[fIndex][pIndex][rIndex] = stopWatch.getElapsedNanos();
-					}
-					catch (ArithmeticException ex) {
+					} catch (ArithmeticException ex) {
 						// ignore
 					}
 					pIndex++;
 				}
-				
+
 			}
 			System.out.print(".");
 		}
 		System.out.println();
-		
+
 		// write report
 		{
 			int p = 0;
@@ -1202,7 +1280,7 @@ REFERENCE github eobermuhlner/big-math
 		for (int rIndex = 0; rIndex < repeats; rIndex++) {
 			for (int fIndex = 0; fIndex < functions.length; fIndex++) {
 				int pIndex = 0;
-				for (int valueIndex = 0; valueIndex < count; valueIndex+=countStep) {
+				for (int valueIndex = 0; valueIndex < count; valueIndex += countStep) {
 					Function<T, U> calculation = functions[fIndex];
 					T value = convert.apply(valueIndex);
 
@@ -1212,8 +1290,7 @@ REFERENCE github eobermuhlner/big-math
 							calculation.apply(value);
 						}
 						nanosFunctionValueRepeat[fIndex][pIndex][rIndex] = stopWatch.getElapsedNanos();
-					}
-					catch (Exception ex) {
+					} catch (Exception ex) {
 						// ignore
 					}
 					pIndex++;
@@ -1227,7 +1304,7 @@ REFERENCE github eobermuhlner/big-math
 		// write report
 		{
 			int pIndex = 0;
-			for (int valueIndex = 0; valueIndex < count; valueIndex+=countStep) {
+			for (int valueIndex = 0; valueIndex < count; valueIndex += countStep) {
 				writer.printf("%8d", valueIndex);
 				for (int fIndex = 0; fIndex < functions.length; fIndex++) {
 					writer.print(",");
