@@ -159,6 +159,7 @@ When calculating these functions you need to specify the number of digits you ne
 
 The `MathContext` contains a precision and information on how to round the last digits, so it is an obvious choice to specify the desired precision of mathematical functions.
 
+
 #### What if I really do not want to pass the `MathContext` everytime?
 
 The convenience class `DefaultBigDecimalMath` was added that provides mathematical functions
@@ -168,6 +169,7 @@ The class `DefaultBigDecimalMath` is a wrapper around `BigDecimalMath` that pass
 functions that need a `MathContext` argument.
 
 It is possible to control the default `MathContext` programmatically, or specify it at start time using system properties.
+
 
 #### I specified a precision of `n` digits, but the results have completely different number of digits after the decimal point. Why?
 
@@ -185,11 +187,13 @@ The following numbers all have a precision of 3 digits:
 
 To specify the number of digits after the decimal point use `BigDecimal.setScale(scale, mathContext)`.
 
+
 #### Why are `BigDecimalMath` functions so slow?
 
 The mathematical functions in `BigDecimalMath` are heavily optimized to calculate the result in the specified precision, but in order to calculate them often tens or even hundreds of basic operations (+, -, *, /) using `BigDecimal` are necessary.
 
 If the calculation of your function is too slow for your purpose you should verify whether you really need the full precision in your particular use case. Sometimes you can adapt the precision depending on input factors of your calculation.
+
 
 #### How are the mathematical functions in `BigDecimalMath` calculated?
 
@@ -199,7 +203,8 @@ For the mathematical background and performance analysis please refer to this ar
 Some of the implementation details are explained here: 
 *	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
 
-#### Why is there `BigDecimalMath.toBigDecimal(String)` if Java already has a `BigDecimal(String)` constructor
+
+#### Why is there `BigDecimalMath.toBigDecimal(String)` if Java already has a `BigDecimal(String)` constructor?
 
 The `BigDecimal(String)` constructor as provided by Java gets increasingly slower if you pass longer strings to it.
 The implementation in Java 11 and before is O(n^2).
