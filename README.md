@@ -37,6 +37,7 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `bernoulli(int)` calculates Bernoulli numbers
 *   `pi(MathContext)` calculates pi to an arbitrary precision
 *   `e(MathContext)` calculates e to an arbitrary precision
+*   `toBigDecimal(String)` creates a `BigDecimal` from string representation (faster then `BigDecimal(String)`)
 *   `mantissa(BigDecimal)` extracts the mantissa from a `BigDecimal` (mantissa * 10^exponent)
 *   `exponent(BigDecimal)` extracts the exponent from a `BigDecimal` (mantissa * 10^exponent)
 *   `integralPart(BigDecimal)` extracts the integral part from a `BigDecimal` (everything before the decimal point) 
@@ -198,9 +199,23 @@ For the mathematical background and performance analysis please refer to this ar
 Some of the implementation details are explained here: 
 *	[Adaptive precision in Newton’s Method](http://obermuhlner.ch/wordpress/2016/06/07/adaptive-precision-in-newtons-method/)
 
+#### Why is there `BigDecimalMath.toBigDecimal(String)` if Java already has a `BigDecimal(String)` constructor
+
+The `BigDecimal(String)` constructor as provided by Java gets increasingly slower if you pass longer strings to it.
+The implementation in Java 11 and before is O(n^2).
+
+If you want to convert very long strings (10000 characters or longer) then this slow constructor may become an issue.
+
+`BigDecimalMath.toBigDecimal(String)` is a drop in replacement with the same functionality
+(converting a string representation into a `BigDecimal`) but it is implemented in O(n log n).
+
+The following chart shows the time necessary to create a `BigDecimal` from a string representation of increasing length:
+![toBigDecimal() precisions 0 to 100000](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_bigdec_string_precisions_to_100000.png)
+ 
+
 #### I only need a `sqrt` function - should I use this library?
 
-With Java 9 the `BigDecimal` class has a new function `sqrt(BigDecimal, MathContext)`.
+Since Java 9 the `BigDecimal` class has a new function `sqrt(BigDecimal, MathContext)`.
 If you only need the square root function then by all means use the provided standard function instead of this library.
 
 If you need any other high level function then you should still consider using this library.
