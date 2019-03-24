@@ -36,10 +36,12 @@ public class PerformanceBigDecimalMath {
 		//fullReport();
 		//fullOptimizationReport();
 
+		performanceReport_BasicOperations();
+
 		//performanceReport_toBigDecimal_optimization();
 		//performanceReport_toBigDecimal();
 
-		performanceReport_factorial_optimization();
+		//performanceReport_factorial_optimization();
 
 		System.out.println("Finished all in " + stopWatch);
 	}
@@ -752,8 +754,51 @@ public class PerformanceBigDecimalMath {
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
 
-	private static void performanceReport_toBigDecimal_optimization() {
+	private static void performanceReport_BasicOperations() {
+		final BigDecimal two = BigDecimal.valueOf(2);
+/*
+		performanceReportOverLambda(
+				"perf_basic_operations_fast_precisions_to_10000.csv",
+				10000,
+				100,
+				FAST_REPEATS,
+				(i) -> BigDecimalMath.toBigDecimal(createStringNumber(i)),
+				Arrays.asList("add", "subtract"),
+				(b) -> b.add(b),
+				(b) -> b.subtract(b));
 
+		performanceReportOverLambda(
+				"perf_basic_operations_slow_precisions_to_10000.csv",
+				10000,
+				100,
+				FAST_REPEATS,
+				(i) -> BigDecimalMath.toBigDecimal(createStringNumber(i)),
+				Arrays.asList("multiply", "divide"),
+				(b) -> b.multiply(b),
+				(b) -> b.divide(two));
+*/
+		performanceReportOverLambda(
+				"perf_basic_operations_fast_precisions_to_100000.csv",
+				100000,
+				1000,
+				REPEATS,
+				(i) -> BigDecimalMath.toBigDecimal(createStringNumber(i)),
+				Arrays.asList("add", "subtract"),
+				(b) -> b.add(b),
+				(b) -> b.subtract(b));
+
+		performanceReportOverLambda(
+				"perf_basic_operations_slow_precisions_to_100000.csv",
+				100000,
+				1000,
+				REPEATS,
+				(i) -> BigDecimalMath.toBigDecimal(createStringNumber(i)),
+				Arrays.asList("multiply", "divide"),
+				(b) -> b.multiply(b),
+				(b) -> b.divide(two));
+	}
+
+	private static void performanceReport_toBigDecimal_optimization() {
 		performanceReportOverLambda(
 				"perf_bigdec_string_impl_precisions_to_2000.csv",
 				2000,
@@ -818,6 +863,16 @@ public class PerformanceBigDecimalMath {
 				100000,
 				1000,
 				REPEATS,
+				(i) -> createStringNumber(i),
+				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
+				(s) -> new BigDecimal(s),
+				(s) -> BigDecimalMath.toBigDecimal(s));
+
+		performanceReportOverLambda(
+				"perf_bigdec_string_precisions_to_1000000.csv",
+				1000000,
+				100000,
+				3,
 				(i) -> createStringNumber(i),
 				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
 				(s) -> new BigDecimal(s),

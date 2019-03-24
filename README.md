@@ -155,7 +155,8 @@ Range [0, 12] step 3 (using long as input parameters)
 #### Why do I have to pass `MathContext` to most functions?
 
 Many mathematical functions have results that have many digits (often an infinite number of digits).
-When calculating these functions you need to specify the number of digits you need, because calculating an infinite number of digits would take literally forever and consume an infinite amount of memory.
+When calculating these functions you need to specify the number of digits you want in the result,
+because calculating an infinite number of digits would take literally forever and consume an infinite amount of memory.
 
 The `MathContext` contains a precision and information on how to round the last digits, so it is an obvious choice to specify the desired precision of mathematical functions.
 
@@ -212,7 +213,7 @@ The implementation in Java 11 and before is O(n^2).
 If you want to convert very long strings (10000 characters or longer) then this slow constructor may become an issue.
 
 `BigDecimalMath.toBigDecimal(String)` is a drop in replacement with the same functionality
-(converting a string representation into a `BigDecimal`) but it is implemented in O(n log n).
+(converting a string representation into a `BigDecimal`) but it is using a faster recursive implementation.
 
 The following chart shows the time necessary to create a `BigDecimal` from a string representation of increasing length:
 ![toBigDecimal() precisions 0 to 100000](ch.obermuhlner.math.big.example/docu/benchmarks/images/perf_bigdec_string_precisions_to_100000.png)
