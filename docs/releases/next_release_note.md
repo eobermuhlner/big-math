@@ -131,6 +131,17 @@ The method `BigComplexMath.gamma(BigComplex x, MathContext mathContext)` was add
 It calculates the gamma function in the complex domain and is equivalent to `BigDecimalMath.gamma(BigDecimal x, MathContext mathContext)`.
 
 
+## Added `toBigDecimal(String)`
+
+The `BigDecimal(String)` constructor as provided by Java gets increasingly slower if you pass longer strings to it.
+The implementation in Java 11 and before is O(n^2).
+
+If you want to convert very long strings (10000 characters or longer) then this slow constructor may become an issue.
+
+`BigDecimalMath.toBigDecimal(String)` is a drop in replacement with the same functionality
+(converting a string representation into a `BigDecimal`) but it is using a faster recursive implementation.
+
+
 # Examples
 
 Note: The example code is available on github, but not part of the big-math library.
