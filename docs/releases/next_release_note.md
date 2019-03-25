@@ -131,7 +131,7 @@ The method `BigComplexMath.gamma(BigComplex x, MathContext mathContext)` was add
 It calculates the gamma function in the complex domain and is equivalent to `BigDecimalMath.gamma(BigDecimal x, MathContext mathContext)`.
 
 
-## Added `toBigDecimal(String)`
+## Added `BigDecimalMath.toBigDecimal(String)`
 
 The `BigDecimal(String)` constructor as provided by Java gets increasingly slower if you pass longer strings to it.
 The implementation in Java 11 and before is O(n^2).
@@ -140,6 +140,13 @@ If you want to convert very long strings (10000 characters or longer) then this 
 
 `BigDecimalMath.toBigDecimal(String)` is a drop in replacement with the same functionality
 (converting a string representation into a `BigDecimal`) but it is using a faster recursive implementation.
+
+
+## Improved performance of `BigDecimalMath.factorial(int)`
+
+The factorial functions for integer values has been heavily optimized based on the beautiful implementation written by 
+[Andriy Plokhotnyuk](https://github.com/plokhotnyuk/scala-vs-java/blob/master/src/main/java/com/github/plokhotnyuk/scala_vs_java/JavaFactorial.java).
+Thanks Andriy.
 
 
 # Examples
