@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -17,6 +18,9 @@ import ch.obermuhlner.math.big.example.StopWatch;
  * Performance measurements for the functions in {@link BigDecimalMath}.
  */
 public class PerformanceBigDecimalMath {
+
+	private static final BigDecimal TWO = new BigDecimal(2);
+	private static final BigDecimal ONE_HALF = new BigDecimal(0.5);
 
 	private static MathContext REF_MATHCONTEXT = new MathContext(300);
 	private static int REPEATS = 20;
@@ -55,6 +59,20 @@ public class PerformanceBigDecimalMath {
 
 		for (int i = 0; i < length; i++) {
 			result.append(i % 10);
+		}
+		return result.toString();
+	}
+
+	private static String createStringNumber(int length, Random random) {
+		StringBuilder result = new StringBuilder();
+
+		if (length == 0) {
+			result.append(random.nextInt(10));
+		}
+
+		result.append(random.nextInt(9) + 1);
+		for (int i = 1; i < length; i++) {
+			result.append(random.nextInt(10));
 		}
 		return result.toString();
 	}
@@ -754,48 +772,111 @@ public class PerformanceBigDecimalMath {
 								BigDecimalMathExperimental::logUsingNewtonFixPrecision)));
 	}
 
+	private static class OperationInfo {
+		BigDecimal b1;
+		BigDecimal b2;
+		MathContext mc;
+
+		OperationInfo(BigDecimal b1, BigDecimal b2, MathContext mc) {
+			this.b1 = b1;
+			this.b2 = b2;
+			this.mc = mc;
+		}
+	}
+
 	private static void performanceReport_BasicOperations() {
-		final BigDecimal two = BigDecimal.valueOf(2);
-/*
+		Random random = new Random();
+
 		performanceReportOverLambda(
 				"perf_basic_operations_fast_precisions_to_10000.csv",
 				10000,
 				100,
 				FAST_REPEATS,
-				(i) -> BigDecimalMath.toBigDecimal(createStringNumber(i)),
+				(i) -> {
+					return new OperationInfo(
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							new MathContext(Math.max(i, 1)));
+				},
 				Arrays.asList("add", "subtract"),
-				(b) -> b.add(b),
-				(b) -> b.subtract(b));
+				(op) -> op.b1.add(op.b2, op.mc),
+				(op) -> op.b1.subtract(op.b2, op.mc));
 
 		performanceReportOverLambda(
 				"perf_basic_operations_slow_precisions_to_10000.csv",
 				10000,
 				100,
 				FAST_REPEATS,
-				(i) -> BigDecimalMath.toBigDecimal(createStringNumber(i)),
+				(i) -> {
+					return new OperationInfo(
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							new MathContext(Math.max(i, 1)));
+				},
 				Arrays.asList("multiply", "divide"),
-				(b) -> b.multiply(b),
-				(b) -> b.divide(two));
-*/
+				(op) -> op.b1.multiply(op.b2, op.mc),
+				(op) -> op.b1.divide(op.b2, op.mc));
+
+		performanceReportOverLambda(
+				"perf_basic_operations_slow2_precisions_to_10000.csv",
+				10000,
+				100,
+				FAST_REPEATS,
+				(i) -> {
+					return new OperationInfo(
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							new MathContext(Math.max(i, 1)));
+				},
+				Arrays.asList("multiply 0.5", "divide 2"),
+				(op) -> op.b1.multiply(ONE_HALF, op.mc),
+				(op) -> op.b1.divide(TWO, op.mc));
+
 		performanceReportOverLambda(
 				"perf_basic_operations_fast_precisions_to_100000.csv",
 				100000,
 				1000,
 				REPEATS,
-				(i) -> BigDecimalMath.toBigDecimal(createStringNumber(i)),
+				(i) -> {
+					return new OperationInfo(
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							new MathContext(Math.max(i, 1)));
+				},
 				Arrays.asList("add", "subtract"),
-				(b) -> b.add(b),
-				(b) -> b.subtract(b));
+				(op) -> op.b1.add(op.b2, op.mc),
+				(op) -> op.b1.subtract(op.b2, op.mc));
 
 		performanceReportOverLambda(
 				"perf_basic_operations_slow_precisions_to_100000.csv",
 				100000,
 				1000,
 				REPEATS,
-				(i) -> BigDecimalMath.toBigDecimal(createStringNumber(i)),
+				(i) -> {
+					return new OperationInfo(
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							new MathContext(Math.max(i, 1)));
+				},
 				Arrays.asList("multiply", "divide"),
-				(b) -> b.multiply(b),
-				(b) -> b.divide(two));
+				(op) -> op.b1.multiply(op.b2, op.mc),
+				(op) -> op.b1.divide(op.b2, op.mc));
+
+		performanceReportOverLambda(
+				"perf_basic_operations_slow2_precisions_to_100000.csv",
+				100000,
+				1000,
+				REPEATS,
+				(i) -> {
+					return new OperationInfo(
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
+							new MathContext(Math.max(i, 1)));
+				},
+				Arrays.asList("multiply 0.5", "divide 2"),
+				(op) -> op.b1.multiply(ONE_HALF, op.mc),
+				(op) -> op.b1.divide(TWO, op.mc));
+
 	}
 
 	private static void performanceReport_toBigDecimal_optimization() {
