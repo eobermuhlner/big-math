@@ -467,7 +467,7 @@ in your build script (please verify the version number to be the newest release)
 <dependency>
     <groupId>ch.obermuhlner</groupId>
     <artifactId>big-math</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -479,6 +479,6 @@ repositories {
 }
 
 dependencies {
-  compile 'ch.obermuhlner:big-math:2.0.0'
+  compile 'ch.obermuhlner:big-math:2.1.0'
 }
 ```
