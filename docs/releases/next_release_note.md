@@ -146,7 +146,7 @@ If you want to convert very long strings (10000 characters or longer) then this 
 
 The factorial functions for integer values has been heavily optimized based on the beautiful implementation written by 
 [Andriy Plokhotnyuk](https://github.com/plokhotnyuk/scala-vs-java/blob/master/src/main/java/com/github/plokhotnyuk/scala_vs_java/JavaFactorial.java).
-Thanks Andriy.
+Thanks Andriy for giving permission to use it.
 
 
 # Examples
