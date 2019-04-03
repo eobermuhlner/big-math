@@ -35,7 +35,9 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `acosh(BigDecimal, MathContext)`
 *   `atanh(BigDecimal, MathContext)`
 *   `pow(BigDecimal, long, MathContext)` calculates x^y for `long` y
-*   `factorial(int)` calculates n!
+*   `gamma(BigDecimal, MathContext)` calculates the Gamma function &#915;(x)  
+*   `factorial(BigDecimal, MathContext)` calculates n! for `BigDecimal` n
+*   `factorial(int)` calculates n! for `int` n
 *   `bernoulli(int)` calculates Bernoulli numbers
 *   `pi(MathContext)` calculates pi to an arbitrary precision
 *   `e(MathContext)` calculates e to an arbitrary precision
