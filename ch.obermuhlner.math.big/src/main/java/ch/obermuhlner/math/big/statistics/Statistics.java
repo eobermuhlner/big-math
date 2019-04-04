@@ -83,6 +83,14 @@ public class Statistics {
         return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values);
     }
 
+    public static BigDecimal sampleSkewness(List<BigDecimal> values, MathContext mathContext) {
+        return new UnivariateStreamAsListCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext)).getResult(values).skewness;
+    }
+
+    public static SkewnessKurtosis sampleSkewnessKurtosis(List<BigDecimal> values, MathContext mathContext) {
+        return new UnivariateStreamAsListCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext)).getResult(values);
+    }
+
     public static Histogram histogram(List<BigDecimal> values, BigDecimal start, BigDecimal end, BigDecimal step) {
         return new UnivariateStreamAsListCalculator<>(new HistogramCalculator(start, end, step)).getResult(values);
     }

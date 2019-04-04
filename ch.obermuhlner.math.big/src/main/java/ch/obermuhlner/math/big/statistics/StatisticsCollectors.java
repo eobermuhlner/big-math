@@ -74,15 +74,15 @@ public class StatisticsCollectors {
                 (calc) -> calc.getResult());
     }
 
-    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, BigDecimal> skewness(MathContext mathContext) {
+    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, BigDecimal> populationSkewness(MathContext mathContext) {
         return Collector.of(
                 () -> new PopulationSkewnessKurtosisCalculator(mathContext),
                 (calc, value) -> calc.add(value),
                 (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for skewness"); },
-                (calc) -> calc.getResult().skewness);
+                (calc) -> calc.getSkewness());
     }
 
-    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, BigDecimal> kurtosis(MathContext mathContext) {
+    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, BigDecimal> populationKurtosis(MathContext mathContext) {
         return Collector.of(
                 () -> new PopulationSkewnessKurtosisCalculator(mathContext),
                 (calc, value) -> calc.add(value),
@@ -90,9 +90,25 @@ public class StatisticsCollectors {
                 (calc) -> calc.getResult().kurtosis);
     }
 
-    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, SkewnessKurtosis> skewnessKurtosis(MathContext mathContext) {
+    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, SkewnessKurtosis> populationSkewnessKurtosis(MathContext mathContext) {
         return Collector.of(
                 () -> new PopulationSkewnessKurtosisCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for skewness and kurtosis"); },
+                (calc) -> calc.getResult());
+    }
+
+    public static Collector<BigDecimal, SampleSkewnessKurtosisCalculator, BigDecimal> sampleSkewness(MathContext mathContext) {
+        return Collector.of(
+                () -> new SampleSkewnessKurtosisCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for skewness"); },
+                (calc) -> calc.getSkewness());
+    }
+
+    public static Collector<BigDecimal, SampleSkewnessKurtosisCalculator, SkewnessKurtosis> sampleSkewnessKurtosis(MathContext mathContext) {
+        return Collector.of(
+                () -> new SampleSkewnessKurtosisCalculator(mathContext),
                 (calc, value) -> calc.add(value),
                 (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for skewness and kurtosis"); },
                 (calc) -> calc.getResult());

@@ -21,15 +21,22 @@ public class SampleSkewnessKurtosisCalculator implements UnivariateStreamCalcula
         populationSkewnessKurtosisCalculator.add(value);
     }
 
-    @Override
-    public SkewnessKurtosis getResult() {
+    public BigDecimal getSkewness() {
         BigDecimal n = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount());
         BigDecimal nMinus1 = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount() - 1);
         BigDecimal nMinus2 = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount() - 2);
         BigDecimal correction = BigDecimalMath.sqrt(n.multiply(nMinus1, mathContext), mathContext).divide(nMinus2, mathContext);
 
-        return new SkewnessKurtosis(
-                correction.multiply(populationSkewnessKurtosisCalculator.getSkewness(), mathContext),
-                populationSkewnessKurtosisCalculator.getKurtosis()); // TODO correct kurtosis to sample?
+        return correction.multiply(populationSkewnessKurtosisCalculator.getSkewness(), mathContext);
+    }
+
+    public BigDecimal getKurtosis() {
+        // TODO correct kurtosis to sample?
+        return populationSkewnessKurtosisCalculator.getKurtosis();
+    }
+
+    @Override
+    public SkewnessKurtosis getResult() {
+        return new SkewnessKurtosis(getSkewness(), getKurtosis());
     }
 }
