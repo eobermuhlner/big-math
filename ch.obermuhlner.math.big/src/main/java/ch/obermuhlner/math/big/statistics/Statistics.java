@@ -72,19 +72,38 @@ public class Statistics {
 
     public static BigDecimal populationSkewness(List<BigDecimal> values, MathContext mathContext) {
         return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values).skewness;
-        //return new PopulationSkewnessKurtosisCalculator(mathContext).getResult(values);
     }
 
     public static BigDecimal populationKurtosis(List<BigDecimal> values, MathContext mathContext) {
         return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values).kurtosis;
     }
 
+    public static BigDecimal populationExcessKurtosis(List<BigDecimal> values, MathContext mathContext) {
+        return populationKurtosis(values, mathContext).subtract(BigDecimal.valueOf(3), mathContext);
+    }
+
     public static SkewnessKurtosis populationSkewnessKurtosis(List<BigDecimal> values, MathContext mathContext) {
         return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values);
     }
 
+    public static BigDecimal populationSkewness2(List<BigDecimal> values, MathContext mathContext) {
+        return new ch.obermuhlner.math.big.statistics.univariate.list.PopulationSkewnessCalculator(mathContext).getResult(values);
+    }
+
+    public static BigDecimal populationKurtosis2(List<BigDecimal> values, MathContext mathContext) {
+        return new ch.obermuhlner.math.big.statistics.univariate.list.PopulationKurtosisCalculator(mathContext).getResult(values);
+    }
+
+    public static BigDecimal populationExcessKurtosis2(List<BigDecimal> values, MathContext mathContext) {
+        return populationKurtosis2(values, mathContext).subtract(BigDecimal.valueOf(3), mathContext);
+    }
+
     public static BigDecimal sampleSkewness(List<BigDecimal> values, MathContext mathContext) {
         return new UnivariateStreamAsListCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext)).getResult(values).skewness;
+    }
+
+    public static BigDecimal sampleKurtosis(List<BigDecimal> values, MathContext mathContext) {
+        return new UnivariateStreamAsListCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext)).getResult(values).kurtosis;
     }
 
     public static SkewnessKurtosis sampleSkewnessKurtosis(List<BigDecimal> values, MathContext mathContext) {

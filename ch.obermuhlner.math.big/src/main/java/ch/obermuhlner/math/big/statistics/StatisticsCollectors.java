@@ -106,6 +106,14 @@ public class StatisticsCollectors {
                 (calc) -> calc.getSkewness());
     }
 
+    public static Collector<BigDecimal, SampleSkewnessKurtosisCalculator, BigDecimal> sampleKurtosis(MathContext mathContext) {
+        return Collector.of(
+                () -> new SampleSkewnessKurtosisCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for kurtosis"); },
+                (calc) -> calc.getKurtosis());
+    }
+
     public static Collector<BigDecimal, SampleSkewnessKurtosisCalculator, SkewnessKurtosis> sampleSkewnessKurtosis(MathContext mathContext) {
         return Collector.of(
                 () -> new SampleSkewnessKurtosisCalculator(mathContext),

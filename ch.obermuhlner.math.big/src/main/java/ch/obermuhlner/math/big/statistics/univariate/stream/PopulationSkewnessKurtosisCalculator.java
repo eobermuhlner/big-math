@@ -45,7 +45,7 @@ public class PopulationSkewnessKurtosisCalculator implements UnivariateStreamCal
 
         BigDecimal m4Step = term.multiply(deltaDivNPow2, mathContext).multiply(nPow2.subtract(nMult3, mathContext).add(B3, mathContext), mathContext)
                 .add(B6.multiply(deltaDivNPow2, mathContext).multiply(m2, mathContext), mathContext)
-                .add(B4.multiply(deltaDivN, mathContext).multiply(m3, mathContext));
+                .subtract(B4.multiply(deltaDivN, mathContext).multiply(m3, mathContext));
         m4 = m4.add(m4Step, mathContext);
 
         BigDecimal m3Step = term.multiply(deltaDivN, mathContext).multiply(nMinus2, mathContext)
@@ -69,7 +69,7 @@ public class PopulationSkewnessKurtosisCalculator implements UnivariateStreamCal
 
     public BigDecimal getKurtosis() {
         BigDecimal n = BigDecimal.valueOf(count);
-        return n.multiply(m4, mathContext).divide(m2.multiply(m2, mathContext), mathContext).subtract(B3, mathContext);
+        return n.multiply(m4, mathContext).divide(m2.multiply(m2, mathContext), mathContext);
     }
 
     @Override
