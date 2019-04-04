@@ -8,6 +8,8 @@ import java.math.MathContext;
 public class CorrelationCalculator implements MultivariateStreamCalculator<BigDecimal> {
 
     private final MathContext mathContext;
+    private final int xValueIndex;
+    private final int yValueIndex;
 
     private int count = 0;
     private BigDecimal sumX = BigDecimal.ZERO;
@@ -17,17 +19,19 @@ public class CorrelationCalculator implements MultivariateStreamCalculator<BigDe
     private BigDecimal sumYY = BigDecimal.ZERO;
 
     public CorrelationCalculator(MathContext mathContext) {
+        this(mathContext, 0, 1);
+    }
+
+    public CorrelationCalculator(MathContext mathContext, int xValueIndex, int yValueIndex) {
         this.mathContext = mathContext;
+        this.xValueIndex = xValueIndex;
+        this.yValueIndex = yValueIndex;
     }
 
     @Override
     public void add(BigDecimal... tuple) {
-        if (tuple.length != 2) {
-            throw new IllegalArgumentException("Correlation needs 2 values: " + tuple.length + " received instead");
-        }
-
-        BigDecimal x = tuple[0];
-        BigDecimal y = tuple[1];
+        BigDecimal x = tuple[xValueIndex];
+        BigDecimal y = tuple[yValueIndex];
 
         sumX = sumX.add(x, mathContext);
         sumY = sumY.add(y, mathContext);
