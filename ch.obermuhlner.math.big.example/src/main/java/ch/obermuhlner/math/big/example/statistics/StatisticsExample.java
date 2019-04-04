@@ -45,6 +45,8 @@ public class StatisticsExample {
         System.out.println("Sample Skewness: " + Statistics.sampleSkewness(values, MC));
         System.out.println("Pop    Kurtosis: " + Statistics.populationKurtosis(values, MC));
         System.out.println("Sample Kurtosis: " + Statistics.sampleKurtosis(values, MC));
+        System.out.println("Pop    Excess Kurtosis: " + Statistics.populationExcessKurtosis(values, MC));
+        System.out.println("Sample Excess Kurtosis: " + Statistics.sampleExcessKurtosis(values, MC));
         System.out.println("Histogram:       " + histogram);
 
         printHistogram(histogram);
