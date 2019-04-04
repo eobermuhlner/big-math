@@ -5,7 +5,7 @@ import ch.obermuhlner.math.big.statistics.multivariate.list.MultivariateStreamAs
 import ch.obermuhlner.math.big.statistics.multivariate.stream.CorrelationCalculator;
 import ch.obermuhlner.math.big.statistics.univariate.Histogram;
 import ch.obermuhlner.math.big.statistics.univariate.list.MedianCalculator;
-//import ch.obermuhlner.math.big.statistics.univariate.list.PopulationSkewnessCalculator;
+//import ch.obermuhlner.math.big.statistics.univariate.list.PopulationSkewnessKurtosisCalculator;
 import ch.obermuhlner.math.big.statistics.univariate.list.UnivariateStreamAsListCalculator;
 import ch.obermuhlner.math.big.statistics.univariate.stream.*;
 
@@ -71,8 +71,16 @@ public class Statistics {
     }
 
     public static BigDecimal populationSkewness(List<BigDecimal> values, MathContext mathContext) {
-        return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessCalculator(mathContext)).getResult(values);
-        //return new PopulationSkewnessCalculator(mathContext).getResult(values);
+        return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values).skewness;
+        //return new PopulationSkewnessKurtosisCalculator(mathContext).getResult(values);
+    }
+
+    public static BigDecimal populationKurtosis(List<BigDecimal> values, MathContext mathContext) {
+        return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values).kurtosis;
+    }
+
+    public static SkewnessKurtosis populationSkewnessKurtosis(List<BigDecimal> values, MathContext mathContext) {
+        return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values);
     }
 
     public static Histogram histogram(List<BigDecimal> values, BigDecimal start, BigDecimal end, BigDecimal step) {
