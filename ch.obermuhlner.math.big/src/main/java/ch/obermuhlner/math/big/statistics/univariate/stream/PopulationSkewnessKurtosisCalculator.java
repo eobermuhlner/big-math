@@ -13,7 +13,7 @@ public class PopulationSkewnessKurtosisCalculator implements UnivariateStreamCal
     private static final BigDecimal B6 = BigDecimal.valueOf(6);
 
     private final MathContext mathContext;
-    private PopulationStandardDeviationCalculator standardDeviationCalculator;
+    private final PopulationStandardDeviationCalculator standardDeviationCalculator;
 
     private int count = 0;
     private BigDecimal mean = BigDecimal.ZERO;
