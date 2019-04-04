@@ -70,7 +70,31 @@ public class StatisticsCollectors {
         return Collector.of(
                 () -> new UnivariateListAsStreamCalculator<BigDecimal>(new MedianCalculator(mathContext)),
                 (calc, value) -> calc.add(value),
-                (left, right) -> { throw new UnsupportedOperationException("parallel not supported for median"); },
+                (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for median"); },
+                (calc) -> calc.getResult());
+    }
+
+    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, BigDecimal> skewness(MathContext mathContext) {
+        return Collector.of(
+                () -> new PopulationSkewnessKurtosisCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for skewness"); },
+                (calc) -> calc.getResult().skewness);
+    }
+
+    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, BigDecimal> kurtosis(MathContext mathContext) {
+        return Collector.of(
+                () -> new PopulationSkewnessKurtosisCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for kurtosis"); },
+                (calc) -> calc.getResult().kurtosis);
+    }
+
+    public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, SkewnessKurtosis> skewnessKurtosis(MathContext mathContext) {
+        return Collector.of(
+                () -> new PopulationSkewnessKurtosisCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for skewness and kurtosis"); },
                 (calc) -> calc.getResult());
     }
 
