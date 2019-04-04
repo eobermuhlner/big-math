@@ -6,15 +6,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import ch.obermuhlner.math.big.statistics.Statistics;
+import ch.obermuhlner.math.big.statistics.StatisticsCollectors;
 import ch.obermuhlner.math.big.statistics.univariate.Histogram;
+import ch.obermuhlner.math.big.statistics.univariate.stream.ArithmeticMeanCalculator;
 
 public class StatisticsExample {
-    private static final MathContext MC = MathContext.DECIMAL64;
+    private static final MathContext MC = MathContext.DECIMAL32;
 
     public static void main(String[] args) {
         printExampleUnivariateStatistics();
         printExampleMultivariateStatistics();
+
+        printExampleStreamStatistics();
     }
 
     private static void printExampleUnivariateStatistics() {
@@ -53,6 +59,27 @@ public class StatisticsExample {
         System.out.println("X Values:        " + xValues);
         System.out.println("Y Values:        " + yValues);
         System.out.println("Correlation:     " + Statistics.correlation(xValues, yValues, MC));
+    }
+
+    private static void printExampleStreamStatistics() {
+        System.out.println("=== Stream Statistics");
+
+        BigDecimal arithmeticMean = Stream
+                .of(1, 2, 3, 4, 4, 4, 5, 5, 5, 5, 5, 9)
+                .map(v -> BigDecimal.valueOf(v))
+                .collect(StatisticsCollectors.arithmeticMean(MC));
+        System.out.println("Arithmetic mean: " + arithmeticMean);
+
+        ArithmeticMeanCalculator arithmeticMeanCalculator = new ArithmeticMeanCalculator(MC);
+        List<BigDecimal> runningArithmeticMean = Stream
+                .of(1, 2, 3, 4, 4, 4, 5, 5, 5, 5, 5, 9)
+                .map(v -> BigDecimal.valueOf(v))
+                .map(v -> {
+                    arithmeticMeanCalculator.add(v);
+                    return arithmeticMeanCalculator.getResult();
+                })
+                .collect(Collectors.toList());
+        System.out.println("Running Arithmetic mean: " + runningArithmeticMean);
 
     }
 
