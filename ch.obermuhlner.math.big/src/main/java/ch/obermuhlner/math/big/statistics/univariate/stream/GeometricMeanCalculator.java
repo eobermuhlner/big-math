@@ -9,7 +9,7 @@ public class GeometricMeanCalculator implements UnivariateStreamCalculator<BigDe
 
     private final MathContext mathContext;
 
-    private BigDecimal product = BigDecimal.ZERO;
+    private BigDecimal product = BigDecimal.ONE;
     private int count = 0;
 
     public GeometricMeanCalculator(MathContext mathContext) {
