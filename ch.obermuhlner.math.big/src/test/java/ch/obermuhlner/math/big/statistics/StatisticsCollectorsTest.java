@@ -1,17 +1,15 @@
 package ch.obermuhlner.math.big.statistics;
 
 import ch.obermuhlner.math.big.statistics.univariate.Histogram;
-import ch.obermuhlner.math.big.stream.BigDecimalStream;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static ch.obermuhlner.math.big.BigDecimalUtil.assertBigDecimal;
+import static ch.obermuhlner.math.big.BigDecimalUtil.tuple;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class StatisticsCollectorsTest {
 
@@ -118,21 +116,5 @@ public class StatisticsCollectorsTest {
                 Stream.of(tuple(15.5, 0.450), tuple(13.6, 0.420), tuple(13.5, 0.440), tuple(13.0, 0.395), tuple(13.3, 0.395), tuple(12.4, 0.370), tuple(11.1, 0.390), tuple(13.1, 0.400), tuple(16.1, 0.445), tuple(16.4, 0.470), tuple(13.4, 0.390), tuple(13.2, 0.400), tuple(14.3, 0.420), tuple(16.1, 0.450))
                         .parallel()
                         .collect(StatisticsCollectors.correlation(MC)).round(new MathContext(3)));
-    }
-
-    private static BigDecimal[] tuple(double... tuple) {
-        return Arrays.stream(tuple)
-                .mapToObj(v -> BigDecimal.valueOf(v))
-                .collect(Collectors.toList()).toArray(new BigDecimal[tuple.length]);
-    }
-
-    private static BigDecimal[] tuple(BigDecimal... tuple) {
-        return tuple;
-    }
-
-    private static void assertBigDecimal(BigDecimal expected, BigDecimal actual) {
-        if (expected.compareTo(actual) != 0) {
-            fail(expected + " != " + actual);
-        }
     }
 }

@@ -1,17 +1,16 @@
 package ch.obermuhlner.math.big.statistics;
 
 import ch.obermuhlner.math.big.statistics.univariate.Histogram;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
+import static ch.obermuhlner.math.big.BigDecimalUtil.assertBigDecimal;
+import static ch.obermuhlner.math.big.BigDecimalUtil.toBigDecimals;
+import static ch.obermuhlner.math.big.BigDecimalUtil.tuple;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class StatisticsTest {
 
@@ -124,30 +123,6 @@ public class StatisticsTest {
     }
 
     @Test
-    public void testPopulationSkewness2() {
-        // https://www.wolframalpha.com/input/?i=Skewness%5B1,2,3,4,4%5D
-        assertBigDecimal(
-                BigDecimal.valueOf(-0.36317),
-                Statistics.populationSkewness2(toBigDecimals(1, 2, 3, 4, 4), MC).round(new MathContext(5)));
-    }
-
-    @Test
-    public void testPopulationKurtosis2() {
-        // https://www.wolframalpha.com/input/?i=kurtosis+1,2,3,4,4
-        assertBigDecimal(
-                BigDecimal.valueOf(1.6280),
-                Statistics.populationKurtosis2(toBigDecimals(1, 2, 3, 4, 4), MC).round(new MathContext(5)));
-    }
-
-    @Test
-    public void testPopulationExcessKurtosis2() {
-        // https://www.wolframalpha.com/input/?i=kurtosis+1,2,3,4,4
-        assertBigDecimal(
-                BigDecimal.valueOf(1.6280 - 3),
-                Statistics.populationExcessKurtosis2(toBigDecimals(1, 2, 3, 4, 4), MC).round(new MathContext(5)));
-    }
-
-    @Test
     public void testSampleSkewness() {
         // Excel: =SKEW(1;2;3;4;4)
         assertBigDecimal(
@@ -155,15 +130,13 @@ public class StatisticsTest {
                 Statistics.sampleSkewness(toBigDecimals(1, 2, 3, 4, 4), MC).round(new MathContext(5)));
     }
 
-    /*
     @Test
-    public void testSampleKurtosis() {
+    public void testSampleExcessKurtosis() {
         // Excel: =KURT(1;2;3;4;4)
         assertBigDecimal(
                 BigDecimal.valueOf(-1.4879),
-                Statistics.sampleKurtosis(toBigDecimals(1, 2, 3, 4, 4), MC).round(new MathContext(5)));
+                Statistics.sampleExcessKurtosis(toBigDecimals(1, 2, 3, 4, 4), MC).round(new MathContext(5)));
     }
-    */
 
     @Test
     public void testHistogram() {
@@ -229,23 +202,5 @@ public class StatisticsTest {
                         toBigDecimals(15.5, 13.6, 13.5, 13.0, 13.3, 12.4, 11.1, 13.1, 16.1, 16.4, 13.4, 13.2, 14.3, 16.1),
                         toBigDecimals(0.450, 0.420, 0.440, 0.395, 0.395, 0.370, 0.390, 0.400, 0.445, 0.470, 0.390, 0.400, 0.420, 0.450),
                         MC).round(new MathContext(3)));
-    }
-
-    private static BigDecimal[] tuple(double... tuple) {
-        return Arrays.stream(tuple)
-                .mapToObj(v -> BigDecimal.valueOf(v))
-                .collect(Collectors.toList()).toArray(new BigDecimal[tuple.length]);
-    }
-
-    private List<BigDecimal> toBigDecimals(double... values) {
-        return Arrays.stream(values)
-                .mapToObj(v -> BigDecimal.valueOf(v))
-                .collect(Collectors.toList());
-    }
-
-    private static void assertBigDecimal(BigDecimal expected, BigDecimal actual) {
-        if (expected.compareTo(actual) != 0) {
-            fail(expected + " != " + actual);
-        }
     }
 }

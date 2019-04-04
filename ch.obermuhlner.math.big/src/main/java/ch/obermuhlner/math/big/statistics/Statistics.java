@@ -86,18 +86,6 @@ public class Statistics {
         return new UnivariateStreamAsListCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values);
     }
 
-    public static BigDecimal populationSkewness2(List<BigDecimal> values, MathContext mathContext) {
-        return new ch.obermuhlner.math.big.statistics.univariate.list.PopulationSkewnessCalculator(mathContext).getResult(values);
-    }
-
-    public static BigDecimal populationKurtosis2(List<BigDecimal> values, MathContext mathContext) {
-        return new ch.obermuhlner.math.big.statistics.univariate.list.PopulationKurtosisCalculator(mathContext).getResult(values);
-    }
-
-    public static BigDecimal populationExcessKurtosis2(List<BigDecimal> values, MathContext mathContext) {
-        return populationKurtosis2(values, mathContext).subtract(BigDecimal.valueOf(3), mathContext);
-    }
-
     public static BigDecimal sampleSkewness(List<BigDecimal> values, MathContext mathContext) {
         return new UnivariateStreamAsListCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext)).getResult(values).skewness;
     }
@@ -106,8 +94,16 @@ public class Statistics {
         return new UnivariateStreamAsListCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext)).getResult(values).kurtosis;
     }
 
+    public static BigDecimal sampleExcessKurtosis(List<BigDecimal> values, MathContext mathContext) {
+        return new UnivariateStreamAsListCalculator<>(new SampleSkewnessExcessKurtosisCalculator(mathContext)).getResult(values).kurtosis;
+    }
+
     public static SkewnessKurtosis sampleSkewnessKurtosis(List<BigDecimal> values, MathContext mathContext) {
         return new UnivariateStreamAsListCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext)).getResult(values);
+    }
+
+    public static SkewnessKurtosis sampleSkewnessExcessKurtosis(List<BigDecimal> values, MathContext mathContext) {
+        return new UnivariateStreamAsListCalculator<>(new SampleSkewnessExcessKurtosisCalculator(mathContext)).getResult(values);
     }
 
     public static Histogram histogram(List<BigDecimal> values, BigDecimal start, BigDecimal end, BigDecimal step) {

@@ -5,12 +5,10 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+// https://www.macroption.com/kurtosis-formula/
 public class SampleSkewnessKurtosisCalculator implements UnivariateStreamCalculator<SkewnessKurtosis> {
 
-    private static final BigDecimal B6 = BigDecimal.valueOf(6);
-
     private final MathContext mathContext;
-
     private final PopulationSkewnessKurtosisCalculator populationSkewnessKurtosisCalculator;
 
     public SampleSkewnessKurtosisCalculator(MathContext mathContext) {
@@ -23,26 +21,34 @@ public class SampleSkewnessKurtosisCalculator implements UnivariateStreamCalcula
         populationSkewnessKurtosisCalculator.add(value);
     }
 
+    public int getCount() {
+        return populationSkewnessKurtosisCalculator.getCount();
+    }
+
     public BigDecimal getSkewness() {
-        BigDecimal n = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount());
-        BigDecimal nMinus1 = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount() - 1);
-        BigDecimal nMinus2 = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount() - 2);
+        int count = populationSkewnessKurtosisCalculator.getCount();
+        BigDecimal n = BigDecimal.valueOf(count);
+        BigDecimal nMinus1 = BigDecimal.valueOf(count - 1);
+        BigDecimal nMinus2 = BigDecimal.valueOf(count - 2);
 
         BigDecimal correction = BigDecimalMath.sqrt(n.multiply(nMinus1, mathContext), mathContext).divide(nMinus2, mathContext);
+        BigDecimal skewness = populationSkewnessKurtosisCalculator.getSkewness();
 
-        return correction.multiply(populationSkewnessKurtosisCalculator.getSkewness(), mathContext);
+        return correction.multiply(skewness, mathContext);
     }
 
     public BigDecimal getKurtosis() {
         // https://brownmath.com/stat/shape.htm
-        BigDecimal nMinus1 = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount() - 1);
-        BigDecimal nMinus2 = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount() - 2);
-        BigDecimal nMinus3 = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount() - 3);
-        BigDecimal nPlus1 = BigDecimal.valueOf(populationSkewnessKurtosisCalculator.getCount() + 1);
+        int count = populationSkewnessKurtosisCalculator.getCount();
+        BigDecimal nMinus1 = BigDecimal.valueOf(count - 1);
+        BigDecimal nMinus2 = BigDecimal.valueOf(count - 2);
+        BigDecimal nMinus3 = BigDecimal.valueOf(count - 3);
+        BigDecimal nPlus1 = BigDecimal.valueOf(count + 1);
 
+        BigDecimal correction = nPlus1.multiply(nMinus1, mathContext).divide(nMinus2.multiply(nMinus3, mathContext), mathContext);
         BigDecimal kurtosis = populationSkewnessKurtosisCalculator.getKurtosis();
 
-        return nMinus1.divide(nMinus2.multiply(nMinus3, mathContext), mathContext).multiply(nPlus1.multiply(kurtosis, mathContext).add(B6, mathContext));
+        return correction.multiply(kurtosis, mathContext);
     }
 
     @Override
