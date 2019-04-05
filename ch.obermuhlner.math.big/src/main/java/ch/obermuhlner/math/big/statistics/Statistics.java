@@ -86,6 +86,10 @@ public class Statistics {
         return new UnivariateStreamAsCollectionCalculator<>(new PopulationSkewnessKurtosisCalculator(mathContext)).getResult(values);
     }
 
+    public static SkewnessKurtosis populationSkewnessExcessKurtosis(Collection<BigDecimal> values, MathContext mathContext) {
+        return new UnivariateStreamAsCollectionCalculator<>(new PopulationSkewnessExcessKurtosisCalculator(mathContext)).getResult(values);
+    }
+
     public static BigDecimal sampleSkewness(Collection<BigDecimal> values, MathContext mathContext) {
         return new UnivariateStreamAsCollectionCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext, true, false)).getResult(values).skewness;
     }
