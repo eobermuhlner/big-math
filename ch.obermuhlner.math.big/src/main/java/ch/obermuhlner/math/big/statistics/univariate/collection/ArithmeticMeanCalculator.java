@@ -1,10 +1,10 @@
-package ch.obermuhlner.math.big.statistics.univariate.list;
+package ch.obermuhlner.math.big.statistics.univariate.collection;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
+import java.util.Collection;
 
-public class ArithmeticMeanCalculator implements UnivariateListCalculator<BigDecimal> {
+public class ArithmeticMeanCalculator implements UnivariateCollectionCalculator<Collection<BigDecimal>, BigDecimal> {
 
     private final MathContext mathContext;
 
@@ -13,7 +13,7 @@ public class ArithmeticMeanCalculator implements UnivariateListCalculator<BigDec
     }
 
     @Override
-    public BigDecimal getResult(List<BigDecimal> values) {
+    public BigDecimal getResult(Collection<BigDecimal> values) {
         int count = values.size();
 
         BigDecimal sum = BigDecimal.ZERO;

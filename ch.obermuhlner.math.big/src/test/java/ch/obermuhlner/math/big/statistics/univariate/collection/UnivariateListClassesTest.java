@@ -1,6 +1,5 @@
-package ch.obermuhlner.math.big.statistics.univariate.list;
+package ch.obermuhlner.math.big.statistics.univariate.collection;
 
-import ch.obermuhlner.math.big.statistics.Statistics;
 import org.junit.Test;
 
 import java.math.BigDecimal;

@@ -1,24 +1,25 @@
-package ch.obermuhlner.math.big.statistics.univariate.list;
+package ch.obermuhlner.math.big.statistics.univariate.collection;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import ch.obermuhlner.math.big.statistics.Statistics;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
+import java.util.Collection;
 
 // Fisher-Pearson coefficient
 // trivial implementation
 // https://www.itl.nist.gov/div898/handbook/eda/section3/eda35b.htm
-public class PopulationSkewnessCalculator implements UnivariateListCalculator<BigDecimal> {
+public class PopulationKurtosisCalculator implements UnivariateCollectionCalculator<Collection<BigDecimal>, BigDecimal> {
 
     private MathContext mathContext;
 
-    public PopulationSkewnessCalculator(MathContext mathContext) {
+    public PopulationKurtosisCalculator(MathContext mathContext) {
         this.mathContext = mathContext;
     }
 
     @Override
-    public BigDecimal getResult(List<BigDecimal> values) {
+    public BigDecimal getResult(Collection<BigDecimal> values) {
         BigDecimal n = BigDecimal.valueOf(values.size());
         BigDecimal mean = Statistics.arithmeticMean(values, mathContext);
         BigDecimal s = Statistics.populationStandardDeviation(values, mathContext);
@@ -26,12 +27,12 @@ public class PopulationSkewnessCalculator implements UnivariateListCalculator<Bi
         BigDecimal nom = BigDecimal.ZERO;
         for (BigDecimal value : values) {
             BigDecimal diff = value.subtract(mean, mathContext);
-            BigDecimal diffPow3 = diff.multiply(diff, mathContext).multiply(diff, mathContext);
-            nom = nom.add(diffPow3);
+            BigDecimal diffPow4 = BigDecimalMath.pow(diff, 4, mathContext);
+            nom = nom.add(diffPow4);
         }
 
-        BigDecimal sPow3 = s.multiply(s, mathContext).multiply(s, mathContext);
-        BigDecimal denom = n.multiply(sPow3, mathContext);
+        BigDecimal sPow4 = BigDecimalMath.pow(s, 4, mathContext);
+        BigDecimal denom = n.multiply(sPow4, mathContext);
 
         return nom.divide(denom, mathContext);
     }

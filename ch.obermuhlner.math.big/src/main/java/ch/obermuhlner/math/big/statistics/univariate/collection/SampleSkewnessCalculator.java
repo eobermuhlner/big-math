@@ -1,12 +1,12 @@
-package ch.obermuhlner.math.big.statistics.univariate.list;
+package ch.obermuhlner.math.big.statistics.univariate.collection;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
+import java.util.Collection;
 
-public class SampleSkewnessCalculator implements UnivariateListCalculator<BigDecimal> {
+public class SampleSkewnessCalculator implements UnivariateCollectionCalculator<Collection<BigDecimal>, BigDecimal> {
 
     private final MathContext mathContext;
     private final PopulationSkewnessCalculator populationSkewnessCalculator;
@@ -17,7 +17,7 @@ public class SampleSkewnessCalculator implements UnivariateListCalculator<BigDec
     }
 
     @Override
-    public BigDecimal getResult(List<BigDecimal> values) {
+    public BigDecimal getResult(Collection<BigDecimal> values) {
         int count = values.size();
         BigDecimal n = BigDecimal.valueOf(count);
         BigDecimal nMinus1 = BigDecimal.valueOf(count - 1);

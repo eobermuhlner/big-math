@@ -1,12 +1,10 @@
-package ch.obermuhlner.math.big.statistics.univariate.list;
-
-import ch.obermuhlner.math.big.BigDecimalMath;
+package ch.obermuhlner.math.big.statistics.univariate.collection;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
+import java.util.Collection;
 
-public class SampleExcessKurtosisCalculator implements UnivariateListCalculator<BigDecimal> {
+public class SampleExcessKurtosisCalculator implements UnivariateCollectionCalculator<Collection<BigDecimal>, BigDecimal> {
 
     private static final BigDecimal B3 = BigDecimal.valueOf(3);
 
@@ -19,7 +17,7 @@ public class SampleExcessKurtosisCalculator implements UnivariateListCalculator<
     }
 
     @Override
-    public BigDecimal getResult(List<BigDecimal> values) {
+    public BigDecimal getResult(Collection<BigDecimal> values) {
         int count = values.size();
         BigDecimal nMinus1 = BigDecimal.valueOf(count - 1);
         BigDecimal nMinus2 = BigDecimal.valueOf(count - 2);

@@ -2,7 +2,7 @@ package ch.obermuhlner.math.big.statistics;
 
 import ch.obermuhlner.math.big.statistics.multivariate.stream.CorrelationCalculator;
 import ch.obermuhlner.math.big.statistics.univariate.Histogram;
-import ch.obermuhlner.math.big.statistics.univariate.list.MedianCalculator;
+import ch.obermuhlner.math.big.statistics.univariate.collection.MedianCalculator;
 import ch.obermuhlner.math.big.statistics.univariate.stream.*;
 
 import java.math.BigDecimal;
@@ -68,7 +68,7 @@ public class StatisticsCollectors {
 
     public static Collector<BigDecimal, UnivariateStreamCalculator<BigDecimal>, BigDecimal> median(MathContext mathContext) {
         return Collector.of(
-                () -> new UnivariateListAsStreamCalculator<BigDecimal>(new MedianCalculator(mathContext)),
+                () -> new UnivariateCollectionAsStreamCalculator<>(new MedianCalculator(mathContext)),
                 (calc, value) -> calc.add(value),
                 (left, right) -> { throw new UnsupportedOperationException("parallel computation not supported for median"); },
                 (calc) -> calc.getResult());
