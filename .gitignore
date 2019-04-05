@@ -3,6 +3,7 @@
 .gradle
 build
 gradle.properties
+out
 
 # Eclipse IDE stuff
 
