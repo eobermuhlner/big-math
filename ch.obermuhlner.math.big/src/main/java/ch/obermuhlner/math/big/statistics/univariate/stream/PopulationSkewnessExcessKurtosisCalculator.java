@@ -13,9 +13,18 @@ public class PopulationSkewnessExcessKurtosisCalculator implements UnivariateStr
     private final MathContext mathContext;
     private final PopulationSkewnessKurtosisCalculator populationSkewnessKurtosisCalculator;
 
+    private final boolean calculateSkewness;
+    private final boolean calculateKurtosis;
+
     public PopulationSkewnessExcessKurtosisCalculator(MathContext mathContext) {
+        this(mathContext, true, true);
+    }
+
+    public PopulationSkewnessExcessKurtosisCalculator(MathContext mathContext, boolean calculateSkewness, boolean calculateKurtosis) {
         this.mathContext = mathContext;
-        this.populationSkewnessKurtosisCalculator = new PopulationSkewnessKurtosisCalculator(mathContext);
+        this.populationSkewnessKurtosisCalculator = new PopulationSkewnessKurtosisCalculator(mathContext, calculateSkewness, calculateKurtosis);
+        this.calculateSkewness = calculateSkewness;
+        this.calculateKurtosis = calculateKurtosis;
     }
 
     @Override
@@ -28,11 +37,19 @@ public class PopulationSkewnessExcessKurtosisCalculator implements UnivariateStr
     }
 
     public BigDecimal getSkewness() {
-        return populationSkewnessKurtosisCalculator.getSkewness();
+        if (calculateSkewness) {
+            return populationSkewnessKurtosisCalculator.getSkewness();
+        } else {
+            return null;
+        }
     }
 
     public BigDecimal getKurtosis() {
-        return populationSkewnessKurtosisCalculator.getKurtosis().subtract(B3, mathContext);
+        if (calculateKurtosis) {
+            return populationSkewnessKurtosisCalculator.getKurtosis().subtract(B3, mathContext);
+        } else {
+            return null;
+        }
     }
 
     @Override

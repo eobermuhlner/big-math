@@ -15,6 +15,9 @@ public class PopulationSkewnessKurtosisCalculator implements UnivariateStreamCal
     private final MathContext mathContext;
     private final PopulationStandardDeviationCalculator standardDeviationCalculator;
 
+    private final boolean calculateSkewness;
+    private final boolean calculateKurtosis;
+
     private int count = 0;
     private BigDecimal mean = BigDecimal.ZERO;
     private BigDecimal m2 = BigDecimal.ZERO;
@@ -22,8 +25,14 @@ public class PopulationSkewnessKurtosisCalculator implements UnivariateStreamCal
     private BigDecimal m4 = BigDecimal.ZERO;
 
     public PopulationSkewnessKurtosisCalculator(MathContext mathContext) {
+        this(mathContext, true, true);
+    }
+
+    public PopulationSkewnessKurtosisCalculator(MathContext mathContext, boolean calculateSkewness, boolean calculateKurtosis) {
         this.mathContext = mathContext;
         this.standardDeviationCalculator = new PopulationStandardDeviationCalculator(mathContext);
+        this.calculateSkewness = calculateSkewness;
+        this.calculateKurtosis = calculateKurtosis;
     }
 
     @Override
@@ -43,10 +52,12 @@ public class PopulationSkewnessKurtosisCalculator implements UnivariateStreamCal
 
         BigDecimal term = delta.multiply(deltaDivN, mathContext).multiply(nMinus1, mathContext);
 
-        BigDecimal m4Step = term.multiply(deltaDivNPow2, mathContext).multiply(nPow2.subtract(nMult3, mathContext).add(B3, mathContext), mathContext)
-                .add(B6.multiply(deltaDivNPow2, mathContext).multiply(m2, mathContext), mathContext)
-                .subtract(B4.multiply(deltaDivN, mathContext).multiply(m3, mathContext));
-        m4 = m4.add(m4Step, mathContext);
+        if (calculateKurtosis) {
+            BigDecimal m4Step = term.multiply(deltaDivNPow2, mathContext).multiply(nPow2.subtract(nMult3, mathContext).add(B3, mathContext), mathContext)
+                    .add(B6.multiply(deltaDivNPow2, mathContext).multiply(m2, mathContext), mathContext)
+                    .subtract(B4.multiply(deltaDivN, mathContext).multiply(m3, mathContext));
+            m4 = m4.add(m4Step, mathContext);
+        }
 
         BigDecimal m3Step = term.multiply(deltaDivN, mathContext).multiply(nMinus2, mathContext)
                 .subtract(B3.multiply(deltaDivN, mathContext).multiply(m2, mathContext));
@@ -61,15 +72,23 @@ public class PopulationSkewnessKurtosisCalculator implements UnivariateStreamCal
     }
 
     public BigDecimal getSkewness() {
-        BigDecimal n = BigDecimal.valueOf(count);
-        BigDecimal nom = BigDecimalMath.sqrt(n, mathContext).multiply(m3, mathContext);
-        BigDecimal denom = BigDecimalMath.pow(m2, BigDecimal.valueOf(1.5), mathContext);
-        return nom.divide(denom, mathContext);
+        if (calculateSkewness) {
+            BigDecimal n = BigDecimal.valueOf(count);
+            BigDecimal nom = BigDecimalMath.sqrt(n, mathContext).multiply(m3, mathContext);
+            BigDecimal denom = BigDecimalMath.pow(m2, BigDecimal.valueOf(1.5), mathContext);
+            return nom.divide(denom, mathContext);
+        } else {
+            return null;
+        }
     }
 
     public BigDecimal getKurtosis() {
-        BigDecimal n = BigDecimal.valueOf(count);
-        return n.multiply(m4, mathContext).divide(m2.multiply(m2, mathContext), mathContext);
+        if (calculateKurtosis) {
+            BigDecimal n = BigDecimal.valueOf(count);
+            return n.multiply(m4, mathContext).divide(m2.multiply(m2, mathContext), mathContext);
+        } else {
+            return null;
+        }
     }
 
     @Override

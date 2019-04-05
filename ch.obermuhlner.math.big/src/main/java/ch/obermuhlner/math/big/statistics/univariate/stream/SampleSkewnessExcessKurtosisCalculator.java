@@ -13,9 +13,18 @@ public class SampleSkewnessExcessKurtosisCalculator implements UnivariateStreamC
     private final MathContext mathContext;
     private final SampleSkewnessKurtosisCalculator sampleSkewnessKurtosisCalculator;
 
+    private final boolean calculateSkewness;
+    private final boolean calculateKurtosis;
+
     public SampleSkewnessExcessKurtosisCalculator(MathContext mathContext) {
+        this(mathContext, true, true);
+    }
+
+    public SampleSkewnessExcessKurtosisCalculator(MathContext mathContext, boolean calculateSkewness, boolean calculateKurtosis) {
         this.mathContext = mathContext;
-        this.sampleSkewnessKurtosisCalculator = new SampleSkewnessKurtosisCalculator(mathContext);
+        this.sampleSkewnessKurtosisCalculator = new SampleSkewnessKurtosisCalculator(mathContext, calculateSkewness, calculateKurtosis);
+        this.calculateSkewness = calculateSkewness;
+        this.calculateKurtosis = calculateKurtosis;
     }
 
     @Override
@@ -24,19 +33,27 @@ public class SampleSkewnessExcessKurtosisCalculator implements UnivariateStreamC
     }
 
     public BigDecimal getSkewness() {
-        return sampleSkewnessKurtosisCalculator.getSkewness();
+        if (calculateSkewness) {
+            return sampleSkewnessKurtosisCalculator.getSkewness();
+        } else {
+            return null;
+        }
     }
 
     public BigDecimal getKurtosis() {
-        int count = sampleSkewnessKurtosisCalculator.getCount();
-        BigDecimal nMinus1 = BigDecimal.valueOf(count - 1);
-        BigDecimal nMinus2 = BigDecimal.valueOf(count - 2);
-        BigDecimal nMinus3 = BigDecimal.valueOf(count - 3);
+        if (calculateKurtosis) {
+            int count = sampleSkewnessKurtosisCalculator.getCount();
+            BigDecimal nMinus1 = BigDecimal.valueOf(count - 1);
+            BigDecimal nMinus2 = BigDecimal.valueOf(count - 2);
+            BigDecimal nMinus3 = BigDecimal.valueOf(count - 3);
 
-        BigDecimal kurtosis = sampleSkewnessKurtosisCalculator.getKurtosis();
-        BigDecimal deltaCorrection = B3.multiply(nMinus1, mathContext).multiply(nMinus1, mathContext).divide(nMinus2.multiply(nMinus3, mathContext), mathContext);
+            BigDecimal kurtosis = sampleSkewnessKurtosisCalculator.getKurtosis();
+            BigDecimal deltaCorrection = B3.multiply(nMinus1, mathContext).multiply(nMinus1, mathContext).divide(nMinus2.multiply(nMinus3, mathContext), mathContext);
 
-        return kurtosis.subtract(deltaCorrection, mathContext);
+            return kurtosis.subtract(deltaCorrection, mathContext);
+        } else {
+            return null;
+        }
     }
 
     @Override
