@@ -9,10 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import ch.obermuhlner.math.big.example.StopWatch;
+
+import static ch.obermuhlner.math.big.example.internal.MicroBenchmark.performanceReportOverLambda;
 
 /**
  * Performance measurements for the functions in {@link BigDecimalMath}.
@@ -784,95 +785,95 @@ public class PerformanceBigDecimalMath {
 		}
 	}
 
-	private static void performanceReport_BasicOperations() {
-		Random random = new Random();
+	private static OperationInfo toOperationInfo(int length) {
+		Random random = new Random(length);
+		return new OperationInfo(
+				BigDecimalMath.toBigDecimal(createStringNumber(length, random)),
+				BigDecimalMath.toBigDecimal(createStringNumber(length, random)),
+				new MathContext(Math.max(length, 1)));
+	}
 
+	private static void performanceReport_BasicOperations() {
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_basic_operations_fast_precisions_to_10000.csv",
-				10000,
+				0, 10000,
 				100,
 				FAST_REPEATS,
-				(i) -> {
-					return new OperationInfo(
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							new MathContext(Math.max(i, 1)));
-				},
+				WARMUP_REPEATS,
+				(i) -> toOperationInfo(i),
 				Arrays.asList("add", "subtract"),
 				(op) -> op.b1.add(op.b2, op.mc),
 				(op) -> op.b1.subtract(op.b2, op.mc));
 
 		performanceReportOverLambda(
-				"perf_basic_operations_slow_precisions_to_10000.csv",
-				10000,
+				OUTPUT_DIRECTORY,
+				"perf_basic_operations_fast_precisions_to_10000.csv",
+				0, 10000,
 				100,
 				FAST_REPEATS,
-				(i) -> {
-					return new OperationInfo(
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							new MathContext(Math.max(i, 1)));
-				},
+				WARMUP_REPEATS,
+				(i) -> toOperationInfo(i),
+				Arrays.asList("add", "subtract"),
+				(op) -> op.b1.add(op.b2, op.mc),
+				(op) -> op.b1.subtract(op.b2, op.mc));
+
+		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
+				"perf_basic_operations_slow_precisions_to_10000.csv",
+				0, 10000,
+				100,
+				FAST_REPEATS,
+				WARMUP_REPEATS,
+				(i) -> toOperationInfo(i),
 				Arrays.asList("multiply", "divide"),
 				(op) -> op.b1.multiply(op.b2, op.mc),
 				(op) -> op.b1.divide(op.b2, op.mc));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_basic_operations_slow2_precisions_to_10000.csv",
-				10000,
+				0, 10000,
 				100,
 				FAST_REPEATS,
-				(i) -> {
-					return new OperationInfo(
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							new MathContext(Math.max(i, 1)));
-				},
+				WARMUP_REPEATS,
+				(i) -> toOperationInfo(i),
 				Arrays.asList("multiply 0.5", "divide 2"),
 				(op) -> op.b1.multiply(ONE_HALF, op.mc),
 				(op) -> op.b1.divide(TWO, op.mc));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_basic_operations_fast_precisions_to_100000.csv",
-				100000,
+				0, 100000,
 				1000,
 				REPEATS,
-				(i) -> {
-					return new OperationInfo(
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							new MathContext(Math.max(i, 1)));
-				},
+				WARMUP_REPEATS,
+				(i) -> toOperationInfo(i),
 				Arrays.asList("add", "subtract"),
 				(op) -> op.b1.add(op.b2, op.mc),
 				(op) -> op.b1.subtract(op.b2, op.mc));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_basic_operations_slow_precisions_to_100000.csv",
-				100000,
+				0, 100000,
 				1000,
 				REPEATS,
-				(i) -> {
-					return new OperationInfo(
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							new MathContext(Math.max(i, 1)));
-				},
+				WARMUP_REPEATS,
+				(i) -> toOperationInfo(i),
 				Arrays.asList("multiply", "divide"),
 				(op) -> op.b1.multiply(op.b2, op.mc),
 				(op) -> op.b1.divide(op.b2, op.mc));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_basic_operations_slow2_precisions_to_100000.csv",
-				100000,
+				0, 100000,
 				1000,
 				REPEATS,
-				(i) -> {
-					return new OperationInfo(
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							BigDecimalMath.toBigDecimal(createStringNumber(i, random)),
-							new MathContext(Math.max(i, 1)));
-				},
+				WARMUP_REPEATS,
+				(i) -> toOperationInfo(i),
 				Arrays.asList("multiply 0.5", "divide 2"),
 				(op) -> op.b1.multiply(ONE_HALF, op.mc),
 				(op) -> op.b1.divide(TWO, op.mc));
@@ -881,10 +882,12 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReport_toBigDecimal_optimization() {
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_bigdec_string_impl_precisions_to_2000.csv",
-				2000,
+				0, 2000,
 				1,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> createStringNumber(i),
 				Arrays.asList("toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 3),
@@ -894,10 +897,12 @@ public class PerformanceBigDecimalMath {
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 8));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_bigdec_string_impl_precisions_to_10000.csv",
-				20000,
+				0, 20000,
 				200,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> createStringNumber(i),
 				Arrays.asList("toBigDecimal/3", "toBigDecimal/4", "toBigDecimal/5", "toBigDecimal/6", "toBigDecimal/8"),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 3),
@@ -907,10 +912,12 @@ public class PerformanceBigDecimalMath {
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 8));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_bigdec_string_impl_precisions_to_100000.csv",
-				100000,
+				0, 100000,
 				10000,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> createStringNumber(i),
 				Arrays.asList("toBigDecimal/4", "toBigDecimal/8", "toBigDecimal/16"),
 				(s) -> BigDecimalMathExperimental.toBigDecimalSplitCount(s, MathContext.UNLIMITED, 4),
@@ -920,40 +927,48 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReport_toBigDecimal() {
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_bigdec_string_precisions_to_2000.csv",
-				2000,
+				0, 2000,
 				1,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> createStringNumber(i),
 				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
 				(s) -> new BigDecimal(s),
 				(s) -> BigDecimalMath.toBigDecimal(s));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_bigdec_string_precisions_to_10000.csv",
-				20000,
+				0, 20000,
 				200,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> createStringNumber(i),
 				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
 				(s) -> new BigDecimal(s),
 				(s) -> BigDecimalMath.toBigDecimal(s));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_bigdec_string_precisions_to_100000.csv",
-				100000,
+				0, 100000,
 				1000,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> createStringNumber(i),
 				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
 				(s) -> new BigDecimal(s),
 				(s) -> BigDecimalMath.toBigDecimal(s));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_bigdec_string_precisions_to_1000000.csv",
-				1000000,
+				0, 1000000,
 				100000,
 				3,
+				WARMUP_REPEATS,
 				(i) -> createStringNumber(i),
 				Arrays.asList("BigDecimal(String)", "toBigDecimal(String)"),
 				(s) -> new BigDecimal(s),
@@ -962,10 +977,12 @@ public class PerformanceBigDecimalMath {
 
 	private static void performanceReport_factorial_optimization() {
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_factorial_impl_values_to_100.csv",
-				100,
+				0, 100,
 				1,
 				FAST_REPEATS,
+				WARMUP_REPEATS,
 				(i) -> i,
 				Arrays.asList("loop", "switchloop", "recursion"),
 				(n) -> BigDecimalMathExperimental.factorialLoop(n),
@@ -973,10 +990,12 @@ public class PerformanceBigDecimalMath {
 				(n) -> BigDecimalMathExperimental.factorialRecursion(n));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_factorial_impl_values_to_200.csv",
-				200,
+				0, 200,
 				1,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> i,
 				Arrays.asList("loop", "switchloop", "recursion"),
 				(n) -> BigDecimalMathExperimental.factorialLoop(n),
@@ -984,10 +1003,12 @@ public class PerformanceBigDecimalMath {
 				(n) -> BigDecimalMathExperimental.factorialRecursion(n));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_factorial_impl_values_to_500.csv",
-				500,
+				0, 500,
 				5,
 				FAST_REPEATS,
+				WARMUP_REPEATS,
 				(i) -> i,
 				Arrays.asList("loop", "switchloop", "recursion"),
 				(n) -> BigDecimalMathExperimental.factorialLoop(n),
@@ -995,10 +1016,12 @@ public class PerformanceBigDecimalMath {
 				(n) -> BigDecimalMathExperimental.factorialRecursion(n));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_factorial_impl_values_to_1000.csv",
-				1000,
+				0, 1000,
 				1,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> i,
 				Arrays.asList("loop", "switchloop", "recursion", "simple", "loopDivLimit"),
 				(n) -> BigDecimalMathExperimental.factorialLoop(n),
@@ -1008,30 +1031,36 @@ public class PerformanceBigDecimalMath {
 				(n) -> BigDecimalMathExperimental.factorialLoopDivLimit(n));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_factorial_impl_loops_values_to_1000.csv",
-				1000,
+				0, 1000,
 				1,
 				REPEATS,
+				WARMUP_REPEATS,
 				(i) -> i,
 				Arrays.asList("loop", "loopDivLimit"),
 				(n) -> BigDecimalMathExperimental.factorialLoop(n),
 				(n) -> BigDecimalMathExperimental.factorialLoopDivLimit(n));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_factorial_impl_recursion_values_to_100.csv",
-				100,
+				0, 100,
 				1,
 				FAST_REPEATS,
+				WARMUP_REPEATS,
 				(i) -> i,
 				Arrays.asList("recursion", "recursionAdaptive_65"),
 				(n) -> BigDecimalMathExperimental.factorialRecursion(n),
 				(n) -> BigDecimalMathExperimental.factorialRecursionAdaptive(n, 65));
 
 		performanceReportOverLambda(
+				OUTPUT_DIRECTORY,
 				"perf_factorial_impl_recursion_values_to_1000.csv",
-				1000,
+				0, 1000,
 				1,
 				FAST_REPEATS,
+				WARMUP_REPEATS,
 				(i) -> i,
 				Arrays.asList("recursion", "recursionAdaptive_40", "recursionAdaptive_60", "recursionAdaptive_80", "recursionAdaptive_100"),
 				(n) -> BigDecimalMathExperimental.factorialRecursion(n),
@@ -1349,107 +1378,4 @@ public class PerformanceBigDecimalMath {
 		}
 	}
 
-	public static <T, U> void performanceReportOverLambda(String name, int count, int repeats, Function<Integer, T> convert, List<String> functionNames, Function<T, U>... functions) {
-		performanceReportOverLambda(name, count, 1, repeats, convert, functionNames, functions);
-	}
-
-	public static <T, U> void performanceReportOverLambda(String name, int count, int countStep, int repeats, Function<Integer, T> convert, List<String> functionNames, Function<T, U>... functions) {
-		StopWatch stopWatch = new StopWatch();
-		System.out.println("Writing  " + name);
-
-		try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_DIRECTORY + name))) {
-			performanceReportOverLambda(writer, count, countStep, repeats, convert, functionNames, functions);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		System.out.println("Finished in " + stopWatch);
-	}
-
-	public static <T, U> void performanceReportOverLambda(PrintWriter writer, int count, int countStep, int repeats, Function<Integer, T> convert, List<String> functionNames, Function<T, U>... functions) {
-		int innerRepeats = 10;
-
-		int warmupValueCount = 10;
-
-		// warmup
-		for (int warmupCount = 0; warmupCount < WARMUP_REPEATS; warmupCount++) {
-			for (int valueIndex = 0; valueIndex < warmupValueCount; valueIndex++) {
-				for (Function<T, U> function : functions) {
-					T value = convert.apply(valueIndex);
-					function.apply(value);
-				}
-			}
-		}
-
-		// print headers
-		writer.printf("%8s", "value");
-		for (int fIndex = 0; fIndex < functionNames.size(); fIndex++) {
-			writer.print(",");
-			writer.printf("%8s", functionNames.get(fIndex));
-		}
-		writer.println();
-
-		// print types
-		writer.printf("%8s", "number");
-		for (int fIndex = 0; fIndex < functionNames.size(); fIndex++) {
-			writer.print(",");
-			writer.printf("%8s", "number");
-		}
-		writer.println();
-
-		// prepare data storage
-		int pCount = 0;
-		for (int valueIndex = 0; valueIndex <= count; valueIndex += countStep) {
-			pCount++;
-		}
-
-		long[][][] nanosFunctionValueRepeat = new long[functions.length][][];
-		for (int fIndex = 0; fIndex < functions.length; fIndex++) {
-			nanosFunctionValueRepeat[fIndex] = new long[pCount][];
-
-			for (int pIndex = 0; pIndex < pCount; pIndex++) {
-				nanosFunctionValueRepeat[fIndex][pIndex] = new long[repeats];
-			}
-		}
-
-		// real measurement
-		for (int rIndex = 0; rIndex < repeats; rIndex++) {
-			for (int fIndex = 0; fIndex < functions.length; fIndex++) {
-				int pIndex = 0;
-				for (int valueIndex = 0; valueIndex < count; valueIndex += countStep) {
-					Function<T, U> calculation = functions[fIndex];
-					T value = convert.apply(valueIndex);
-
-					try {
-						StopWatch stopWatch = new StopWatch();
-						for (int innerIndex = 0; innerIndex < innerRepeats; innerIndex++) {
-							calculation.apply(value);
-						}
-						nanosFunctionValueRepeat[fIndex][pIndex][rIndex] = stopWatch.getElapsedNanos();
-					} catch (Exception ex) {
-						// ignore
-					}
-					pIndex++;
-				}
-
-			}
-			System.out.print(".");
-		}
-		System.out.println();
-
-		// write report
-		{
-			int pIndex = 0;
-			for (int valueIndex = 0; valueIndex < count; valueIndex += countStep) {
-				writer.printf("%8d", valueIndex);
-				for (int fIndex = 0; fIndex < functions.length; fIndex++) {
-					writer.print(",");
-					double elapsedNanos = averagePercentile(AVERAGE_PERCENTILE, nanosFunctionValueRepeat[fIndex][pIndex]) / innerRepeats;
-					writer.printf("%8.3f", elapsedNanos);
-				}
-				pIndex++;
-				writer.println();
-			}
-		}
-	}
 }
