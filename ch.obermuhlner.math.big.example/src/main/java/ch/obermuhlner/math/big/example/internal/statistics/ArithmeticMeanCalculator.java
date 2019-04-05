@@ -1,4 +1,6 @@
-package ch.obermuhlner.math.big.statistics.univariate.collection;
+package ch.obermuhlner.math.big.example.internal.statistics;
+
+import ch.obermuhlner.math.big.statistics.univariate.collection.UnivariateCollectionCalculator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

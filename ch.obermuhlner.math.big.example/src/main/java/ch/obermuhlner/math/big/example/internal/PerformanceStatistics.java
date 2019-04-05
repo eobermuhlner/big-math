@@ -1,5 +1,6 @@
 package ch.obermuhlner.math.big.example.internal;
 
+import ch.obermuhlner.math.big.example.internal.statistics.ArithmeticMeanCalculator;
 import ch.obermuhlner.math.big.statistics.univariate.collection.UnivariateStreamAsCollectionCalculator;
 
 import java.math.BigDecimal;
@@ -36,7 +37,7 @@ public class PerformanceStatistics {
                 WARMUP_REPEATS,
                 (i) -> createValues(i),
                 Arrays.asList("collection.arithmeticMean", "stream.arithmeticMean"),
-                (values) -> new ch.obermuhlner.math.big.statistics.univariate.collection.ArithmeticMeanCalculator(mc).getResult(values),
+                (values) -> new ArithmeticMeanCalculator(mc).getResult(values),
                 (values) -> new UnivariateStreamAsCollectionCalculator(new ch.obermuhlner.math.big.statistics.univariate.stream.ArithmeticMeanCalculator(mc)).getResult(values));
     }
 
