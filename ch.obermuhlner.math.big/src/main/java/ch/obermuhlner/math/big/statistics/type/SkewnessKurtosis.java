@@ -1,4 +1,4 @@
-package ch.obermuhlner.math.big.statistics.univariate.stream;
+package ch.obermuhlner.math.big.statistics.type;
 
 import java.math.BigDecimal;
 

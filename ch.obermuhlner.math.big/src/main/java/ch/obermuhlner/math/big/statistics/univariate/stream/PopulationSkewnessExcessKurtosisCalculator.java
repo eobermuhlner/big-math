@@ -1,6 +1,6 @@
 package ch.obermuhlner.math.big.statistics.univariate.stream;
 
-import ch.obermuhlner.math.big.BigDecimalMath;
+import ch.obermuhlner.math.big.statistics.type.SkewnessKurtosis;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

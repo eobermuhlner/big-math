@@ -1,6 +1,6 @@
 package ch.obermuhlner.math.big.statistics;
 
-import ch.obermuhlner.math.big.statistics.univariate.Histogram;
+import ch.obermuhlner.math.big.statistics.type.Histogram;
 import org.junit.Test;
 
 import java.math.BigDecimal;

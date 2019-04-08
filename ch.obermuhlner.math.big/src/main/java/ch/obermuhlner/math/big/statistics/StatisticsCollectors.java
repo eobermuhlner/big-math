@@ -1,7 +1,8 @@
 package ch.obermuhlner.math.big.statistics;
 
 import ch.obermuhlner.math.big.statistics.multivariate.stream.CorrelationCalculator;
-import ch.obermuhlner.math.big.statistics.univariate.Histogram;
+import ch.obermuhlner.math.big.statistics.type.Histogram;
+import ch.obermuhlner.math.big.statistics.type.SkewnessKurtosis;
 import ch.obermuhlner.math.big.statistics.univariate.collection.MedianCalculator;
 import ch.obermuhlner.math.big.statistics.univariate.stream.*;
 

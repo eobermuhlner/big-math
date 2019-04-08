@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import ch.obermuhlner.math.big.statistics.Statistics;
 import ch.obermuhlner.math.big.statistics.StatisticsCollectors;
-import ch.obermuhlner.math.big.statistics.univariate.Histogram;
+import ch.obermuhlner.math.big.statistics.type.Histogram;
 import ch.obermuhlner.math.big.statistics.univariate.stream.ArithmeticMeanCalculator;
 
 public class StatisticsExample {
