@@ -21,13 +21,11 @@ public class MedianCalculator implements UnivariateCollectionCalculator<List<Big
 
     @Override
     public BigDecimal getResult(List<BigDecimal> sortedValues) {
-        List<BigDecimal> sortedValuesList = (List<BigDecimal>) sortedValues;
-
         int n = sortedValues.size();
         if (n % 2 == 0) {
-            return sortedValuesList.get(n / 2).add(sortedValuesList.get(n / 2 - 1), mathContext).divide(TWO, mathContext);
+            return sortedValues.get(n / 2).add(sortedValues.get(n / 2 - 1), mathContext).divide(TWO, mathContext);
         } else {
-            return sortedValuesList.get(n / 2);
+            return sortedValues.get(n / 2);
         }
     }
 }
