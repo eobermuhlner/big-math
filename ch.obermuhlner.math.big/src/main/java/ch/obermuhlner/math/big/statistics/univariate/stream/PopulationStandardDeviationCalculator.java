@@ -21,6 +21,10 @@ public class PopulationStandardDeviationCalculator implements UnivariateStreamCa
         populationVarianceCalculator.add(value);
     }
 
+    public void combine(PopulationStandardDeviationCalculator other) {
+        populationVarianceCalculator.combine(other.populationVarianceCalculator);
+    }
+
     @Override
     public BigDecimal getResult() {
         BigDecimal populationVariance = populationVarianceCalculator.getResult();

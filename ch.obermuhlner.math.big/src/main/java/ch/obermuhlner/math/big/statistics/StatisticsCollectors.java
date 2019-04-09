@@ -75,6 +75,38 @@ public class StatisticsCollectors {
                 (calc) -> calc.getResult());
     }
 
+    public static Collector<BigDecimal, PopulationVarianceCalculator, BigDecimal> populationVariance(MathContext mathContext) {
+        return Collector.of(
+                () -> new PopulationVarianceCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { left.combine(right); return left; },
+                (calc) -> calc.getResult());
+    }
+
+    public static Collector<BigDecimal, PopulationStandardDeviationCalculator, BigDecimal> populationStandardDeviation(MathContext mathContext) {
+        return Collector.of(
+                () -> new PopulationStandardDeviationCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { left.combine(right); return left; },
+                (calc) -> calc.getResult());
+    }
+
+    public static Collector<BigDecimal, SampleVarianceCalculator, BigDecimal> sampleVariance(MathContext mathContext) {
+        return Collector.of(
+                () -> new SampleVarianceCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { left.combine(right); return left; },
+                (calc) -> calc.getResult());
+    }
+
+    public static Collector<BigDecimal, SampleStandardDeviationCalculator, BigDecimal> sampleStandardDeviation(MathContext mathContext) {
+        return Collector.of(
+                () -> new SampleStandardDeviationCalculator(mathContext),
+                (calc, value) -> calc.add(value),
+                (left, right) -> { left.combine(right); return left; },
+                (calc) -> calc.getResult());
+    }
+
     public static Collector<BigDecimal, PopulationSkewnessKurtosisCalculator, BigDecimal> populationSkewness(MathContext mathContext) {
         return Collector.of(
                 () -> new PopulationSkewnessKurtosisCalculator(mathContext, true, false),

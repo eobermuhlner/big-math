@@ -21,6 +21,10 @@ public class SampleStandardDeviationCalculator implements UnivariateStreamCalcul
         sampleVarianceCalculator.add(value);
     }
 
+    public void combine(SampleStandardDeviationCalculator other) {
+        sampleVarianceCalculator.combine(other.sampleVarianceCalculator);
+    }
+
     @Override
     public BigDecimal getResult() {
         BigDecimal sampleVariance = sampleVarianceCalculator.getResult();
