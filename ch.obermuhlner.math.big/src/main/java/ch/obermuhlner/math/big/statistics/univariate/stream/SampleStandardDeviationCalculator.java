@@ -23,7 +23,7 @@ public class SampleStandardDeviationCalculator implements UnivariateStreamCalcul
 
     @Override
     public BigDecimal getResult() {
-        BigDecimal populationVariance = sampleVarianceCalculator.getResult();
-        return BigDecimalMath.sqrt(populationVariance, mathContext);
+        BigDecimal sampleVariance = sampleVarianceCalculator.getResult();
+        return BigDecimalMath.sqrt(sampleVariance, mathContext);
     }
 }
