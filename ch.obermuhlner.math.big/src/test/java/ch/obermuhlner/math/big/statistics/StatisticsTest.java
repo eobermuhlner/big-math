@@ -84,7 +84,7 @@ public class StatisticsTest {
 
     @Test
     public void testPopulationVariance() {
-        // https://www.wolframalpha.com/input/?i=variance+of+1,2,3,4&assumption=%7B%22C%22,+%22variance%22%7D+-%3E+%7B%22PopulationVariance%22%7D
+        https://www.wolframalpha.com/input/?i=populationvariance+1,2,3
         assertBigDecimal(
                 BigDecimal.valueOf(0.66667),
                 Statistics.populationVariance(toBigDecimals(1, 2, 3), MC).round(new MathContext(5)));
