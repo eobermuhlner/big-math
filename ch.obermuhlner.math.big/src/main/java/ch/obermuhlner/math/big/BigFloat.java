@@ -5,7 +5,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import static ch.obermuhlner.math.big.BigFloat.SpecialBigFloat.*;
+import static ch.obermuhlner.math.big.BigFloat.SpecialBigFloat.TYPE;
 
 /**
  * A wrapper around {@link BigDecimal} which simplifies the consistent usage of the {@link MathContext}
@@ -18,80 +18,80 @@ import static ch.obermuhlner.math.big.BigFloat.SpecialBigFloat.*;
  * <p>The API for calculations is simplified and more consistent with the typical mathematical usage.</p>
  * <ul>
  * <li>Factory methods for values:
- *   <ul>
- *   <li><code>valueOf(BigFloat)</code></li>
- *   <li><code>valueOf(BigDecimal)</code></li>
- *   <li><code>valueOf(int)</code></li>
- *   <li><code>valueOf(long)</code></li>
- *   <li><code>valueOf(double)</code></li>
- *   <li><code>valueOf(String)</code></li>
- *   <li><code>pi()</code></li>
- *   <li><code>e()</code></li>
- *   </ul>
+ * <ul>
+ * <li><code>valueOf(BigFloat)</code></li>
+ * <li><code>valueOf(BigDecimal)</code></li>
+ * <li><code>valueOf(int)</code></li>
+ * <li><code>valueOf(long)</code></li>
+ * <li><code>valueOf(double)</code></li>
+ * <li><code>valueOf(String)</code></li>
+ * <li><code>pi()</code></li>
+ * <li><code>e()</code></li>
+ * </ul>
  * </li>
  * <li>All standard operators:
- *   <ul>
- *   <li><code>add(x)</code></li>
- *   <li><code>subtract(x)</code></li>
- *   <li><code>multiply(x)</code></li>
- *   <li><code>remainder(x)</code></li>
- *   <li><code>pow(y)</code></li>
- *   <li><code>root(y)</code></li>
- *   </ul>
+ * <ul>
+ * <li><code>add(x)</code></li>
+ * <li><code>subtract(x)</code></li>
+ * <li><code>multiply(x)</code></li>
+ * <li><code>remainder(x)</code></li>
+ * <li><code>pow(y)</code></li>
+ * <li><code>root(y)</code></li>
+ * </ul>
  * </li>
  * <li>Calculation methods are overloaded for different value types:
- *   <ul>
- *   <li><code>add(BigFloat)</code></li>
- *   <li><code>add(BigDecimal)</code></li>
- *   <li><code>add(int)</code></li>
- *   <li><code>add(long)</code></li>
- *   <li><code>add(double)</code></li>
- *   <li>...</li>
- *   </ul>
+ * <ul>
+ * <li><code>add(BigFloat)</code></li>
+ * <li><code>add(BigDecimal)</code></li>
+ * <li><code>add(int)</code></li>
+ * <li><code>add(long)</code></li>
+ * <li><code>add(double)</code></li>
+ * <li>...</li>
+ * </ul>
  * </li>
  * <li>Mathematical functions are written as they are traditionally are written:
- *   <ul>
- *   <li><code>abs(x)</code></li>
- *   <li><code>log(x)</code></li>
- *   <li><code>sin(x)</code></li>
- *   <li><code>min(x1, x2, ...)</code></li>
- *   <li><code>max(x1, x2, ...)</code></li>
- *   <li>...</li>
- *   </ul>
+ * <ul>
+ * <li><code>abs(x)</code></li>
+ * <li><code>log(x)</code></li>
+ * <li><code>sin(x)</code></li>
+ * <li><code>min(x1, x2, ...)</code></li>
+ * <li><code>max(x1, x2, ...)</code></li>
+ * <li>...</li>
+ * </ul>
  * </li>
  * <li>Support for advanced mathematical functions:
- *   <ul>
- *   <li><code>sqrt(x)</code></li>
- *   <li><code>log(x)</code></li>
- *   <li><code>exp(x)</code></li>
- *   <li><code>sin(x)</code></li>
- *   <li><code>cos(x)</code></li>
- *   <li><code>tan(x)</code></li>
- *   <li>...</li>
- *   </ul>
+ * <ul>
+ * <li><code>sqrt(x)</code></li>
+ * <li><code>log(x)</code></li>
+ * <li><code>exp(x)</code></li>
+ * <li><code>sin(x)</code></li>
+ * <li><code>cos(x)</code></li>
+ * <li><code>tan(x)</code></li>
+ * <li>...</li>
+ * </ul>
  * </li>
  * <li>Methods to access parts of a value:
- *   <ul>
- *   <li><code>getMantissa()</code></li>
- *   <li><code>getExponent()</code></li>
- *   <li><code>getIntegralPart()</code></li>
- *   <li><code>getFractionalPart()</code></li>
- *   </ul>
+ * <ul>
+ * <li><code>getMantissa()</code></li>
+ * <li><code>getExponent()</code></li>
+ * <li><code>getIntegralPart()</code></li>
+ * <li><code>getFractionalPart()</code></li>
+ * </ul>
  * </li>
  * <li>Equals and Hashcode methods:
- *   <ul>
- *   <li><code>equals(Object)</code> that returns whether two <code>BigFloat</code> values are mathematically the same</li>
- *   <li><code>hashCode()</code> consistent with <code>equals(Object)</code></li>
- *   </ul>
+ * <ul>
+ * <li><code>equals(Object)</code> that returns whether two <code>BigFloat</code> values are mathematically the same</li>
+ * <li><code>hashCode()</code> consistent with <code>equals(Object)</code></li>
+ * </ul>
  * </li>
  * <li>Comparison methods:
- *   <ul>
- *   <li><code>isEqual(BigFloat)</code></li>
- *   <li><code>isLessThan(BigFloat)</code></li>
- *   <li><code>isLessThanOrEqual(BigFloat)</code></li>
- *   <li><code>isGreaterThan(BigFloat)</code></li>
- *   <li><code>isGreaterThanOrEqual(BigFloat)</code></li>
- *   </ul>
+ * <ul>
+ * <li><code>isEqual(BigFloat)</code></li>
+ * <li><code>isLessThan(BigFloat)</code></li>
+ * <li><code>isLessThanOrEqual(BigFloat)</code></li>
+ * <li><code>isGreaterThan(BigFloat)</code></li>
+ * <li><code>isGreaterThanOrEqual(BigFloat)</code></li>
+ * </ul>
  * </li>
  * </ul>
  *
@@ -99,195 +99,39 @@ import static ch.obermuhlner.math.big.BigFloat.SpecialBigFloat.*;
  *
  * <p>Before doing any calculations you need to create a <code>Context</code> specifying the precision used for all calculations.</p>
  * <pre>
-Context context = BigFloat.context(100); // precision of 100 digits
-Context anotherContext = BigFloat.context(new MathContext(10, RoundingMode.HALF_UP); // precision of 10 digits, rounding half up
-</pre>
+ * Context context = BigFloat.context(100); // precision of 100 digits
+ * Context anotherContext = BigFloat.context(new MathContext(10, RoundingMode.HALF_UP); // precision of 10 digits, rounding half up
+ * </pre>
  *
  * <p>The <code>Context</code> can then be used to create the first value of the calculation:</p>
  * <pre>
-BigFloat value1 = context.valueOf(640320);
-</pre>
+ * BigFloat value1 = context.valueOf(640320);
+ * </pre>
  *
  * <p>The <code>BigFloat</code> instance holds a reference to the <code>Context</code>. This context is then passed from calculation to calculation.</p>
  * <pre>
-BigFloat value2 = context.valueOf(640320).pow(3).divide(24);
-BigFloat value3 = BigFloat.sin(value2);
-</pre>
+ * BigFloat value2 = context.valueOf(640320).pow(3).divide(24);
+ * BigFloat value3 = BigFloat.sin(value2);
+ * </pre>
  *
  * <p>The <code>BigFloat</code> result can be converted to other numerical types:</p>
  * <pre>
-BigDecimal bigDecimalValue = value3.toBigDecimal();
-double doubleValue = value3.toDouble();
-long longValue = value3.toLong();
-int intValue = value3.toInt();
-</pre>
+ * BigDecimal bigDecimalValue = value3.toBigDecimal();
+ * double doubleValue = value3.toDouble();
+ * long longValue = value3.toLong();
+ * int intValue = value3.toInt();
+ * </pre>
  */
 public class BigFloat implements Comparable<BigFloat> {
-	public static final BigFloat ZERO = new BigFloat(BigDecimal.valueOf(0),new Context(MathContext.DECIMAL64));
+	public static final BigFloat ZERO = new BigFloat(BigDecimal.valueOf(0), new Context(MathContext.DECIMAL64));
 	public static final BigFloat NAN;
 	public static final BigFloat POSITIVE_INFINITY;
 	public static final BigFloat NEGATIVE_INFINITY;
 
-	/**
-	 * Manages the {@link MathContext} and provides factory methods for {@link BigFloat} values.
-	 */
-	public static class Context {
-		private final MathContext mathContext;
-
-		private Context(MathContext mathContext) {
-			this.mathContext = mathContext;
-		}
-
-		/**
-		 * Returns the {@link MathContext} of this context.
-		 *
-		 * @return the {@link MathContext}
-		 */
-		public MathContext getMathContext() {
-			return mathContext;
-		}
-
-		/**
-		 * Returns the precision of this context.
-		 *
-		 * This is equivalent to calling <code>getMathContext().getPrecision()</code>.
-		 *
-		 * @return the precision
-		 */
-		public int getPrecision() {
-			return mathContext.getPrecision();
-		}
-
-		/**
-		 * Returns the {@link RoundingMode} of this context.
-		 *
-		 * This is equivalent to calling <code>getMathContext().getRoundingMode()</code>.
-		 *
-		 * @return the {@link RoundingMode}
-		 */
-		public RoundingMode getRoundingMode() {
-			return mathContext.getRoundingMode();
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source {@link BigFloat} value
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(BigFloat value) {
-			return new BigFloat(value.value.round(mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source {@link BigDecimal} value
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(BigDecimal value) {
-			return new BigFloat(value.round(mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source int value
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(int value) {
-			return new BigFloat(new BigDecimal(value, mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source long value
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(long value) {
-			return new BigFloat(new BigDecimal(value, mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source double value
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(double value) {
-			if(value==Double.POSITIVE_INFINITY)
-				return POSITIVE_INFINITY;
-			else if(value==Double.NEGATIVE_INFINITY)
-				return NEGATIVE_INFINITY;
-			else if(Double.isNaN(value))
-				return NAN;
-			return new BigFloat(new BigDecimal(String.valueOf(value), mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source String value
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 * @throws NumberFormatException if the value is not a valid number.
-		 */
-		public BigFloat valueOf(String value) {
-			return new BigFloat(new BigDecimal(value, mathContext), this);
-		}
-
-		/**
-		 * Returns the constant pi with this context.
-		 *
-		 * @return pi with this context (rounded to the precision of this context)
-		 * @see BigDecimalMath#pi(MathContext)
-		 */
-		public BigFloat pi() {
-			return valueOf(BigDecimalMath.pi(mathContext));
-		}
-
-		/**
-		 * Returns the constant e with this context.
-		 *
-		 * @return e with this context (rounded to the precision of this context)
-		 * @see BigDecimalMath#e(MathContext)
-		 */
-		public BigFloat e() {
-			return valueOf(BigDecimalMath.e(mathContext));
-		}
-
-		/**
-		 * Returns the factorial of n with this context.
-		 *
-		 * @param n the value to calculate
-		 * @return the factorial of n with this context (rounded to the precision of this context)
-		 * @see BigDecimalMath#factorial(int)
-		 */
-		public BigFloat factorial(int n) {
-			return valueOf(BigDecimalMath.factorial(n));
-		}
-
-		@Override
-		public int hashCode() {
-			return mathContext.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Context other = (Context) obj;
-			return mathContext.equals(other.mathContext);
-		}
-
-		@Override
-		public String toString() {
-			return mathContext.toString();
-		}
+	static {
+		NAN = new SpecialBigFloat(TYPE.NAN);
+		NEGATIVE_INFINITY = new SpecialBigFloat(TYPE.NEGATIVE_INFINITY);
+		POSITIVE_INFINITY = new SpecialBigFloat(TYPE.POSITIVE_INFINITY);
 	}
 
 	private final BigDecimal value;
@@ -299,12 +143,433 @@ public class BigFloat implements Comparable<BigFloat> {
 	}
 
 	/**
+	 * Creates a {@link Context} with the specified precision and {@link RoundingMode#HALF_UP} rounding.
+	 *
+	 * @param precision the precision
+	 *
+	 * @return the {@link Context}
+	 */
+	public static Context context(int precision) {
+		return new Context(new MathContext(precision));
+	}
+
+	/**
+	 * Creates a {@link Context} with the specified {@link MathContext}.
+	 *
+	 * @param mathContext the {@link MathContext}
+	 *
+	 * @return the {@link Context}
+	 */
+	public static Context context(MathContext mathContext) {
+		return new Context(mathContext);
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>- this</code>.
+	 *
+	 * @param x the value to negate
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#negate(MathContext)
+	 */
+	public static BigFloat negate(BigFloat x) {
+		return x.context.valueOf(x.value.negate());
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the <code>abs(this)</code> (absolute value).
+	 *
+	 * @param x the value to make absolute
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#abs(MathContext)
+	 */
+	public static BigFloat abs(BigFloat x) {
+		return x.context.valueOf(x.value.abs());
+	}
+
+	/**
+	 * Returns the the maximum of two {@link BigFloat} values.
+	 *
+	 * @param value1 the first {@link BigFloat} value to compare
+	 * @param value2 the second {@link BigFloat} value to compare
+	 *
+	 * @return the maximum {@link BigFloat} value
+	 */
+	public static BigFloat max(BigFloat value1, BigFloat value2) {
+		return value1.compareTo(value2) >= 0 ? value1 : value2;
+	}
+
+	/**
+	 * Returns the the maximum of n {@link BigFloat} values.
+	 *
+	 * @param value1 the first {@link BigFloat} value to compare
+	 * @param values the other {@link BigFloat}s value to compare
+	 *
+	 * @return the maximum {@link BigFloat} value
+	 */
+	public static BigFloat max(BigFloat value1, BigFloat... values) {
+		BigFloat result = value1;
+
+		for (BigFloat other : values) {
+			result = max(result, other);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns the the minimum of two {@link BigFloat} values.
+	 *
+	 * @param value1 the first {@link BigFloat} value to compare
+	 * @param value2 the second {@link BigFloat} value to compare
+	 *
+	 * @return the minimum {@link BigFloat} value
+	 */
+	public static BigFloat min(BigFloat value1, BigFloat value2) {
+		return value1.compareTo(value2) < 0 ? value1 : value2;
+	}
+
+	/**
+	 * Returns the the minimum of n {@link BigFloat} values.
+	 *
+	 * @param value1 the first {@link BigFloat} value to compare
+	 * @param values the other {@link BigFloat}s value to compare
+	 *
+	 * @return the minimum {@link BigFloat} value
+	 */
+	public static BigFloat min(BigFloat value1, BigFloat... values) {
+		BigFloat result = value1;
+
+		for (BigFloat other : values) {
+			result = min(result, other);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>log(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#log(BigDecimal, MathContext)
+	 */
+	public static BigFloat log(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.log(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>log2(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#log2(BigDecimal, MathContext)
+	 */
+	public static BigFloat log2(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.log2(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>log10(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#log10(BigDecimal, MathContext)
+	 */
+	public static BigFloat log10(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.log10(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>exp(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#exp(BigDecimal, MathContext)
+	 */
+	public static BigFloat exp(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.exp(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>sqrt(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#sqrt(BigDecimal, MathContext)
+	 */
+	public static BigFloat sqrt(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.sqrt(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>pow(x, y)</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param x the {@link BigFloat} value to take to the power
+	 * @param y the {@link BigFloat} value to serve as exponent
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public static BigFloat pow(BigFloat x, BigFloat y) {
+		Context c = max(x.context, y.context);
+		return c.valueOf(BigDecimalMath.pow(x.value, y.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>root(x, y)</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param x the {@link BigFloat} value to calculate the n'th root
+	 * @param y the {@link BigFloat} defining the root
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public static BigFloat root(BigFloat x, BigFloat y) {
+		Context c = max(x.context, y.context);
+		return c.valueOf(BigDecimalMath.root(x.value, y.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>sin(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#sin(BigDecimal, MathContext)
+	 */
+	public static BigFloat sin(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.sin(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>cos(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#cos(BigDecimal, MathContext)
+	 */
+	public static BigFloat cos(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.cos(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>tan(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#tan(BigDecimal, MathContext)
+	 */
+	public static BigFloat tan(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.tan(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>cot(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#cot(BigDecimal, MathContext)
+	 */
+	public static BigFloat cot(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.cot(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>asin(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#asin(BigDecimal, MathContext)
+	 */
+	public static BigFloat asin(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.asin(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>acos(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#acos(BigDecimal, MathContext)
+	 */
+	public static BigFloat acos(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.acos(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>atan(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#atan(BigDecimal, MathContext)
+	 */
+	public static BigFloat atan(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.atan(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>acot(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#acot(BigDecimal, MathContext)
+	 */
+	public static BigFloat acot(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.acot(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>sinh(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#sinh(BigDecimal, MathContext)
+	 */
+	public static BigFloat sinh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.sinh(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>cosh(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#cosh(BigDecimal, MathContext)
+	 */
+	public static BigFloat cosh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.cosh(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>tanh(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#tanh(BigDecimal, MathContext)
+	 */
+	public static BigFloat tanh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.tanh(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>coth(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#coth(BigDecimal, MathContext)
+	 */
+	public static BigFloat coth(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.coth(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>asinh(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#asinh(BigDecimal, MathContext)
+	 */
+	public static BigFloat asinh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.asinh(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>acosh(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#acosh(BigDecimal, MathContext)
+	 */
+	public static BigFloat acosh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.acosh(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>atanh(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#atanh(BigDecimal, MathContext)
+	 */
+	public static BigFloat atanh(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.atanh(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>acoth(x)</code>.
+	 *
+	 * @param x the value
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#acoth(BigDecimal, MathContext)
+	 */
+	public static BigFloat acoth(BigFloat x) {
+		return x.context.valueOf(BigDecimalMath.acoth(x.value, x.context.mathContext));
+	}
+
+	private static Context max(Context left, Context right) {
+		return left.mathContext.getPrecision() > right.mathContext.getPrecision() ? left : right;
+	}
+
+	/**
 	 * Returns the {@link BigFloat} that is <code>this + x</code>.
 	 *
 	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
 	 *
 	 * @param x the value to add
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#add(BigDecimal, MathContext)
 	 */
 	public BigFloat add(BigFloat x) {
@@ -316,7 +581,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this + x</code>.
 	 *
 	 * @param x the value to add
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#add(BigDecimal, MathContext)
 	 */
 	public BigFloat add(BigDecimal x) {
@@ -327,7 +594,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this + x</code>.
 	 *
 	 * @param x the value to add
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#add(BigDecimal, MathContext)
 	 */
 	public BigFloat add(int x) {
@@ -338,7 +607,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this + x</code>.
 	 *
 	 * @param x the value to add
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#add(BigDecimal, MathContext)
 	 */
 	public BigFloat add(long x) {
@@ -349,7 +620,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this + x</code>.
 	 *
 	 * @param x the value to add
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#add(BigDecimal, MathContext)
 	 */
 	public BigFloat add(double x) {
@@ -362,7 +635,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
 	 *
 	 * @param x the value to subtract
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#subtract(BigDecimal, MathContext)
 	 */
 	public BigFloat subtract(BigFloat x) {
@@ -374,7 +649,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this - x</code>.
 	 *
 	 * @param x the value to subtract
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#subtract(BigDecimal, MathContext)
 	 */
 	public BigFloat subtract(BigDecimal x) {
@@ -385,7 +662,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this - x</code>.
 	 *
 	 * @param x the value to subtract
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#subtract(BigDecimal, MathContext)
 	 */
 	public BigFloat subtract(int x) {
@@ -396,7 +675,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this - x</code>.
 	 *
 	 * @param x the value to subtract
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#subtract(BigDecimal, MathContext)
 	 */
 	public BigFloat subtract(long x) {
@@ -407,7 +688,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this - x</code>.
 	 *
 	 * @param x the value to subtract
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#subtract(BigDecimal, MathContext)
 	 */
 	public BigFloat subtract(double x) {
@@ -420,7 +703,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
 	 *
 	 * @param x the value to multiply
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#multiply(BigDecimal, MathContext)
 	 */
 	public BigFloat multiply(BigFloat x) {
@@ -432,7 +717,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this * x</code>.
 	 *
 	 * @param x the value to multiply
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#multiply(BigDecimal, MathContext)
 	 */
 	public BigFloat multiply(BigDecimal x) {
@@ -443,7 +730,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this * x</code>.
 	 *
 	 * @param x the value to multiply
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#multiply(BigDecimal, MathContext)
 	 */
 	public BigFloat multiply(int x) {
@@ -454,7 +743,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this * x</code>.
 	 *
 	 * @param x the value to multiply
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#multiply(BigDecimal, MathContext)
 	 */
 	public BigFloat multiply(long x) {
@@ -465,7 +756,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this * x</code>.
 	 *
 	 * @param x the value to multiply
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#multiply(BigDecimal, MathContext)
 	 */
 	public BigFloat multiply(double x) {
@@ -478,12 +771,14 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#divide(BigDecimal, MathContext)
 	 */
 	public BigFloat divide(BigFloat x) {
-		if(x.isSpecial())
-			if(x.specialType() != TYPE.NAN)
+		if (x.isSpecial())
+			if (x.specialType() != TYPE.NAN)
 				return x;
 			else
 				SpecialBigFloat.throwNan();
@@ -495,7 +790,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this / x</code>.
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#divide(BigDecimal, MathContext)
 	 */
 	public BigFloat divide(BigDecimal x) {
@@ -506,7 +803,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this / x</code>.
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#divide(BigDecimal, MathContext)
 	 */
 	public BigFloat divide(int x) {
@@ -517,7 +816,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this / x</code>.
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#divide(BigDecimal, MathContext)
 	 */
 	public BigFloat divide(long x) {
@@ -528,7 +829,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this / x</code>.
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#divide(BigDecimal, MathContext)
 	 */
 	public BigFloat divide(double x) {
@@ -541,12 +844,14 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#remainder(BigDecimal, MathContext)
 	 */
 	public BigFloat remainder(BigFloat x) {
-		if(x.isSpecial())
-			if(x.specialType() != TYPE.NAN)
+		if (x.isSpecial())
+			if (x.specialType() != TYPE.NAN)
 				return x;
 			else
 				SpecialBigFloat.throwNan();
@@ -558,7 +863,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#remainder(BigDecimal, MathContext)
 	 */
 	public BigFloat remainder(BigDecimal x) {
@@ -569,7 +876,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#remainder(BigDecimal, MathContext)
 	 */
 	public BigFloat remainder(int x) {
@@ -580,7 +889,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#remainder(BigDecimal, MathContext)
 	 */
 	public BigFloat remainder(long x) {
@@ -591,7 +902,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
 	 *
 	 * @param x the value to divide with
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimal#remainder(BigDecimal, MathContext)
 	 */
 	public BigFloat remainder(double x) {
@@ -604,12 +917,14 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
 	 *
 	 * @param y the value of the power
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat pow(BigFloat y) {
-		if(y.isSpecial())
-			if(y.specialType() != TYPE.NAN)
+		if (y.isSpecial())
+			if (y.specialType() != TYPE.NAN)
 				return y;
 			else
 				SpecialBigFloat.throwNan();
@@ -621,7 +936,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
 	 *
 	 * @param y the value of the power
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat pow(BigDecimal y) {
@@ -632,7 +949,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
 	 *
 	 * @param y the value of the power
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat pow(int y) {
@@ -643,7 +962,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
 	 *
 	 * @param y the value of the power
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat pow(long y) {
@@ -654,7 +975,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
 	 *
 	 * @param y the value of the power
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat pow(double y) {
@@ -667,12 +990,14 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
 	 *
 	 * @param y the value of the root
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat root(BigFloat y) {
-		if(y.isSpecial())
-			if(y.specialType() != TYPE.NAN)
+		if (y.isSpecial())
+			if (y.specialType() != TYPE.NAN)
 				return y;
 			else
 				SpecialBigFloat.throwNan();
@@ -684,7 +1009,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
 	 *
 	 * @param y the value of the root
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat root(BigDecimal y) {
@@ -695,7 +1022,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
 	 *
 	 * @param y the value of the root
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat root(int y) {
@@ -706,7 +1035,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
 	 *
 	 * @param y the value of the root
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat root(long y) {
@@ -717,7 +1048,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
 	 *
 	 * @param y the value of the root
+	 *
 	 * @return the resulting {@link BigFloat}
+	 *
 	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat root(double y) {
@@ -743,11 +1076,11 @@ public class BigFloat implements Comparable<BigFloat> {
 		//return Objects.equals(value, other.value) && Objects.equals(context, other.context);
 	}
 
-    /**
-     * Returns the signum function of this {@link BigFloat}.
-     *
-     * @return -1, 0, or 1 as the value of this {@link BigDecimal} is negative, zero, or positive.
-     */
+	/**
+	 * Returns the signum function of this {@link BigFloat}.
+	 *
+	 * @return -1, 0, or 1 as the value of this {@link BigDecimal} is negative, zero, or positive.
+	 */
 	public int signum() {
 		return value.signum();
 	}
@@ -788,7 +1121,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically equal to the <code>other</code> value.
 	 *
 	 * @param other the other {@link BigFloat} to compare with
+	 *
 	 * @return <code>true</code> if both values are mathematically equal (equivalent to <code>this.compareTo(other) == 0</code>
+	 *
 	 * @see #compareTo(BigFloat)
 	 */
 	public boolean isEqual(BigFloat other) {
@@ -799,7 +1134,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically less than to the <code>other</code> value.
 	 *
 	 * @param other the other {@link BigFloat} to compare with
+	 *
 	 * @return <code>true</code> <code>this</code> value is mathematically less than to the <code>other</code> value (equivalent to <code>this.compareTo(other) &lt; 0</code>
+	 *
 	 * @see #compareTo(BigFloat)
 	 */
 	public boolean isLessThan(BigFloat other) {
@@ -810,7 +1147,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically greater than to the <code>other</code> value.
 	 *
 	 * @param other the other {@link BigFloat} to compare with
+	 *
 	 * @return <code>true</code> <code>this</code> value is mathematically greater than to the <code>other</code> value (equivalent to <code>this.compareTo(other) &gt; 0</code>
+	 *
 	 * @see #compareTo(BigFloat)
 	 */
 	public boolean isGreaterThan(BigFloat other) {
@@ -821,7 +1160,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically less than or equal to the <code>other</code> value.
 	 *
 	 * @param other the other {@link BigFloat} to compare with
+	 *
 	 * @return <code>true</code> <code>this</code> value is mathematically less than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) &lt;= 0</code>
+	 *
 	 * @see #compareTo(BigFloat)
 	 * @see #isLessThan(BigFloat)
 	 * @see #isEqual(BigFloat)
@@ -834,7 +1175,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> value is mathematically greater than or equal to the <code>other</code> value.
 	 *
 	 * @param other the other {@link BigFloat} to compare with
+	 *
 	 * @return <code>true</code> <code>this</code> value is mathematically greater than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) &gt;= 0</code>
+	 *
 	 * @see #compareTo(BigFloat)
 	 * @see #isGreaterThan(BigFloat)
 	 * @see #isEqual(BigFloat)
@@ -843,11 +1186,11 @@ public class BigFloat implements Comparable<BigFloat> {
 		return compareTo(other) >= 0;
 	}
 
-
 	/**
 	 * Returns whether <code>this</code> value can be represented as <code>int</code>.
 	 *
 	 * @return <code>true</code> if the value can be represented as <code>int</code> value
+	 *
 	 * @see BigDecimalMath#isIntValue(BigDecimal)
 	 */
 	public boolean isIntValue() {
@@ -858,6 +1201,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns whether <code>this</code> specified {@link BigDecimal} value can be represented as <code>double</code>.
 	 *
 	 * @return <code>true</code> if the value can be represented as <code>double</code> value
+	 *
 	 * @see BigDecimalMath#isDoubleValue(BigDecimal)
 	 */
 	public boolean isDoubleValue() {
@@ -870,6 +1214,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
 	 *
 	 * @return the mantissa
+	 *
 	 * @see #getExponent()
 	 * @see BigDecimalMath#mantissa(BigDecimal)
 	 */
@@ -883,6 +1228,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
 	 *
 	 * @return the exponent
+	 *
 	 * @see #getMantissa()
 	 * @see BigDecimalMath#exponent(BigDecimal)
 	 */
@@ -894,6 +1240,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the integral part of <code>this</code> value (left of the decimal point).
 	 *
 	 * @return the integral part
+	 *
 	 * @see #getFractionalPart()
 	 * @see BigDecimalMath#fractionalPart(BigDecimal)
 	 */
@@ -905,6 +1252,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns the fractional part of <code>this</code> value (right of the decimal point).
 	 *
 	 * @return the fractional part
+	 *
 	 * @see #getIntegralPart()
 	 * @see BigDecimalMath#fractionalPart(BigDecimal)
 	 */
@@ -934,6 +1282,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns <code>this</code> value as a <code>double</code> value.
 	 *
 	 * @return the <code>double</code> value
+	 *
 	 * @see BigDecimal#doubleValue()
 	 */
 	public double toDouble() {
@@ -944,6 +1293,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns <code>this</code> value as a <code>long</code> value.
 	 *
 	 * @return the <code>long</code> value
+	 *
 	 * @see BigDecimal#longValue()
 	 */
 	public long toLong() {
@@ -954,6 +1304,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * Returns <code>this</code> value as a <code>int</code> value.
 	 *
 	 * @return the <code>int</code> value
+	 *
 	 * @see BigDecimal#intValue()
 	 */
 	public int toInt() {
@@ -965,375 +1316,185 @@ public class BigFloat implements Comparable<BigFloat> {
 		return value.toString();
 	}
 
-	/**
-	 * Creates a {@link Context} with the specified precision and {@link RoundingMode#HALF_UP} rounding.
-	 *
-	 * @param precision the precision
-	 * @return the {@link Context}
-	 */
-	public static Context context(int precision) {
-		return new Context(new MathContext(precision));
-	}
-
-	/**
-	 * Creates a {@link Context} with the specified {@link MathContext}.
-	 *
-	 * @param mathContext the {@link MathContext}
-	 * @return the {@link Context}
-	 */
-	public static Context context(MathContext mathContext) {
-		return new Context(mathContext);
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>- this</code>.
-	 *
-	 * @param x the value to negate
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimal#negate(MathContext)
-	 */
-	public static BigFloat negate(BigFloat x) {
-		return x.context.valueOf(x.value.negate());
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the <code>abs(this)</code> (absolute value).
-	 *
-	 * @param x the value to make absolute
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimal#abs(MathContext)
-	 */
-	public static BigFloat abs(BigFloat x) {
-		return x.context.valueOf(x.value.abs());
-	}
-
-	/**
-	 * Returns the the maximum of two {@link BigFloat} values.
-	 *
-	 * @param value1 the first {@link BigFloat} value to compare
-	 * @param value2 the second {@link BigFloat} value to compare
-	 * @return the maximum {@link BigFloat} value
-	 */
-	public static BigFloat max(BigFloat value1, BigFloat value2) {
-		return value1.compareTo(value2) >= 0 ? value1 : value2;
-	}
-
-	/**
-	 * Returns the the maximum of n {@link BigFloat} values.
-	 *
-	 * @param value1 the first {@link BigFloat} value to compare
-	 * @param values the other {@link BigFloat}s value to compare
-	 * @return the maximum {@link BigFloat} value
-	 */
-	public static BigFloat max(BigFloat value1, BigFloat... values) {
-		BigFloat result = value1;
-
-		for (BigFloat other : values) {
-			result = max(result, other);
-		}
-
-		return result;
-	}
-
-	/**
-	 * Returns the the minimum of two {@link BigFloat} values.
-	 *
-	 * @param value1 the first {@link BigFloat} value to compare
-	 * @param value2 the second {@link BigFloat} value to compare
-	 * @return the minimum {@link BigFloat} value
-	 */
-	public static BigFloat min(BigFloat value1, BigFloat value2) {
-		return value1.compareTo(value2) < 0 ? value1 : value2;
-	}
-
-	/**
-	 * Returns the the minimum of n {@link BigFloat} values.
-	 *
-	 * @param value1 the first {@link BigFloat} value to compare
-	 * @param values the other {@link BigFloat}s value to compare
-	 * @return the minimum {@link BigFloat} value
-	 */
-	public static BigFloat min(BigFloat value1, BigFloat... values) {
-		BigFloat result = value1;
-
-		for (BigFloat other : values) {
-			result = min(result, other);
-		}
-
-		return result;
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>log(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#log(BigDecimal, MathContext)
-	 */
-	public static BigFloat log(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.log(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>log2(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#log2(BigDecimal, MathContext)
-	 */
-	public static BigFloat log2(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.log2(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>log10(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#log10(BigDecimal, MathContext)
-	 */
-	public static BigFloat log10(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.log10(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>exp(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#exp(BigDecimal, MathContext)
-	 */
-	public static BigFloat exp(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.exp(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>sqrt(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#sqrt(BigDecimal, MathContext)
-	 */
-	public static BigFloat sqrt(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.sqrt(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>pow(x, y)</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param x the {@link BigFloat} value to take to the power
-	 * @param y the {@link BigFloat} value to serve as exponent
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
-	 */
-	public static BigFloat pow(BigFloat x, BigFloat y) {
-		Context c = max(x.context, y.context);
-		return c.valueOf(BigDecimalMath.pow(x.value, y.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>root(x, y)</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param x the {@link BigFloat} value to calculate the n'th root
-	 * @param y the {@link BigFloat} defining the root
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
-	 */
-	public static BigFloat root(BigFloat x, BigFloat y) {
-		Context c = max(x.context, y.context);
-		return c.valueOf(BigDecimalMath.root(x.value, y.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>sin(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#sin(BigDecimal, MathContext)
-	 */
-	public static BigFloat sin(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.sin(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>cos(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#cos(BigDecimal, MathContext)
-	 */
-	public static BigFloat cos(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.cos(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>tan(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#tan(BigDecimal, MathContext)
-	 */
-	public static BigFloat tan(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.tan(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>cot(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#cot(BigDecimal, MathContext)
-	 */
-	public static BigFloat cot(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.cot(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>asin(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#asin(BigDecimal, MathContext)
-	 */
-	public static BigFloat asin(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.asin(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>acos(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#acos(BigDecimal, MathContext)
-	 */
-	public static BigFloat acos(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.acos(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>atan(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#atan(BigDecimal, MathContext)
-	 */
-	public static BigFloat atan(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.atan(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>acot(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#acot(BigDecimal, MathContext)
-	 */
-	public static BigFloat acot(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.acot(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>sinh(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#sinh(BigDecimal, MathContext)
-	 */
-	public static BigFloat sinh(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.sinh(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>cosh(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#cosh(BigDecimal, MathContext)
-	 */
-	public static BigFloat cosh(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.cosh(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>tanh(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#tanh(BigDecimal, MathContext)
-	 */
-	public static BigFloat tanh(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.tanh(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>coth(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#coth(BigDecimal, MathContext)
-	 */
-	public static BigFloat coth(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.coth(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>asinh(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#asinh(BigDecimal, MathContext)
-	 */
-	public static BigFloat asinh(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.asinh(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>acosh(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#acosh(BigDecimal, MathContext)
-	 */
-	public static BigFloat acosh(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.acosh(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>atanh(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#atanh(BigDecimal, MathContext)
-	 */
-	public static BigFloat atanh(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.atanh(x.value, x.context.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>acoth(x)</code>.
-	 *
-	 * @param x the value
-	 * @return the resulting {@link BigFloat}
-	 * @see BigDecimalMath#acoth(BigDecimal, MathContext)
-	 */
-	public static BigFloat acoth(BigFloat x) {
-		return x.context.valueOf(BigDecimalMath.acoth(x.value, x.context.mathContext));
-	}
-
-	private static Context max(Context left, Context right) {
-		return left.mathContext.getPrecision() > right.mathContext.getPrecision() ? left : right;
-	}
-
 	public boolean isSpecial() {
 		return false;
 	}
 
 	public TYPE specialType() {
 		return TYPE.UNKNOWN; //BigFloat is presentable value
+	}
+
+	/**
+	 * Manages the {@link MathContext} and provides factory methods for {@link BigFloat} values.
+	 */
+	public static class Context {
+		private final MathContext mathContext;
+
+		private Context(MathContext mathContext) {
+			this.mathContext = mathContext;
+		}
+
+		/**
+		 * Returns the {@link MathContext} of this context.
+		 *
+		 * @return the {@link MathContext}
+		 */
+		public MathContext getMathContext() {
+			return mathContext;
+		}
+
+		/**
+		 * Returns the precision of this context.
+		 * <p>
+		 * This is equivalent to calling <code>getMathContext().getPrecision()</code>.
+		 *
+		 * @return the precision
+		 */
+		public int getPrecision() {
+			return mathContext.getPrecision();
+		}
+
+		/**
+		 * Returns the {@link RoundingMode} of this context.
+		 * <p>
+		 * This is equivalent to calling <code>getMathContext().getRoundingMode()</code>.
+		 *
+		 * @return the {@link RoundingMode}
+		 */
+		public RoundingMode getRoundingMode() {
+			return mathContext.getRoundingMode();
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source {@link BigFloat} value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(BigFloat value) {
+			return new BigFloat(value.value.round(mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source {@link BigDecimal} value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(BigDecimal value) {
+			return new BigFloat(value.round(mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source int value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(int value) {
+			return new BigFloat(new BigDecimal(value, mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source long value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(long value) {
+			return new BigFloat(new BigDecimal(value, mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source double value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(double value) {
+			if (value == Double.POSITIVE_INFINITY)
+				return POSITIVE_INFINITY;
+			else if (value == Double.NEGATIVE_INFINITY)
+				return NEGATIVE_INFINITY;
+			else if (Double.isNaN(value))
+				return NAN;
+			return new BigFloat(new BigDecimal(String.valueOf(value), mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source String value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 *
+		 * @throws NumberFormatException if the value is not a valid number.
+		 */
+		public BigFloat valueOf(String value) {
+			return new BigFloat(new BigDecimal(value, mathContext), this);
+		}
+
+		/**
+		 * Returns the constant pi with this context.
+		 *
+		 * @return pi with this context (rounded to the precision of this context)
+		 *
+		 * @see BigDecimalMath#pi(MathContext)
+		 */
+		public BigFloat pi() {
+			return valueOf(BigDecimalMath.pi(mathContext));
+		}
+
+		/**
+		 * Returns the constant e with this context.
+		 *
+		 * @return e with this context (rounded to the precision of this context)
+		 *
+		 * @see BigDecimalMath#e(MathContext)
+		 */
+		public BigFloat e() {
+			return valueOf(BigDecimalMath.e(mathContext));
+		}
+
+		/**
+		 * Returns the factorial of n with this context.
+		 *
+		 * @param n the value to calculate
+		 *
+		 * @return the factorial of n with this context (rounded to the precision of this context)
+		 *
+		 * @see BigDecimalMath#factorial(int)
+		 */
+		public BigFloat factorial(int n) {
+			return valueOf(BigDecimalMath.factorial(n));
+		}
+
+		@Override
+		public int hashCode() {
+			return mathContext.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Context other = (Context) obj;
+			return mathContext.equals(other.mathContext);
+		}
+
+		@Override
+		public String toString() {
+			return mathContext.toString();
+		}
 	}
 
 	/**
@@ -1358,8 +1519,8 @@ public class BigFloat implements Comparable<BigFloat> {
 			this.type = type;
 		}
 
-		private static BigFloat valueOf(TYPE type){
-			switch (type){
+		private static BigFloat valueOf(TYPE type) {
+			switch (type) {
 				case POSITIVE_INFINITY:
 					return POSITIVE_INFINITY;
 				case NEGATIVE_INFINITY:
@@ -1371,19 +1532,24 @@ public class BigFloat implements Comparable<BigFloat> {
 			}
 		}
 
-		private static void checkUnsupported(BigFloat...bigFloats){
+		private static void checkUnsupported(BigFloat... bigFloats) {
 			for (BigFloat val : bigFloats)
-				if(val.isSpecial())
+				if (val.isSpecial())
 					throw new NumberFormatException(val.toString());
 		}
-		public static BigFloat ofDouble(double d){
-			if(Double.isNaN(d))
+
+		public static BigFloat ofDouble(double d) {
+			if (Double.isNaN(d))
 				return BigFloat.NAN;
-			else if(d==Double.POSITIVE_INFINITY)
+			else if (d == Double.POSITIVE_INFINITY)
 				return BigFloat.POSITIVE_INFINITY;
-			else if(d==Double.NEGATIVE_INFINITY)
+			else if (d == Double.NEGATIVE_INFINITY)
 				return BigFloat.NEGATIVE_INFINITY;
-			else return new BigFloat(BigDecimal.valueOf(d),new Context(MathContext.DECIMAL64));
+			else return new BigFloat(BigDecimal.valueOf(d), new Context(MathContext.DECIMAL64));
+		}
+
+		private static void throwNan() {
+			throw new NumberFormatException("Not A Number");
 		}
 
 		private void checkNAN() {
@@ -1393,10 +1559,6 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		private void unsupported() {
 			throw new NumberFormatException(this.toString());
-		}
-
-		private static void throwNan(){
-			throw new NumberFormatException("Not A Number");
 		}
 
 		@Override
@@ -1663,7 +1825,7 @@ public class BigFloat implements Comparable<BigFloat> {
 		@Override
 		public int compareTo(BigFloat other) {
 			checkNAN();
-			return TYPE.compare(type,other.specialType());
+			return TYPE.compare(type, other.specialType());
 		}
 
 		@Override
@@ -1760,39 +1922,33 @@ public class BigFloat implements Comparable<BigFloat> {
 			 */
 			UNKNOWN;
 
-			public static int compare(TYPE a,TYPE b){
+			public static int compare(TYPE a, TYPE b) {
 				//NAN less than everything
-				if(a == NAN)
+				if (a == NAN)
 					return -1;
-				if(b == NAN)
+				if (b == NAN)
 					return 1;
-				if(a == POSITIVE_INFINITY)
-					if(b == POSITIVE_INFINITY)
+				if (a == POSITIVE_INFINITY)
+					if (b == POSITIVE_INFINITY)
 						return 0;
-					else if(b == NEGATIVE_INFINITY)
+					else if (b == NEGATIVE_INFINITY)
 						return 1;
-					else if(b==UNKNOWN)
+					else if (b == UNKNOWN)
 						return 1;
-				if(a == NEGATIVE_INFINITY)
-					if(b == NEGATIVE_INFINITY)
+				if (a == NEGATIVE_INFINITY)
+					if (b == NEGATIVE_INFINITY)
 						return 0;
-					else if(b == POSITIVE_INFINITY)
+					else if (b == POSITIVE_INFINITY)
 						return -1;
-					else if(b==UNKNOWN)
+					else if (b == UNKNOWN)
 						return -1;
-				if(a == UNKNOWN)
-					if(b == NEGATIVE_INFINITY)
+				if (a == UNKNOWN)
+					if (b == NEGATIVE_INFINITY)
 						return -1;
-					else if(b == POSITIVE_INFINITY)
+					else if (b == POSITIVE_INFINITY)
 						return 1;
 				return 0;
 			}
 		}
-	}
-
-	static {
-		NAN = new SpecialBigFloat(TYPE.NAN);
-		NEGATIVE_INFINITY = new SpecialBigFloat(TYPE.NEGATIVE_INFINITY);
-		POSITIVE_INFINITY = new SpecialBigFloat(TYPE.POSITIVE_INFINITY);
 	}
 }
