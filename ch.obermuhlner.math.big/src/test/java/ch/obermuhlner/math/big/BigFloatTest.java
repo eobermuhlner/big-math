@@ -564,4 +564,16 @@ public class BigFloatTest {
 		assertEquals(context.valueOf(1), min(context.valueOf(2), context.valueOf(1), context.valueOf(3)));
 		assertEquals(context.valueOf(1), min(context.valueOf(1), context.valueOf(2), context.valueOf(3)));
 	}
+
+	@Test
+	public void testSpecial(){
+		Context context = context(MathContext.DECIMAL32);
+		assertEquals(NAN,context.valueOf(Double.NaN));
+		assertEquals(POSITIVE_INFINITY,context.valueOf(Double.POSITIVE_INFINITY));
+		assertEquals(NEGATIVE_INFINITY,context.valueOf(Double.NEGATIVE_INFINITY));
+
+		assertEquals((Double)NAN.toDouble(),(Double)Double.NaN);
+		assertEquals((Double)POSITIVE_INFINITY.toDouble(),(Double)Double.POSITIVE_INFINITY);
+		assertEquals((Double)NEGATIVE_INFINITY.toDouble(),(Double)Double.NEGATIVE_INFINITY);
+	}
 }

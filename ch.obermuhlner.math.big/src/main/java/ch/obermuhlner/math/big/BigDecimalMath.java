@@ -242,13 +242,10 @@ public class BigDecimalMath {
 	 */
 	public static boolean isIntValue(BigDecimal value) {
 		// TODO impl isIntValue() without exceptions
-		try {
-			value.intValueExact();
-			return true;
-		} catch (ArithmeticException ex) {
-			// ignored
-		}
-		return false;
+
+		// @see BigDecimal#intValueExact()
+		long val = value.longValue();
+		return (int)val==val;
 	}
 
 	/**
