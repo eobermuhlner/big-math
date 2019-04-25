@@ -398,14 +398,15 @@ public class BigFloat implements Comparable<BigFloat> {
 	public BigFloat divide(BigFloat x) {
 		if (x.isSpecial())
 			return x;
-		if (this.isZero())
-			if (x.isZero())
+		if(this.isZero())
+			return ZERO;
+		if (x.isZero())
+			if (this.isZero())
 				return NaN; // 0 or -0 / 0 = NaN
-			else if(x.isNegative())
+			else if (this.isNegative())
 				return NEGATIVE_INFINITY;// -N / 0 = -INF
 			else return POSITIVE_INFINITY;// N / 0 = +INF
-		if(x.isZero())
-			return x.divide(this);
+		// 0 / N = 0
 		Context c = max(context, x.context);
 		return c.valueOf(value.divide(x.value, c.mathContext));
 	}
