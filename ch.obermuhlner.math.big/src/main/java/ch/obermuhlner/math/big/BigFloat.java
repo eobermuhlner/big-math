@@ -1,5 +1,6 @@
 package ch.obermuhlner.math.big;
 
+import javax.naming.Context;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -122,16 +123,25 @@ import static ch.obermuhlner.math.big.BigFloat.SpecialBigFloat.TYPE;
  * int intValue = value3.toInt();
  * </pre>
  */
+@SuppressWarnings("WeakerAccess")
 public class BigFloat implements Comparable<BigFloat> {
+	//Cache small BigFloat value
+	public static final BigFloat NEGATIVE_ONE = new BigFloat(BigDecimal.valueOf(-1),
+			new Context(MathContext.DECIMAL64));
 	public static final BigFloat ZERO = new BigFloat(BigDecimal.valueOf(0), new Context(MathContext.DECIMAL64));
-	public static final BigFloat NAN;
+	public static final BigFloat ONE = new BigFloat(BigDecimal.valueOf(1), new Context(MathContext.DECIMAL64));
+
+	public static final BigFloat NaN;
 	public static final BigFloat POSITIVE_INFINITY;
 	public static final BigFloat NEGATIVE_INFINITY;
 
 	static {
-		NAN = new SpecialBigFloat(TYPE.NAN);
-		NEGATIVE_INFINITY = new SpecialBigFloat(TYPE.NEGATIVE_INFINITY);
-		POSITIVE_INFINITY = new SpecialBigFloat(TYPE.POSITIVE_INFINITY);
+		synchronized (SpecialBigFloat.class) {
+			NaN = SpecialBigFloat.NaN;
+			NEGATIVE_INFINITY = SpecialBigFloat.NEGATIVE_INFINITY;
+			//noinspection StaticInitializerReferencesSubClass
+			POSITIVE_INFINITY = SpecialBigFloat.POSITIVE_INFINITY;
+		}
 	}
 
 	private final BigDecimal value;
@@ -165,6 +175,1412 @@ public class BigFloat implements Comparable<BigFloat> {
 	}
 
 	/**
+	 * Returns the {@link BigFloat} that is <code>this + x</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param x the value to add
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#add(BigDecimal, MathContext)
+	 */
+	public BigFloat add(BigFloat x) {
+		Context c = max(context, x.context);
+		return c.valueOf(value.add(x.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this + x</code>.
+	 *
+	 * @param x the value to add
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#add(BigDecimal, MathContext)
+	 */
+	public BigFloat add(BigDecimal x) {
+		return add(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this + x</code>.
+	 *
+	 * @param x the value to add
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#add(BigDecimal, MathContext)
+	 */
+	public BigFloat add(int x) {
+		return add(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this + x</code>.
+	 *
+	 * @param x the value to add
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#add(BigDecimal, MathContext)
+	 */
+	public BigFloat add(long x) {
+		return add(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this + x</code>.
+	 *
+	 * @param x the value to add
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#add(BigDecimal, MathContext)
+	 */
+	public BigFloat add(double x) {
+		return add(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this - x</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param x the value to subtract
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#subtract(BigDecimal, MathContext)
+	 */
+	public BigFloat subtract(BigFloat x) {
+		Context c = max(context, x.context);
+		return c.valueOf(value.subtract(x.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this - x</code>.
+	 *
+	 * @param x the value to subtract
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#subtract(BigDecimal, MathContext)
+	 */
+	public BigFloat subtract(BigDecimal x) {
+		return subtract(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this - x</code>.
+	 *
+	 * @param x the value to subtract
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#subtract(BigDecimal, MathContext)
+	 */
+	public BigFloat subtract(int x) {
+		return subtract(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this - x</code>.
+	 *
+	 * @param x the value to subtract
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#subtract(BigDecimal, MathContext)
+	 */
+	public BigFloat subtract(long x) {
+		return subtract(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this - x</code>.
+	 *
+	 * @param x the value to subtract
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#subtract(BigDecimal, MathContext)
+	 */
+	public BigFloat subtract(double x) {
+		return subtract(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this * x</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param x the value to multiply
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#multiply(BigDecimal, MathContext)
+	 */
+	public BigFloat multiply(BigFloat x) {
+		Context c = max(context, x.context);
+		return c.valueOf(value.multiply(x.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this * x</code>.
+	 *
+	 * @param x the value to multiply
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#multiply(BigDecimal, MathContext)
+	 */
+	public BigFloat multiply(BigDecimal x) {
+		return multiply(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this * x</code>.
+	 *
+	 * @param x the value to multiply
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#multiply(BigDecimal, MathContext)
+	 */
+	public BigFloat multiply(int x) {
+		return multiply(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this * x</code>.
+	 *
+	 * @param x the value to multiply
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#multiply(BigDecimal, MathContext)
+	 */
+	public BigFloat multiply(long x) {
+		return multiply(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this * x</code>.
+	 *
+	 * @param x the value to multiply
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#multiply(BigDecimal, MathContext)
+	 */
+	public BigFloat multiply(double x) {
+		return multiply(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this / x</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context},
+	 * the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#divide(BigDecimal, MathContext)
+	 */
+	public BigFloat divide(BigFloat x) {
+		if (x.isSpecial())
+			if (x.specialType() != TYPE.NaN)
+				return x;
+			else
+				SpecialBigFloat.throwNan();
+		if (this.isZero() || x.isZero())
+			if (this.isZero() && x.isZero())
+				return NaN;
+			else {
+				if ((this.isZero() && x.equals(ONE)) || (x.isZero() && this.equals(ONE)))
+					return POSITIVE_INFINITY;
+				else if ((this.isZero() && x.equals(NEGATIVE_ONE)) || (x.isZero() && this.equals(NEGATIVE_ONE)))
+					return NEGATIVE_INFINITY;
+			}
+		Context c = max(context, x.context);
+		return c.valueOf(value.divide(x.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this / x</code>.
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#divide(BigDecimal, MathContext)
+	 */
+	public BigFloat divide(BigDecimal x) {
+		return divide(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this / x</code>.
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#divide(BigDecimal, MathContext)
+	 */
+	public BigFloat divide(int x) {
+		return divide(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this / x</code>.
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#divide(BigDecimal, MathContext)
+	 */
+	public BigFloat divide(long x) {
+		return divide(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this / x</code>.
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#divide(BigDecimal, MathContext)
+	 */
+	public BigFloat divide(double x) {
+		return divide(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#remainder(BigDecimal, MathContext)
+	 */
+	public BigFloat remainder(BigFloat x) {
+		if (x.isSpecial())
+			if (!x.isNaN())
+				return x;
+			else
+				SpecialBigFloat.throwNan();
+		Context c = max(context, x.context);
+		return c.valueOf(value.remainder(x.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#remainder(BigDecimal, MathContext)
+	 */
+	public BigFloat remainder(BigDecimal x) {
+		return remainder(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#remainder(BigDecimal, MathContext)
+	 */
+	public BigFloat remainder(int x) {
+		return remainder(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#remainder(BigDecimal, MathContext)
+	 */
+	public BigFloat remainder(long x) {
+		return remainder(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
+	 *
+	 * @param x the value to divide with
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimal#remainder(BigDecimal, MathContext)
+	 */
+	public BigFloat remainder(double x) {
+		return remainder(context.valueOf(x));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param y the value of the power
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat pow(BigFloat y) {
+		if (y.isSpecial())
+			if (!y.isNaN())
+				return y;
+			else
+				SpecialBigFloat.throwNan();
+		Context c = max(context, y.context);
+		return c.valueOf(BigDecimalMath.pow(this.value, y.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
+	 *
+	 * @param y the value of the power
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat pow(BigDecimal y) {
+		return pow(context.valueOf(y));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
+	 *
+	 * @param y the value of the power
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat pow(int y) {
+		return pow(context.valueOf(y));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
+	 *
+	 * @param y the value of the power
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat pow(long y) {
+		return pow(context.valueOf(y));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
+	 *
+	 * @param y the value of the power
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat pow(double y) {
+		return pow(context.valueOf(y));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
+	 *
+	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
+	 *
+	 * @param y the value of the root
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat root(BigFloat y) {
+		if (y.isSpecial())
+			if (y.specialType() != TYPE.NaN)
+				return y;
+			else
+				SpecialBigFloat.throwNan();
+		Context c = max(context, y.context);
+		return c.valueOf(BigDecimalMath.root(this.value, y.value, c.mathContext));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
+	 *
+	 * @param y the value of the root
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat root(BigDecimal y) {
+		return root(context.valueOf(y));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
+	 *
+	 * @param y the value of the root
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat root(int y) {
+		return root(context.valueOf(y));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
+	 *
+	 * @param y the value of the root
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat root(long y) {
+		return root(context.valueOf(y));
+	}
+
+	/**
+	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
+	 *
+	 * @param y the value of the root
+	 *
+	 * @return the resulting {@link BigFloat}
+	 *
+	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
+	 */
+	public BigFloat root(double y) {
+		return root(context.valueOf(y));
+	}
+
+	@Override
+	public int hashCode() {
+		return value.stripTrailingZeros().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BigFloat other = (BigFloat) obj;
+
+		return value.compareTo(other.value) == 0;
+		//return Objects.equals(value, other.value) && Objects.equals(context, other.context);
+	}
+
+	/**
+	 * Returns the signum function of this {@link BigFloat}.
+	 *
+	 * @return -1, 0, or 1 as the value of this {@link BigDecimal} is negative, zero, or positive.
+	 */
+	public int signum() {
+		return value.signum();
+	}
+
+	/**
+	 * Returns whether this {@link BigFloat} is negative.
+	 *
+	 * @return <code>true</code> if negative, <code>false</code> if 0 or positive
+	 */
+	public boolean isNegative() {
+		return value.signum() < 0;
+	}
+
+	/**
+	 * Returns whether this {@link BigFloat} is 0.
+	 *
+	 * @return <code>true</code> if 0, <code>false</code> if negative or positive
+	 */
+	public boolean isZero() {
+		return value.signum() == 0;
+	}
+
+	/**
+	 * Returns whether this {@link BigFloat} is positive.
+	 *
+	 * @return <code>true</code> if positive, <code>false</code> if 0 or negative
+	 */
+	public boolean isPositive() {
+		return value.signum() > 0;
+	}
+
+	@Override
+	public int compareTo(BigFloat other) {
+		return value.compareTo(other.value);
+	}
+
+	/**
+	 * Returns whether <code>this</code> value is mathematically equal to the <code>other</code> value.
+	 *
+	 * @param other the other {@link BigFloat} to compare with
+	 *
+	 * @return <code>true</code> if both values are mathematically equal (equivalent to <code>this.compareTo(other) == 0</code>
+	 *
+	 * @see #compareTo(BigFloat)
+	 */
+	public boolean isEqual(BigFloat other) {
+		return compareTo(other) == 0;
+	}
+
+	/**
+	 * Returns whether <code>this</code> value is mathematically less than to the <code>other</code> value.
+	 *
+	 * @param other the other {@link BigFloat} to compare with
+	 *
+	 * @return <code>true</code> <code>this</code> value is mathematically less than to the <code>other</code> value (equivalent to <code>this.compareTo(other) &lt; 0</code>
+	 *
+	 * @see #compareTo(BigFloat)
+	 */
+	public boolean isLessThan(BigFloat other) {
+		return compareTo(other) < 0;
+	}
+
+	/**
+	 * Returns whether <code>this</code> value is mathematically greater than to the <code>other</code> value.
+	 *
+	 * @param other the other {@link BigFloat} to compare with
+	 *
+	 * @return <code>true</code> <code>this</code> value is mathematically greater than to the <code>other</code> value (equivalent to <code>this.compareTo(other) &gt; 0</code>
+	 *
+	 * @see #compareTo(BigFloat)
+	 */
+	public boolean isGreaterThan(BigFloat other) {
+		return compareTo(other) > 0;
+	}
+
+	/**
+	 * Returns whether <code>this</code> value is mathematically less than or equal to the <code>other</code> value.
+	 *
+	 * @param other the other {@link BigFloat} to compare with
+	 *
+	 * @return <code>true</code> <code>this</code> value is mathematically less than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) &lt;= 0</code>
+	 *
+	 * @see #compareTo(BigFloat)
+	 * @see #isLessThan(BigFloat)
+	 * @see #isEqual(BigFloat)
+	 */
+	public boolean isLessThanOrEqual(BigFloat other) {
+		return compareTo(other) <= 0;
+	}
+
+	/**
+	 * Returns whether <code>this</code> value is mathematically greater than or equal to the <code>other</code> value.
+	 *
+	 * @param other the other {@link BigFloat} to compare with
+	 *
+	 * @return <code>true</code> <code>this</code> value is mathematically greater than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) &gt;= 0</code>
+	 *
+	 * @see #compareTo(BigFloat)
+	 * @see #isGreaterThan(BigFloat)
+	 * @see #isEqual(BigFloat)
+	 */
+	public boolean isGreaterThanOrEqual(BigFloat other) {
+		return compareTo(other) >= 0;
+	}
+
+	/**
+	 * Returns whether <code>this</code> value can be represented as <code>int</code>.
+	 *
+	 * @return <code>true</code> if the value can be represented as <code>int</code> value
+	 *
+	 * @see BigDecimalMath#isIntValue(BigDecimal)
+	 */
+	public boolean isIntValue() {
+		return BigDecimalMath.isIntValue(value);
+	}
+
+	/**
+	 * Returns whether <code>this</code> specified {@link BigDecimal} value can be represented as <code>double</code>.
+	 *
+	 * @return <code>true</code> if the value can be represented as <code>double</code> value
+	 *
+	 * @see BigDecimalMath#isDoubleValue(BigDecimal)
+	 */
+	public boolean isDoubleValue() {
+		return BigDecimalMath.isDoubleValue(value);
+	}
+
+	/**
+	 * Returns the mantissa of <code>this</code> value written as <em>mantissa * 10<sup>exponent</sup></em>.
+	 *
+	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
+	 *
+	 * @return the mantissa
+	 *
+	 * @see #getExponent()
+	 * @see BigDecimalMath#mantissa(BigDecimal)
+	 */
+	public BigFloat getMantissa() {
+		return context.valueOf(BigDecimalMath.mantissa(value));
+	}
+
+	/**
+	 * Returns the exponent of <code>this</code> value written as <em>mantissa * 10<sup>exponent</sup></em>.
+	 *
+	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
+	 *
+	 * @return the exponent
+	 *
+	 * @see #getMantissa()
+	 * @see BigDecimalMath#exponent(BigDecimal)
+	 */
+	public BigFloat getExponent() {
+		return context.valueOf(BigDecimalMath.exponent(value));
+	}
+
+	/**
+	 * Returns the integral part of <code>this</code> value (left of the decimal point).
+	 *
+	 * @return the integral part
+	 *
+	 * @see #getFractionalPart()
+	 * @see BigDecimalMath#fractionalPart(BigDecimal)
+	 */
+	public BigFloat getIntegralPart() {
+		return context.valueOf(BigDecimalMath.integralPart(value));
+	}
+
+	/**
+	 * Returns the fractional part of <code>this</code> value (right of the decimal point).
+	 *
+	 * @return the fractional part
+	 *
+	 * @see #getIntegralPart()
+	 * @see BigDecimalMath#fractionalPart(BigDecimal)
+	 */
+	public BigFloat getFractionalPart() {
+		return context.valueOf(BigDecimalMath.fractionalPart(value));
+	}
+
+	/**
+	 * Returns the {@link Context} of <code>this</code> value.
+	 *
+	 * @return the {@link Context}
+	 */
+	public Context getContext() {
+		return context;
+	}
+
+	/**
+	 * Returns <code>this</code> value as a {@link BigDecimal} value.
+	 *
+	 * @return the {@link BigDecimal} value
+	 */
+	public BigDecimal toBigDecimal() {
+		return value;
+	}
+
+	/**
+	 * Returns <code>this</code> value as a <code>double</code> value.
+	 *
+	 * @return the <code>double</code> value
+	 *
+	 * @see BigDecimal#doubleValue()
+	 */
+	public double toDouble() {
+		return value.doubleValue();
+	}
+
+	/**
+	 * Returns <code>this</code> value as a <code>long</code> value.
+	 *
+	 * @return the <code>long</code> value
+	 *
+	 * @see BigDecimal#longValue()
+	 */
+	public long toLong() {
+		return value.longValue();
+	}
+
+	/**
+	 * Returns <code>this</code> value as a <code>int</code> value.
+	 *
+	 * @return the <code>int</code> value
+	 *
+	 * @see BigDecimal#intValue()
+	 */
+	public int toInt() {
+		return value.intValue();
+	}
+
+	@Override
+	public String toString() {
+		return value.toString();
+	}
+
+	public boolean isSpecial() {
+		return false;
+	}
+
+	public TYPE specialType() {
+		return TYPE.NORMAL; //BigFloat is presentable value
+	}
+
+	public boolean isNaN() {
+		return specialType() == TYPE.NaN;
+	}
+
+	public boolean isINFINITY() {
+		return specialType() == TYPE.POSITIVE_INFINITY || specialType() == TYPE.NEGATIVE_INFINITY;
+	}
+
+	/**
+	 * this class handle unrepresentable value in floating-point arithmetic
+	 *
+	 * @author Wireless4024
+	 */
+	@SuppressWarnings("WeakerAccess")
+	public static final class SpecialBigFloat extends BigFloat {
+		public static final BigFloat NaN = new SpecialBigFloat(TYPE.NaN);
+		public static final BigFloat POSITIVE_INFINITY = new SpecialBigFloat(TYPE.POSITIVE_INFINITY);
+		public static final BigFloat NEGATIVE_INFINITY = new SpecialBigFloat(TYPE.NEGATIVE_INFINITY);
+
+		private final TYPE type;
+
+		private SpecialBigFloat(TYPE type) {
+			//we don't need it because
+			//all method has been override
+			super(null, null);
+			this.type = type;
+		}
+
+		private static BigFloat valueOf(TYPE type) {
+			switch (type) {
+				case POSITIVE_INFINITY:
+					return POSITIVE_INFINITY;
+				case NEGATIVE_INFINITY:
+					return NEGATIVE_INFINITY;
+				case NaN:
+					return NaN;
+				default:
+					return ZERO;
+			}
+		}
+
+		private static void checkUnsupported(BigFloat... bigFloats) {
+			for (BigFloat val : bigFloats)
+				if (val.isSpecial())
+					throw new NumberFormatException(val.toString());
+		}
+
+		public static BigFloat ofDouble(double d) {
+			if (Double.isNaN(d))
+				return BigFloat.NaN;
+			else if (d == Double.POSITIVE_INFINITY)
+				return BigFloat.POSITIVE_INFINITY;
+			else if (d == Double.NEGATIVE_INFINITY)
+				return BigFloat.NEGATIVE_INFINITY;
+			else return new BigFloat(BigDecimal.valueOf(d), new Context(MathContext.DECIMAL64));
+		}
+
+		private static void throwNan() {
+			throw new NumberFormatException("Not a Number");
+		}
+
+		private void checkNaN() {
+			if (type == TYPE.NaN)
+				throw new NumberFormatException("Not a Number");
+		}
+
+		private void unsupported() {
+			throw new NumberFormatException(this.toString());
+		}
+
+		@Override
+		public boolean isSpecial() {
+			return true;
+		}
+
+		@Override
+		public TYPE specialType() {
+			return type;
+		}
+
+		@Override
+		public BigFloat add(BigFloat x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat add(BigDecimal x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat add(int x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat add(long x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat add(double x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat subtract(BigFloat x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat subtract(BigDecimal x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat subtract(int x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat subtract(long x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat subtract(double x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat multiply(BigFloat x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat multiply(BigDecimal x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat multiply(int x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat multiply(long x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat multiply(double x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat divide(BigFloat x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat divide(BigDecimal x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat divide(int x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat divide(long x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat divide(double x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat remainder(BigFloat x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat remainder(BigDecimal x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat remainder(int x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat remainder(long x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat remainder(double x) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat pow(BigFloat y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat pow(BigDecimal y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat pow(int y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat pow(long y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat pow(double y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat root(BigFloat y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat root(BigDecimal y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat root(int y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat root(long y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat root(double y) {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(toDouble());
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj instanceof BigFloat)
+				return ((BigFloat) obj).isSpecial() && ((BigFloat) obj).specialType() == this.type;
+			return false;
+		}
+
+		@Override
+		public int signum() {
+			switch (type) {
+				case POSITIVE_INFINITY:
+					return 1;
+				case NEGATIVE_INFINITY:
+					return -1;
+				default:
+					return 0;
+			}
+		}
+
+		@Override
+		public boolean isNegative() {
+			return signum() == -1;
+		}
+
+		@Override
+		public boolean isZero() {
+			return false;//nan or infinity is not a zero
+		}
+
+		@Override
+		public boolean isPositive() {
+			return signum() == 1;
+		}
+
+		@Override
+		public int compareTo(BigFloat other) {
+			checkNaN();
+			return TYPE.compare(type, other.specialType());
+		}
+
+		@Override
+		public boolean isIntValue() {
+			return false;//nope
+		}
+
+		@Override
+		public boolean isDoubleValue() {
+			return false;//nope
+		}
+
+		@Override
+		public BigFloat getMantissa() {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat getExponent() {
+			checkNaN();
+			return this;
+		}
+
+		@Override
+		public BigFloat getIntegralPart() {
+			unsupported();
+			return null;
+		}
+
+		@Override
+		public BigFloat getFractionalPart() {
+			unsupported();
+			return null;
+		}
+
+		@Override
+		public Context getContext() {
+			checkNaN();
+			unsupported();
+			return null;
+		}
+
+		@Override
+		public BigDecimal toBigDecimal() {
+			unsupported();
+			return null;//nope
+		}
+
+		@Override
+		public double toDouble() {
+			switch (type) {
+				case POSITIVE_INFINITY:
+					return Double.POSITIVE_INFINITY;
+				case NEGATIVE_INFINITY:
+					return Double.NEGATIVE_INFINITY;
+				case NaN:
+					return Double.NaN;
+				default:
+					return 0;
+			}
+		}
+
+		@Override
+		public long toLong() {
+			checkNaN();
+			return (long) toDouble();
+		}
+
+		@Override
+		public int toInt() {
+			checkNaN();
+			return (int) toDouble();
+		}
+
+		@Override
+		public String toString() {
+			switch (type) {
+				case NaN:
+					return "NaN";
+				case NEGATIVE_INFINITY:
+					return "-INF";
+				case POSITIVE_INFINITY:
+					return "+INF";
+				default:
+					return "NORMAL";
+			}
+		}
+
+		public static enum TYPE {
+			NaN,
+			POSITIVE_INFINITY,
+			NEGATIVE_INFINITY,
+			NORMAL;
+
+			public static int compare(TYPE a, TYPE b) {
+				//NaN less than everything
+				if (a == NaN)
+					return -1;
+				if (b == NaN)
+					return 1;
+				if (a == POSITIVE_INFINITY)
+					if (b == POSITIVE_INFINITY)
+						return 0;
+					else if (b == NEGATIVE_INFINITY)
+						return 1;
+					else if (b == NORMAL)
+						return 1;
+				if (a == NEGATIVE_INFINITY)
+					if (b == NEGATIVE_INFINITY)
+						return 0;
+					else if (b == POSITIVE_INFINITY)
+						return -1;
+					else if (b == NORMAL)
+						return -1;
+				if (a == NORMAL)
+					if (b == NEGATIVE_INFINITY)
+						return -1;
+					else if (b == POSITIVE_INFINITY)
+						return 1;
+				return 1;
+			}
+		}
+	}
+
+	/**
+	 * Manages the {@link MathContext} and provides factory methods for {@link BigFloat} values.
+	 */
+	public static class Context {
+		private final MathContext mathContext;
+
+		private Context(MathContext mathContext) {
+			this.mathContext = mathContext;
+		}
+
+		/**
+		 * Returns the {@link MathContext} of this context.
+		 *
+		 * @return the {@link MathContext}
+		 */
+		public MathContext getMathContext() {
+			return mathContext;
+		}
+
+		/**
+		 * Returns the precision of this context.
+		 * <p>
+		 * This is equivalent to calling <code>getMathContext().getPrecision()</code>.
+		 *
+		 * @return the precision
+		 */
+		public int getPrecision() {
+			return mathContext.getPrecision();
+		}
+
+		/**
+		 * Returns the {@link RoundingMode} of this context.
+		 * <p>
+		 * This is equivalent to calling <code>getMathContext().getRoundingMode()</code>.
+		 *
+		 * @return the {@link RoundingMode}
+		 */
+		public RoundingMode getRoundingMode() {
+			return mathContext.getRoundingMode();
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source {@link BigFloat} value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(BigFloat value) {
+			return new BigFloat(value.value.round(mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source {@link BigDecimal} value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(BigDecimal value) {
+			return new BigFloat(value.round(mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source int value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(int value) {
+			return new BigFloat(new BigDecimal(value, mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source long value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(long value) {
+			return new BigFloat(new BigDecimal(value, mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source double value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(double value) {
+			if (value == Double.POSITIVE_INFINITY)
+				return POSITIVE_INFINITY;
+			else if (value == Double.NEGATIVE_INFINITY)
+				return NEGATIVE_INFINITY;
+			else if (Double.isNaN(value))
+				return NaN;
+			return new BigFloat(new BigDecimal(String.valueOf(value), mathContext), this);
+		}
+
+		/**
+		 * Creates a {@link BigFloat} value with this context.
+		 *
+		 * @param value the source String value
+		 *
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 *
+		 * @throws NumberFormatException if the value is not a valid number.
+		 */
+		public BigFloat valueOf(String value) {
+			return new BigFloat(new BigDecimal(value, mathContext), this);
+		}
+
+		/**
+		 * Returns the constant pi with this context.
+		 *
+		 * @return pi with this context (rounded to the precision of this context)
+		 *
+		 * @see BigDecimalMath#pi(MathContext)
+		 */
+		public BigFloat pi() {
+			return valueOf(BigDecimalMath.pi(mathContext));
+		}
+
+		/**
+		 * Returns the constant e with this context.
+		 *
+		 * @return e with this context (rounded to the precision of this context)
+		 *
+		 * @see BigDecimalMath#e(MathContext)
+		 */
+		public BigFloat e() {
+			return valueOf(BigDecimalMath.e(mathContext));
+		}
+
+		/**
+		 * Returns the factorial of n with this context.
+		 *
+		 * @param n the value to calculate
+		 *
+		 * @return the factorial of n with this context (rounded to the precision of this context)
+		 *
+		 * @see BigDecimalMath#factorial(int)
+		 */
+		public BigFloat factorial(int n) {
+			return valueOf(BigDecimalMath.factorial(n));
+		}
+
+		@Override
+		public int hashCode() {
+			return mathContext.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Context other = (Context) obj;
+			return mathContext.equals(other.mathContext);
+		}
+
+		@Override
+		public String toString() {
+			return mathContext.toString();
+		}
+	}
+
+	/**
 	 * Returns the {@link BigFloat} that is <code>- this</code>.
 	 *
 	 * @param x the value to negate
@@ -174,6 +1590,14 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimal#negate(MathContext)
 	 */
 	public static BigFloat negate(BigFloat x) {
+		if (x.isSpecial())
+			if (x.specialType() != TYPE.NaN) {
+				if (x.specialType() == TYPE.POSITIVE_INFINITY)
+					return NEGATIVE_INFINITY;
+				else if (x.specialType() == TYPE.POSITIVE_INFINITY)
+					return NEGATIVE_INFINITY;
+			} else
+				SpecialBigFloat.throwNan();
 		return x.context.valueOf(x.value.negate());
 	}
 
@@ -559,1396 +1983,5 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	private static Context max(Context left, Context right) {
 		return left.mathContext.getPrecision() > right.mathContext.getPrecision() ? left : right;
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this + x</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param x the value to add
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#add(BigDecimal, MathContext)
-	 */
-	public BigFloat add(BigFloat x) {
-		Context c = max(context, x.context);
-		return c.valueOf(value.add(x.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this + x</code>.
-	 *
-	 * @param x the value to add
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#add(BigDecimal, MathContext)
-	 */
-	public BigFloat add(BigDecimal x) {
-		return add(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this + x</code>.
-	 *
-	 * @param x the value to add
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#add(BigDecimal, MathContext)
-	 */
-	public BigFloat add(int x) {
-		return add(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this + x</code>.
-	 *
-	 * @param x the value to add
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#add(BigDecimal, MathContext)
-	 */
-	public BigFloat add(long x) {
-		return add(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this + x</code>.
-	 *
-	 * @param x the value to add
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#add(BigDecimal, MathContext)
-	 */
-	public BigFloat add(double x) {
-		return add(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this - x</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param x the value to subtract
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#subtract(BigDecimal, MathContext)
-	 */
-	public BigFloat subtract(BigFloat x) {
-		Context c = max(context, x.context);
-		return c.valueOf(value.subtract(x.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this - x</code>.
-	 *
-	 * @param x the value to subtract
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#subtract(BigDecimal, MathContext)
-	 */
-	public BigFloat subtract(BigDecimal x) {
-		return subtract(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this - x</code>.
-	 *
-	 * @param x the value to subtract
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#subtract(BigDecimal, MathContext)
-	 */
-	public BigFloat subtract(int x) {
-		return subtract(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this - x</code>.
-	 *
-	 * @param x the value to subtract
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#subtract(BigDecimal, MathContext)
-	 */
-	public BigFloat subtract(long x) {
-		return subtract(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this - x</code>.
-	 *
-	 * @param x the value to subtract
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#subtract(BigDecimal, MathContext)
-	 */
-	public BigFloat subtract(double x) {
-		return subtract(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this * x</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param x the value to multiply
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#multiply(BigDecimal, MathContext)
-	 */
-	public BigFloat multiply(BigFloat x) {
-		Context c = max(context, x.context);
-		return c.valueOf(value.multiply(x.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this * x</code>.
-	 *
-	 * @param x the value to multiply
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#multiply(BigDecimal, MathContext)
-	 */
-	public BigFloat multiply(BigDecimal x) {
-		return multiply(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this * x</code>.
-	 *
-	 * @param x the value to multiply
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#multiply(BigDecimal, MathContext)
-	 */
-	public BigFloat multiply(int x) {
-		return multiply(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this * x</code>.
-	 *
-	 * @param x the value to multiply
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#multiply(BigDecimal, MathContext)
-	 */
-	public BigFloat multiply(long x) {
-		return multiply(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this * x</code>.
-	 *
-	 * @param x the value to multiply
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#multiply(BigDecimal, MathContext)
-	 */
-	public BigFloat multiply(double x) {
-		return multiply(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this / x</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#divide(BigDecimal, MathContext)
-	 */
-	public BigFloat divide(BigFloat x) {
-		if (x.isSpecial())
-			if (x.specialType() != TYPE.NAN)
-				return x;
-			else
-				SpecialBigFloat.throwNan();
-		Context c = max(context, x.context);
-		return c.valueOf(value.divide(x.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this / x</code>.
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#divide(BigDecimal, MathContext)
-	 */
-	public BigFloat divide(BigDecimal x) {
-		return divide(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this / x</code>.
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#divide(BigDecimal, MathContext)
-	 */
-	public BigFloat divide(int x) {
-		return divide(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this / x</code>.
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#divide(BigDecimal, MathContext)
-	 */
-	public BigFloat divide(long x) {
-		return divide(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this / x</code>.
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#divide(BigDecimal, MathContext)
-	 */
-	public BigFloat divide(double x) {
-		return divide(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#remainder(BigDecimal, MathContext)
-	 */
-	public BigFloat remainder(BigFloat x) {
-		if (x.isSpecial())
-			if (x.specialType() != TYPE.NAN)
-				return x;
-			else
-				SpecialBigFloat.throwNan();
-		Context c = max(context, x.context);
-		return c.valueOf(value.remainder(x.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#remainder(BigDecimal, MathContext)
-	 */
-	public BigFloat remainder(BigDecimal x) {
-		return remainder(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#remainder(BigDecimal, MathContext)
-	 */
-	public BigFloat remainder(int x) {
-		return remainder(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#remainder(BigDecimal, MathContext)
-	 */
-	public BigFloat remainder(long x) {
-		return remainder(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the remainder when dividing <code>this</code> by <code>x</code>.
-	 *
-	 * @param x the value to divide with
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimal#remainder(BigDecimal, MathContext)
-	 */
-	public BigFloat remainder(double x) {
-		return remainder(context.valueOf(x));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param y the value of the power
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat pow(BigFloat y) {
-		if (y.isSpecial())
-			if (y.specialType() != TYPE.NAN)
-				return y;
-			else
-				SpecialBigFloat.throwNan();
-		Context c = max(context, y.context);
-		return c.valueOf(BigDecimalMath.pow(this.value, y.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
-	 *
-	 * @param y the value of the power
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat pow(BigDecimal y) {
-		return pow(context.valueOf(y));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
-	 *
-	 * @param y the value of the power
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat pow(int y) {
-		return pow(context.valueOf(y));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
-	 *
-	 * @param y the value of the power
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat pow(long y) {
-		return pow(context.valueOf(y));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is <code>this</code> to the power of <code>y</code>.
-	 *
-	 * @param y the value of the power
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat pow(double y) {
-		return pow(context.valueOf(y));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
-	 *
-	 * <p>If the two values do not have the same {@link Context}, the result will contain the {@link Context} with the larger precision.</p>
-	 *
-	 * @param y the value of the root
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat root(BigFloat y) {
-		if (y.isSpecial())
-			if (y.specialType() != TYPE.NAN)
-				return y;
-			else
-				SpecialBigFloat.throwNan();
-		Context c = max(context, y.context);
-		return c.valueOf(BigDecimalMath.root(this.value, y.value, c.mathContext));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
-	 *
-	 * @param y the value of the root
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat root(BigDecimal y) {
-		return root(context.valueOf(y));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
-	 *
-	 * @param y the value of the root
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat root(int y) {
-		return root(context.valueOf(y));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
-	 *
-	 * @param y the value of the root
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat root(long y) {
-		return root(context.valueOf(y));
-	}
-
-	/**
-	 * Returns the {@link BigFloat} that is the <code>y</code>th root of <code>this</code>.
-	 *
-	 * @param y the value of the root
-	 *
-	 * @return the resulting {@link BigFloat}
-	 *
-	 * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
-	 */
-	public BigFloat root(double y) {
-		return root(context.valueOf(y));
-	}
-
-	@Override
-	public int hashCode() {
-		return value.stripTrailingZeros().hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		BigFloat other = (BigFloat) obj;
-
-		return value.compareTo(other.value) == 0;
-		//return Objects.equals(value, other.value) && Objects.equals(context, other.context);
-	}
-
-	/**
-	 * Returns the signum function of this {@link BigFloat}.
-	 *
-	 * @return -1, 0, or 1 as the value of this {@link BigDecimal} is negative, zero, or positive.
-	 */
-	public int signum() {
-		return value.signum();
-	}
-
-	/**
-	 * Returns whether this {@link BigFloat} is negative.
-	 *
-	 * @return <code>true</code> if negative, <code>false</code> if 0 or positive
-	 */
-	public boolean isNegative() {
-		return value.signum() < 0;
-	}
-
-	/**
-	 * Returns whether this {@link BigFloat} is 0.
-	 *
-	 * @return <code>true</code> if 0, <code>false</code> if negative or positive
-	 */
-	public boolean isZero() {
-		return value.signum() == 0;
-	}
-
-	/**
-	 * Returns whether this {@link BigFloat} is positive.
-	 *
-	 * @return <code>true</code> if positive, <code>false</code> if 0 or negative
-	 */
-	public boolean isPositive() {
-		return value.signum() > 0;
-	}
-
-	@Override
-	public int compareTo(BigFloat other) {
-		return value.compareTo(other.value);
-	}
-
-	/**
-	 * Returns whether <code>this</code> value is mathematically equal to the <code>other</code> value.
-	 *
-	 * @param other the other {@link BigFloat} to compare with
-	 *
-	 * @return <code>true</code> if both values are mathematically equal (equivalent to <code>this.compareTo(other) == 0</code>
-	 *
-	 * @see #compareTo(BigFloat)
-	 */
-	public boolean isEqual(BigFloat other) {
-		return compareTo(other) == 0;
-	}
-
-	/**
-	 * Returns whether <code>this</code> value is mathematically less than to the <code>other</code> value.
-	 *
-	 * @param other the other {@link BigFloat} to compare with
-	 *
-	 * @return <code>true</code> <code>this</code> value is mathematically less than to the <code>other</code> value (equivalent to <code>this.compareTo(other) &lt; 0</code>
-	 *
-	 * @see #compareTo(BigFloat)
-	 */
-	public boolean isLessThan(BigFloat other) {
-		return compareTo(other) < 0;
-	}
-
-	/**
-	 * Returns whether <code>this</code> value is mathematically greater than to the <code>other</code> value.
-	 *
-	 * @param other the other {@link BigFloat} to compare with
-	 *
-	 * @return <code>true</code> <code>this</code> value is mathematically greater than to the <code>other</code> value (equivalent to <code>this.compareTo(other) &gt; 0</code>
-	 *
-	 * @see #compareTo(BigFloat)
-	 */
-	public boolean isGreaterThan(BigFloat other) {
-		return compareTo(other) > 0;
-	}
-
-	/**
-	 * Returns whether <code>this</code> value is mathematically less than or equal to the <code>other</code> value.
-	 *
-	 * @param other the other {@link BigFloat} to compare with
-	 *
-	 * @return <code>true</code> <code>this</code> value is mathematically less than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) &lt;= 0</code>
-	 *
-	 * @see #compareTo(BigFloat)
-	 * @see #isLessThan(BigFloat)
-	 * @see #isEqual(BigFloat)
-	 */
-	public boolean isLessThanOrEqual(BigFloat other) {
-		return compareTo(other) <= 0;
-	}
-
-	/**
-	 * Returns whether <code>this</code> value is mathematically greater than or equal to the <code>other</code> value.
-	 *
-	 * @param other the other {@link BigFloat} to compare with
-	 *
-	 * @return <code>true</code> <code>this</code> value is mathematically greater than or equal to the <code>other</code> value (equivalent to <code>this.compareTo(other) &gt;= 0</code>
-	 *
-	 * @see #compareTo(BigFloat)
-	 * @see #isGreaterThan(BigFloat)
-	 * @see #isEqual(BigFloat)
-	 */
-	public boolean isGreaterThanOrEqual(BigFloat other) {
-		return compareTo(other) >= 0;
-	}
-
-	/**
-	 * Returns whether <code>this</code> value can be represented as <code>int</code>.
-	 *
-	 * @return <code>true</code> if the value can be represented as <code>int</code> value
-	 *
-	 * @see BigDecimalMath#isIntValue(BigDecimal)
-	 */
-	public boolean isIntValue() {
-		return BigDecimalMath.isIntValue(value);
-	}
-
-	/**
-	 * Returns whether <code>this</code> specified {@link BigDecimal} value can be represented as <code>double</code>.
-	 *
-	 * @return <code>true</code> if the value can be represented as <code>double</code> value
-	 *
-	 * @see BigDecimalMath#isDoubleValue(BigDecimal)
-	 */
-	public boolean isDoubleValue() {
-		return BigDecimalMath.isDoubleValue(value);
-	}
-
-	/**
-	 * Returns the mantissa of <code>this</code> value written as <em>mantissa * 10<sup>exponent</sup></em>.
-	 *
-	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
-	 *
-	 * @return the mantissa
-	 *
-	 * @see #getExponent()
-	 * @see BigDecimalMath#mantissa(BigDecimal)
-	 */
-	public BigFloat getMantissa() {
-		return context.valueOf(BigDecimalMath.mantissa(value));
-	}
-
-	/**
-	 * Returns the exponent of <code>this</code> value written as <em>mantissa * 10<sup>exponent</sup></em>.
-	 *
-	 * <p>The mantissa is defined as having exactly 1 digit before the decimal point.</p>
-	 *
-	 * @return the exponent
-	 *
-	 * @see #getMantissa()
-	 * @see BigDecimalMath#exponent(BigDecimal)
-	 */
-	public BigFloat getExponent() {
-		return context.valueOf(BigDecimalMath.exponent(value));
-	}
-
-	/**
-	 * Returns the integral part of <code>this</code> value (left of the decimal point).
-	 *
-	 * @return the integral part
-	 *
-	 * @see #getFractionalPart()
-	 * @see BigDecimalMath#fractionalPart(BigDecimal)
-	 */
-	public BigFloat getIntegralPart() {
-		return context.valueOf(BigDecimalMath.integralPart(value));
-	}
-
-	/**
-	 * Returns the fractional part of <code>this</code> value (right of the decimal point).
-	 *
-	 * @return the fractional part
-	 *
-	 * @see #getIntegralPart()
-	 * @see BigDecimalMath#fractionalPart(BigDecimal)
-	 */
-	public BigFloat getFractionalPart() {
-		return context.valueOf(BigDecimalMath.fractionalPart(value));
-	}
-
-	/**
-	 * Returns the {@link Context} of <code>this</code> value.
-	 *
-	 * @return the {@link Context}
-	 */
-	public Context getContext() {
-		return context;
-	}
-
-	/**
-	 * Returns <code>this</code> value as a {@link BigDecimal} value.
-	 *
-	 * @return the {@link BigDecimal} value
-	 */
-	public BigDecimal toBigDecimal() {
-		return value;
-	}
-
-	/**
-	 * Returns <code>this</code> value as a <code>double</code> value.
-	 *
-	 * @return the <code>double</code> value
-	 *
-	 * @see BigDecimal#doubleValue()
-	 */
-	public double toDouble() {
-		return value.doubleValue();
-	}
-
-	/**
-	 * Returns <code>this</code> value as a <code>long</code> value.
-	 *
-	 * @return the <code>long</code> value
-	 *
-	 * @see BigDecimal#longValue()
-	 */
-	public long toLong() {
-		return value.longValue();
-	}
-
-	/**
-	 * Returns <code>this</code> value as a <code>int</code> value.
-	 *
-	 * @return the <code>int</code> value
-	 *
-	 * @see BigDecimal#intValue()
-	 */
-	public int toInt() {
-		return value.intValue();
-	}
-
-	@Override
-	public String toString() {
-		return value.toString();
-	}
-
-	public boolean isSpecial() {
-		return false;
-	}
-
-	public TYPE specialType() {
-		return TYPE.UNKNOWN; //BigFloat is presentable value
-	}
-
-	/**
-	 * Manages the {@link MathContext} and provides factory methods for {@link BigFloat} values.
-	 */
-	public static class Context {
-		private final MathContext mathContext;
-
-		private Context(MathContext mathContext) {
-			this.mathContext = mathContext;
-		}
-
-		/**
-		 * Returns the {@link MathContext} of this context.
-		 *
-		 * @return the {@link MathContext}
-		 */
-		public MathContext getMathContext() {
-			return mathContext;
-		}
-
-		/**
-		 * Returns the precision of this context.
-		 * <p>
-		 * This is equivalent to calling <code>getMathContext().getPrecision()</code>.
-		 *
-		 * @return the precision
-		 */
-		public int getPrecision() {
-			return mathContext.getPrecision();
-		}
-
-		/**
-		 * Returns the {@link RoundingMode} of this context.
-		 * <p>
-		 * This is equivalent to calling <code>getMathContext().getRoundingMode()</code>.
-		 *
-		 * @return the {@link RoundingMode}
-		 */
-		public RoundingMode getRoundingMode() {
-			return mathContext.getRoundingMode();
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source {@link BigFloat} value
-		 *
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(BigFloat value) {
-			return new BigFloat(value.value.round(mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source {@link BigDecimal} value
-		 *
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(BigDecimal value) {
-			return new BigFloat(value.round(mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source int value
-		 *
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(int value) {
-			return new BigFloat(new BigDecimal(value, mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source long value
-		 *
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(long value) {
-			return new BigFloat(new BigDecimal(value, mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source double value
-		 *
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 */
-		public BigFloat valueOf(double value) {
-			if (value == Double.POSITIVE_INFINITY)
-				return POSITIVE_INFINITY;
-			else if (value == Double.NEGATIVE_INFINITY)
-				return NEGATIVE_INFINITY;
-			else if (Double.isNaN(value))
-				return NAN;
-			return new BigFloat(new BigDecimal(String.valueOf(value), mathContext), this);
-		}
-
-		/**
-		 * Creates a {@link BigFloat} value with this context.
-		 *
-		 * @param value the source String value
-		 *
-		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
-		 *
-		 * @throws NumberFormatException if the value is not a valid number.
-		 */
-		public BigFloat valueOf(String value) {
-			return new BigFloat(new BigDecimal(value, mathContext), this);
-		}
-
-		/**
-		 * Returns the constant pi with this context.
-		 *
-		 * @return pi with this context (rounded to the precision of this context)
-		 *
-		 * @see BigDecimalMath#pi(MathContext)
-		 */
-		public BigFloat pi() {
-			return valueOf(BigDecimalMath.pi(mathContext));
-		}
-
-		/**
-		 * Returns the constant e with this context.
-		 *
-		 * @return e with this context (rounded to the precision of this context)
-		 *
-		 * @see BigDecimalMath#e(MathContext)
-		 */
-		public BigFloat e() {
-			return valueOf(BigDecimalMath.e(mathContext));
-		}
-
-		/**
-		 * Returns the factorial of n with this context.
-		 *
-		 * @param n the value to calculate
-		 *
-		 * @return the factorial of n with this context (rounded to the precision of this context)
-		 *
-		 * @see BigDecimalMath#factorial(int)
-		 */
-		public BigFloat factorial(int n) {
-			return valueOf(BigDecimalMath.factorial(n));
-		}
-
-		@Override
-		public int hashCode() {
-			return mathContext.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Context other = (Context) obj;
-			return mathContext.equals(other.mathContext);
-		}
-
-		@Override
-		public String toString() {
-			return mathContext.toString();
-		}
-	}
-
-	/**
-	 * this class handle unrepresentable value in floating-point arithmetic
-	 *
-	 * @author Wireless4024
-	 */
-	@SuppressWarnings("WeakerAccess")
-	public static class SpecialBigFloat extends BigFloat {
-		public static final BigFloat UNKNOWN = ZERO;
-		public static final BigFloat NAN = new SpecialBigFloat(TYPE.NAN);
-		public static final BigFloat POSITIVE_INFINITY = new SpecialBigFloat(TYPE.POSITIVE_INFINITY);
-		public static final BigFloat NEGATIVE_INFINITY = new SpecialBigFloat(TYPE.NEGATIVE_INFINITY);
-		private static final BigFloat.Context THIS_CONTEXT = new Context(MathContext.DECIMAL64);
-
-		private final TYPE type;
-
-		private SpecialBigFloat(TYPE type) {
-			//we don't need it because
-			//all method has been override
-			super(null, null);
-			this.type = type;
-		}
-
-		private static BigFloat valueOf(TYPE type) {
-			switch (type) {
-				case POSITIVE_INFINITY:
-					return POSITIVE_INFINITY;
-				case NEGATIVE_INFINITY:
-					return NEGATIVE_INFINITY;
-				case NAN:
-					return NAN;
-				default:
-					return UNKNOWN;
-			}
-		}
-
-		private static void checkUnsupported(BigFloat... bigFloats) {
-			for (BigFloat val : bigFloats)
-				if (val.isSpecial())
-					throw new NumberFormatException(val.toString());
-		}
-
-		public static BigFloat ofDouble(double d) {
-			if (Double.isNaN(d))
-				return BigFloat.NAN;
-			else if (d == Double.POSITIVE_INFINITY)
-				return BigFloat.POSITIVE_INFINITY;
-			else if (d == Double.NEGATIVE_INFINITY)
-				return BigFloat.NEGATIVE_INFINITY;
-			else return new BigFloat(BigDecimal.valueOf(d), new Context(MathContext.DECIMAL64));
-		}
-
-		private static void throwNan() {
-			throw new NumberFormatException("Not A Number");
-		}
-
-		private void checkNAN() {
-			if (type == TYPE.NAN)
-				throw new NumberFormatException("Not A Number");
-		}
-
-		private void unsupported() {
-			throw new NumberFormatException(this.toString());
-		}
-
-		@Override
-		public boolean isSpecial() {
-			return true;
-		}
-
-		@Override
-		public TYPE specialType() {
-			return type;
-		}
-
-		@Override
-		public BigFloat add(BigFloat x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat add(BigDecimal x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat add(int x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat add(long x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat add(double x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat subtract(BigFloat x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat subtract(BigDecimal x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat subtract(int x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat subtract(long x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat subtract(double x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat multiply(BigFloat x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat multiply(BigDecimal x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat multiply(int x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat multiply(long x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat multiply(double x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat divide(BigFloat x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat divide(BigDecimal x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat divide(int x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat divide(long x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat divide(double x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(BigFloat x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(BigDecimal x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(int x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(long x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(double x) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat pow(BigFloat y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat pow(BigDecimal y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat pow(int y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat pow(long y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat pow(double y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat root(BigFloat y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat root(BigDecimal y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat root(int y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat root(long y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat root(double y) {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(toDouble());
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj instanceof BigFloat)
-				return ((BigFloat) obj).isSpecial() && ((BigFloat) obj).specialType() == this.type;
-			return false;
-		}
-
-		@Override
-		public int signum() {
-			switch (type) {
-				case POSITIVE_INFINITY:
-					return 1;
-				case NEGATIVE_INFINITY:
-					return -1;
-				default:
-					return 0;
-			}
-		}
-
-		@Override
-		public boolean isNegative() {
-			return signum() == -1;
-		}
-
-		@Override
-		public boolean isZero() {
-			return false;//nan or infinity is not a zero
-		}
-
-		@Override
-		public boolean isPositive() {
-			return signum() == 1;
-		}
-
-		@Override
-		public int compareTo(BigFloat other) {
-			checkNAN();
-			return TYPE.compare(type, other.specialType());
-		}
-
-		@Override
-		public boolean isIntValue() {
-			return false;//nope
-		}
-
-		@Override
-		public boolean isDoubleValue() {
-			return false;//nope
-		}
-
-		@Override
-		public BigFloat getMantissa() {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat getExponent() {
-			checkNAN();
-			return this;
-		}
-
-		@Override
-		public BigFloat getIntegralPart() {
-			unsupported();
-			return null;
-		}
-
-		@Override
-		public BigFloat getFractionalPart() {
-			unsupported();
-			return null;
-		}
-
-		@Override
-		public Context getContext() {
-			checkNAN();
-			unsupported();
-			return THIS_CONTEXT;
-		}
-
-		@Override
-		public BigDecimal toBigDecimal() {
-			unsupported();
-			return null;//nope
-		}
-
-		@Override
-		public double toDouble() {
-			switch (type) {
-				case POSITIVE_INFINITY:
-					return Double.POSITIVE_INFINITY;
-				case NEGATIVE_INFINITY:
-					return Double.NEGATIVE_INFINITY;
-				default:
-					return Double.NaN;
-			}
-		}
-
-		@Override
-		public long toLong() {
-			checkNAN();
-			return (long) toDouble();
-		}
-
-		@Override
-		public int toInt() {
-			checkNAN();
-			return (int) toDouble();
-		}
-
-		@Override
-		public String toString() {
-			switch (type) {
-				case NAN:
-					return "NAN";
-				case NEGATIVE_INFINITY:
-					return "-INF";
-				case POSITIVE_INFINITY:
-					return "+INF";
-				default:
-					return "UNKNOWN";
-			}
-		}
-
-		public enum TYPE {
-			NAN,
-			POSITIVE_INFINITY,
-			NEGATIVE_INFINITY,
-			/**
-			 * Unknown type mean it's normal value
-			 */
-			UNKNOWN;
-
-			public static int compare(TYPE a, TYPE b) {
-				//NAN less than everything
-				if (a == NAN)
-					return -1;
-				if (b == NAN)
-					return 1;
-				if (a == POSITIVE_INFINITY)
-					if (b == POSITIVE_INFINITY)
-						return 0;
-					else if (b == NEGATIVE_INFINITY)
-						return 1;
-					else if (b == UNKNOWN)
-						return 1;
-				if (a == NEGATIVE_INFINITY)
-					if (b == NEGATIVE_INFINITY)
-						return 0;
-					else if (b == POSITIVE_INFINITY)
-						return -1;
-					else if (b == UNKNOWN)
-						return -1;
-				if (a == UNKNOWN)
-					if (b == NEGATIVE_INFINITY)
-						return -1;
-					else if (b == POSITIVE_INFINITY)
-						return 1;
-				return 0;
-			}
-		}
 	}
 }
