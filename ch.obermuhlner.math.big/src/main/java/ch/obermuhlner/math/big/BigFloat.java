@@ -398,7 +398,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	public BigFloat divide(BigFloat x) {
 		if (x.isSpecial())
 			return x;
-		if(this.isZero())
+		if (this.isZero() && !x.isZero())
 			return ZERO;
 		if (x.isZero())
 			if (this.isZero())
