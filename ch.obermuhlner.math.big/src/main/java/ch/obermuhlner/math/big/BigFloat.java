@@ -185,6 +185,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimal#add(BigDecimal, MathContext)
 	 */
 	public BigFloat add(BigFloat x) {
+		if (x.isSpecial())
+			return x;
 		Context c = max(context, x.context);
 		return c.valueOf(value.add(x.value, c.mathContext));
 	}
@@ -253,6 +255,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimal#subtract(BigDecimal, MathContext)
 	 */
 	public BigFloat subtract(BigFloat x) {
+		if (x.isSpecial())
+			return x;
 		Context c = max(context, x.context);
 		return c.valueOf(value.subtract(x.value, c.mathContext));
 	}
@@ -321,6 +325,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimal#multiply(BigDecimal, MathContext)
 	 */
 	public BigFloat multiply(BigFloat x) {
+		if (x.isSpecial())
+			return x;
 		Context c = max(context, x.context);
 		return c.valueOf(value.multiply(x.value, c.mathContext));
 	}
@@ -391,7 +397,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public BigFloat divide(BigFloat x) {
 		if (x.isSpecial())
-			return x.divide(this);
+			return x;
 		if (this.isZero())
 			if (x.isZero())
 				return NaN; // 0 or -0 / 0 = NaN
@@ -469,7 +475,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public BigFloat remainder(BigFloat x) {
 		if (x.isSpecial())
-			return x.remainder(this);
+			return x;
 		Context c = max(context, x.context);
 		return c.valueOf(value.remainder(x.value, c.mathContext));
 	}
@@ -539,7 +545,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public BigFloat pow(BigFloat y) {
 		if (y.isSpecial())
-			return y.pow(this);
+			return y;
 		Context c = max(context, y.context);
 		return c.valueOf(BigDecimalMath.pow(this.value, y.value, c.mathContext));
 	}
@@ -609,7 +615,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public BigFloat root(BigFloat y) {
 		if (y.isSpecial())
-			return y.root(this);
+			return y;
 		Context c = max(context, y.context);
 		return c.valueOf(BigDecimalMath.root(this.value, y.value, c.mathContext));
 	}
@@ -967,7 +973,7 @@ public class BigFloat implements Comparable<BigFloat> {
 			return ifNotNaN;
 		}
 
-		private BigFloat unsupported() {
+		private void unsupported() {
 			throw new NumberFormatException(this.toString());
 		}
 
@@ -1224,12 +1230,12 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public BigFloat getIntegralPart() {
-			return unsupported();
+			return this;
 		}
 
 		@Override
 		public BigFloat getFractionalPart() {
-			return unsupported();
+			return this;
 		}
 
 		@Override
@@ -1594,6 +1600,10 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#log(BigDecimal, MathContext)
 	 */
 	public static BigFloat log(BigFloat x) {
+		if (x.isSpecial())
+			return x;
+		if(x.isZero())
+			return NEGATIVE_INFINITY;
 		return x.context.valueOf(BigDecimalMath.log(x.value, x.context.mathContext));
 	}
 
@@ -1646,6 +1656,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#sqrt(BigDecimal, MathContext)
 	 */
 	public static BigFloat sqrt(BigFloat x) {
+		if(x.isEqual(NEGATIVE_ONE))
+			return NaN;
 		return x.context.valueOf(BigDecimalMath.sqrt(x.value, x.context.mathContext));
 	}
 
