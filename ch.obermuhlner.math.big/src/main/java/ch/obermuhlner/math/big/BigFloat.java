@@ -186,7 +186,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public BigFloat add(BigFloat x) {
 		if (x.isSpecial())
-			return x;
+			return x.add(this);
 		Context c = max(context, x.context);
 		return c.valueOf(value.add(x.value, c.mathContext));
 	}
@@ -256,7 +256,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public BigFloat subtract(BigFloat x) {
 		if (x.isSpecial())
-			return x;
+			return negate(x).add(this);
 		Context c = max(context, x.context);
 		return c.valueOf(value.subtract(x.value, c.mathContext));
 	}
@@ -326,7 +326,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public BigFloat multiply(BigFloat x) {
 		if (x.isSpecial())
-			return x;
+			return x.multiply(this);
 		Context c = max(context, x.context);
 		return c.valueOf(value.multiply(x.value, c.mathContext));
 	}
@@ -396,16 +396,25 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimal#divide(BigDecimal, MathContext)
 	 */
 	public BigFloat divide(BigFloat x) {
-		if (x.isSpecial())
-			return x;
-		if (this.isZero() && !x.isZero())
+		if (x.isSpecial()) {
+			if (x == NaN) {
+				return NaN;
+			} else {
+				return context.valueOf(0);
+			}
+		}
+		if (this.isZero() && !x.isZero()) {
 			return ZERO;
-		if (x.isZero())
-			if (this.isZero())
+		}
+		if (x.isZero()) {
+			if (this.isZero()) {
 				return NaN; // 0 or -0 / 0 = NaN
-			else if (this.isNegative())
+			} else if (this.isNegative()) {
 				return NEGATIVE_INFINITY;// -N / 0 = -INF
-			else return POSITIVE_INFINITY;// N / 0 = +INF
+			} else {
+				return POSITIVE_INFINITY;// N / 0 = +INF
+			}
+		}
 		// 0 / N = 0
 		Context c = max(context, x.context);
 		return c.valueOf(value.divide(x.value, c.mathContext));
@@ -990,7 +999,16 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public BigFloat add(BigFloat x) {
-			return this;
+			if (!x.isSpecial()) {
+				return this;
+			}
+			if (this == POSITIVE_INFINITY && x == POSITIVE_INFINITY) {
+				return POSITIVE_INFINITY;
+			}
+			if (this == NEGATIVE_INFINITY && x == NEGATIVE_INFINITY) {
+				return NEGATIVE_INFINITY;
+			}
+			return NaN;
 		}
 
 		@Override
@@ -1015,7 +1033,16 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public BigFloat subtract(BigFloat x) {
-			return this;
+			if (!x.isSpecial()) {
+				return this;
+			}
+			if (this == POSITIVE_INFINITY && x == NEGATIVE_INFINITY) {
+				return POSITIVE_INFINITY;
+			}
+			if (this == NEGATIVE_INFINITY && x == POSITIVE_INFINITY) {
+				return NEGATIVE_INFINITY;
+			}
+			return NaN;
 		}
 
 		@Override
@@ -1040,7 +1067,13 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public BigFloat multiply(BigFloat x) {
-			return this;
+			if (x.isZero() || x == NaN) {
+				return NaN;
+			} else if (x.isNegative()) {
+				return negate(this);
+			} else {
+				return this;
+			}
 		}
 
 		@Override
@@ -1065,7 +1098,13 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public BigFloat divide(BigFloat x) {
-			return this;
+			if (x == NaN || (this.isInfinity() && x.isInfinity())) {
+				return NaN;
+			} else if (x.isNegative()) {
+				return negate(this);
+			} else {
+				return this;
+			}
 		}
 
 		@Override
