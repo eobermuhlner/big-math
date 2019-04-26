@@ -926,12 +926,12 @@ public class BigFloat implements Comparable<BigFloat> {
 		return value.toString();
 	}
 
-	boolean isSpecial() {
+    protected boolean isSpecial() {
 		return false;
 	}
 
-	SpecialBigFloat.Type specialType() {
-		return SpecialBigFloat.Type.NORMAL; //BigFloat is presentable value
+    protected SpecialBigFloat.Type specialType() {
+		return SpecialBigFloat.Type.NORMAL;
 	}
 
 	public boolean isNaN() {
@@ -950,7 +950,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	@SuppressWarnings("WeakerAccess")
 	private static final class SpecialBigFloat extends BigFloat {
 
-	    private static Context DUMMY_CONTEXT = BigFloat.context(MathContext.DECIMAL32);
+	    private static final Context DUMMY_CONTEXT = BigFloat.context(MathContext.DECIMAL32);
 
 		private final Type type;
 
@@ -966,12 +966,12 @@ public class BigFloat implements Comparable<BigFloat> {
 		}
 
 		@Override
-		public boolean isSpecial() {
+        protected boolean isSpecial() {
 			return true;
 		}
 
 		@Override
-		public Type specialType() {
+		protected Type specialType() {
 			return type;
 		}
 
@@ -1093,12 +1093,12 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public boolean isIntValue() {
-			return false;//nope
+			return false;
 		}
 
 		@Override
 		public boolean isDoubleValue() {
-			return false;//nope
+			return false;
 		}
 
 		@Override
