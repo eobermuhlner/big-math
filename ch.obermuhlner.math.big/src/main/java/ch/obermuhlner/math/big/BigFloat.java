@@ -5,8 +5,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import static ch.obermuhlner.math.big.BigFloat.SpecialBigFloat.TYPE;
-
 /**
  * A wrapper around {@link BigDecimal} which simplifies the consistent usage of the {@link MathContext}
  * and provides a simpler API for calculations.
@@ -124,24 +122,11 @@ import static ch.obermuhlner.math.big.BigFloat.SpecialBigFloat.TYPE;
  */
 @SuppressWarnings("WeakerAccess")
 public class BigFloat implements Comparable<BigFloat> {
-	//Cache small BigFloat value
-	public static final BigFloat NEGATIVE_ONE = new BigFloat(BigDecimal.valueOf(-1),
-			new Context(MathContext.DECIMAL64));
-	public static final BigFloat ZERO = new BigFloat(BigDecimal.valueOf(0), new Context(MathContext.DECIMAL64));
-	public static final BigFloat ONE = new BigFloat(BigDecimal.valueOf(1), new Context(MathContext.DECIMAL64));
+	private static final BigFloat NEGATIVE_ONE = BigFloat.context(1).valueOf(-1);
 
-	public static final BigFloat NaN;
-	public static final BigFloat POSITIVE_INFINITY;
-	public static final BigFloat NEGATIVE_INFINITY;
-
-	static {
-		synchronized (SpecialBigFloat.class) {
-			NaN = SpecialBigFloat.NaN;
-			NEGATIVE_INFINITY = SpecialBigFloat.NEGATIVE_INFINITY;
-			//noinspection StaticInitializerReferencesSubClass
-			POSITIVE_INFINITY = SpecialBigFloat.POSITIVE_INFINITY;
-		}
-	}
+	public static final BigFloat NaN = new SpecialBigFloat(SpecialBigFloat.Type.NaN);
+	public static final BigFloat POSITIVE_INFINITY = new SpecialBigFloat(SpecialBigFloat.Type.POSITIVE_INFINITY);
+	public static final BigFloat NEGATIVE_INFINITY = new SpecialBigFloat(SpecialBigFloat.Type.NEGATIVE_INFINITY);
 
 	private final BigDecimal value;
 	private final Context context;
@@ -404,7 +389,7 @@ public class BigFloat implements Comparable<BigFloat> {
 			}
 		}
 		if (this.isZero() && !x.isZero()) {
-			return ZERO;
+			return context.valueOf(0);
 		}
 		if (x.isZero()) {
 			if (this.isZero()) {
@@ -941,12 +926,12 @@ public class BigFloat implements Comparable<BigFloat> {
 		return value.toString();
 	}
 
-	public boolean isSpecial() {
+	boolean isSpecial() {
 		return false;
 	}
 
-	public TYPE specialType() {
-		return TYPE.NORMAL; //BigFloat is presentable value
+	SpecialBigFloat.Type specialType() {
+		return SpecialBigFloat.Type.NORMAL; //BigFloat is presentable value
 	}
 
 	public boolean isNaN() {
@@ -963,14 +948,11 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @author Wireless4024
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public static final class SpecialBigFloat extends BigFloat {
-		public static final SpecialBigFloat NaN = new SpecialBigFloat(TYPE.NaN);
-		public static final SpecialBigFloat POSITIVE_INFINITY = new SpecialBigFloat(TYPE.POSITIVE_INFINITY);
-		public static final SpecialBigFloat NEGATIVE_INFINITY = new SpecialBigFloat(TYPE.NEGATIVE_INFINITY);
+	private static final class SpecialBigFloat extends BigFloat {
 
-		private final TYPE type;
+		private final Type type;
 
-		private SpecialBigFloat(TYPE type) {
+		private SpecialBigFloat(Type type) {
 			//we don't need it because
 			//all method has been override
 			super(null, null);
@@ -978,7 +960,7 @@ public class BigFloat implements Comparable<BigFloat> {
 		}
 
 		private <T> T notNanOr(T ifNotNaN) {
-			if (type == TYPE.NaN)
+			if (type == Type.NaN)
 				throw new NumberFormatException("Not a Number");
 			return ifNotNaN;
 		}
@@ -993,7 +975,7 @@ public class BigFloat implements Comparable<BigFloat> {
 		}
 
 		@Override
-		public TYPE specialType() {
+		public Type specialType() {
 			return type;
 		}
 
@@ -1245,7 +1227,7 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public int compareTo(BigFloat other) {
-			return notNanOr(TYPE.compare(type, other.specialType()));
+			return notNanOr(Type.compare(type, other.specialType()));
 		}
 
 		@Override
@@ -1328,13 +1310,13 @@ public class BigFloat implements Comparable<BigFloat> {
 			}
 		}
 
-		public static enum TYPE {
+		static enum Type {
 			NaN,
 			POSITIVE_INFINITY,
 			NEGATIVE_INFINITY,
 			NORMAL;
 
-			public static int compare(TYPE a, TYPE b) {
+			public static int compare(Type a, Type b) {
 				//NaN less than everything even itself
 				if (a == NaN)
 					return -1;
@@ -1548,9 +1530,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public static BigFloat negate(BigFloat x) {
 		if (x.isSpecial())
-				if (x.specialType() == TYPE.POSITIVE_INFINITY)
+				if (x.specialType() == SpecialBigFloat.Type.POSITIVE_INFINITY)
 					return NEGATIVE_INFINITY;
-				else if (x.specialType() == TYPE.NEGATIVE_INFINITY)
+				else if (x.specialType() == SpecialBigFloat.Type.NEGATIVE_INFINITY)
 					return POSITIVE_INFINITY;
 				else if(x.isNaN())
 					return NaN;

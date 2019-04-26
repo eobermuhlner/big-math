@@ -592,7 +592,6 @@ public class BigFloatTest {
 		assertEquals(context.valueOf(1), min(context.valueOf(1), context.valueOf(2), context.valueOf(3)));
 	}
 
-	@SuppressWarnings("SimplifiableJUnitAssertion")
 	@Test
 	public void testSpecial() {
 		Context context = context(MathContext.DECIMAL32);
@@ -604,11 +603,6 @@ public class BigFloatTest {
 		assertTrue(Double.isNaN(NaN.toDouble()));
 		assertTrue(Double.isInfinite(POSITIVE_INFINITY.toDouble()));
 		assertTrue(Double.isInfinite(NEGATIVE_INFINITY.toDouble()));
-
-		//it's final so it can be with ==
-		assertTrue(NEGATIVE_ONE.divide(ZERO) == NEGATIVE_INFINITY);
-		assertTrue(ZERO.divide(ZERO) == NaN);
-		assertTrue(ONE.divide(ZERO) == POSITIVE_INFINITY);
 	}
 
 	enum Op {
@@ -788,22 +782,27 @@ Infinity / -Infinity = NaN
 
 					double result;
 					BigFloat resultFloat;
+					BigFloat resultFloat2;
 					switch (op) {
 						case PLUS:
 							result = left + right;
 							resultFloat = leftFloat.add(rightFloat);
+							resultFloat2 = leftFloat.add(right);
 							break;
 						case MINUS:
 							result = left - right;
 							resultFloat = leftFloat.subtract(rightFloat);
+							resultFloat2 = leftFloat.subtract(right);
 							break;
 						case MULTIPLY:
 							result = left * right;
 							resultFloat = leftFloat.multiply(rightFloat);
+							resultFloat2 = leftFloat.multiply(right);
 							break;
 						case DIVIDE:
 							result = left / right;
 							resultFloat = leftFloat.divide(rightFloat);
+							resultFloat2 = leftFloat.divide(right);
 							break;
 						default:
 							throw new RuntimeException("Unknown operation: " + op);
@@ -812,6 +811,9 @@ Infinity / -Infinity = NaN
 					String description = left + " " + op.symbol + " " + right + " = " + result;
 					assertEquals(description, result, resultFloat.toDouble(), 0.00000001);
 					assertEquals(description, context.valueOf(result), resultFloat);
+
+					//assertEquals(description, result, resultFloat2.toDouble(), 0.00000001);
+					//assertEquals(description, context.valueOf(result), resultFloat2);
 				}
 			}
 		}
