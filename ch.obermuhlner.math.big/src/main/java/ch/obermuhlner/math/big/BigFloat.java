@@ -950,12 +950,12 @@ public class BigFloat implements Comparable<BigFloat> {
 	@SuppressWarnings("WeakerAccess")
 	private static final class SpecialBigFloat extends BigFloat {
 
+	    private static Context DUMMY_CONTEXT = BigFloat.context(MathContext.DECIMAL32);
+
 		private final Type type;
 
 		private SpecialBigFloat(Type type) {
-			//we don't need it because
-			//all method has been override
-			super(null, null);
+			super(null, DUMMY_CONTEXT);
 			this.type = type;
 		}
 
@@ -963,10 +963,6 @@ public class BigFloat implements Comparable<BigFloat> {
 			if (type == Type.NaN)
 				throw new NumberFormatException("Not a Number");
 			return ifNotNaN;
-		}
-
-		private void unsupported() {
-			throw new NumberFormatException(this.toString());
 		}
 
 		@Override
@@ -979,7 +975,7 @@ public class BigFloat implements Comparable<BigFloat> {
 			return type;
 		}
 
-		@Override
+        @Override
 		public BigFloat add(BigFloat x) {
 			if (!x.isSpecial()) {
 				return this;
@@ -991,26 +987,6 @@ public class BigFloat implements Comparable<BigFloat> {
 				return NEGATIVE_INFINITY;
 			}
 			return NaN;
-		}
-
-		@Override
-		public BigFloat add(BigDecimal x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat add(int x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat add(long x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat add(double x) {
-			return this;
 		}
 
 		@Override
@@ -1033,21 +1009,6 @@ public class BigFloat implements Comparable<BigFloat> {
 		}
 
 		@Override
-		public BigFloat subtract(int x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat subtract(long x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat subtract(double x) {
-			return this;
-		}
-
-		@Override
 		public BigFloat multiply(BigFloat x) {
 			if (x.isZero() || x == NaN) {
 				return NaN;
@@ -1056,26 +1017,6 @@ public class BigFloat implements Comparable<BigFloat> {
 			} else {
 				return this;
 			}
-		}
-
-		@Override
-		public BigFloat multiply(BigDecimal x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat multiply(int x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat multiply(long x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat multiply(double x) {
-			return this;
 		}
 
 		@Override
@@ -1090,47 +1031,7 @@ public class BigFloat implements Comparable<BigFloat> {
 		}
 
 		@Override
-		public BigFloat divide(BigDecimal x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat divide(int x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat divide(long x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat divide(double x) {
-			return this;
-		}
-
-		@Override
 		public BigFloat remainder(BigFloat x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(BigDecimal x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(int x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(long x) {
-			return this;
-		}
-
-		@Override
-		public BigFloat remainder(double x) {
 			return this;
 		}
 
@@ -1140,47 +1041,7 @@ public class BigFloat implements Comparable<BigFloat> {
 		}
 
 		@Override
-		public BigFloat pow(BigDecimal y) {
-			return this;
-		}
-
-		@Override
-		public BigFloat pow(int y) {
-			return this;
-		}
-
-		@Override
-		public BigFloat pow(long y) {
-			return this;
-		}
-
-		@Override
-		public BigFloat pow(double y) {
-			return this;
-		}
-
-		@Override
 		public BigFloat root(BigFloat y) {
-			return this;
-		}
-
-		@Override
-		public BigFloat root(BigDecimal y) {
-			return this;
-		}
-
-		@Override
-		public BigFloat root(int y) {
-			return this;
-		}
-
-		@Override
-		public BigFloat root(long y) {
-			return this;
-		}
-
-		@Override
-		public BigFloat root(double y) {
 			return this;
 		}
 
@@ -1262,14 +1123,12 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public Context getContext() {
-			unsupported();
-			return null;
+			throw new UnsupportedOperationException(type + " has no context");
 		}
 
 		@Override
 		public BigDecimal toBigDecimal() {
-			unsupported();
-			return null;//nope
+            throw new UnsupportedOperationException(type + " has no corresponding BigDecimal representation");
 		}
 
 		@Override

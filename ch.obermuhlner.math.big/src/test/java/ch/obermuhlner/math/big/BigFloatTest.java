@@ -770,39 +770,41 @@ Infinity / -Infinity = NaN
 
 	@Test
 	public void testOperationsWithSpecial() {
-		List<Double> values = Arrays.asList(0.0, 2.0, -2.0, Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		List<Double> doubleValues = Arrays.asList(0.0, 2.0, -2.0, Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		List<Integer> intValues = Arrays.asList(0, 2, -2);
 
 		Context context = BigFloat.context(MathContext.DECIMAL64);
 
 		for (Op op : Op.values()) {
-			for (double left : values) {
+			for (double left : doubleValues) {
 				BigFloat leftFloat = context.valueOf(left);
-				for (double right : values) {
+
+				for (double right : doubleValues) {
 					BigFloat rightFloat = context.valueOf(right);
 
 					double result;
 					BigFloat resultFloat;
-					BigFloat resultFloat2;
+					BigFloat resultFloatWithDouble;
 					switch (op) {
 						case PLUS:
 							result = left + right;
 							resultFloat = leftFloat.add(rightFloat);
-							resultFloat2 = leftFloat.add(right);
+							resultFloatWithDouble = leftFloat.add(right);
 							break;
 						case MINUS:
 							result = left - right;
 							resultFloat = leftFloat.subtract(rightFloat);
-							resultFloat2 = leftFloat.subtract(right);
+							resultFloatWithDouble = leftFloat.subtract(right);
 							break;
 						case MULTIPLY:
 							result = left * right;
 							resultFloat = leftFloat.multiply(rightFloat);
-							resultFloat2 = leftFloat.multiply(right);
+							resultFloatWithDouble = leftFloat.multiply(right);
 							break;
 						case DIVIDE:
 							result = left / right;
 							resultFloat = leftFloat.divide(rightFloat);
-							resultFloat2 = leftFloat.divide(right);
+							resultFloatWithDouble = leftFloat.divide(right);
 							break;
 						default:
 							throw new RuntimeException("Unknown operation: " + op);
@@ -812,8 +814,53 @@ Infinity / -Infinity = NaN
 					assertEquals(description, result, resultFloat.toDouble(), 0.00000001);
 					assertEquals(description, context.valueOf(result), resultFloat);
 
-					//assertEquals(description, result, resultFloat2.toDouble(), 0.00000001);
-					//assertEquals(description, context.valueOf(result), resultFloat2);
+					assertEquals(description, result, resultFloatWithDouble.toDouble(), 0.00000001);
+					assertEquals(description, context.valueOf(result), resultFloatWithDouble);
+				}
+
+				for (int right : intValues) {
+					double result;
+					BigFloat resultFloatWithInt;
+					BigFloat resultFloatWithLong;
+					BigFloat resultFloatWithBigDecimal;
+					switch (op) {
+						case PLUS:
+							result = left + right;
+							resultFloatWithInt = leftFloat.add(right);
+							resultFloatWithLong = leftFloat.add((long) right);
+							resultFloatWithBigDecimal = leftFloat.add(BigDecimal.valueOf(right));
+							break;
+						case MINUS:
+							result = left - right;
+							resultFloatWithInt = leftFloat.subtract(right);
+							resultFloatWithLong = leftFloat.subtract((long) right);
+							resultFloatWithBigDecimal = leftFloat.subtract(BigDecimal.valueOf(right));
+							break;
+						case MULTIPLY:
+							result = left * right;
+							resultFloatWithInt = leftFloat.multiply(right);
+							resultFloatWithLong = leftFloat.multiply((long) right);
+							resultFloatWithBigDecimal = leftFloat.multiply(BigDecimal.valueOf(right));
+							break;
+						case DIVIDE:
+							result = left / right;
+							resultFloatWithInt = leftFloat.divide(right);
+							resultFloatWithLong = leftFloat.divide((long) right);
+							resultFloatWithBigDecimal = leftFloat.divide(BigDecimal.valueOf(right));
+							break;
+						default:
+							throw new RuntimeException("Unknown operation: " + op);
+					}
+
+					String description = left + " " + op.symbol + " " + right + " = " + result;
+					assertEquals(description, result, resultFloatWithInt.toDouble(), 0.00000001);
+					assertEquals(description, context.valueOf(result), resultFloatWithInt);
+
+					assertEquals(description, result, resultFloatWithLong.toDouble(), 0.00000001);
+					assertEquals(description, context.valueOf(result), resultFloatWithLong);
+
+					assertEquals(description, result, resultFloatWithBigDecimal.toDouble(), 0.00000001);
+					assertEquals(description, context.valueOf(result), resultFloatWithBigDecimal);
 				}
 			}
 		}
