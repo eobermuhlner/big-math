@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Arrays;
+import java.util.List;
 
 import static ch.obermuhlner.math.big.BigFloat.*;
 import static org.junit.Assert.*;
@@ -607,5 +609,61 @@ public class BigFloatTest {
 		assertTrue(NEGATIVE_ONE.divide(ZERO) == NEGATIVE_INFINITY);
 		assertTrue(ZERO.divide(ZERO) == NaN);
 		assertTrue(ONE.divide(ZERO) == POSITIVE_INFINITY);
+	}
+
+	enum Op {
+		PLUS("+"),
+		MINUS("-"),
+		MULTIPLY("*"),
+		DIVIDE("/");
+
+		public final String symbol;
+
+		Op(String symbol) {
+			this.symbol = symbol;
+		}
+	}
+
+	@Test
+	public void testOperationsWithSpecial() {
+		List<Double> values = Arrays.asList(0.0, 2.0, -2.0, Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+
+		Context context = BigFloat.context(MathContext.DECIMAL64);
+
+		for (Op op : Op.values()) {
+			for (double left : values) {
+				BigFloat leftFloat = context.valueOf(left);
+				for (double right : values) {
+					BigFloat rightFloat = context.valueOf(right);
+
+					double result;
+					BigFloat resultFloat;
+					switch (op) {
+						case PLUS:
+							result = left + right;
+							resultFloat = leftFloat.add(rightFloat);
+							break;
+						case MINUS:
+							result = left - right;
+							resultFloat = leftFloat.subtract(rightFloat);
+							break;
+						case MULTIPLY:
+							result = left * right;
+							resultFloat = leftFloat.multiply(rightFloat);
+							break;
+						case DIVIDE:
+							result = left / right;
+							resultFloat = leftFloat.divide(rightFloat);
+							break;
+						default:
+							throw new RuntimeException("Unknown operation: " + op);
+					}
+
+					String description = left + " " + op.symbol + " " + right + " = " + result;
+					assertEquals(description, result, resultFloat.toDouble(), 0.00000001);
+					assertEquals(description, context.valueOf(result), resultFloat);
+				}
+			}
+		}
 	}
 }
