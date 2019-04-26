@@ -2,7 +2,7 @@
 [![Code Coverage](https://img.shields.io/codecov/c/github/eobermuhlner/big-math.svg)](https://codecov.io/gh/eobermuhlner/big-math)
 [![Dependencies](https://img.shields.io/librariesio/github/eobermuhlner/big-math.svg)](https://github.com/eobermuhlner/big-math/pulse)
 [![Maven Central](https://img.shields.io/maven-central/v/ch.obermuhlner/big-math.svg)](https://search.maven.org/artifact/ch.obermuhlner/big-math)
-[![Github activity](https://img.shields.io/github/commit-activity/m/eobermuhlner/big-math.svg)](https://github.com/eobermuhlner/big-math/graphs/commit-activity)
+[![Github activity](https://img.shields.io/github/commit-activity/m/eobermuhlner/big-math.svg)](https://github.com/eobermuhlner/big-math/graphs/commit-activity) [![Join the chat at https://gitter.im/eobermuhlner-big-math/community](https://badges.gitter.im/eobermuhlner-big-math/community.svg)](https://gitter.im/eobermuhlner-big-math/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <p align="center">
 	<img alt="big-math" src="docs/images/big-math-splashscreen.png">
