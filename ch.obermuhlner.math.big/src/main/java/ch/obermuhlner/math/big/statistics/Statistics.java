@@ -1,7 +1,7 @@
 package ch.obermuhlner.math.big.statistics;
 
 import ch.obermuhlner.math.big.statistics.multivariate.collection.MultivariateStreamAsCollectionCalculator;
-import ch.obermuhlner.math.big.statistics.multivariate.collection.MultivariateStreamAsListsCalculator;
+import ch.obermuhlner.math.big.statistics.multivariate.collection.MultivariateStreamAsCollectionsCalculator;
 import ch.obermuhlner.math.big.statistics.multivariate.stream.CorrelationCalculator;
 import ch.obermuhlner.math.big.statistics.type.Histogram;
 import ch.obermuhlner.math.big.statistics.type.SkewnessKurtosis;
@@ -92,7 +92,8 @@ public class Statistics {
     }
 
     public static BigDecimal sampleSkewness(Collection<BigDecimal> values, MathContext mathContext) {
-        return new UnivariateStreamAsCollectionCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext, true, false)).getResult(values).skewness;
+        //return new UnivariateStreamAsCollectionCalculator<>(new SampleSkewnessKurtosisCalculator(mathContext, true, false)).getResult(values).skewness;
+        return new ch.obermuhlner.math.big.statistics.univariate.collection.SampleSkewnessCalculator(mathContext).getResult(values);
     }
 
     public static BigDecimal sampleKurtosis(Collection<BigDecimal> values, MathContext mathContext) {
@@ -115,11 +116,11 @@ public class Statistics {
         return new UnivariateStreamAsCollectionCalculator<>(new HistogramCalculator(start, end, step)).getResult(values);
     }
 
-    public static BigDecimal correlation(List<BigDecimal[]> xyValues, MathContext mathContext) {
+    public static BigDecimal correlation(Collection<BigDecimal[]> xyValues, MathContext mathContext) {
         return new MultivariateStreamAsCollectionCalculator<>(new CorrelationCalculator(mathContext)).getResult(xyValues);
     }
 
     public static BigDecimal correlation(List<BigDecimal> xValues, List<BigDecimal> yValues, MathContext mathContext) {
-        return new MultivariateStreamAsListsCalculator<>(new CorrelationCalculator(mathContext)).getResult(xValues, yValues);
+        return new MultivariateStreamAsCollectionsCalculator<>(new CorrelationCalculator(mathContext)).getResult(xValues, yValues);
     }
 }

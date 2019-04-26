@@ -5,13 +5,12 @@ import ch.obermuhlner.math.big.statistics.multivariate.stream.MultivariateStream
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
-public class MultivariateStreamAsListsCalculator<C extends Collection<BigDecimal>, R> implements MultivariateCollectionsCalculator<C, R> {
+public class MultivariateStreamAsCollectionsCalculator<C extends Collection<BigDecimal>, R> implements MultivariateCollectionsCalculator<C, R> {
 
     private final MultivariateStreamCalculator<R> calculator;
 
-    public MultivariateStreamAsListsCalculator(MultivariateStreamCalculator<R> calculator) {
+    public MultivariateStreamAsCollectionsCalculator(MultivariateStreamCalculator<R> calculator) {
         this.calculator = calculator;
     }
 

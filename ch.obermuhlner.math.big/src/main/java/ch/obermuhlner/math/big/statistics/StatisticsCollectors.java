@@ -194,13 +194,4 @@ public class StatisticsCollectors {
                 (left, right) -> { left.combine(right); return left; },
                 (calc) -> calc.getResult());
     }
-
-    public static Collector<BigDecimal[], CorrelationCalculator, BigDecimal> correlation(MathContext mathContext) {
-        return Collector.of(
-                () -> new CorrelationCalculator(mathContext),
-                (calc, tuple) -> calc.add(tuple),
-                (left, right) -> { left.combine(right); return left; },
-                (calc) -> calc.getResult());
-    }
-
 }

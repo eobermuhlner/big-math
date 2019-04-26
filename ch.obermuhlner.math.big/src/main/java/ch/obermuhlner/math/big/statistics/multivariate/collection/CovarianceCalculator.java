@@ -10,17 +10,17 @@ import java.util.Iterator;
 import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 
-public class CovarianceCollectionCalculator implements MultivariateCollectionsCalculator<Collection<BigDecimal>, BigDecimal> {
+public class CovarianceCalculator implements MultivariateCollectionsCalculator<Collection<BigDecimal>, BigDecimal> {
 
     private final MathContext mathContext;
     private final int xValueIndex;
     private final int yValueIndex;
 
-    public CovarianceCollectionCalculator(MathContext mathContext) {
+    public CovarianceCalculator(MathContext mathContext) {
         this(mathContext, 0, 1);
     }
 
-    public CovarianceCollectionCalculator(MathContext mathContext, int xValueIndex, int yValueIndex) {
+    public CovarianceCalculator(MathContext mathContext, int xValueIndex, int yValueIndex) {
         this.mathContext = mathContext;
         this.xValueIndex = xValueIndex;
         this.yValueIndex = yValueIndex;
