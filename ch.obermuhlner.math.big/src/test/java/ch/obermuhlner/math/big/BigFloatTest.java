@@ -605,6 +605,118 @@ public class BigFloatTest {
 		assertTrue(Double.isInfinite(NEGATIVE_INFINITY.toDouble()));
 	}
 
+	@Test
+	public void testSpecialMath() {
+		Context context = context(MathContext.DECIMAL32);
+
+		/* aSin
+		 *	If the argument is NaN or its absolute value is greater than 1, then the result is NaN.
+		 *	If the argument is zero, then the result is a zero with the same sign as the argument.
+		 */
+		assertSame(NaN, BigFloat.asin(POSITIVE_INFINITY));
+		assertSame(NaN, BigFloat.asin(context.valueOf(1.1)));
+		assertSame(NaN, BigFloat.asin(context.valueOf(-1.1)));
+		assertSame(NaN, BigFloat.asin(NEGATIVE_INFINITY));
+		assertSame(context.ZERO, BigFloat.asin(context.ZERO));
+
+		/* Sin
+		 *	If the argument is NaN or an infinity, then the result is NaN.
+		 *	If the argument is zero, then the result is a zero with the same sign as the argument.
+		 */
+		assertSame(NaN, BigFloat.sin(NaN));
+		assertSame(NaN, BigFloat.sin(POSITIVE_INFINITY));
+		assertSame(NaN, BigFloat.sin(NEGATIVE_INFINITY));
+		assertSame(context.ZERO, BigFloat.sin(context.ZERO));
+
+		/* SinH
+		 * If the argument is NaN, then the result is NaN.
+		 * If the argument is infinite, then the result is an infinity with the same sign as the argument.
+		 * If the argument is zero, then the result is a zero with the same sign as the argument.
+		 */
+		assertSame(NaN, BigFloat.sinh(NaN));
+		assertSame(POSITIVE_INFINITY, BigFloat.sinh(POSITIVE_INFINITY));
+		assertSame(NEGATIVE_INFINITY, BigFloat.sinh(NEGATIVE_INFINITY));
+		assertSame(context.ZERO, BigFloat.sinh(context.ZERO));
+
+		/* aCos
+		 * If the argument is NaN or its absolute value is greater than 1, then the result is NaN.
+		 */
+		assertSame(NaN, BigFloat.acos(POSITIVE_INFINITY));
+		assertSame(NaN, BigFloat.acos(context.valueOf(1.1)));
+		assertSame(NaN, BigFloat.acos(context.valueOf(-1.1)));
+		assertSame(NaN, BigFloat.acos(NEGATIVE_INFINITY));
+
+		/* Cos
+		 *	If the argument is NaN or an infinity, then the result is NaN.
+		 */
+		assertSame(NaN, BigFloat.cos(NaN));
+		assertSame(NaN, BigFloat.cos(POSITIVE_INFINITY));
+		assertSame(NaN, BigFloat.cos(NEGATIVE_INFINITY));
+
+		/* CosH
+		 * If the argument is NaN, then the result is NaN.
+		 * If the argument is infinite, then the result is positive infinity.
+		 * If the argument is zero, then the result is 1.0.
+		 */
+
+		assertSame(NaN, BigFloat.cosh(NaN));
+		assertSame(POSITIVE_INFINITY, BigFloat.cosh(POSITIVE_INFINITY));
+		assertSame(POSITIVE_INFINITY, BigFloat.cosh(NEGATIVE_INFINITY));
+		assertSame(context.ONE, BigFloat.cosh(context.ZERO));
+
+		/* aTan
+		 * If the argument is NaN, then the result is NaN.
+		 * If the argument is zero, then the result is a zero with the same sign as the argument.
+		 */
+		assertSame(NaN, BigFloat.atan(NaN));
+		assertSame(context.ZERO, BigFloat.atan(context.ZERO));
+
+		/* Tan
+		 * If the argument is NaN or an infinity, then the result is NaN.
+		 * If the argument is zero, then the result is a zero with the same sign as the argument.
+		 */
+		assertSame(NaN, BigFloat.tan(NaN));
+		assertSame(NaN, BigFloat.tan(POSITIVE_INFINITY));
+		assertSame(NaN, BigFloat.tan(NEGATIVE_INFINITY));
+		assertSame(context.ZERO, BigFloat.tan(context.ZERO));
+
+		/* TanH
+		 * If the argument is NaN, then the result is NaN.
+		 * If the argument is zero, then the result is a zero with the same sign as the argument.
+		 * If the argument is positive infinity, then the result is +1.0.
+		 * If the argument is negative infinity, then the result is -1.0.
+		 */
+		assertSame(NaN, BigFloat.tanh(NaN));
+		assertEquals(context.ONE, BigFloat.tanh(POSITIVE_INFINITY));
+		assertEquals(context.NEGATIVE_ONE, BigFloat.tanh(NEGATIVE_INFINITY));
+		assertSame(context.ZERO, BigFloat.tanh(context.ZERO));
+
+		/* Log
+		 * If the argument is NaN or less than zero, then the result is NaN.
+		 * If the argument is positive infinity, then the result is positive infinity.
+		 * If the argument is positive zero or negative zero, then the result is negative infinity.
+		 */
+		assertSame(NaN, BigFloat.log(NaN));
+		assertSame(NaN, BigFloat.log(context.NEGATIVE_ONE));
+		assertSame(POSITIVE_INFINITY, BigFloat.log(POSITIVE_INFINITY));
+		assertSame(NEGATIVE_INFINITY, BigFloat.log(context.ZERO));
+
+		/* Square Root
+		 * If the argument is NaN or less than zero, then the result is NaN.
+		 * If the argument is positive infinity, then the result is positive infinity.
+		 * If the argument is positive zero or negative zero, then the result is the same as the argument.
+		 */
+		assertSame(NaN, BigFloat.sqrt(NaN));
+		assertSame(NaN, BigFloat.sqrt(context.NEGATIVE_ONE));
+		assertSame(POSITIVE_INFINITY, BigFloat.sqrt(POSITIVE_INFINITY));
+		assertSame(context.ZERO, BigFloat.sqrt(context.ZERO));
+
+		/* Cot
+		 * If the argument is zero, then the result is positive infinity. (cot(0) = (1/0))
+		 */
+		assertSame(POSITIVE_INFINITY, BigFloat.cot(context.ZERO));
+	}
+
 	enum Op {
 		PLUS("+"),
 		MINUS("-"),
