@@ -1155,6 +1155,8 @@ public class BigFloat implements Comparable<BigFloat> {
 
 			public static int compare(Type a, Type b) {
 				//we can use double to compare
+				if (a == NaN && b == NaN)
+					return 0;//cuz NaN equals nothing even itself
 				return Double.compare(a.toDouble(),b.toDouble());
 			}
 
@@ -1225,14 +1227,6 @@ public class BigFloat implements Comparable<BigFloat> {
 			return mathContext.getRoundingMode();
 		}
 
-		private static BigFloat getCache(double val){
-			if (Double.isInfinite(val))
-				return val == Double.POSITIVE_INFINITY ? POSITIVE_INFINITY : NEGATIVE_INFINITY;
-			else if (Double.isNaN(val))
-				return NaN;
-			return null;
-		}
-
 		/**
 		 * Creates a {@link BigFloat} value with this context.
 		 *
@@ -1241,8 +1235,10 @@ public class BigFloat implements Comparable<BigFloat> {
 		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
 		 */
 		public BigFloat valueOf(BigFloat value) {
-			if(getCache(value.toDouble())!=null)
-				return getCache(value.toDouble());
+			if (value.isInfinity())
+				return value == POSITIVE_INFINITY ? POSITIVE_INFINITY : NEGATIVE_INFINITY;
+			else if (value.isNaN())
+				return NaN;
 			if(value.isSpecial())
 				return value;//they are final
 			return new BigFloat(value.value.round(mathContext), this);
@@ -1256,8 +1252,6 @@ public class BigFloat implements Comparable<BigFloat> {
 		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
 		 */
 		public BigFloat valueOf(BigDecimal value) {
-			if (getCache(value.doubleValue()) != null)
-				return getCache(value.doubleValue());
 			return new BigFloat(value.round(mathContext), this);
 		}
 
@@ -1269,8 +1263,6 @@ public class BigFloat implements Comparable<BigFloat> {
 		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
 		 */
 		public BigFloat valueOf(int value) {
-			if (getCache(value) != null)
-				return getCache(value);
 			return new BigFloat(new BigDecimal(value, mathContext), this);
 		}
 
@@ -1282,8 +1274,6 @@ public class BigFloat implements Comparable<BigFloat> {
 		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
 		 */
 		public BigFloat valueOf(long value) {
-			if (getCache(value) != null)
-				return getCache(value);
 			return new BigFloat(new BigDecimal(value, mathContext), this);
 		}
 
@@ -1295,8 +1285,10 @@ public class BigFloat implements Comparable<BigFloat> {
 		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
 		 */
 		public BigFloat valueOf(double value) {
-			if (getCache(value) != null)
-				return getCache(value);
+			if (Double.isInfinite(value))
+				return value == Double.POSITIVE_INFINITY ? POSITIVE_INFINITY : NEGATIVE_INFINITY;
+			else if (Double.isNaN(value))
+				return NaN;
 			return new BigFloat(new BigDecimal(String.valueOf(value), mathContext), this);
 		}
 
