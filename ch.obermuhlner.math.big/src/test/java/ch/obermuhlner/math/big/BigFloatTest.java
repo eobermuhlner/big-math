@@ -985,7 +985,18 @@ Infinity / -Infinity = NaN
 		}
 	}
 
-	/*
+	@Test
+	public void testCompareTo_Specials() {
+		Context context = BigFloat.context(MathContext.DECIMAL64);
+
+		for (double left : DOUBLE_VALUES) {
+			for (double right : DOUBLE_VALUES) {
+				assertEquals("compare(" + left + ", " + right + ")", Double.compare(left, right), context.valueOf(left).compareTo(context.valueOf(right)));
+			}
+		}
+	}
+
+    /*
 0.0 == 0.0 = true
 0.0 != 0.0 = false
 0.0 <  0.0 = false
@@ -1202,23 +1213,7 @@ Infinity >= -Infinity = true
 -Infinity <= -Infinity = true
 -Infinity >  -Infinity = false
 -Infinity >= -Infinity = true
-	 */
-	@Test
-	public void testCompareTo_Specials() {
-		Context context = BigFloat.context(MathContext.DECIMAL64);
-
-		for (double left : DOUBLE_VALUES) {
-			for (double right : DOUBLE_VALUES) {
-				assertEquals(left + "==" + right, left == right, context.valueOf(left).compareTo(context.valueOf(right)) == 0);
-				assertEquals(left + "!=" + right, left != right, context.valueOf(left).compareTo(context.valueOf(right)) != 0);
-				assertEquals(left + ">=" + right, left >= right, context.valueOf(left).compareTo(context.valueOf(right)) >= 0);
-				assertEquals(left + ">" + right, left > right, context.valueOf(left).compareTo(context.valueOf(right)) > 0);
-				assertEquals(left + "<=" + right, left <= right, context.valueOf(left).compareTo(context.valueOf(right)) <= 0);
-				assertEquals(left + "<" + right, left < right, context.valueOf(left).compareTo(context.valueOf(right)) < 0);
-			}
-		}
-	}
-
+     */
 	@Test
 	public void testComparisons_Specials() {
 		Context context = BigFloat.context(MathContext.DECIMAL64);

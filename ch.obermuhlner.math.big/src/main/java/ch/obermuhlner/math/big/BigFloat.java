@@ -724,6 +724,9 @@ public class BigFloat implements Comparable<BigFloat> {
 
 	@Override
 	public int compareTo(BigFloat other) {
+		if (other.isSpecial()) {
+			return -other.compareTo(this);
+		}
 		return value.compareTo(other.value);
 	}
 
@@ -737,6 +740,10 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see #compareTo(BigFloat)
 	 */
 	public boolean isEqual(BigFloat other) {
+		if (this == NaN || other == NaN) {
+			return false;
+		}
+
 		return compareTo(other) == 0;
 	}
 
@@ -750,6 +757,10 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see #compareTo(BigFloat)
 	 */
 	public boolean isLessThan(BigFloat other) {
+		if (this == NaN || other == NaN) {
+			return false;
+		}
+
 		return compareTo(other) < 0;
 	}
 
@@ -763,6 +774,10 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see #compareTo(BigFloat)
 	 */
 	public boolean isGreaterThan(BigFloat other) {
+		if (this == NaN || other == NaN) {
+			return false;
+		}
+
 		return compareTo(other) > 0;
 	}
 
@@ -778,6 +793,10 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see #isEqual(BigFloat)
 	 */
 	public boolean isLessThanOrEqual(BigFloat other) {
+		if (this == NaN || other == NaN) {
+			return false;
+		}
+
 		return compareTo(other) <= 0;
 	}
 
@@ -793,6 +812,10 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see #isEqual(BigFloat)
 	 */
 	public boolean isGreaterThanOrEqual(BigFloat other) {
+		if (this == NaN || other == NaN) {
+			return false;
+		}
+
 		return compareTo(other) >= 0;
 	}
 
@@ -1155,8 +1178,8 @@ public class BigFloat implements Comparable<BigFloat> {
 
 			public static int compare(Type a, Type b) {
 				//we can use double to compare
-				if (a == NaN && b == NaN)
-					return 0;//cuz NaN equals nothing even itself
+				//if (a == NaN && b == NaN)
+				//	return 0;//cuz NaN equals nothing even itself
 				return Double.compare(a.toDouble(),b.toDouble());
 			}
 
