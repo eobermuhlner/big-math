@@ -13,6 +13,14 @@ import static org.junit.Assert.*;
 
 public class BigFloatTest {
 
+	private static final List<Double> DOUBLE_VALUES = Arrays.asList(
+			0.0,
+			2.0,
+			-2.0,
+			Double.NaN,
+			Double.POSITIVE_INFINITY,
+			Double.NEGATIVE_INFINITY);
+
 	@Test
 	public void testContext() {
 		MathContext mathContext = new MathContext(20);
@@ -770,16 +778,15 @@ Infinity / -Infinity = NaN
 
 	@Test
 	public void testOperationsWithSpecial() {
-		List<Double> doubleValues = Arrays.asList(0.0, 2.0, -2.0, Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
 		List<Integer> intValues = Arrays.asList(0, 2, -2);
 
 		Context context = BigFloat.context(MathContext.DECIMAL64);
 
 		for (Op op : Op.values()) {
-			for (double left : doubleValues) {
+			for (double left : DOUBLE_VALUES) {
 				BigFloat leftFloat = context.valueOf(left);
 
-				for (double right : doubleValues) {
+				for (double right : DOUBLE_VALUES) {
 					BigFloat rightFloat = context.valueOf(right);
 
 					double result;
@@ -862,6 +869,255 @@ Infinity / -Infinity = NaN
 					assertEquals(description, result, resultFloatWithBigDecimal.toDouble(), 0.00000001);
 					assertEquals(description, context.valueOf(result), resultFloatWithBigDecimal);
 				}
+			}
+		}
+	}
+
+	/*
+0.0 == 0.0 = true
+0.0 != 0.0 = false
+0.0 <  0.0 = false
+0.0 <= 0.0 = true
+0.0 >  0.0 = false
+0.0 >= 0.0 = true
+0.0 == 2.0 = false
+0.0 != 2.0 = true
+0.0 <  2.0 = true
+0.0 <= 2.0 = true
+0.0 >  2.0 = false
+0.0 >= 2.0 = false
+0.0 == -2.0 = false
+0.0 != -2.0 = true
+0.0 <  -2.0 = false
+0.0 <= -2.0 = false
+0.0 >  -2.0 = true
+0.0 >= -2.0 = true
+0.0 == NaN = false
+0.0 != NaN = true
+0.0 <  NaN = false
+0.0 <= NaN = false
+0.0 >  NaN = false
+0.0 >= NaN = false
+0.0 == Infinity = false
+0.0 != Infinity = true
+0.0 <  Infinity = true
+0.0 <= Infinity = true
+0.0 >  Infinity = false
+0.0 >= Infinity = false
+0.0 == -Infinity = false
+0.0 != -Infinity = true
+0.0 <  -Infinity = false
+0.0 <= -Infinity = false
+0.0 >  -Infinity = true
+0.0 >= -Infinity = true
+2.0 == 0.0 = false
+2.0 != 0.0 = true
+2.0 <  0.0 = false
+2.0 <= 0.0 = false
+2.0 >  0.0 = true
+2.0 >= 0.0 = true
+2.0 == 2.0 = true
+2.0 != 2.0 = false
+2.0 <  2.0 = false
+2.0 <= 2.0 = true
+2.0 >  2.0 = false
+2.0 >= 2.0 = true
+2.0 == -2.0 = false
+2.0 != -2.0 = true
+2.0 <  -2.0 = false
+2.0 <= -2.0 = false
+2.0 >  -2.0 = true
+2.0 >= -2.0 = true
+2.0 == NaN = false
+2.0 != NaN = true
+2.0 <  NaN = false
+2.0 <= NaN = false
+2.0 >  NaN = false
+2.0 >= NaN = false
+2.0 == Infinity = false
+2.0 != Infinity = true
+2.0 <  Infinity = true
+2.0 <= Infinity = true
+2.0 >  Infinity = false
+2.0 >= Infinity = false
+2.0 == -Infinity = false
+2.0 != -Infinity = true
+2.0 <  -Infinity = false
+2.0 <= -Infinity = false
+2.0 >  -Infinity = true
+2.0 >= -Infinity = true
+-2.0 == 0.0 = false
+-2.0 != 0.0 = true
+-2.0 <  0.0 = true
+-2.0 <= 0.0 = true
+-2.0 >  0.0 = false
+-2.0 >= 0.0 = false
+-2.0 == 2.0 = false
+-2.0 != 2.0 = true
+-2.0 <  2.0 = true
+-2.0 <= 2.0 = true
+-2.0 >  2.0 = false
+-2.0 >= 2.0 = false
+-2.0 == -2.0 = true
+-2.0 != -2.0 = false
+-2.0 <  -2.0 = false
+-2.0 <= -2.0 = true
+-2.0 >  -2.0 = false
+-2.0 >= -2.0 = true
+-2.0 == NaN = false
+-2.0 != NaN = true
+-2.0 <  NaN = false
+-2.0 <= NaN = false
+-2.0 >  NaN = false
+-2.0 >= NaN = false
+-2.0 == Infinity = false
+-2.0 != Infinity = true
+-2.0 <  Infinity = true
+-2.0 <= Infinity = true
+-2.0 >  Infinity = false
+-2.0 >= Infinity = false
+-2.0 == -Infinity = false
+-2.0 != -Infinity = true
+-2.0 <  -Infinity = false
+-2.0 <= -Infinity = false
+-2.0 >  -Infinity = true
+-2.0 >= -Infinity = true
+NaN == 0.0 = false
+NaN != 0.0 = true
+NaN <  0.0 = false
+NaN <= 0.0 = false
+NaN >  0.0 = false
+NaN >= 0.0 = false
+NaN == 2.0 = false
+NaN != 2.0 = true
+NaN <  2.0 = false
+NaN <= 2.0 = false
+NaN >  2.0 = false
+NaN >= 2.0 = false
+NaN == -2.0 = false
+NaN != -2.0 = true
+NaN <  -2.0 = false
+NaN <= -2.0 = false
+NaN >  -2.0 = false
+NaN >= -2.0 = false
+NaN == NaN = false
+NaN != NaN = true
+NaN <  NaN = false
+NaN <= NaN = false
+NaN >  NaN = false
+NaN >= NaN = false
+NaN == Infinity = false
+NaN != Infinity = true
+NaN <  Infinity = false
+NaN <= Infinity = false
+NaN >  Infinity = false
+NaN >= Infinity = false
+NaN == -Infinity = false
+NaN != -Infinity = true
+NaN <  -Infinity = false
+NaN <= -Infinity = false
+NaN >  -Infinity = false
+NaN >= -Infinity = false
+Infinity == 0.0 = false
+Infinity != 0.0 = true
+Infinity <  0.0 = false
+Infinity <= 0.0 = false
+Infinity >  0.0 = true
+Infinity >= 0.0 = true
+Infinity == 2.0 = false
+Infinity != 2.0 = true
+Infinity <  2.0 = false
+Infinity <= 2.0 = false
+Infinity >  2.0 = true
+Infinity >= 2.0 = true
+Infinity == -2.0 = false
+Infinity != -2.0 = true
+Infinity <  -2.0 = false
+Infinity <= -2.0 = false
+Infinity >  -2.0 = true
+Infinity >= -2.0 = true
+Infinity == NaN = false
+Infinity != NaN = true
+Infinity <  NaN = false
+Infinity <= NaN = false
+Infinity >  NaN = false
+Infinity >= NaN = false
+Infinity == Infinity = true
+Infinity != Infinity = false
+Infinity <  Infinity = false
+Infinity <= Infinity = true
+Infinity >  Infinity = false
+Infinity >= Infinity = true
+Infinity == -Infinity = false
+Infinity != -Infinity = true
+Infinity <  -Infinity = false
+Infinity <= -Infinity = false
+Infinity >  -Infinity = true
+Infinity >= -Infinity = true
+-Infinity == 0.0 = false
+-Infinity != 0.0 = true
+-Infinity <  0.0 = true
+-Infinity <= 0.0 = true
+-Infinity >  0.0 = false
+-Infinity >= 0.0 = false
+-Infinity == 2.0 = false
+-Infinity != 2.0 = true
+-Infinity <  2.0 = true
+-Infinity <= 2.0 = true
+-Infinity >  2.0 = false
+-Infinity >= 2.0 = false
+-Infinity == -2.0 = false
+-Infinity != -2.0 = true
+-Infinity <  -2.0 = true
+-Infinity <= -2.0 = true
+-Infinity >  -2.0 = false
+-Infinity >= -2.0 = false
+-Infinity == NaN = false
+-Infinity != NaN = true
+-Infinity <  NaN = false
+-Infinity <= NaN = false
+-Infinity >  NaN = false
+-Infinity >= NaN = false
+-Infinity == Infinity = false
+-Infinity != Infinity = true
+-Infinity <  Infinity = true
+-Infinity <= Infinity = true
+-Infinity >  Infinity = false
+-Infinity >= Infinity = false
+-Infinity == -Infinity = true
+-Infinity != -Infinity = false
+-Infinity <  -Infinity = false
+-Infinity <= -Infinity = true
+-Infinity >  -Infinity = false
+-Infinity >= -Infinity = true
+	 */
+	@Test
+	public void testCompareTo_Specials() {
+		Context context = BigFloat.context(MathContext.DECIMAL64);
+
+		for (double left : DOUBLE_VALUES) {
+			for (double right : DOUBLE_VALUES) {
+				assertEquals(left + "==" + right, left == right, context.valueOf(left).compareTo(context.valueOf(right)) == 0);
+				assertEquals(left + "!=" + right, left != right, context.valueOf(left).compareTo(context.valueOf(right)) != 0);
+				assertEquals(left + ">=" + right, left >= right, context.valueOf(left).compareTo(context.valueOf(right)) >= 0);
+				assertEquals(left + ">" + right, left > right, context.valueOf(left).compareTo(context.valueOf(right)) > 0);
+				assertEquals(left + "<=" + right, left <= right, context.valueOf(left).compareTo(context.valueOf(right)) <= 0);
+				assertEquals(left + "<" + right, left < right, context.valueOf(left).compareTo(context.valueOf(right)) < 0);
+			}
+		}
+	}
+
+	@Test
+	public void testComparisons_Specials() {
+		Context context = BigFloat.context(MathContext.DECIMAL64);
+
+		for (double left : DOUBLE_VALUES) {
+			for (double right : DOUBLE_VALUES) {
+				assertEquals(left + "==" + right, left == right, context.valueOf(left).isEqual(context.valueOf(right)));
+				assertEquals(left + ">=" + right, left >= right, context.valueOf(left).isGreaterThanOrEqual(context.valueOf(right)));
+				assertEquals(left + ">" + right, left > right, context.valueOf(left).isGreaterThan(context.valueOf(right)));
+				assertEquals(left + "<=" + right, left <= right, context.valueOf(left).isLessThanOrEqual(context.valueOf(right)));
+				assertEquals(left + "<" + right, left < right, context.valueOf(left).isLessThan(context.valueOf(right)));
 			}
 		}
 	}
