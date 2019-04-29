@@ -122,8 +122,6 @@ import java.util.Objects;
  */
 @SuppressWarnings("WeakerAccess")
 public class BigFloat implements Comparable<BigFloat> {
-	private static final BigFloat NEGATIVE_ONE = BigFloat.context(1).valueOf(-1);
-
 	public static final BigFloat NaN = new SpecialBigFloat(SpecialBigFloat.Type.NaN);
 	public static final BigFloat POSITIVE_INFINITY = new SpecialBigFloat(SpecialBigFloat.Type.POSITIVE_INFINITY);
 	public static final BigFloat NEGATIVE_INFINITY = new SpecialBigFloat(SpecialBigFloat.Type.NEGATIVE_INFINITY);
@@ -1397,11 +1395,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public static BigFloat negate(BigFloat x) {
 		if (x.isSpecial())
-			if (x == POSITIVE_INFINITY)
-				return NEGATIVE_INFINITY;
-			else if (x == NEGATIVE_INFINITY)
-				return POSITIVE_INFINITY;
-			else if (x.isNaN())
+			if (x.isInfinity())
+				return x == POSITIVE_INFINITY ? NEGATIVE_INFINITY : POSITIVE_INFINITY;
+			else
 				return NaN;
 		return x.context.valueOf(x.value.negate());
 	}
@@ -1417,10 +1413,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 */
 	public static BigFloat abs(BigFloat x) {
 		if (x.isSpecial())
-			if (x.isInfinity())
-				return POSITIVE_INFINITY;
-			else if (x.isNaN())
-				return NaN;
+			return x.isInfinity() ? POSITIVE_INFINITY : NaN;
 		return x.context.valueOf(x.value.abs());
 	}
 
@@ -1487,7 +1480,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	private static BigFloat logSpecial(BigFloat val){
 		if (val.isNaN() || val.isNegative())
 			return NaN;
-		if (val.type() == SpecialBigFloat.Type.POSITIVE_INFINITY)
+		if (val == POSITIVE_INFINITY)
 			return POSITIVE_INFINITY;
 		if (val.isZero())
 			return NEGATIVE_INFINITY;
@@ -1504,9 +1497,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#log(BigDecimal, MathContext)
 	 */
 	public static BigFloat log(BigFloat x) {
-		if (logSpecial(x) != null)
-			return logSpecial(x);
-		return x.context.valueOf(BigDecimalMath.log(x.value, x.context.mathContext));
+		BigFloat temp = logSpecial(x);
+		return temp != null ? temp : x.context.valueOf(BigDecimalMath.log(x.value, x.context.mathContext));
 	}
 
 	/**
@@ -1519,9 +1511,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#log2(BigDecimal, MathContext)
 	 */
 	public static BigFloat log2(BigFloat x) {
-		if (logSpecial(x) != null)
-			return logSpecial(x);
-		return x.context.valueOf(BigDecimalMath.log2(x.value, x.context.mathContext));
+		BigFloat temp = logSpecial(x);
+		return temp != null ? temp : x.context.valueOf(BigDecimalMath.log2(x.value, x.context.mathContext));
 	}
 
 	/**
@@ -1534,9 +1525,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#log10(BigDecimal, MathContext)
 	 */
 	public static BigFloat log10(BigFloat x) {
-		if (logSpecial(x) != null)
-			return logSpecial(x);
-		return x.context.valueOf(BigDecimalMath.log10(x.value, x.context.mathContext));
+		BigFloat temp = logSpecial(x);
+		return temp != null ? temp : x.context.valueOf(BigDecimalMath.log10(x.value, x.context.mathContext));
 	}
 
 	/**
@@ -1549,10 +1539,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#exp(BigDecimal, MathContext)
 	 */
 	public static BigFloat exp(BigFloat x) {
-		if (x.isNaN() || x.type() == SpecialBigFloat.Type.POSITIVE_INFINITY)
-			return x;
-		else if (x.isInfinity()) //positive infinity checked above it's now negative
-			return x.context.ZERO;
+		if(x.isSpecial())
+			return x != NEGATIVE_INFINITY ? x : x.context.ZERO;
 		return x.context.valueOf(BigDecimalMath.exp(x.value, x.context.mathContext));
 	}
 
@@ -1683,13 +1671,10 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#asin(BigDecimal, MathContext)
 	 */
 	public static BigFloat asin(BigFloat x) {
-		if(x.isZero())
+		if (x.isZero())
 			return x;
-		if (x.isNaN() || (!isBetween(x.context.NEGATIVE_ONE, x.context.ONE, x))) {
-			return NaN;
-		} else {
-			return x.context.valueOf(BigDecimalMath.asin(x.value, x.context.mathContext));
-		}
+		return x.isNaN() || (!rangeAbs1(x)) ? NaN :
+				x.context.valueOf(BigDecimalMath.asin(x.value, x.context.mathContext));
 	}
 
 	/**
@@ -1702,9 +1687,16 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#acos(BigDecimal, MathContext)
 	 */
 	public static BigFloat acos(BigFloat x) {
-		if (x.isNaN() || (!isBetween(x.context.NEGATIVE_ONE, x.context.ONE, x)))
-			return NaN;
-		return x.context.valueOf(BigDecimalMath.acos(x.value, x.context.mathContext));
+		return x.isNaN() || (!rangeAbs1(x)) ? NaN :
+				x.context.valueOf(BigDecimalMath.acos(x.value, x.context.mathContext));
+	}
+
+	/**
+	 * @param x a bigfloat
+	 * @return if abs(x) <= 1
+	 */
+	private static boolean rangeAbs1(BigFloat x) {
+		return isBetween(x.context.NEGATIVE_ONE, x.context.ONE, x);
 	}
 
 	/**
@@ -1717,9 +1709,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#atan(BigDecimal, MathContext)
 	 */
 	public static BigFloat atan(BigFloat x) {
-		if (x.isNaN() || x.isZero())
-			return x;
-		if(x.isSpecial())
+		if (x.isSpecial() || x.isZero())
 			return x;
 		return x.context.valueOf(BigDecimalMath.atan(x.value, x.context.mathContext));
 	}
@@ -1766,9 +1756,9 @@ public class BigFloat implements Comparable<BigFloat> {
 	public static BigFloat cosh(BigFloat x) {
 		if (x.isNaN())
 			return NaN;
-		if(x.isInfinity())
+		if (x.isInfinity())
 			return POSITIVE_INFINITY;
-		if(x.isZero())
+		if (x.isZero())
 			return x.context.ONE;
 		return x.context.valueOf(BigDecimalMath.cosh(x.value, x.context.mathContext));
 	}
@@ -1785,11 +1775,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	public static BigFloat tanh(BigFloat x) {
 		if (x.isNaN() || x.isZero())
 			return x;
-		if(x.isInfinity())
-			if(x.type() == SpecialBigFloat.Type.POSITIVE_INFINITY)
-				return x.context.ONE;
-			else
-				return x.context.NEGATIVE_ONE;
+		if (x.isInfinity())
+			return x == POSITIVE_INFINITY ? x.context.ONE : x.context.NEGATIVE_ONE;
 		return x.context.valueOf(BigDecimalMath.tanh(x.value, x.context.mathContext));
 	}
 
