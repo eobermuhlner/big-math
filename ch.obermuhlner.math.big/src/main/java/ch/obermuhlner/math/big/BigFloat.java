@@ -398,7 +398,7 @@ public class BigFloat implements Comparable<BigFloat> {
 				return POSITIVE_INFINITY;// N / 0 = +INF
 			}
 		}
-		// 0 / N = 0
+
 		Context c = max(context, x.context);
 		return c.valueOf(value.divide(x.value, c.mathContext));
 	}
@@ -467,8 +467,20 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimal#remainder(BigDecimal, MathContext)
 	 */
 	public BigFloat remainder(BigFloat x) {
-		if (x.isSpecial())
-			return x;
+		if (x.isSpecial()) {
+			if (x == NaN) {
+				return NaN;
+			} else {
+				return this;
+			}
+		}
+		if (this.isZero() && !x.isZero()) {
+			return context.valueOf(0);
+		}
+		if (x.isZero()) {
+			return NaN;
+		}
+
 		Context c = max(context, x.context);
 		return c.valueOf(value.remainder(x.value, c.mathContext));
 	}
@@ -537,8 +549,26 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat pow(BigFloat y) {
-		if (y.isSpecial())
+		if (y.isSpecial()) {
+			if (this.isZero()) {
+				if (y == POSITIVE_INFINITY) {
+					return this;
+				}
+				if (y == NEGATIVE_INFINITY) {
+					return POSITIVE_INFINITY;
+				}
+			}
+			if (y == NEGATIVE_INFINITY) {
+				return context.ZERO;
+			}
 			return y;
+		}
+		if (this.isZero()) {
+			if (y.isNegative()) {
+				return POSITIVE_INFINITY;
+			}
+		}
+		
 		Context c = max(context, y.context);
 		return c.valueOf(BigDecimalMath.pow(this.value, y.value, c.mathContext));
 	}
@@ -1050,11 +1080,23 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public BigFloat remainder(BigFloat x) {
-			return this;
+			return NaN;
 		}
 
 		@Override
 		public BigFloat pow(BigFloat y) {
+			if (y.isZero()) {
+				return y.context.ONE;
+			}
+			if (y == NaN) {
+				return NaN;
+			}
+			if (this.isInfinity() && y.isNegative()) {
+				return y.context.ZERO;
+			}
+			if (this == NEGATIVE_INFINITY && y.isPositive()) {
+				return POSITIVE_INFINITY;
+			}
 			return this;
 		}
 

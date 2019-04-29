@@ -729,7 +729,9 @@ public class BigFloatTest {
 		PLUS("+"),
 		MINUS("-"),
 		MULTIPLY("*"),
-		DIVIDE("/");
+		DIVIDE("/"),
+		REMAINDER("%"),
+		POW("^");
 
 		public final String symbol;
 
@@ -901,6 +903,8 @@ Infinity / -Infinity = NaN
 				for (double right : DOUBLE_VALUES) {
 					BigFloat rightFloat = context.valueOf(right);
 
+					String description = left + " " + op.symbol + " " + right;
+
 					double result;
 					BigFloat resultFloat;
 					BigFloat resultFloatWithDouble;
@@ -925,11 +929,20 @@ Infinity / -Infinity = NaN
 							resultFloat = leftFloat.divide(rightFloat);
 							resultFloatWithDouble = leftFloat.divide(right);
 							break;
+						case REMAINDER:
+							result = left % right;
+							resultFloat = leftFloat.remainder(rightFloat);
+							resultFloatWithDouble = leftFloat.remainder(right);
+							break;
+						case POW:
+							result = Math.pow(left, right);
+							resultFloat = leftFloat.pow(rightFloat);
+							resultFloatWithDouble = leftFloat.pow(right);
+							break;
 						default:
 							throw new RuntimeException("Unknown operation: " + op);
 					}
 
-					String description = left + " " + op.symbol + " " + right + " = " + result;
 					assertEquals(description, result, resultFloat.toDouble(), 0.00000001);
 					assertEquals(description, context.valueOf(result), resultFloat);
 
@@ -966,6 +979,18 @@ Infinity / -Infinity = NaN
 							resultFloatWithInt = leftFloat.divide(right);
 							resultFloatWithLong = leftFloat.divide((long) right);
 							resultFloatWithBigDecimal = leftFloat.divide(BigDecimal.valueOf(right));
+							break;
+						case REMAINDER:
+							result = left % right;
+							resultFloatWithInt = leftFloat.remainder(right);
+							resultFloatWithLong = leftFloat.remainder((long) right);
+							resultFloatWithBigDecimal = leftFloat.remainder(BigDecimal.valueOf(right));
+							break;
+						case POW:
+							result = Math.pow(left, right);
+							resultFloatWithInt = leftFloat.pow(right);
+							resultFloatWithLong = leftFloat.pow((long) right);
+							resultFloatWithBigDecimal = leftFloat.pow(BigDecimal.valueOf(right));
 							break;
 						default:
 							throw new RuntimeException("Unknown operation: " + op);
