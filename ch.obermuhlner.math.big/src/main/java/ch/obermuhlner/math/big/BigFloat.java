@@ -1,5 +1,6 @@
 package ch.obermuhlner.math.big;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -121,7 +122,8 @@ import java.util.Objects;
  * </pre>
  */
 @SuppressWarnings("WeakerAccess")
-public class BigFloat implements Comparable<BigFloat> {
+public class BigFloat implements Comparable<BigFloat>, Serializable {
+	private static final long serialVersionUID = -7323679117445486894L;
 	public static final BigFloat NaN = new SpecialBigFloat(SpecialBigFloat.Type.NaN);
 	public static final BigFloat POSITIVE_INFINITY = new SpecialBigFloat(SpecialBigFloat.Type.POSITIVE_INFINITY);
 	public static final BigFloat NEGATIVE_INFINITY = new SpecialBigFloat(SpecialBigFloat.Type.NEGATIVE_INFINITY);
@@ -1245,7 +1247,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	/**
 	 * Manages the {@link MathContext} and provides factory methods for {@link BigFloat} values.
 	 */
-	public static class Context {
+	public static class Context implements Serializable{
 		public final BigFloat NEGATIVE_ONE;
 		public final BigFloat ZERO;
 		public final BigFloat ONE;
@@ -1425,7 +1427,6 @@ public class BigFloat implements Comparable<BigFloat> {
 			return mathContext.toString();
 		}
 	}
-
 	/**
 	 * Returns the {@link BigFloat} that is <code>- this</code>.
 	 *

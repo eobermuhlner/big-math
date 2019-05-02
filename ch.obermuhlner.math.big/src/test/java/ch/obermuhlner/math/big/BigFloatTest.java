@@ -3,6 +3,10 @@ package ch.obermuhlner.math.big;
 import ch.obermuhlner.math.big.BigFloat.*;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
@@ -784,6 +788,51 @@ public class BigFloatTest {
 		 */
 		assertSame(NaN, BigFloat.cot(NaN));
 		assertSame(POSITIVE_INFINITY, BigFloat.cot(context.ZERO));
+	}
+
+	@Test
+	public void testSerialize() {
+		try {
+			Context context = BigFloat.context(512);
+			BigFloat testVal = context.valueOf(Integer.MAX_VALUE);
+			BigFloat negTestVal = context.valueOf(Integer.MIN_VALUE);
+			BigFloat POS_INF = POSITIVE_INFINITY;
+			BigFloat NEG_INF = NEGATIVE_INFINITY;
+
+			//POSITIVE TEST
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(testVal);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			//POSITIVE INFINITY TEST
+			ByteArrayOutputStream INFbaos = new ByteArrayOutputStream();
+			ObjectOutputStream INFoos = new ObjectOutputStream(INFbaos);
+			INFoos.writeObject(POS_INF);
+			ByteArrayInputStream INFbais = new ByteArrayInputStream(INFbaos.toByteArray());
+			ObjectInputStream INFois = new ObjectInputStream(INFbais);
+
+			//NEGATIVE TEST
+			ByteArrayOutputStream nbaos = new ByteArrayOutputStream();
+			ObjectOutputStream noos = new ObjectOutputStream(nbaos);
+			noos.writeObject(negTestVal);
+			ByteArrayInputStream nbais = new ByteArrayInputStream(nbaos.toByteArray());
+			ObjectInputStream nois = new ObjectInputStream(nbais);
+			//NEGATIVE INFINITY TEST
+			ByteArrayOutputStream NINFbaos = new ByteArrayOutputStream();
+			ObjectOutputStream NINFoos = new ObjectOutputStream(NINFbaos);
+			NINFoos.writeObject(NEG_INF);
+			ByteArrayInputStream NINFbais = new ByteArrayInputStream(NINFbaos.toByteArray());
+			ObjectInputStream NINFois = new ObjectInputStream(NINFbais);
+
+			//check if original is equal deserialized value
+			assertEquals(testVal, ois.readObject());
+			assertEquals(negTestVal, nois.readObject());
+			assertEquals(POS_INF, INFois.readObject());
+			assertEquals(NEG_INF, NINFois.readObject());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	enum Op {
