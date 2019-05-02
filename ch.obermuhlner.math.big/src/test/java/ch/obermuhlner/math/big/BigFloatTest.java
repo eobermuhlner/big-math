@@ -457,6 +457,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.sin(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				sin(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.sin(BigDecimal.valueOf(1), MathContext.DECIMAL32),
+				sin(context.valueOf(1)).toBigDecimal());
 	}
 
 	@Test
@@ -464,6 +466,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.cos(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				cos(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.cos(BigDecimal.valueOf(1), MathContext.DECIMAL32),
+				cos(context.valueOf(1)).toBigDecimal());
 	}
 
 	@Test
@@ -471,6 +475,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.tan(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				tan(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.tan(BigDecimal.valueOf(1), MathContext.DECIMAL32),
+				tan(context.valueOf(1)).toBigDecimal());
 	}
 
 	@Test
@@ -485,6 +491,10 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.asin(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				asin(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.asin(BigDecimal.valueOf(0.1), MathContext.DECIMAL32),
+				asin(context.valueOf(0.1)).toBigDecimal());
+		assertEquals(BigDecimalMath.asin(BigDecimal.valueOf(-0.1), MathContext.DECIMAL32),
+				asin(context.valueOf(-0.1)).toBigDecimal());
 	}
 
 	@Test
@@ -499,6 +509,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.atan(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				atan(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.atan(BigDecimal.valueOf(0.1), MathContext.DECIMAL32),
+				atan(context.valueOf(0.1)).toBigDecimal());
 	}
 
 	@Test
@@ -506,6 +518,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.acot(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				acot(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.acot(BigDecimal.valueOf(0.1), MathContext.DECIMAL32),
+				acot(context.valueOf(0.1)).toBigDecimal());
 	}
 
 	@Test
@@ -513,6 +527,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.sinh(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				sinh(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.sinh(BigDecimal.valueOf(0.1), MathContext.DECIMAL32),
+				sinh(context.valueOf(0.1)).toBigDecimal());
 	}
 
 	@Test
@@ -520,6 +536,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.cosh(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				cosh(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.cosh(BigDecimal.valueOf(0.1), MathContext.DECIMAL32),
+				cosh(context.valueOf(0.1)).toBigDecimal());
 	}
 
 	@Test
@@ -534,6 +552,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.tanh(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				tanh(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.tanh(BigDecimal.valueOf(0.1), MathContext.DECIMAL32),
+				tanh(context.valueOf(0.1)).toBigDecimal());
 	}
 
 	@Test
@@ -541,6 +561,8 @@ public class BigFloatTest {
 		Context context = context(MathContext.DECIMAL32);
 		assertEquals(BigDecimalMath.asinh(BigDecimal.valueOf(0), MathContext.DECIMAL32),
 				asinh(context.valueOf(0)).toBigDecimal());
+		assertEquals(BigDecimalMath.asinh(BigDecimal.valueOf(0.1), MathContext.DECIMAL32),
+				asinh(context.valueOf(0.1)).toBigDecimal());
 	}
 
 	@Test
@@ -611,13 +633,22 @@ public class BigFloatTest {
 		assertTrue(Double.isNaN(NaN.toDouble()));
 		assertTrue(Double.isInfinite(POSITIVE_INFINITY.toDouble()));
 		assertTrue(Double.isInfinite(NEGATIVE_INFINITY.toDouble()));
+		assertEquals(Double.POSITIVE_INFINITY, POSITIVE_INFINITY.toDouble(), 0.0);
+		assertEquals(Double.NEGATIVE_INFINITY, NEGATIVE_INFINITY.toDouble(), 0.0);
 	}
+
 
 	@Test
 	public void testSpecialMath() {
 		Context context = context(MathContext.DECIMAL32);
 
-		/* aSin
+		/* Abs
+		 */
+		assertSame(POSITIVE_INFINITY, BigFloat.abs(NEGATIVE_INFINITY));
+		assertSame(POSITIVE_INFINITY, BigFloat.abs(POSITIVE_INFINITY));
+		assertSame(NaN, BigFloat.abs(NaN));
+		
+		/* Asin
 		 *	If the argument is NaN or its absolute value is greater than 1, then the result is NaN.
 		 *	If the argument is zero, then the result is a zero with the same sign as the argument.
 		 */
@@ -709,6 +740,35 @@ public class BigFloatTest {
 		assertSame(POSITIVE_INFINITY, BigFloat.log(POSITIVE_INFINITY));
 		assertSame(NEGATIVE_INFINITY, BigFloat.log(context.ZERO));
 
+		/* Log2
+		 * If the argument is NaN or less than zero, then the result is NaN.
+		 * If the argument is positive infinity, then the result is positive infinity.
+		 * If the argument is positive zero or negative zero, then the result is negative infinity.
+		 */
+		assertSame(NaN, BigFloat.log2(NaN));
+		assertSame(NaN, BigFloat.log2(context.NEGATIVE_ONE));
+		assertSame(POSITIVE_INFINITY, BigFloat.log2(POSITIVE_INFINITY));
+		assertSame(NEGATIVE_INFINITY, BigFloat.log2(context.ZERO));
+
+		/* Log10
+		 * If the argument is NaN or less than zero, then the result is NaN.
+		 * If the argument is positive infinity, then the result is positive infinity.
+		 * If the argument is positive zero or negative zero, then the result is negative infinity.
+		 */
+		assertSame(NaN, BigFloat.log10(NaN));
+		assertSame(NaN, BigFloat.log10(context.NEGATIVE_ONE));
+		assertSame(POSITIVE_INFINITY, BigFloat.log10(POSITIVE_INFINITY));
+		assertSame(NEGATIVE_INFINITY, BigFloat.log10(context.ZERO));
+
+		/* Exp
+		 * If the argument is NaN, then the result is NaN.
+     	 * If the argument is positive infinity, then the result is positive infinity.
+     	 * If the argument is negative infinity, then the result is positive zero.
+		 */
+		assertSame(NaN, BigFloat.exp(NaN));
+		assertSame(POSITIVE_INFINITY, BigFloat.exp(POSITIVE_INFINITY));
+		assertEquals(context.ZERO, BigFloat.exp(NEGATIVE_INFINITY));
+		
 		/* Square Root
 		 * If the argument is NaN or less than zero, then the result is NaN.
 		 * If the argument is positive infinity, then the result is positive infinity.
@@ -722,6 +782,7 @@ public class BigFloatTest {
 		/* Cot
 		 * If the argument is zero, then the result is positive infinity. (cot(0) = (1/0))
 		 */
+		assertSame(NaN, BigFloat.cot(NaN));
 		assertSame(POSITIVE_INFINITY, BigFloat.cot(context.ZERO));
 	}
 
@@ -729,7 +790,9 @@ public class BigFloatTest {
 		PLUS("+"),
 		MINUS("-"),
 		MULTIPLY("*"),
-		DIVIDE("/");
+		DIVIDE("/"),
+		REMAINDER("%"),
+		POW("^");
 
 		public final String symbol;
 
@@ -901,6 +964,8 @@ Infinity / -Infinity = NaN
 				for (double right : DOUBLE_VALUES) {
 					BigFloat rightFloat = context.valueOf(right);
 
+					String description = left + " " + op.symbol + " " + right;
+
 					double result;
 					BigFloat resultFloat;
 					BigFloat resultFloatWithDouble;
@@ -925,11 +990,20 @@ Infinity / -Infinity = NaN
 							resultFloat = leftFloat.divide(rightFloat);
 							resultFloatWithDouble = leftFloat.divide(right);
 							break;
+						case REMAINDER:
+							result = left % right;
+							resultFloat = leftFloat.remainder(rightFloat);
+							resultFloatWithDouble = leftFloat.remainder(right);
+							break;
+						case POW:
+							result = Math.pow(left, right);
+							resultFloat = leftFloat.pow(rightFloat);
+							resultFloatWithDouble = leftFloat.pow(right);
+							break;
 						default:
 							throw new RuntimeException("Unknown operation: " + op);
 					}
 
-					String description = left + " " + op.symbol + " " + right + " = " + result;
 					assertEquals(description, result, resultFloat.toDouble(), 0.00000001);
 					assertEquals(description, context.valueOf(result), resultFloat);
 
@@ -966,6 +1040,18 @@ Infinity / -Infinity = NaN
 							resultFloatWithInt = leftFloat.divide(right);
 							resultFloatWithLong = leftFloat.divide((long) right);
 							resultFloatWithBigDecimal = leftFloat.divide(BigDecimal.valueOf(right));
+							break;
+						case REMAINDER:
+							result = left % right;
+							resultFloatWithInt = leftFloat.remainder(right);
+							resultFloatWithLong = leftFloat.remainder((long) right);
+							resultFloatWithBigDecimal = leftFloat.remainder(BigDecimal.valueOf(right));
+							break;
+						case POW:
+							result = Math.pow(left, right);
+							resultFloatWithInt = leftFloat.pow(right);
+							resultFloatWithLong = leftFloat.pow((long) right);
+							resultFloatWithBigDecimal = leftFloat.pow(BigDecimal.valueOf(right));
 							break;
 						default:
 							throw new RuntimeException("Unknown operation: " + op);

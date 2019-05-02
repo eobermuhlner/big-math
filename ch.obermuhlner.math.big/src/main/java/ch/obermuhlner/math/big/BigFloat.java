@@ -398,7 +398,7 @@ public class BigFloat implements Comparable<BigFloat> {
 				return POSITIVE_INFINITY;// N / 0 = +INF
 			}
 		}
-		// 0 / N = 0
+
 		Context c = max(context, x.context);
 		return c.valueOf(value.divide(x.value, c.mathContext));
 	}
@@ -467,8 +467,20 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimal#remainder(BigDecimal, MathContext)
 	 */
 	public BigFloat remainder(BigFloat x) {
-		if (x.isSpecial())
-			return x;
+		if (x.isSpecial()) {
+			if (x == NaN) {
+				return NaN;
+			} else {
+				return this;
+			}
+		}
+		if (this.isZero() && !x.isZero()) {
+			return context.valueOf(0);
+		}
+		if (x.isZero()) {
+			return NaN;
+		}
+
 		Context c = max(context, x.context);
 		return c.valueOf(value.remainder(x.value, c.mathContext));
 	}
@@ -537,8 +549,26 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
 	 */
 	public BigFloat pow(BigFloat y) {
-		if (y.isSpecial())
+		if (y.isSpecial()) {
+			if (this.isZero()) {
+				if (y == POSITIVE_INFINITY) {
+					return this;
+				}
+				if (y == NEGATIVE_INFINITY) {
+					return POSITIVE_INFINITY;
+				}
+			}
+			if (y == NEGATIVE_INFINITY) {
+				return context.ZERO;
+			}
 			return y;
+		}
+		if (this.isZero()) {
+			if (y.isNegative()) {
+				return POSITIVE_INFINITY;
+			}
+		}
+
 		Context c = max(context, y.context);
 		return c.valueOf(BigDecimalMath.pow(this.value, y.value, c.mathContext));
 	}
@@ -1050,11 +1080,23 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public BigFloat remainder(BigFloat x) {
-			return this;
+			return NaN;
 		}
 
 		@Override
 		public BigFloat pow(BigFloat y) {
+			if (y.isZero()) {
+				return y.context.ONE;
+			}
+			if (y == NaN) {
+				return NaN;
+			}
+			if (this.isInfinity() && y.isNegative()) {
+				return y.context.ZERO;
+			}
+			if (this == NEGATIVE_INFINITY && y.isPositive()) {
+				return POSITIVE_INFINITY;
+			}
 			return this;
 		}
 
@@ -1673,7 +1715,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	public static BigFloat asin(BigFloat x) {
 		if (x.isZero())
 			return x;
-		return x.isNaN() || (!rangeAbs1(x)) ? NaN :
+		return x.isNaN() || (!isRangeAbs1(x)) ? NaN :
 				x.context.valueOf(BigDecimalMath.asin(x.value, x.context.mathContext));
 	}
 
@@ -1687,7 +1729,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#acos(BigDecimal, MathContext)
 	 */
 	public static BigFloat acos(BigFloat x) {
-		return x.isNaN() || (!rangeAbs1(x)) ? NaN :
+		return x.isNaN() || (!isRangeAbs1(x)) ? NaN :
 				x.context.valueOf(BigDecimalMath.acos(x.value, x.context.mathContext));
 	}
 
@@ -1695,7 +1737,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @param x a bigfloat
 	 * @return if abs(x) <= 1
 	 */
-	private static boolean rangeAbs1(BigFloat x) {
+	private static boolean isRangeAbs1(BigFloat x) {
 		return isBetween(x.context.NEGATIVE_ONE, x.context.ONE, x);
 	}
 

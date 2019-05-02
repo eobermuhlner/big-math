@@ -9,6 +9,7 @@ gradle.properties
 .project
 .classpath
 bin
+out
 .settings
 
 # IntelliJ IDEA stuff
