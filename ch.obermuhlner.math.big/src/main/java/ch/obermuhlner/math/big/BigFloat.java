@@ -1248,6 +1248,7 @@ public class BigFloat implements Comparable<BigFloat>, Serializable {
 	 * Manages the {@link MathContext} and provides factory methods for {@link BigFloat} values.
 	 */
 	public static class Context implements Serializable{
+		private static final long serialVersionUID = -5787473786808803161L;
 		public final BigFloat NEGATIVE_ONE;
 		public final BigFloat ZERO;
 		public final BigFloat ONE;
