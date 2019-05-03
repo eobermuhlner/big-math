@@ -543,7 +543,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 
 		// https://en.wikipedia.org/wiki/Spouge%27s_approximation
 		checkMathContext(mathContext);
-		MathContext mc = new MathContext(mathContext.getPrecision() * 2, mathContext.getRoundingMode());
+		MathContext mc = new MathContext(mathContext.getPrecision() << 1, mathContext.getRoundingMode());
 
 		int a = mathContext.getPrecision() * 13 / 10;
 		List<BigDecimal> constants = getSpougeFactorialConstants(a);
@@ -811,7 +811,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 
 			do {
 				last = result;
-				adaptivePrecision = adaptivePrecision * 2;
+				adaptivePrecision <<= 1;
 				if (adaptivePrecision > maxPrecision) {
 					adaptivePrecision = maxPrecision;
 				}
@@ -859,7 +859,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		BigDecimal step;
 
 		do {
-			adaptivePrecision = adaptivePrecision * 3;
+			adaptivePrecision *= 3;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
@@ -963,7 +963,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		BigDecimal step;
 		
 		do {
-			adaptivePrecision = adaptivePrecision * 3;
+			adaptivePrecision *= 3;
 			if (adaptivePrecision > maxPrecision) {
 				adaptivePrecision = maxPrecision;
 			}
@@ -979,7 +979,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	}
 
 	private static BigDecimal logUsingExponent(BigDecimal x, MathContext mathContext) {
-		MathContext mcDouble = new MathContext(mathContext.getPrecision() * 2, mathContext.getRoundingMode());
+		MathContext mcDouble = new MathContext(mathContext.getPrecision() << 1, mathContext.getRoundingMode());
         MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 		//System.out.println("logUsingExponent(" + x + " " + mathContext + ") precision " + mc);
 
@@ -994,7 +994,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	}
 
     private static BigDecimal logUsingTwoThree(BigDecimal x, MathContext mathContext) {
-        MathContext mcDouble = new MathContext(mathContext.getPrecision() * 2, mathContext.getRoundingMode());
+        MathContext mcDouble = new MathContext(mathContext.getPrecision() << 1, mathContext.getRoundingMode());
         MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
         //System.out.println("logUsingTwoThree(" + x + " " + mathContext + ") precision " + mc);
 
@@ -1010,7 +1010,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
             while (value < 0.6) {
                 value *= 2;
                 factorOfTwo--;
-                powerOfTwo *= 2;
+	            powerOfTwo <<= 1;
             }
         }
         else if (value < 0.115) { // (0.1 - 0.11111 - 0.115) -> (0.9 - 1.0 - 1.035)
@@ -1072,7 +1072,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
             while (value > 1.4) { // never happens when called by logUsingExponent()
                 value /= 2;
                 factorOfTwo++;
-                powerOfTwo *= 2;
+	            powerOfTwo <<= 1;
             }
         }
 

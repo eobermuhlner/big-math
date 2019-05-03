@@ -41,8 +41,7 @@ public class DefaultBigDecimalMath {
         try {
             return Integer.parseInt(propertyValue);
         } catch(NumberFormatException ex) {
-            System.err.println("Property '" + propertyKey + "' is not valid: " + propertyValue + " (using " + defaultValue + " instead)");
-            return defaultValue;
+            return propertyException(propertyKey,propertyValue,defaultValue);
         }
     }
 
@@ -51,9 +50,13 @@ public class DefaultBigDecimalMath {
         try {
             return RoundingMode.valueOf(propertyValue);
         } catch(IllegalArgumentException ex) {
-            System.err.println("Property '" + propertyKey + "' is not valid: " + propertyValue + " (using " + defaultValue + " instead)");
-            return defaultValue;
+            return propertyException(propertyKey,propertyValue,defaultValue);
         }
+    }
+
+    private static <T> T propertyException(String propertyKey,String propertyValue,T defaultValue){
+        System.err.println("Property '" + propertyKey + "' is not valid: " + propertyValue + " (using " + defaultValue + " instead)");
+        return defaultValue;
     }
 
     /**
