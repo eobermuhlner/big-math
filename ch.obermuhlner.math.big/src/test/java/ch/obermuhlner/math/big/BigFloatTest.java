@@ -791,9 +791,39 @@ public class BigFloatTest {
 	}
 
 	@Test
+	public void testParseUnsigned(){
+		Context context = BigFloat.context(32);
+		//max value of unsigned long
+		final BigDecimal ULONG_MAX = new BigDecimal("18446744073709551615");
+
+		//unsigned integer
+		assertEquals(context.valueOf(new BigDecimal("4294967295")), context.valueOf(-1, true));
+		//unsigned long
+		assertEquals(context.valueOf(ULONG_MAX), context.valueOf(-1L, true));
+
+		//test overflow
+		assertEquals(context.valueOf(((long) Integer.MAX_VALUE) + 1)
+					,context.valueOf(Integer.MAX_VALUE + 1, true));
+
+		assertEquals(context.valueOf(new BigDecimal(Long.MAX_VALUE).add(BigDecimal.ONE))
+					,context.valueOf(Long.MAX_VALUE + 1, true));
+
+		//test normal
+		assertEquals(context.valueOf(Integer.MAX_VALUE)
+				    ,context.valueOf(Integer.MAX_VALUE, true));
+		assertEquals(context.valueOf(Long.MAX_VALUE)
+				    ,context.valueOf(Long.MAX_VALUE, true));
+		assertEquals(context.valueOf(1)
+				    ,context.valueOf(1, true));
+		assertEquals(context.valueOf(1L)
+				    ,context.valueOf(1L, true));
+
+	}
+
+	@Test
 	public void testSerialize() {
 		try {
-			Context context = BigFloat.context(512);
+			Context context = BigFloat.context(32);
 			BigFloat testVal = context.valueOf(Integer.MAX_VALUE);
 			BigFloat negTestVal = context.valueOf(Integer.MIN_VALUE);
 			BigFloat POS_INF = POSITIVE_INFINITY;

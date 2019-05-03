@@ -1333,6 +1333,24 @@ public class BigFloat implements Comparable<BigFloat>, Serializable {
 		}
 
 		/**
+		 * parse unsigned value with this logic <pre><code>value & 4294967295</code></pre>
+		 * @param value an int value
+		 * @param unsigned if true value will parse as unsigned integer
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(int value, boolean unsigned) {
+			if (!unsigned) {
+				return new BigFloat(new BigDecimal(value, mathContext), this);
+			} else {
+				if (value > -1)
+					return valueOf(value, false);
+				return new BigFloat(new BigDecimal(Integer.MAX_VALUE)
+						.add(new BigDecimal(value & Integer.MAX_VALUE))
+						.add(BigDecimal.ONE), this);
+			}
+		}
+
+		/**
 		 * Creates a {@link BigFloat} value with this context.
 		 *
 		 * @param value the source long value
@@ -1341,6 +1359,24 @@ public class BigFloat implements Comparable<BigFloat>, Serializable {
 		 */
 		public BigFloat valueOf(long value) {
 			return new BigFloat(new BigDecimal(value, mathContext), this);
+		}
+
+		/**
+		 * parse unsigned value with this logic <pre><code>value & 18446744073709551615</code></pre>
+		 * @param value an int value
+		 * @param unsigned if true value will parse as unsigned integer
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(long value, boolean unsigned) {
+			if (!unsigned) {
+				return new BigFloat(new BigDecimal(value, mathContext), this);
+			} else {
+				if (value > -1)
+					return valueOf(value, false);
+				return new BigFloat(new BigDecimal(Long.MAX_VALUE)
+						.add(new BigDecimal(value & Long.MAX_VALUE))
+						.add(BigDecimal.ONE), this);
+			}
 		}
 
 		/**
