@@ -1,6 +1,11 @@
 # API changes
 
-No API changes.
+## Support for `NaN`, `POSITIVE_INFINITY`, `NEGATIVE_INFINITY` in `BigFloat`
+
+The `BigFloat` class supports now the same special values as `double`:
+* `NaN` for values that cannot be represented a number
+* `POSITIVE_INFINITY` to represent positive infinite values
+* `NEGATIVE_INFINITY` to represent negative infinite values
 
 
 # Bugfixes
