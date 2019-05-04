@@ -1,5 +1,6 @@
 package ch.obermuhlner.math.big;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -121,7 +122,9 @@ import java.util.Objects;
  * </pre>
  */
 @SuppressWarnings("WeakerAccess")
-public class BigFloat implements Comparable<BigFloat> {
+public class BigFloat implements Comparable<BigFloat>, Serializable {
+    private static final long serialVersionUID = -7323679117445486894L;
+
 	/**
 	 * Represents a value that is not a number.
 	 * @see Double#NaN
@@ -582,7 +585,7 @@ public class BigFloat implements Comparable<BigFloat> {
 				return POSITIVE_INFINITY;
 			}
 		}
-		
+
 		Context c = max(context, y.context);
 		return c.valueOf(BigDecimalMath.pow(this.value, y.value, c.mathContext));
 	}
@@ -1121,26 +1124,19 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		@Override
 		public int hashCode() {
-			return Objects.hashCode(toDouble());
+			return type.hashCode;
 		}
 
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			if (obj instanceof BigFloat)
-				return ((BigFloat) obj).isSpecial() && ((BigFloat) obj).type() == this.type;
-			return false;
+			return obj instanceof BigFloat && ((BigFloat) obj).isSpecial() && ((BigFloat) obj).type() == this.type;
 		}
 
 		@Override
 		public int signum() {
-			switch (type) {
-				case POSITIVE_INFINITY:
-					return 1;
-				default:
-					return -1;
-			}
+			return type == Type.POSITIVE_INFINITY ? 1 : -1;
 		}
 
 		@Override
@@ -1225,10 +1221,16 @@ public class BigFloat implements Comparable<BigFloat> {
 
 		//optional static
 		enum Type {
-			NaN,
-			POSITIVE_INFINITY,
-			NORMAL,
-			NEGATIVE_INFINITY;
+			NaN(Objects.hashCode(Double.NaN)),
+			POSITIVE_INFINITY(Objects.hashCode(Double.POSITIVE_INFINITY)),
+			NORMAL(Objects.hashCode(0)),
+			NEGATIVE_INFINITY(Objects.hashCode(Double.NEGATIVE_INFINITY));
+
+			final int hashCode;
+
+			Type(int hashCode){
+				this.hashCode=hashCode;
+			}
 
 			public static int compare(Type a, Type b) {
 				//we can use double to compare
@@ -1259,7 +1261,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	/**
 	 * Manages the {@link MathContext} and provides factory methods for {@link BigFloat} values.
 	 */
-	public static class Context {
+	public static class Context implements Serializable{
+		private static final long serialVersionUID = -5787473786808803161L;
 		public final BigFloat NEGATIVE_ONE;
 		public final BigFloat ZERO;
 		public final BigFloat ONE;
@@ -1312,13 +1315,7 @@ public class BigFloat implements Comparable<BigFloat> {
 		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
 		 */
 		public BigFloat valueOf(BigFloat value) {
-			if (value.isInfinity())
-				return value == POSITIVE_INFINITY ? POSITIVE_INFINITY : NEGATIVE_INFINITY;
-			else if (value.isNaN())
-				return NaN;
-			if(value.isSpecial())
-				return value;//they are final
-			return new BigFloat(value.value.round(mathContext), this);
+			return value.isSpecial() ? value : new BigFloat(value.value.round(mathContext), this);//they are final
 		}
 
 		/**
@@ -1344,6 +1341,24 @@ public class BigFloat implements Comparable<BigFloat> {
 		}
 
 		/**
+		 * parse unsigned value with this logic <pre><code>value &amp; 4294967295</code></pre>
+		 * @param value an int value
+		 * @param unsigned if true value will parse as unsigned integer
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(int value, boolean unsigned) {
+			if (!unsigned) {
+				return new BigFloat(new BigDecimal(value, mathContext), this);
+			} else {
+				if (value > -1)
+					return valueOf(value, false);
+				return new BigFloat(new BigDecimal(Integer.MAX_VALUE)
+						.add(new BigDecimal(value & Integer.MAX_VALUE))
+						.add(BigDecimal.ONE), this);
+			}
+		}
+
+		/**
 		 * Creates a {@link BigFloat} value with this context.
 		 *
 		 * @param value the source long value
@@ -1352,6 +1367,24 @@ public class BigFloat implements Comparable<BigFloat> {
 		 */
 		public BigFloat valueOf(long value) {
 			return new BigFloat(new BigDecimal(value, mathContext), this);
+		}
+
+		/**
+		 * parse unsigned value with this logic <pre><code>value &amp; 18446744073709551615</code></pre>
+		 * @param value an int value
+		 * @param unsigned if true value will parse as unsigned integer
+		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
+		 */
+		public BigFloat valueOf(long value, boolean unsigned) {
+			if (!unsigned) {
+				return new BigFloat(new BigDecimal(value, mathContext), this);
+			} else {
+				if (value > -1)
+					return valueOf(value, false);
+				return new BigFloat(new BigDecimal(Long.MAX_VALUE)
+						.add(new BigDecimal(value & Long.MAX_VALUE))
+						.add(BigDecimal.ONE), this);
+			}
 		}
 
 		/**
@@ -1439,7 +1472,6 @@ public class BigFloat implements Comparable<BigFloat> {
 			return mathContext.toString();
 		}
 	}
-
 	/**
 	 * Returns the {@link BigFloat} that is <code>- this</code>.
 	 *
@@ -1765,9 +1797,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#atan(BigDecimal, MathContext)
 	 */
 	public static BigFloat atan(BigFloat x) {
-		if (x.isSpecial() || x.isZero())
-			return x;
-		return x.context.valueOf(BigDecimalMath.atan(x.value, x.context.mathContext));
+		return x.isSpecial() || x.isZero() ? x : x.context.valueOf(BigDecimalMath.atan(x.value, x.context.mathContext));
 	}
 
 	/**
@@ -1780,9 +1810,7 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#acot(BigDecimal, MathContext)
 	 */
 	public static BigFloat acot(BigFloat x) {
-		if (x.isSpecial())
-			return x;
-		return x.context.valueOf(BigDecimalMath.acot(x.value, x.context.mathContext));
+		return x.isSpecial() ? x : x.context.valueOf(BigDecimalMath.acot(x.value, x.context.mathContext));
 	}
 
 	/**
@@ -1846,6 +1874,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#coth(BigDecimal, MathContext)
 	 */
 	public static BigFloat coth(BigFloat x) {
+		if(x.isSpecial())
+			return x;
 		return x.context.valueOf(BigDecimalMath.coth(x.value, x.context.mathContext));
 	}
 
@@ -1859,6 +1889,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#asinh(BigDecimal, MathContext)
 	 */
 	public static BigFloat asinh(BigFloat x) {
+		if(x.isSpecial())
+			return x;
 		return x.context.valueOf(BigDecimalMath.asinh(x.value, x.context.mathContext));
 	}
 
@@ -1885,6 +1917,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#atanh(BigDecimal, MathContext)
 	 */
 	public static BigFloat atanh(BigFloat x) {
+		if(x.isSpecial())
+			return x;
 		return x.context.valueOf(BigDecimalMath.atanh(x.value, x.context.mathContext));
 	}
 
@@ -1898,6 +1932,8 @@ public class BigFloat implements Comparable<BigFloat> {
 	 * @see BigDecimalMath#acoth(BigDecimal, MathContext)
 	 */
 	public static BigFloat acoth(BigFloat x) {
+		if(x.isSpecial())
+			return x;
 		return x.context.valueOf(BigDecimalMath.acoth(x.value, x.context.mathContext));
 	}
 
