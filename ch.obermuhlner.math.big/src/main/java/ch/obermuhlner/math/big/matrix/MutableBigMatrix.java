@@ -25,7 +25,7 @@ public interface MutableBigMatrix extends BigMatrix {
 
     MutableBigMatrix transpose();
 
-    default void addToThis(MutableBigMatrix other, MathContext mathContext) {
+    default void addToThis(BigMatrix other, MathContext mathContext) {
         if (rows() != other.rows()) {
             throw new ArithmeticException("rows: " + rows() + " != " + other.rows());
         }
@@ -40,7 +40,7 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
-    default void subtractFromThis(MutableBigMatrix other, MathContext mathContext) {
+    default void subtractFromThis(BigMatrix other, MathContext mathContext) {
         if (rows() != other.rows()) {
             throw new ArithmeticException("rows: " + rows() + " != " + other.rows());
         }
