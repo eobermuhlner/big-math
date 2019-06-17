@@ -37,10 +37,10 @@ public class PerformanceBigDecimalMath {
 	public static void main(String[] args) {
 		StopWatch stopWatch = new StopWatch();
 
-		//fullReport();
+		fullReport();
 		//fullOptimizationReport();
 
-		performanceReport_BasicOperations();
+		//performanceReport_Fast_0_to_10();
 
 		//performanceReport_toBigDecimal_optimization();
 		//performanceReport_toBigDecimal();
