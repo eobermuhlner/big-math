@@ -5,10 +5,15 @@ import ch.obermuhlner.math.big.matrix.MutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.function.BiFunction;
 
 public class SparseMutableBigMatrix extends AbstractSparseBigMatrix implements MutableBigMatrix {
-    public SparseMutableBigMatrix(int rows, int columns) {
-        super(rows, columns);
+    public SparseMutableBigMatrix(int rows, int columns, BigDecimal... values) {
+        super(rows, columns, values);
+    }
+
+    public SparseMutableBigMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+        super(rows, columns, valueFunction);
     }
 
     @Override
@@ -25,6 +30,11 @@ public class SparseMutableBigMatrix extends AbstractSparseBigMatrix implements M
     public void fill(BigDecimal value) {
         data.clear();
         defaultValue = value;
+    }
+
+    @Override
+    public MutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
+        return (MutableBigMatrix) super.subMatrix(startRow, startColumn, rows, columns);
     }
 
     @Override
@@ -50,5 +60,10 @@ public class SparseMutableBigMatrix extends AbstractSparseBigMatrix implements M
     @Override
     public MutableBigMatrix transpose() {
         return (MutableBigMatrix) super.transpose();
+    }
+
+    @Override
+    public MutableBigMatrix invert(MathContext mathContext) {
+        return (MutableBigMatrix) super.invert(mathContext);
     }
 }

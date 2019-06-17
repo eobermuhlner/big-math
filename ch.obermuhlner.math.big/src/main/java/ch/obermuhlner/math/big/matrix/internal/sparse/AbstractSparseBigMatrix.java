@@ -5,6 +5,7 @@ import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     protected final int rows;
@@ -12,12 +13,26 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     protected final Map<Integer, BigDecimal> data = new HashMap<>();
     protected BigDecimal defaultValue = BigDecimal.ZERO;
 
-    public AbstractSparseBigMatrix(int rows, int columns, BigDecimal... values) {
+    public AbstractSparseBigMatrix(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
+    }
+
+    public AbstractSparseBigMatrix(int rows, int columns, BigDecimal... values) {
+        this(rows, columns);
 
         for (int i = 0; i < values.length; i++) {
             data.put(i, values[i]);
+        }
+    }
+
+    public AbstractSparseBigMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+        this(rows, columns);
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                internalSet(row, column, valueFunction.apply(row, column));
+            }
         }
     }
 
