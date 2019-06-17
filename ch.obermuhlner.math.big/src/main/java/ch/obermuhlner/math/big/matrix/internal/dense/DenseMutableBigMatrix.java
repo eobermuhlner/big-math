@@ -5,10 +5,15 @@ import ch.obermuhlner.math.big.matrix.MutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.function.BiFunction;
 
 public class DenseMutableBigMatrix extends AbstractDenseBigMatrix implements MutableBigMatrix {
     public DenseMutableBigMatrix(int rows, int columns, BigDecimal... values) {
         super(rows, columns, values);
+    }
+
+    public DenseMutableBigMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+        super(rows, columns, valueFunction);
     }
 
     @Override
@@ -44,6 +49,11 @@ public class DenseMutableBigMatrix extends AbstractDenseBigMatrix implements Mut
     }
 
     @Override
+    public MutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
+        return (MutableBigMatrix) super.subMatrix(startRow, startColumn, rows, columns);
+    }
+
+    @Override
     public MutableBigMatrix add(BigMatrix other, MathContext mathContext) {
         return (MutableBigMatrix) super.add(other, mathContext);
     }
@@ -66,5 +76,10 @@ public class DenseMutableBigMatrix extends AbstractDenseBigMatrix implements Mut
     @Override
     public MutableBigMatrix transpose() {
         return (MutableBigMatrix) super.transpose();
+    }
+
+    @Override
+    public MutableBigMatrix invert(MathContext mathContext) {
+        return (MutableBigMatrix) super.invert(mathContext);
     }
 }
