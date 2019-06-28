@@ -223,7 +223,7 @@ public class BigComplexTest {
 	}
 
 	private void assertCompareTo(BigDecimal expected, BigDecimal actual) {
-		assertEquals(expected + " compareTo(" + actual + ")", 0, expected.compareTo(actual));
+		assertEquals(expected + " equals(" + actual + ")", 0, expected.compareTo(actual));
 	}
 
 	private void assertDelta(BigDecimal expected, BigDecimal actual, BigDecimal allowedDelta) {

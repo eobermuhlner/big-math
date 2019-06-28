@@ -1,8 +1,7 @@
 package ch.obermuhlner.math.big;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import ch.obermuhlner.math.big.stream.BigDecimalStream;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -12,8 +11,7 @@ import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import ch.obermuhlner.math.big.stream.BigDecimalStream;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class BigDecimalMathTest {
 
@@ -163,7 +161,7 @@ public class BigDecimalMathTest {
         for (int i = 2; i < 10; i++) {
             BigDecimal actual = BigDecimalMath.toBigDecimal(string, MathContext.UNLIMITED, i);
 
-            assertTrue("toBigDecimal(_,_," + i + ") " + expected + " compareTo " + actual, expected.compareTo(actual) == 0);
+            assertTrue("toBigDecimal(_,_," + i + ") " + expected + " equals " + actual, expected.compareTo(actual) == 0);
             assertEquals(expected, actual);
         }
     }
