@@ -1,5 +1,6 @@
 package ch.obermuhlner.math.big;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
@@ -18,7 +19,9 @@ import java.util.Objects;
  *
  * <p>This class is immutable and therefore inherently thread safe.</p>
  */
-public final class BigComplex {
+public final class BigComplex implements Serializable {
+
+    private static final long serialVersionUID = 3031483892166433153L;
 
 	/**
 	 * Zero represented as complex number.
