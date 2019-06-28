@@ -481,6 +481,16 @@ public final class BigComplex implements Serializable {
 		}
 	}
 
+    public String toMinimizedString() {
+        if (re.signum() == 0 && im.signum() == 0)
+            return "0";
+        else if (im.signum() == 0)
+            return re.toString();
+        else if (re.signum() == 0)
+            return im.toString() + "i";
+        else return toString();
+    }
+
 	/**
 	 * Returns a complex number with the specified real {@link BigDecimal} part.
 	 *
