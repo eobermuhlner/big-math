@@ -1,43 +1,41 @@
 package ch.obermuhlner.math.big;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertSame;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class BigComplexTest {
 
 	private static final MathContext MC = MathContext.DECIMAL64;
-	 private static final MathContext MC_LARGE = MathContext.DECIMAL128;
-	 private static final MathContext MC_SMALL = MathContext.DECIMAL32;
+	private static final MathContext MC_LARGE = MathContext.DECIMAL128;
+	private static final MathContext MC_SMALL = MathContext.DECIMAL32;
 
 	@Test
 	public void testConstants() {
 		assertEquals(BigDecimal.ZERO, BigComplex.ZERO.re);
 		assertEquals(BigDecimal.ZERO, BigComplex.ZERO.im);
-		
+
 		assertEquals(BigDecimal.ONE, BigComplex.ONE.re);
 		assertEquals(BigDecimal.ZERO, BigComplex.ONE.im);
-		
+
 		assertEquals(BigDecimal.ZERO, BigComplex.I.re);
 		assertEquals(BigDecimal.ONE, BigComplex.I.im);
 	}
-	
+
 	@Test
 	public void testValueOf() {
 		assertEquals(BigDecimal.valueOf(1.2), BigComplex.valueOf(BigDecimal.valueOf(1.2), BigDecimal.valueOf(3.4)).re);
 		assertEquals(BigDecimal.valueOf(3.4), BigComplex.valueOf(BigDecimal.valueOf(1.2), BigDecimal.valueOf(3.4)).im);
-		
+
 		assertEquals(BigDecimal.valueOf(1.2), BigComplex.valueOf(1.2, 3.4).re);
 		assertEquals(BigDecimal.valueOf(3.4), BigComplex.valueOf(1.2, 3.4).im);
-		
+
 		assertEquals(BigDecimal.valueOf(1.2), BigComplex.valueOf(BigDecimal.valueOf(1.2)).re);
 		assertEquals(BigDecimal.ZERO, BigComplex.valueOf(BigDecimal.valueOf(1.2)).im);
-		
+
 		assertEquals(BigDecimal.valueOf(1.2), BigComplex.valueOf(1.2).re);
 		assertEquals(BigDecimal.ZERO, BigComplex.valueOf(1.2).im);
 	}
@@ -47,11 +45,11 @@ public class BigComplexTest {
 		assertSame(BigComplex.ZERO, BigComplex.valueOf(0.0));
 		assertSame(BigComplex.ZERO, BigComplex.valueOf(0.0, 0.0));
 		assertSame(BigComplex.ZERO, BigComplex.valueOf(BigDecimal.ZERO, BigDecimal.ZERO));
-		
+
 		assertSame(BigComplex.ONE, BigComplex.valueOf(BigDecimal.ONE, BigDecimal.ZERO));
 		assertSame(BigComplex.ONE, BigComplex.valueOf(1.0, 0.0));
 		assertSame(BigComplex.ONE, BigComplex.valueOf(1.0, 0.0));
-		
+
 		assertSame(BigComplex.I, BigComplex.valueOf(BigDecimal.ZERO, BigDecimal.ONE));
 		assertSame(BigComplex.I, BigComplex.valueOf(0.0, 1.0));
 	}
@@ -87,7 +85,7 @@ public class BigComplexTest {
 		assertEquals(BigComplex.valueOf(1.7, 3.4), BigComplex.valueOf(1.2, 3.4).add(BigDecimal.valueOf(0.5)));
 		assertEquals(BigComplex.valueOf(1.7, 3.4), BigComplex.valueOf(1.2, 3.4).add(0.5));
 	}
-	
+
 	@Test
 	public void testSubtract() {
 		assertEquals(BigComplex.valueOf(0.7, 2.8), BigComplex.valueOf(1.2, 3.4).subtract(BigComplex.valueOf(0.5, 0.6), MC));
@@ -97,7 +95,7 @@ public class BigComplexTest {
 		assertEquals(BigComplex.valueOf(0.7, 3.4), BigComplex.valueOf(1.2, 3.4).subtract(BigDecimal.valueOf(0.5)));
 		assertEquals(BigComplex.valueOf(0.7, 3.4), BigComplex.valueOf(1.2, 3.4).subtract(0.5));
 	}
-	
+
 	@Test
 	public void testMultiply() {
 		assertEquals(BigComplex.valueOf(-7.8, 10.4), BigComplex.valueOf(1.2, 3.4).multiply(BigComplex.valueOf(2.0, 3.0), MC));
@@ -109,7 +107,7 @@ public class BigComplexTest {
 		assertEquals(BigComplex.valueOf(2.4, 6.8), BigComplex.valueOf(1.2, 3.4).multiply(BigDecimal.valueOf(2.0)));
 		assertEquals(BigComplex.valueOf(2.4, 6.8), BigComplex.valueOf(1.2, 3.4).multiply(2.0));
 	}
-	
+
 	@Test
 	public void testDivide() {
 		assertEquals(BigComplex.valueOf(0.8, 0.1), BigComplex.valueOf(1.2, 3.4).divide(BigComplex.valueOf(2.0, 4.0), MC));
@@ -124,10 +122,10 @@ public class BigComplexTest {
 	@Test
 	public void testConjugate() {
 		BigComplex orig = BigComplex.valueOf(1.2, 3.4);
-		
+
 		assertEquals(orig.re, orig.conjugate().re);
 		assertEquals(orig.im.negate(), orig.conjugate().im);
-		
+
 		assertEquals(BigDecimal.valueOf(1.2), orig.conjugate().re);
 		assertEquals(BigDecimal.valueOf(-3.4), orig.conjugate().im);
 	}
@@ -160,20 +158,20 @@ public class BigComplexTest {
 	public void testAngleFailZero() {
 		assertCompareTo(BigDecimal.ZERO, BigComplex.ZERO.angle(MC));
 	}
-	
+
 	@Test
 	public void testAngle() {
 		assertCompareTo(BigDecimal.ZERO, BigComplex.ONE.angle(MC));
 		assertCompareTo(BigDecimalMath.pi(MC_LARGE).divide(BigDecimal.valueOf(2), MC), BigComplex.I.angle(MC));
 	}
-	
+
 	@Test
 	public void testIsReal() {
 		assertEquals(true, BigComplex.ZERO.isReal());
 		assertEquals(true, BigComplex.ONE.isReal());
 		assertEquals(false, BigComplex.I.isReal());
 	}
-	
+
 	@Test
 	public void testEquals() {
 		assertEquals(false, BigComplex.ONE.equals(null));
@@ -181,13 +179,13 @@ public class BigComplexTest {
 		assertEquals(false, BigComplex.ONE.equals(BigComplex.ZERO));
 		assertEquals(false, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf(1, 999)));
 		assertEquals(false, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf(999, 2)));
-		
+
 		assertEquals(true, BigComplex.ZERO.equals(BigComplex.ZERO));
 		assertEquals(true, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf(1, 2)));
 		assertEquals(true, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf(1.0, 2.0)));
 		assertEquals(true, BigComplex.valueOf(1, 2).equals(BigComplex.valueOf(new BigDecimal("1.00000"), new BigDecimal("2.0000"))));
 	}
-	
+
 	@Test
 	public void testStrictEquals() {
 		assertEquals(false, BigComplex.ONE.strictEquals(null));
@@ -195,7 +193,7 @@ public class BigComplexTest {
 		assertEquals(false, BigComplex.ONE.equals(BigComplex.ZERO));
 		assertEquals(false, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf(1, 999)));
 		assertEquals(false, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf(999, 2)));
-		
+
 		assertEquals(true, BigComplex.ZERO.strictEquals(BigComplex.ZERO));
 		assertEquals(true, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf(1, 2)));
 		assertEquals(true, BigComplex.valueOf(1, 2).strictEquals(BigComplex.valueOf(1.0, 2.0)));
@@ -213,19 +211,19 @@ public class BigComplexTest {
 		assertNotEquals(BigComplex.ONE.hashCode(), BigComplex.I.hashCode());
 		assertNotEquals(BigComplex.I.hashCode(), BigComplex.ZERO.hashCode());
 	}
-	
+
 	@Test
 	public void testToString() {
 		assertEquals("(1.2 + 3.4 i)", BigComplex.valueOf(1.2, 3.4).toString());
 		assertEquals("(1.2 - 3.4 i)", BigComplex.valueOf(1.2, -3.4).toString());
-		
+
 		assertEquals("(1.2 + 0.0 i)", BigComplex.valueOf(1.2, 0.0).toString());
-		
+
 		assertEquals("(0.0 + 3.4 i)", BigComplex.valueOf(0.0, 3.4).toString());
 	}
 
 	private void assertCompareTo(BigDecimal expected, BigDecimal actual) {
-		assertEquals(expected + " equals(" + actual + ")", 0, expected.compareTo(actual));
+		assertEquals(expected + " compareTo(" + actual + ")", 0, expected.compareTo(actual));
 	}
 
 	private void assertDelta(BigDecimal expected, BigDecimal actual, BigDecimal allowedDelta) {
