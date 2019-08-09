@@ -2,6 +2,7 @@
 [![Code Coverage](https://badgen.net/codecov/c/github/eobermuhlner/big-math)](https://codecov.io/gh/eobermuhlner/big-math)
 [![Dependencies](https://img.shields.io/librariesio/github/eobermuhlner/big-math.svg)](https://github.com/eobermuhlner/big-math/pulse)
 [![Open Issues](https://badgen.net/github/open-issues/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/issues)
+[![Open Issues](https://badgen.net/github/closed-issues/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/issues)
 [![Maven Central](https://img.shields.io/maven-central/v/ch.obermuhlner/big-math.svg)](https://search.maven.org/artifact/ch.obermuhlner/big-math)
 [![Github activity](https://img.shields.io/github/commit-activity/y/eobermuhlner/big-math.svg)](https://github.com/eobermuhlner/big-math/graphs/commit-activity) [![Join the chat at https://gitter.im/eobermuhlner-big-math/community](https://badges.gitter.im/eobermuhlner-big-math/community.svg)](https://gitter.im/eobermuhlner-big-math/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
