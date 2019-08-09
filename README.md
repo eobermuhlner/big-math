@@ -2,7 +2,7 @@
 [![Code Coverage](https://badgen.net/codecov/c/github/eobermuhlner/big-math)](https://codecov.io/gh/eobermuhlner/big-math)
 [![Dependencies](https://img.shields.io/librariesio/github/eobermuhlner/big-math.svg)](https://github.com/eobermuhlner/big-math/pulse)
 [![Open Issues](https://badgen.net/github/open-issues/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/issues)
-[![Open Issues](https://badgen.net/github/closed-issues/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/issues)
+[![Closed Issues](https://badgen.net/github/closed-issues/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/issues)
 [![Maven Central](https://img.shields.io/maven-central/v/ch.obermuhlner/big-math.svg)](https://search.maven.org/artifact/ch.obermuhlner/big-math)
 [![Commits](https://badgen.net/github/commits/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/graphs/commit-activity)
 [![Last Commits](https://badgen.net/github/last-commit/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/graphs/commit-activity)
