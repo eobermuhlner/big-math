@@ -1,4 +1,4 @@
-[![Build Status](https://badgen.net/travis/eobermuhlner/big-math)](https://travis-ci.org/eobermuhlner/big-math)
+[![Build Status](https://api.travis-ci.org/eobermuhlner/big-math.svg?branch=master)](https://travis-ci.org/eobermuhlner/big-math)
 [![Code Coverage](https://badgen.net/codecov/c/github/eobermuhlner/big-math)](https://codecov.io/gh/eobermuhlner/big-math)
 [![Dependencies](https://img.shields.io/librariesio/github/eobermuhlner/big-math.svg)](https://github.com/eobermuhlner/big-math/pulse)
 [![Open Issues](https://badgen.net/github/open-issues/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/issues)
