@@ -578,8 +578,9 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 				BigDecimal factor = c0;
 				for (int k = 1; k < a; k++) {
 					BigDecimal bigK = BigDecimal.valueOf(k);
-					BigDecimal ck = pow(BigDecimal.valueOf(a - k), bigK.subtract(ONE_HALF, mc), mc);
-					ck = ck.multiply(exp(BigDecimal.valueOf(a - k), mc), mc);
+					long deltaAK = (long)a - k;
+					BigDecimal ck = pow(BigDecimal.valueOf(deltaAK), bigK.subtract(ONE_HALF, mc), mc);
+					ck = ck.multiply(exp(BigDecimal.valueOf(deltaAK), mc), mc);
 					ck = ck.divide(factorial(k - 1), mc);
 					if (negative) {
 						ck = ck.negate();
