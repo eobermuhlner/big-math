@@ -1,8 +1,12 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: 'jacoco'
+
+plugins {
+    id 'org.sonarqube' version '2.7'
+    id 'java'
+    id 'eclipse'
+    id 'maven'
+    id 'signing'
+    id 'jacoco'
+}
 
 group = 'ch.obermuhlner'
 version = '2.1.0'
@@ -25,6 +29,12 @@ test {
     testLogging {
         events "failed"
         exceptionFormat "full"
+    }
+}
+
+sonarqube {
+    properties {
+        sonar.projectKey spel-scriptengine
     }
 }
 

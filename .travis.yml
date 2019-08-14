@@ -6,6 +6,18 @@ language: java
 jdk:
   - oraclejdk8
 
+before_install:
+  - chmod +x gradlew
+
+addons:
+  sonarcloud:
+    organization: "eobermuhlner"
+    token:
+      secure: rsfHxDskN6m18xYPNdG6CZIES7D98Dekv2ZtNOU1BxeuQGqTZjn/gm/LjzK99alzmrd2gsO8EK67EGMRFM+cPqHGRJaFsNm2WgqU3UmwoVSe6wvFkDazZAHySRNeEcdmtxHUlUeQZXZvdI+gXpgiJlYxrfxh3zhDLIW5Iha2wOTTDjp/DM+VvMLo5YLDe/uKMj638QgwjJi4GFUHrkMwOx6YOm16JDOn+5BUfkjAkTDwnQF3enmiHtySXufat6hI0w1gUbUvUB5VW3HOdHdwXf2FE5VuDraWPzWkquytM0kzaFaCRDcjvXF8OXQR3aq0Jdb0cV+niY+6y6vNBPldk1rSBJr5Hn4nDFdClxb6Q1Dq5f2YvakUq9hTInluxTyPvQh5FmJZh7pq1bM8gBUIPN6ZwuicqMDtlGff4UiXKzI/waV42xUj7ZnXWWrHYrgBxcmC3HPuNGpXOifnyduVsDx4MuwHyVAGIXLzVFNDhRhykR2YJLBz3+JEL+MyoW/6UX1Jmxw9isxP6ALYe8SNtae46UVVNB8AOCg3DAdcEiCVMnCRx8gJxCFpdZ0fd1Tvm54/OoGDWh0W5rja2X+1y4yRlZc8jlp3dqyJrZBwM7ufO6rg1uNw1kzT8bslIhxjN5GAxH8nIrBl7VzKk6UynXiqmsvQvYx9M7giee9abRA=
+
+script:
+  - ./gradlew sonarqube
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
