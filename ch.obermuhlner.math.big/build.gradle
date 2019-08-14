@@ -34,7 +34,7 @@ test {
 
 sonarqube {
     properties {
-        sonar.projectKey spel-scriptengine
+        property "sonar.projectKey" spel-scriptengine
     }
 }
 
