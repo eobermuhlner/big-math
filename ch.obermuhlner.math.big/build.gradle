@@ -34,7 +34,7 @@ test {
 
 sonarqube {
     properties {
-        property "sonar.projectKey" big-math
+        property "sonar.projectKey", "big-math"
     }
 }
 
