@@ -1,10 +1,10 @@
 [![Build Status](https://api.travis-ci.org/eobermuhlner/big-math.svg?branch=master)](https://travis-ci.org/eobermuhlner/big-math)
 [![Code Coverage](https://badgen.net/codecov/c/github/eobermuhlner/big-math)](https://codecov.io/gh/eobermuhlner/big-math)
 [![Dependencies](https://img.shields.io/librariesio/github/eobermuhlner/big-math.svg)](https://github.com/eobermuhlner/big-math/pulse)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=big-math&metric=alert_status)](https://sonarcloud.io/dashboard?id=big-math)
 [![Open Issues](https://badgen.net/github/open-issues/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/issues)
 [![Closed Issues](https://badgen.net/github/closed-issues/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/issues)
 [![Maven Central](https://img.shields.io/maven-central/v/ch.obermuhlner/big-math.svg)](https://search.maven.org/artifact/ch.obermuhlner/big-math)
-[![Commits](https://badgen.net/github/commits/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/graphs/commit-activity)
 [![Last Commits](https://badgen.net/github/last-commit/eobermuhlner/big-math)](https://github.com/eobermuhlner/big-math/graphs/commit-activity)
 [![Join the chat at https://gitter.im/eobermuhlner-big-math/community](https://badges.gitter.im/eobermuhlner-big-math/community.svg)](https://gitter.im/eobermuhlner-big-math/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 

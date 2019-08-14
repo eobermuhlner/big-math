@@ -4,8 +4,6 @@ import static ch.obermuhlner.math.big.BigComplex.I;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
