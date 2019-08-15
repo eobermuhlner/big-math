@@ -1464,9 +1464,9 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 			return atan(y.divide(x, mc), mathContext);
 		} else if (x.signum() < 0) {
 			if (y.signum() > 0) {  // x < 0 && y > 0
-				return atan(y.divide(x, mc), mc).add(pi(mc));
+				return atan(y.divide(x, mc), mc).add(pi(mc), mathContext);
 			} else if (y.signum() < 0) { // x < 0 && y < 0
-				return atan(y.divide(x, mc), mc).subtract(pi(mc));
+				return atan(y.divide(x, mc), mc).subtract(pi(mc), mathContext);
 			} else { // x < 0 && y = 0
 				return pi(mathContext);
 			}
