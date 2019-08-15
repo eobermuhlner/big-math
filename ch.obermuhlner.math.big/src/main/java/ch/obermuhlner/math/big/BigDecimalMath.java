@@ -575,7 +575,6 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 				constants.add(c0);
 
 				boolean negative = false;
-				BigDecimal factor = c0;
 				for (int k = 1; k < a; k++) {
 					BigDecimal bigK = BigDecimal.valueOf(k);
 					long deltaAK = (long)a - k;
