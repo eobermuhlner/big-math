@@ -1318,11 +1318,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				random -> random.nextDouble() * 100 - 50,
 				Math::atan2,
-		   		(x, y, mathContext) -> {
+		   		(y, x, mathContext) -> {
 					BigDecimal pi = BigDecimalMath.pi(mathContext);
-					BigDecimal result = BigDecimalMath.atan2(x, y, mathContext);
+					BigDecimal result = BigDecimalMath.atan2(y, x, mathContext);
 					if (result.compareTo(pi.negate()) < 0 || result.compareTo(pi) > 0) {
-					   fail("outside allowed range: " + y);
+					   fail("outside allowed range: " + result + " for y=" + y + ", x=" + x);
 					}
 					return result;
 			   	});
