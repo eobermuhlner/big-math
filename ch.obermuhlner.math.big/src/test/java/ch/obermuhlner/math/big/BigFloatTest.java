@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static ch.obermuhlner.math.big.BigFloat.*;
 import static org.junit.Assert.*;
@@ -183,6 +184,13 @@ public class BigFloatTest {
 
 		Context anotherContext = context(MathContext.DECIMAL64);
 		assertEquals(context.valueOf(1).hashCode(), anotherContext.valueOf(1).hashCode());
+
+		/**
+		 * SpecialFloat hashcode test
+		 */
+		assertEquals(NaN.hashCode(),Objects.hashCode(Double.NaN));
+		assertEquals(POSITIVE_INFINITY.hashCode(),Objects.hashCode(Double.POSITIVE_INFINITY));
+		assertEquals(NEGATIVE_INFINITY.hashCode(),Objects.hashCode(Double.NEGATIVE_INFINITY));
 	}
 
 	@Test
@@ -788,6 +796,15 @@ public class BigFloatTest {
 		 */
 		assertSame(NaN, BigFloat.cot(NaN));
 		assertSame(POSITIVE_INFINITY, BigFloat.cot(context.ZERO));
+
+		/**
+		 * root test
+		 */
+		assertSame(NaN, context.ONE.root(NaN));
+		assertSame(POSITIVE_INFINITY, context.ONE.root(POSITIVE_INFINITY));
+		assertSame(NEGATIVE_INFINITY, context.ONE.root(NEGATIVE_INFINITY));
+		assertSame(POSITIVE_INFINITY, POSITIVE_INFINITY.root(context.ONE));
+		assertSame(NEGATIVE_INFINITY, NEGATIVE_INFINITY.root(context.ONE));
 	}
 
 	@Test
@@ -818,6 +835,28 @@ public class BigFloatTest {
 		assertEquals(context.valueOf(1L)
 				    ,context.valueOf(1L, true));
 
+	}
+
+	@Test
+	public void testSpecialMethod() {
+		assertFalse(NaN.isIntValue());
+		assertFalse(NaN.isDoubleValue());
+
+		assertSame(NaN, NaN.getMantissa());
+		assertSame(NaN, NaN.getExponent());
+		assertSame(NaN, NaN.getIntegralPart());
+		assertSame(NaN, NaN.getFractionalPart());
+	}
+
+	@Test
+	public void testIsDecimal() {
+		Context context = BigFloat.context(32);
+
+		assertTrue(context.valueOf(1.1).isDecimal());
+		assertTrue(context.valueOf(1.0001).isDecimal());
+
+		assertFalse(context.valueOf(1).isDecimal());
+		assertFalse(context.valueOf(2147483647).isDecimal());
 	}
 
 	@Test
