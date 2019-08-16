@@ -123,9 +123,24 @@ import java.util.Objects;
  */
 @SuppressWarnings("WeakerAccess")
 public class BigFloat implements Comparable<BigFloat>, Serializable {
-	private static final long serialVersionUID = -7323679117445486894L;
+    private static final long serialVersionUID = -7323679117445486894L;
+
+	/**
+	 * Represents a value that is not a number.
+	 * @see Double#NaN
+	 */
 	public static final BigFloat NaN = new SpecialBigFloat(SpecialBigFloat.Type.NaN);
+
+	/**
+	 * Represents the positive infinity.
+	 * @see Double#POSITIVE_INFINITY
+	 */
 	public static final BigFloat POSITIVE_INFINITY = new SpecialBigFloat(SpecialBigFloat.Type.POSITIVE_INFINITY);
+
+	/**
+	 * Represents the positive infinity.
+	 * @see Double#NEGATIVE_INFINITY
+	 */
 	public static final BigFloat NEGATIVE_INFINITY = new SpecialBigFloat(SpecialBigFloat.Type.NEGATIVE_INFINITY);
 
 	private final BigDecimal value;

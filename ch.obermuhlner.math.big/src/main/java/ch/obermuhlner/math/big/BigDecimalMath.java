@@ -554,13 +554,13 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		BigDecimal factor = constants.get(0);
 		for (int k = 1; k < a; k++) {
 			BigDecimal bigK = BigDecimal.valueOf(k);
-			factor = factor.add(constants.get(k).divide(x.add(bigK), mc), mc);
+			factor = factor.add(constants.get(k).divide(x.add(bigK), mc));
 			negative = !negative;
 		}
 
-		BigDecimal result = pow(x.add(bigA, mc), x.add(BigDecimal.valueOf(0.5), mc), mc);
-		result = result.multiply(exp(x.negate().subtract(bigA, mc), mc), mc);
-		result = result.multiply(factor, mc);
+		BigDecimal result = pow(x.add(bigA), x.add(BigDecimal.valueOf(0.5)), mc);
+		result = result.multiply(exp(x.negate().subtract(bigA), mc));
+		result = result.multiply(factor);
 
 		return round(result, mathContext);
 	}
@@ -575,11 +575,11 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 				constants.add(c0);
 
 				boolean negative = false;
-				BigDecimal factor = c0;
 				for (int k = 1; k < a; k++) {
 					BigDecimal bigK = BigDecimal.valueOf(k);
-					BigDecimal ck = pow(BigDecimal.valueOf(a - k), bigK.subtract(ONE_HALF, mc), mc);
-					ck = ck.multiply(exp(BigDecimal.valueOf(a - k), mc), mc);
+					long deltaAK = (long)a - k;
+					BigDecimal ck = pow(BigDecimal.valueOf(deltaAK), bigK.subtract(ONE_HALF), mc);
+					ck = ck.multiply(exp(BigDecimal.valueOf(deltaAK), mc), mc);
 					ck = ck.divide(factorial(k - 1), mc);
 					if (negative) {
 						ck = ck.negate();
@@ -816,7 +816,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 					adaptivePrecision = maxPrecision;
 				}
 				MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
-				result = x.divide(result, mc).add(last, mc).multiply(ONE_HALF, mc);
+				result = x.divide(result, mc).add(last).multiply(ONE_HALF, mc);
 			}
 			while (adaptivePrecision < maxPrecision || result.subtract(last).abs().compareTo(acceptableError) > 0);
 		}
@@ -865,8 +865,8 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 			}
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
 			
-			step = x.divide(pow(result, nMinus1, mc), mc).subtract(result, mc).divide(n, mc);
-			result = result.add(step, mc);
+			step = x.divide(pow(result, nMinus1, mc), mc).subtract(result).divide(n, mc);
+			result = result.add(step);
 		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
 
 		return round(result, mathContext);
@@ -970,7 +970,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
 			
 			BigDecimal expY = BigDecimalMath.exp(result, mc);
-			step = TWO.multiply(x.subtract(expY, mc), mc).divide(x.add(expY, mc), mc);
+			step = TWO.multiply(x.subtract(expY)).divide(x.add(expY), mc);
 			//System.out.println("  step " + step + " adaptivePrecision=" + adaptivePrecision);
 			result = result.add(step);
 		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
@@ -988,7 +988,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 
 		BigDecimal result = logUsingTwoThree(mantissa, mc);
 		if (exponent != 0) {
-			result = result.add(valueOf(exponent).multiply(logTen(mcDouble), mc), mc);
+			result = result.add(valueOf(exponent).multiply(logTen(mcDouble), mc));
 		}
         return result;
 	}
@@ -1081,20 +1081,20 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 
         if (factorOfTwo > 0) {
             correctedX = correctedX.divide(valueOf(powerOfTwo), mc);
-            result = result.add(logTwo(mcDouble).multiply(valueOf(factorOfTwo), mc), mc);
+            result = result.add(logTwo(mcDouble).multiply(valueOf(factorOfTwo), mc));
         }
         else if (factorOfTwo < 0) {
             correctedX = correctedX.multiply(valueOf(powerOfTwo), mc);
-            result = result.subtract(logTwo(mcDouble).multiply(valueOf(-factorOfTwo), mc), mc);
+            result = result.subtract(logTwo(mcDouble).multiply(valueOf(-factorOfTwo), mc));
         }
 
         if (factorOfThree > 0) {
             correctedX = correctedX.divide(valueOf(powerOfThree), mc);
-            result = result.add(logThree(mcDouble).multiply(valueOf(factorOfThree), mc), mc);
+            result = result.add(logThree(mcDouble).multiply(valueOf(factorOfThree), mc));
         }
         else if (factorOfThree < 0) {
             correctedX = correctedX.multiply(valueOf(powerOfThree), mc);
-            result = result.subtract(logThree(mcDouble).multiply(valueOf(-factorOfThree), mc), mc);
+            result = result.subtract(logThree(mcDouble).multiply(valueOf(-factorOfThree), mc));
         }
 
         if (x == correctedX && result == ZERO) {
@@ -1307,7 +1307,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 
 		if (x.abs().compareTo(ROUGHLY_TWO_PI) > 0) {
 			MathContext mc2 = new MathContext(mc.getPrecision() + 4, mathContext.getRoundingMode());
-			BigDecimal twoPi = TWO.multiply(pi(mc2), mc2);
+			BigDecimal twoPi = TWO.multiply(pi(mc2));
 			x = x.remainder(twoPi, mc2);
 		}
 
@@ -1342,7 +1342,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
 		if (x.compareTo(BigDecimal.valueOf(0.707107)) >= 0) {
-			BigDecimal xTransformed = sqrt(ONE.subtract(x.multiply(x, mc), mc), mc);
+			BigDecimal xTransformed = sqrt(ONE.subtract(x.multiply(x)), mc);
 			return acos(xTransformed, mathContext);
 		}
 
@@ -1396,7 +1396,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
-		BigDecimal result = pi(mc).divide(TWO, mc).subtract(asin(x, mc), mc);
+		BigDecimal result = pi(mc).divide(TWO, mc).subtract(asin(x, mc));
 		return round(result, mathContext);
 	}
 
@@ -1435,7 +1435,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 
-		x = x.divide(sqrt(ONE.add(x.multiply(x, mc), mc), mc), mc);
+		x = x.divide(sqrt(ONE.add(x.multiply(x, mc)), mc), mc);
 
 		BigDecimal result = asin(x, mc);
 		return round(result, mathContext);
@@ -1516,7 +1516,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	public static BigDecimal acot(BigDecimal x, MathContext mathContext) {
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		BigDecimal result = pi(mc).divide(TWO, mc).subtract(atan(x, mc), mc);
+		BigDecimal result = pi(mc).divide(TWO, mc).subtract(atan(x, mc));
 		return round(result, mathContext);
 	}
 
@@ -1601,7 +1601,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	public static BigDecimal asinh(BigDecimal x, MathContext mathContext) {
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 10, mathContext.getRoundingMode());
-		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).add(ONE, mc), mc), mc), mc);
+		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).add(ONE, mc), mc)), mc);
 		return round(result, mathContext);
 	}
 	
@@ -1618,7 +1618,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	public static BigDecimal acosh(BigDecimal x, MathContext mathContext) {
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
-		BigDecimal result = log(x.add(sqrt(x.multiply(x, mc).subtract(ONE, mc), mc), mc), mc);
+		BigDecimal result = log(x.add(sqrt(x.multiply(x).subtract(ONE), mc)), mc);
 		return round(result, mathContext);
 	}
 
@@ -1642,7 +1642,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
-		BigDecimal result = log(ONE.add(x, mc).divide(ONE.subtract(x, mc), mc), mc).multiply(ONE_HALF, mc);
+		BigDecimal result = log(ONE.add(x).divide(ONE.subtract(x), mc), mc).multiply(ONE_HALF);
 		return round(result, mathContext);
 	}
 
@@ -1659,7 +1659,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	public static BigDecimal acoth(BigDecimal x, MathContext mathContext) {
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
-		BigDecimal result = log(x.add(ONE, mc).divide(x.subtract(ONE, mc), mc), mc).divide(TWO, mc);
+		BigDecimal result = log(x.add(ONE).divide(x.subtract(ONE), mc), mc).multiply(ONE_HALF);
 		return round(result, mathContext);
 	}
 

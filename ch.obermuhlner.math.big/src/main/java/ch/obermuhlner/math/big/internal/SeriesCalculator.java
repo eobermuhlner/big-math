@@ -58,19 +58,19 @@ public abstract class SeriesCalculator {
 			BigRational factor = getFactor(i);
 			BigDecimal xToThePower  = powerIterator.getCurrentPower();
 			powerIterator.calculateNextPower();
-			step = factor.getNumerator().multiply(xToThePower, mathContext).divide(factor.getDenominator(), mathContext);
+			step = factor.getNumerator().multiply(xToThePower).divide(factor.getDenominator(), mathContext);
 			i++;
 
 			if (calculateInPairs) {
 				xToThePower  = powerIterator.getCurrentPower();
 				powerIterator.calculateNextPower();
 				factor = getFactor(i);
-				BigDecimal step2 = factor.getNumerator().multiply(xToThePower, mathContext).divide(factor.getDenominator(), mathContext);
-				step = step.add(step2, mathContext);
+				BigDecimal step2 = factor.getNumerator().multiply(xToThePower).divide(factor.getDenominator(), mathContext);
+				step = step.add(step2);
 				i++;
 			}
 
-			sum = sum.add(step, mathContext);
+			sum = sum.add(step);
 			//System.out.println(sum + " " + step);
 		} while (step.abs().compareTo(acceptableError) > 0);
 		
