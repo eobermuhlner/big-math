@@ -850,6 +850,14 @@ public class BigFloat implements Comparable<BigFloat>, Serializable {
 	}
 
 	/**
+	 * check if this big float is decimal value
+	 * @return true if this is a decimal value
+	 */
+	public boolean isDecimal(){
+		return !value.setScale(0,RoundingMode.HALF_UP).equals(value);
+	}
+
+	/**
 	 * Returns whether <code>this</code> value can be represented as <code>int</code>.
 	 *
 	 * @return <code>true</code> if the value can be represented as <code>int</code> value
