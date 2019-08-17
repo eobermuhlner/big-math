@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -729,6 +730,34 @@ public class BigFloat implements Comparable<BigFloat>, Serializable {
 
 		return value.compareTo(other.value) == 0;
 		//return Objects.equals(value, other.value) && Objects.equals(context, other.context);
+	}
+
+	@SuppressWarnings("ObjectInstantiationInEqualsHashCode")
+	public int compareTo(Number number) {
+		if (number == null)
+			return -1;
+		if (number instanceof Integer)
+			return value.compareTo(new BigDecimal((int) number));
+		else if (number instanceof Long)
+			return value.compareTo(new BigDecimal((long) number));
+		boolean isdb;// is double
+		if ((isdb = number instanceof Double) || number instanceof Float) {
+			final double num = isdb ? (double) number : (float) number;
+			if (Double.isNaN(num))
+				return this.compareTo(NaN);
+			else if (Double.isInfinite(num))
+				return num == Double.POSITIVE_INFINITY ? compareTo(POSITIVE_INFINITY) : compareTo(NEGATIVE_INFINITY);
+			return value.compareTo(new BigDecimal(num));
+		}
+		if (number instanceof Byte)
+			return value.compareTo(new BigDecimal((byte) number));
+		else if (number instanceof Short)
+			return value.compareTo(new BigDecimal((short) number));
+		if (number instanceof BigDecimal)
+			return value.compareTo((BigDecimal) number);
+		else if (number instanceof BigInteger)
+			return value.compareTo(new BigDecimal((BigInteger) number));
+		return value.compareTo(new BigDecimal(number.toString()));
 	}
 
 	/**

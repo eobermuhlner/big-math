@@ -866,6 +866,15 @@ public class BigFloatTest {
 	}
 
 	@Test
+	public void testNewCompareTo() {
+		Context context = BigFloat.context(32);
+		assertSame(context.valueOf(1).compareTo(50), Integer.compare(1, 50));
+		assertSame(context.valueOf(0xFFFFFFFFFFL).compareTo(-1), Long.compare(0xFFFFFFFFFFL, -1));
+		assertSame(context.valueOf(-0.0).compareTo(Float.NaN), Float.compare(-0.0f, Float.NaN));
+		assertSame(POSITIVE_INFINITY.compareTo(Float.NEGATIVE_INFINITY), Float.compare(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY));
+	}
+
+	@Test
 	public void testSerialize() {
 		try {
 			Context context = BigFloat.context(32);
