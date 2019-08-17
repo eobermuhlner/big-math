@@ -1413,8 +1413,8 @@ public class BigFloat implements Comparable<BigFloat>, Serializable {
 
 		/**
 		 * parse unsigned value with this logic <pre><code>value &amp; 18446744073709551615</code></pre>
-		 * @param value an int value
-		 * @param unsigned if true value will parse as unsigned integer
+		 * @param value an long value
+		 * @param unsigned if true value will parse as unsigned long
 		 * @return the {@link BigFloat} value with this context (rounded to the precision of this context)
 		 */
 		public BigFloat valueOf(long value, boolean unsigned) {
