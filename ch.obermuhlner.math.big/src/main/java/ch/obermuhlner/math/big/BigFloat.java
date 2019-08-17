@@ -1168,6 +1168,11 @@ public class BigFloat implements Comparable<BigFloat>, Serializable {
 		}
 
 		@Override
+		public boolean isDecimal(){
+			return false;
+		}
+
+		@Override
 		public boolean isIntValue() {
 			return false;
 		}

@@ -853,10 +853,16 @@ public class BigFloatTest {
 		Context context = BigFloat.context(32);
 
 		assertTrue(context.valueOf(1.1).isDecimal());
+		assertTrue(context.valueOf(1e-18).isDecimal());
 		assertTrue(context.valueOf(1.0001).isDecimal());
 
 		assertFalse(context.valueOf(1).isDecimal());
+		assertFalse(context.valueOf(0xFFFFFFFFL).isDecimal());
 		assertFalse(context.valueOf(2147483647).isDecimal());
+
+		assertFalse(NaN.isDecimal());
+		assertFalse(POSITIVE_INFINITY.isDecimal());
+		assertFalse(NEGATIVE_INFINITY.isDecimal());
 	}
 
 	@Test
