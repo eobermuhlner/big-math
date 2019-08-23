@@ -894,11 +894,15 @@ public class BigFloat implements Comparable<BigFloat>, Serializable {
 	}
 
 	/**
-	 * check if this big float is decimal value
-	 * @return true if this is a decimal value
+	 * Returns whether <code>this</code> value is <code>decimal</code> or <code>floating point</code>.
+	 *
+	 * @return <code>true</code> if the value has a nonzero fractional part.
+	 *
+	 * @see BigFloat#getFractionalPart()
+	 * @see BigDecimal#toBigIntegerExact()
 	 */
-	public boolean isDecimal(){
-		return !value.setScale(0,RoundingMode.HALF_UP).equals(value);
+	public boolean isDecimal() {
+		return !value.setScale(0, RoundingMode.HALF_UP).equals(value);
 	}
 
 	/**
