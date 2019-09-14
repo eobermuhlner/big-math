@@ -15,13 +15,21 @@ import ch.obermuhlner.math.big.BigRational;
  */
 public class ExpCalculator extends SeriesCalculator {
 
-	public static final ExpCalculator INSTANCE = new ExpCalculator();
+	private static final ExpCalculator INSTANCE = new ExpCalculator();
 	
 	private int n = 0;
 	private BigRational oneOverFactorialOfN = BigRational.ONE;
 	
 	private ExpCalculator() {
 		// prevent instances
+	}
+
+	public static ExpCalculator instance() {
+		if (CalculatorConfiguration.isExpSingleton()) {
+			return INSTANCE;
+		} else {
+			return new ExpCalculator();
+		}
 	}
 
 	@Override

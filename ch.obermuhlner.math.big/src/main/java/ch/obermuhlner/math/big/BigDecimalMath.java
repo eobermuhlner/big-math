@@ -1286,7 +1286,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 
 		x = x.divide(valueOf(256), mc);
 		
-		BigDecimal result = ExpCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = ExpCalculator.instance().calculate(x, mc);
 		result = BigDecimalMath.pow(result, 256, mc);
 		return round(result, mathContext);
 	}
@@ -1311,7 +1311,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 			x = x.remainder(twoPi, mc2);
 		}
 
-		BigDecimal result = SinCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = SinCalculator.instance().calculate(x, mc);
 		return round(result, mathContext);
 	}
 	
@@ -1346,7 +1346,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 			return acos(xTransformed, mathContext);
 		}
 
-		BigDecimal result = AsinCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = AsinCalculator.instance().calculate(x, mc);
 		return round(result, mathContext);
 	}
 	
@@ -1370,7 +1370,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 			x = x.remainder(twoPi, mc2);
 		}
 		
-		BigDecimal result = CosCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = CosCalculator.instance().calculate(x, mc);
 		return round(result, mathContext);
 	}
 
@@ -1533,7 +1533,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	public static BigDecimal sinh(BigDecimal x, MathContext mathContext) {
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		BigDecimal result = SinhCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = SinhCalculator.instance().calculate(x, mc);
 		return round(result, mathContext);
 	}
 
@@ -1550,7 +1550,7 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	public static BigDecimal cosh(BigDecimal x, MathContext mathContext) {
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
-		BigDecimal result = CoshCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = CoshCalculator.instance().calculate(x, mc);
 		return round(result, mathContext);
 	}
 

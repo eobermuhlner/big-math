@@ -15,7 +15,7 @@ import ch.obermuhlner.math.big.BigRational;
  */
 public class SinCalculator extends SeriesCalculator {
 
-	public static final SinCalculator INSTANCE = new SinCalculator();
+	private static final SinCalculator INSTANCE = new SinCalculator();
 	
 	private int n = 0;
 	private boolean negative = false;
@@ -24,7 +24,15 @@ public class SinCalculator extends SeriesCalculator {
 	private SinCalculator() {
 		super(true);
 	}
-	
+
+	public static SinCalculator instance() {
+		if (CalculatorConfiguration.isSinSingleton()) {
+			return INSTANCE;
+		} else {
+			return new SinCalculator();
+		}
+	}
+
 	@Override
 	protected BigRational getCurrentFactor() {
 		BigRational factor = factorial2nPlus1.reciprocal();

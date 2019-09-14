@@ -15,7 +15,7 @@ import ch.obermuhlner.math.big.BigRational;
  */
 public class SinhCalculator extends SeriesCalculator {
 
-	public static final SinhCalculator INSTANCE = new SinhCalculator();
+	private static final SinhCalculator INSTANCE = new SinhCalculator();
 	
 	private int n = 0;
 
@@ -23,6 +23,14 @@ public class SinhCalculator extends SeriesCalculator {
 	
 	private SinhCalculator() {
 		super(true);
+	}
+
+	public static SinhCalculator instance() {
+		if (CalculatorConfiguration.isSinhSingleton()) {
+			return INSTANCE;
+		} else {
+			return new SinhCalculator();
+		}
 	}
 	
 	@Override

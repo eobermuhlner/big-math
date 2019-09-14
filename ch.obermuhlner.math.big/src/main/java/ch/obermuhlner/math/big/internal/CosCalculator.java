@@ -15,7 +15,7 @@ import ch.obermuhlner.math.big.BigRational;
  */
 public class CosCalculator extends SeriesCalculator {
 
-	public static final CosCalculator INSTANCE = new CosCalculator();
+	private static final CosCalculator INSTANCE = new CosCalculator();
 	
 	private int n = 0;
 	private boolean negative = false;
@@ -23,6 +23,14 @@ public class CosCalculator extends SeriesCalculator {
 	
 	private CosCalculator() {
 		super(true);
+	}
+
+	public static CosCalculator instance() {
+		if (CalculatorConfiguration.isCosSingleton()) {
+			return INSTANCE;
+		} else {
+			return new CosCalculator();
+		}
 	}
 	
 	@Override

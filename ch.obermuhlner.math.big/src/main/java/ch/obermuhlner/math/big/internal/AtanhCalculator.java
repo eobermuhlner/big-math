@@ -15,12 +15,20 @@ import java.math.MathContext;
  */
 public class AtanhCalculator extends SeriesCalculator {
 
-	public static final AtanhCalculator INSTANCE = new AtanhCalculator();
+	private static final AtanhCalculator INSTANCE = new AtanhCalculator();
 
 	private int n = 0;
 
 	private AtanhCalculator() {
 		super(true);
+	}
+
+	public static AtanhCalculator instance() {
+		if (CalculatorConfiguration.isAtanhSingleton()) {
+			return INSTANCE;
+		} else {
+			return new AtanhCalculator();
+		}
 	}
 	
 	@Override

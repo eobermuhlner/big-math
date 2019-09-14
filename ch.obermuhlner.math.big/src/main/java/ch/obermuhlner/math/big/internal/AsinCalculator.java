@@ -15,7 +15,7 @@ import ch.obermuhlner.math.big.BigRational;
  */
 public class AsinCalculator extends SeriesCalculator {
 
-	public static final AsinCalculator INSTANCE = new AsinCalculator();
+	private static final AsinCalculator INSTANCE = new AsinCalculator();
 	
 	private int n = 0;
 	private BigRational factorial2n = BigRational.ONE;
@@ -23,6 +23,14 @@ public class AsinCalculator extends SeriesCalculator {
 	private BigRational fourPowerN = BigRational.ONE;
 	
 	private AsinCalculator() {
+	}
+
+	public static AsinCalculator instance() {
+		if (CalculatorConfiguration.isAsinSingleton()) {
+			return INSTANCE;
+		} else {
+			return new AsinCalculator();
+		}
 	}
 	
 	@Override

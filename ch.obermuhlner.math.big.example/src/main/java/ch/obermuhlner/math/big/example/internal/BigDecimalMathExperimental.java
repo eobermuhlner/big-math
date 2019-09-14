@@ -65,7 +65,7 @@ public class BigDecimalMathExperimental {
 	public static BigDecimal exp(BigDecimal x, MathContext mathContext) {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
-		BigDecimal result = ExpCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = ExpCalculator.instance().calculate(x, mc);
 		return result.round(mathContext);
 
 	}
@@ -74,7 +74,7 @@ public class BigDecimalMathExperimental {
 		MathContext mc = new MathContext(mathContext.getPrecision() + 4, mathContext.getRoundingMode());
 
 		x = x.divide(valueOf(reduce), mc);
-		BigDecimal result = ExpCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = ExpCalculator.instance().calculate(x, mc);
 		result = BigDecimalMath.pow(result, reduce, mc);
 		return result.round(mathContext);
 
@@ -145,7 +145,7 @@ public class BigDecimalMathExperimental {
 			return acos(xTransformed, mathContext);
 		}
 
-		BigDecimal result = AsinCalculator.INSTANCE.calculate(x, mc);
+		BigDecimal result = AsinCalculator.instance().calculate(x, mc);
 		return result.round(mathContext);
 	}
 

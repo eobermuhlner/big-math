@@ -15,7 +15,7 @@ import ch.obermuhlner.math.big.BigRational;
  */
 public class CoshCalculator extends SeriesCalculator {
 
-	public static final CoshCalculator INSTANCE = new CoshCalculator();
+	private static final CoshCalculator INSTANCE = new CoshCalculator();
 	
 	private int n = 0;
 
@@ -23,6 +23,14 @@ public class CoshCalculator extends SeriesCalculator {
 	
 	private CoshCalculator() {
 		super(true);
+	}
+
+	public static CoshCalculator instance() {
+		if (CalculatorConfiguration.isCoshSingleton()) {
+			return INSTANCE;
+		} else {
+			return new CoshCalculator();
+		}
 	}
 	
 	@Override
