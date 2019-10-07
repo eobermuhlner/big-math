@@ -46,7 +46,7 @@ public abstract class SeriesCalculator {
 	 * @param mathContext the {@link MathContext}
 	 * @return the calculated result
 	 */
-	public BigDecimal calculate(BigDecimal x, MathContext mathContext) {
+	public synchronized BigDecimal calculate(BigDecimal x, MathContext mathContext) {
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		PowerIterator powerIterator = createPowerIterator(x, mathContext);

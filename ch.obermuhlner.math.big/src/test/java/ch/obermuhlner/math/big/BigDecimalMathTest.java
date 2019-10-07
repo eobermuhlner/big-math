@@ -9,6 +9,9 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -428,9 +431,9 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testBernoulliUnlimited() {
-		BigDecimalMath.bernoulli(0, MathContext.UNLIMITED);
-		BigDecimalMath.bernoulli(1, MathContext.UNLIMITED);
-		BigDecimalMath.bernoulli(3, MathContext.UNLIMITED);
+		assertBigDecimal(toCheck(1), BigDecimalMath.bernoulli(0, MathContext.UNLIMITED), MC_CHECK_DOUBLE);
+		assertBigDecimal(toCheck(-1.0/2), BigDecimalMath.bernoulli(1, MathContext.UNLIMITED), MC_CHECK_DOUBLE);
+		assertBigDecimal(toCheck(1), BigDecimalMath.bernoulli(3, MathContext.UNLIMITED), MC_CHECK_DOUBLE);
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -1140,6 +1143,11 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.sin(x, mathContext));
 	}
 
+	@Test
+	public void testSinRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testSinRandom());
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testSinUnlimitedFail() {
 		BigDecimalMath.sin(BigDecimal.valueOf(2), MathContext.UNLIMITED);
@@ -1164,6 +1172,12 @@ public class BigDecimalMathTest {
 				Math::asin,
 				(x, mathContext) -> BigDecimalMath.asin(x, mathContext));
 	}
+
+	@Test
+	public void testAsinRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testAsinRandom());
+	}
+
 
 	@Test(expected = ArithmeticException.class)
 	public void testAsinGreaterOne() {
@@ -1210,6 +1224,12 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.cos(x, mathContext));
 	}
 
+	@Test
+	public void testCosRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testCosRandom());
+	}
+
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testCosUnlimitedFail() {
 		BigDecimalMath.cos(BigDecimal.valueOf(2), MathContext.UNLIMITED);
@@ -1224,7 +1244,12 @@ public class BigDecimalMathTest {
 				Math::acos,
 				(x, mathContext) -> BigDecimalMath.acos(x, mathContext));
 	}
-	
+
+	@Test
+	public void testAcosRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testAcosRandom());
+	}
+
 	@Test
 	public void testAcosMinusOne() {
 		for (int precision = 1; precision <= 2001; precision+=100) {
@@ -1270,6 +1295,11 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.tan(x, mathContext));
 	}
 
+	@Test
+	public void testTanRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testTanRandom());
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testTanUnlimitedFail() {
 		BigDecimalMath.tan(BigDecimal.valueOf(2), MathContext.UNLIMITED);
@@ -1283,6 +1313,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				Math::atan,
 				(x, mathContext) -> BigDecimalMath.atan(x, mathContext));
+	}
+
+	@Test
+	public void testAtanRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testAtanRandom());
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -1328,6 +1363,11 @@ public class BigDecimalMathTest {
 			   	});
 	}
 
+	@Test
+	public void testAtan2RandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testAtan2Random());
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testAtanUnlimitedFail() {
 		BigDecimalMath.atan(BigDecimal.valueOf(2), MathContext.UNLIMITED);
@@ -1361,7 +1401,12 @@ public class BigDecimalMathTest {
 				Math::sinh,
 				(x, mathContext) -> BigDecimalMath.sinh(x, mathContext));
 	}
-	
+
+	@Test
+	public void testSinhRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testSinhRandom());
+	}
+
 	@Test
 	public void testAsinhRandom() {
 		assertRandomCalculation(
@@ -1370,6 +1415,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				BigDecimalMathTest::asinh,
 				(x, mathContext) -> BigDecimalMath.asinh(x, mathContext));
+	}
+
+	@Test
+	public void testAsinhRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testAsinhRandom());
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1391,6 +1441,11 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.acosh(x, mathContext));
 	}
 
+	@Test
+	public void testAcoshRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testAcoshRandom());
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testAcoshUnlimitedFail() {
 		BigDecimalMath.acosh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
@@ -1408,6 +1463,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 1.9999 - 1,
 				BigDecimalMathTest::atanh,
 				(x, mathContext) -> BigDecimalMath.atanh(x, mathContext));
+	}
+
+	@Test
+	public void testAtanhRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testAtanhRandom());
 	}
 
     @Test(expected = ArithmeticException.class)
@@ -1446,6 +1506,11 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.acoth(x, mathContext));
 	}
 
+	@Test
+	public void testAcothRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testAcothRandom());
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testAcothUnlimitedFail() {
 		BigDecimalMath.acoth(BigDecimal.valueOf(2), MathContext.UNLIMITED);
@@ -1465,6 +1530,11 @@ public class BigDecimalMathTest {
 				(x, mathContext) -> BigDecimalMath.cosh(x, mathContext));
 	}
 
+	@Test
+	public void testCoshRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testCoshRandom());
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testCoshUnlimitedFail() {
 		BigDecimalMath.cosh(BigDecimal.valueOf(2), MathContext.UNLIMITED);
@@ -1478,6 +1548,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				Math::tanh,
 				(x, mathContext) -> BigDecimalMath.tanh(x, mathContext));
+	}
+
+	@Test
+	public void testTanhRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testTanhRandom());
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1503,6 +1578,11 @@ public class BigDecimalMathTest {
 				random -> random.nextDouble() * 100 - 50,
 				BigDecimalMathTest::coth,
 				(x, mathContext) -> BigDecimalMath.coth(x, mathContext));
+	}
+
+	@Test
+	public void testCothRandomMultiThreaded() throws Throwable {
+		runMultiThreaded(() -> testCothRandom());
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1730,8 +1810,8 @@ ch.obermuhlner.math.big.BigDecimalMathTest > testLog2PowRandom FAILED
 	private static interface Function3<T1, T2, T3, R> {
 		R apply(T1 t1, T2 t2, T3 t3);
 	}
-	
-	private void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, Function<Double, Double> doubleFunction, BiFunction<BigDecimal, MathContext, BigDecimal> calculation) {
+
+	void assertRandomCalculation(int count, String functionName, Function<Random, Double> xFunction, Function<Double, Double> doubleFunction, BiFunction<BigDecimal, MathContext, BigDecimal> calculation) {
 		Random random = new Random(1);
 
 		for (int i = 0; i < count; i++) {
@@ -1861,7 +1941,40 @@ ch.obermuhlner.math.big.BigDecimalMathTest > testLog2PowRandom FAILED
         return result;
     }
 
-    private static BigDecimal toCheck(double value) {
+	private static void runMultiThreaded(Runnable runnable) throws Throwable {
+		Callable<Void> callable = () -> {
+			runnable.run();
+			return null;
+		};
+
+		int n = 100;
+
+		AtomicReference<Throwable> exception = new AtomicReference<>();
+		CountDownLatch countDownLatch = new CountDownLatch(n);
+		for (int i = 0; i < n; i++) {
+			final int id = i;
+			Thread thread = new Thread(() -> {
+				System.out.println("STARTED " + id);
+				try {
+					callable.call();
+				} catch (Throwable e) {
+					System.out.println("EXCEPTION " + e);
+					exception.set(e);
+				} finally {
+					System.out.println("FINISHED " + id);
+					countDownLatch.countDown();
+				}
+			});
+			thread.start();
+		}
+		countDownLatch.await();
+
+		if (exception.get() != null) {
+			throw exception.get();
+		}
+	}
+
+	private static BigDecimal toCheck(double value) {
 		long longValue = (long) value;
 		if (value == (double)longValue) {
 			return BigDecimal.valueOf(longValue);
