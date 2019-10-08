@@ -1,13 +1,13 @@
 package ch.obermuhlner.math.big.internal;
 
-import static java.math.BigDecimal.ONE;
+import ch.obermuhlner.math.big.BigRational;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.obermuhlner.math.big.BigRational;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class to calculate taylor series efficiently until the maximum error (as defined by the precision in the {@link MathContext} is reached.
@@ -18,8 +18,8 @@ public abstract class SeriesCalculator {
 
 	private final boolean calculateInPairs;
 
-	private List<BigRational> factors = new ArrayList<>();
-	
+	private final List<BigRational> factors = new ArrayList<>();
+
 	/**
 	 * Constructs a {@link SeriesCalculator} that calculates single terms.
 	 */
@@ -47,7 +47,7 @@ public abstract class SeriesCalculator {
 	 * @return the calculated result
 	 */
 	public BigDecimal calculate(BigDecimal x, MathContext mathContext) {
-		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
+		BigDecimal acceptableError = BigDecimal.ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		PowerIterator powerIterator = createPowerIterator(x, mathContext);
 		
@@ -101,10 +101,14 @@ public abstract class SeriesCalculator {
 	protected synchronized BigRational getFactor(int index) {
 		while (factors.size() <= index) {
 			BigRational factor = getCurrentFactor();
-			factors.add(factor);
+			addFactor(factor);
 			calculateNextFactor();
 		}
 		return factors.get(index);
+	}
+
+	private void addFactor(BigRational factor){
+		factors.add(requireNonNull(factor, "Factor cannot be null"));
 	}
 
 	/**
