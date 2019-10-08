@@ -13,13 +13,10 @@ import ch.obermuhlner.math.big.BigRational;
  * Utility class to calculate taylor series efficiently until the maximum error (as defined by the precision in the {@link MathContext} is reached.
  * 
  * <p>Stores the factors of the taylor series terms so that future calculations will be faster.</p>
- *
- * <p>All public methods of this class are synchronized so that
- * all subclasses of {@link SeriesCalculator} can be used in a thread-safe manner.</p>
  */
 public abstract class SeriesCalculator {
 
-	private boolean calculateInPairs;
+	private final boolean calculateInPairs;
 
 	private List<BigRational> factors = new ArrayList<>();
 	
@@ -45,14 +42,11 @@ public abstract class SeriesCalculator {
 	/**
 	 * Calculates the series for the specified value x and the precision defined in the {@link MathContext}.
 	 *
-	 * This method is synchronized so that
-	 * all subclasses of {@link SeriesCalculator} can be used in a thread-safe manner.
-	 *
 	 * @param x the value x
 	 * @param mathContext the {@link MathContext}
 	 * @return the calculated result
 	 */
-	public synchronized BigDecimal calculate(BigDecimal x, MathContext mathContext) {
+	public BigDecimal calculate(BigDecimal x, MathContext mathContext) {
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		PowerIterator powerIterator = createPowerIterator(x, mathContext);
@@ -61,16 +55,19 @@ public abstract class SeriesCalculator {
 		BigDecimal step;
 		int i = 0;
 		do {
-			BigRational factor = getFactor(i);
-			BigDecimal xToThePower  = powerIterator.getCurrentPower();
+			BigRational factor;
+			BigDecimal xToThePower;
+
+			factor = getFactor(i);
+			xToThePower  = powerIterator.getCurrentPower();
 			powerIterator.calculateNextPower();
 			step = factor.getNumerator().multiply(xToThePower).divide(factor.getDenominator(), mathContext);
 			i++;
 
 			if (calculateInPairs) {
-				xToThePower  = powerIterator.getCurrentPower();
-				powerIterator.calculateNextPower();
 				factor = getFactor(i);
+				xToThePower = powerIterator.getCurrentPower();
+				powerIterator.calculateNextPower();
 				BigDecimal step2 = factor.getNumerator().multiply(xToThePower).divide(factor.getDenominator(), mathContext);
 				step = step.add(step2);
 				i++;
@@ -94,11 +91,14 @@ public abstract class SeriesCalculator {
 
 	/**
 	 * Returns the factor of the term with specified index.
-	 * 
+	 *
+	 * All mutable state of this class (and all its subclasses) must be modified in this method.
+	 * This method is synchronized to allow thread-safe usage of this class.
+	 *
 	 * @param index the index (starting with 0)
 	 * @return the factor of the specified term
 	 */
-	protected BigRational getFactor(int index) {
+	protected synchronized BigRational getFactor(int index) {
 		while (factors.size() <= index) {
 			BigRational factor = getCurrentFactor();
 			factors.add(factor);
