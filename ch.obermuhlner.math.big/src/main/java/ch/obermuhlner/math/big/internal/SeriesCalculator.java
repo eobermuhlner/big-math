@@ -13,6 +13,9 @@ import ch.obermuhlner.math.big.BigRational;
  * Utility class to calculate taylor series efficiently until the maximum error (as defined by the precision in the {@link MathContext} is reached.
  * 
  * <p>Stores the factors of the taylor series terms so that future calculations will be faster.</p>
+ *
+ * <p>All public methods of this class are synchronized so that
+ * all subclasses of {@link SeriesCalculator} can be used in a thread-safe manner.</p>
  */
 public abstract class SeriesCalculator {
 
@@ -41,7 +44,10 @@ public abstract class SeriesCalculator {
 	
 	/**
 	 * Calculates the series for the specified value x and the precision defined in the {@link MathContext}.
-	 * 
+	 *
+	 * This method is synchronized so that
+	 * all subclasses of {@link SeriesCalculator} can be used in a thread-safe manner.
+	 *
 	 * @param x the value x
 	 * @param mathContext the {@link MathContext}
 	 * @return the calculated result

@@ -1135,8 +1135,11 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testSinRandom() {
+		testSinRandom(100);
+	}
+	public void testSinRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(1000),
+                adaptCount(count),
 				"sin",
 				random -> random.nextDouble() * 100 - 50,
 				Math::sin,
@@ -1145,7 +1148,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testSinRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testSinRandom());
+		runMultiThreaded(() -> testSinRandom(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1165,8 +1168,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAsinRandom() {
+		testAsinRandom(100);
+	}
+
+	public void testAsinRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"asin",
 				random -> random.nextDouble() * 2 - 1,
 				Math::asin,
@@ -1175,7 +1182,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAsinRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testAsinRandom());
+		runMultiThreaded(() -> testAsinRandom(10));
 	}
 
 
@@ -1216,8 +1223,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testCosRandom() {
+		testCoshRandom(100);
+	}
+
+	public void testCosRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(1000),
+                adaptCount(count),
 				"cos",
 				random -> random.nextDouble() * 100 - 50,
 				Math::cos,
@@ -1226,7 +1237,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testCosRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testCosRandom());
+		runMultiThreaded(() -> testCosRandom(10));
 	}
 
 
@@ -1237,8 +1248,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAcosRandom() {
+		testAcosRandom(100);
+	}
+
+	public void testAcosRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"acos",
 				random -> random.nextDouble() * 2 - 1,
 				Math::acos,
@@ -1247,7 +1262,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAcosRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testAcosRandom());
+		runMultiThreaded(() -> testAcosRandom(10));
 	}
 
 	@Test
@@ -1287,8 +1302,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testTanRandom() {
+		testTanRandom(100);
+	}
+
+	public void testTanRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(1000),
+                adaptCount(count),
 				"tan",
 				random -> random.nextDouble() * 100 - 50,
 				Math::tan,
@@ -1297,7 +1316,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testTanRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testTanRandom());
+		runMultiThreaded(() -> testTanRandom(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1307,8 +1326,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAtanRandom() {
+		testAtanRandom(100);
+	}
+
+	public void testAtanRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"atan",
 				random -> random.nextDouble() * 100 - 50,
 				Math::atan,
@@ -1317,7 +1340,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAtanRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testAtanRandom());
+		runMultiThreaded(() -> testAtanRandom(10));
 	}
 
 	@Test(expected = ArithmeticException.class)
@@ -1347,8 +1370,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAtan2Random() {
+		testAtan2Random(100);
+	}
+
+	public void testAtan2Random(int count) {
 		assertRandomCalculation(
-                adaptCount(1000),
+                adaptCount(count),
 				"atan2",
 				random -> random.nextDouble() * 100 - 50,
 				random -> random.nextDouble() * 100 - 50,
@@ -1365,7 +1392,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAtan2RandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testAtan2Random());
+		runMultiThreaded(() -> testAtan2Random(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1394,8 +1421,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testSinhRandom() {
+		testSinhRandom(100);
+	}
+
+	public void testSinhRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(1000),
+                adaptCount(count),
 				"sinh",
 				random -> random.nextDouble() * 100 - 50,
 				Math::sinh,
@@ -1404,13 +1435,17 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testSinhRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testSinhRandom());
+		runMultiThreaded(() -> testSinhRandom(10));
 	}
 
 	@Test
 	public void testAsinhRandom() {
+		testAsinhRandom(100);
+	}
+
+	public void testAsinhRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"asinh",
 				random -> random.nextDouble() * 100 - 50,
 				BigDecimalMathTest::asinh,
@@ -1419,7 +1454,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAsinhRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testAsinhRandom());
+		runMultiThreaded(() -> testAsinhRandom(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1433,8 +1468,12 @@ public class BigDecimalMathTest {
 	
 	@Test
 	public void testAcoshRandom() {
+		testAcoshRandom(100);
+	}
+
+	public void testAcoshRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"acosh",
 				random -> random.nextDouble() * 100 + 1,
 				BigDecimalMathTest::acosh,
@@ -1443,7 +1482,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAcoshRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testAcoshRandom());
+		runMultiThreaded(() -> testAcoshRandom(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1457,8 +1496,12 @@ public class BigDecimalMathTest {
 	
 	@Test
 	public void testAtanhRandom() {
+		testAtanhRandom(100);
+	}
+
+	public void testAtanhRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"atanh",
 				random -> random.nextDouble() * 1.9999 - 1,
 				BigDecimalMathTest::atanh,
@@ -1467,7 +1510,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAtanhRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testAtanhRandom());
+		runMultiThreaded(() -> testAtanhRandom(10));
 	}
 
     @Test(expected = ArithmeticException.class)
@@ -1491,15 +1534,19 @@ public class BigDecimalMathTest {
 	
 	@Test
 	public void testAcothRandom() {
+		testAcothRandom(100);
+	}
+
+	public void testAcothRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"acoth",
 				random -> random.nextDouble() * 100 + 1,
 				BigDecimalMathTest::acoth,
 				(x, mathContext) -> BigDecimalMath.acoth(x, mathContext));
 
 		assertRandomCalculation(
-				1000,
+				adaptCount(count),
 				"acoth",
 				random -> -(random.nextDouble() * 100 + 1),
 				BigDecimalMathTest::acoth,
@@ -1508,7 +1555,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testAcothRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testAcothRandom());
+		runMultiThreaded(() -> testAcothRandom(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1522,8 +1569,12 @@ public class BigDecimalMathTest {
 	
 	@Test
 	public void testCoshRandom() {
+		testCoshRandom(1000);
+	}
+
+	public void testCoshRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(1000),
+                adaptCount(count),
 				"cosh",
 				random -> random.nextDouble() * 100 - 50,
 				Math::cosh,
@@ -1532,7 +1583,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testCoshRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testCoshRandom());
+		runMultiThreaded(() -> testCoshRandom(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1542,8 +1593,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testTanhRandom() {
+		testTanhRandom(100);
+	}
+
+	public void testTanhRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"tanh",
 				random -> random.nextDouble() * 100 - 50,
 				Math::tanh,
@@ -1552,7 +1607,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testTanhRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testTanhRandom());
+		runMultiThreaded(() -> testTanhRandom(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1572,8 +1627,12 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testCothRandom() {
+		testCothRandom(100);
+	}
+
+	public void testCothRandom(int count) {
 		assertRandomCalculation(
-                adaptCount(100),
+                adaptCount(count),
 				"tanh",
 				random -> random.nextDouble() * 100 - 50,
 				BigDecimalMathTest::coth,
@@ -1582,7 +1641,7 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testCothRandomMultiThreaded() throws Throwable {
-		runMultiThreaded(() -> testCothRandom());
+		runMultiThreaded(() -> testCothRandom(10));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -1942,16 +2001,18 @@ ch.obermuhlner.math.big.BigDecimalMathTest > testLog2PowRandom FAILED
     }
 
 	private static void runMultiThreaded(Runnable runnable) throws Throwable {
+		runMultiThreaded(10, runnable);
+	}
+
+	private static void runMultiThreaded(int threadCount, Runnable runnable) throws Throwable {
 		Callable<Void> callable = () -> {
 			runnable.run();
 			return null;
 		};
 
-		int n = 100;
-
 		AtomicReference<Throwable> exception = new AtomicReference<>();
-		CountDownLatch countDownLatch = new CountDownLatch(n);
-		for (int i = 0; i < n; i++) {
+		CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+		for (int i = 0; i < threadCount; i++) {
 			final int id = i;
 			Thread thread = new Thread(() -> {
 				System.out.println("STARTED " + id);
