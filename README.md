@@ -113,6 +113,8 @@ isDoubleValue(123.456)  = true
 isDoubleValue(1.23E999) = false
 ```
 
+The `BigDecimalMath` class is thread-safe and can be used in concurrent use cases.
+
 #### Streams of `BigDecimal`
 
 The class `BigDecimalStream` provides factory methods for streams of `BigDecimal` elements.
@@ -485,6 +487,6 @@ repositories {
 }
 
 dependencies {
-  compile 'ch.obermuhlner:big-math:2.2.0'
+  compile 'ch.obermuhlner:big-math:2.2.1'
 }
 ```

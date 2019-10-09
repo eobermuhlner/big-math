@@ -10,9 +10,7 @@ No Bugfix changes.
 
 # Enhancements
 
-## Added `Example.method(y)`
-
-Added `Example.method(y)` 
+No enhancements.
 
 
 # Examples

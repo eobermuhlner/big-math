@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'ch.obermuhlner'
-version = '2.2.0'
+version = '2.2.1'
 archivesBaseName = 'big-math'
 
 ext {
