@@ -10,6 +10,7 @@ include 'regression.v2_0_0'
 include 'regression.v2_0_1'
 include 'regression.v2_1_0'
 include 'regression.v2_2_0'
+include 'regression.v2_2_1'
 include 'regression.v_current'
 include 'ch.obermuhlner.math.big.viewer'
 include 'ch.obermuhlner.math.big.kotlin'
@@ -24,4 +25,5 @@ project(":regression.v2_0_0").projectDir = file("regression/v2_0_0")
 project(":regression.v2_0_1").projectDir = file("regression/v2_0_1")
 project(":regression.v2_1_0").projectDir = file("regression/v2_1_0")
 project(":regression.v2_2_0").projectDir = file("regression/v2_2_0")
+project(":regression.v2_2_1").projectDir = file("regression/v2_2_1")
 project(":regression.v_current").projectDir = file("regression/v_current")
