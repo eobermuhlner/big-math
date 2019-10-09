@@ -13,7 +13,7 @@
 
 * [Next Release Note](releases/next_release_note.html) (under construction)
 
-* [Release Note 2.2.0](releases/v2.2.1.html)
+* [Release Note 2.2.1](releases/v2.2.1.html)
 * [Release Note 2.2.0](releases/v2.2.0.html)
 * [Release Note 2.1.0](releases/v2.1.0.html)
 * [Release Note 2.0.1](releases/v2.0.1.html)
