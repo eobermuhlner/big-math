@@ -17,6 +17,24 @@ The special version string `v_current` may be used to measure the performance of
 ./gradlew :regression.v_current:run
 ```
 
+The `*.csv` files in the folder `analysis` can be created by running the following gradle task afterwards.
+```console
+./gradlew :regression.analysis:run
+```
+
+To convert the `*.csv` files into chart images run the following
+(after installing the https://github.com/eobermuhlner/csv2chart application):
+```console
+cd regression/analysis
+csv2chart --property chart=line --format png *.csv
+```
+
+As a convenience you can also run the following shell script from the root of the project.
+It does all the calls described above for all releases of `big-math`.
+```console
+run_regression_analysis.sh
+```
+
 
 ## Measured performance
 

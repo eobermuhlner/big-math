@@ -83,7 +83,9 @@ public class PerformanceRegressionBigDecimalMath {
 		measurePerformance(out, "atanh(0.1)", mathContext, () -> BigDecimalMath.atanh(value0_1, mathContext));
 		measurePerformance(out, "acoth(2)", mathContext, () -> BigDecimalMath.acoth(value2, mathContext));
 		measurePerformance(out, "coth(2)", mathContext, () -> BigDecimalMath.coth(value2, mathContext));
-		
+		measurePerformance(out, "atan2(2;3)", mathContext, () -> BigDecimalMath.atan2(value2, value3, mathContext));
+		measurePerformance(out, "gamma(0.1)", mathContext, () -> BigDecimalMath.gamma(value0_1, mathContext));
+
 		measurePerformance(out, "BigFloat.add", mathContext, () -> BigFloat.context(mathContext).valueOf(123).add(456).toBigDecimal());
 		measurePerformance(out, "BigFloat.subtract", mathContext, () -> BigFloat.context(mathContext).valueOf(123).subtract(456).toBigDecimal());
 		measurePerformance(out, "BigFloat.multiply", mathContext, () -> BigFloat.context(mathContext).valueOf(123).multiply(456).toBigDecimal());
@@ -97,16 +99,19 @@ public class PerformanceRegressionBigDecimalMath {
 				function.run();
 			}
 
-			int count = 1000;
-			long totalNanos = 0;
-			long minNanos = Long.MAX_VALUE;
-			long maxNanos = Long.MIN_VALUE;
-			List<Long> allNanos = new ArrayList<>();
+			int count = 100;
+			int runCount = 10;
+			double totalNanos = 0;
+			double minNanos = Double.MAX_VALUE;
+			double maxNanos = 0;
+			List<Double> allNanos = new ArrayList<>();
 
 			for (int i = 0; i < count; i++) {
 				StopWatch stopWatch = new StopWatch();
-				function.run();
-				long nanos = stopWatch.getElapsedNanos();
+				for (int j = 0; j < runCount; j++) {
+					function.run();
+				}
+				double nanos = ((double) stopWatch.getElapsedNanos()) / runCount;
 
 				totalNanos += nanos;
 				minNanos = Math.min(minNanos, nanos);
@@ -114,17 +119,18 @@ public class PerformanceRegressionBigDecimalMath {
 				allNanos.add(nanos);
 			}
 
-			long avgNanos = totalNanos / count;
-			long medianNanos = median(allNanos);
-			System.out.printf("%-20s: %15d\n", name, medianNanos);
+			Double avgNanos = totalNanos / count;
+			Double medianNanos = median(allNanos);
 
-			out.printf("%-20s, %15d, %15d, %15d, %15d\n", name, avgNanos, medianNanos, minNanos, maxNanos);
+			System.out.printf("%-20s: %15.1f\n", name, medianNanos);
+			out.printf("%-20s, %15.1f, %15.1f, %15.1f, %15.1f\n", name, avgNanos, medianNanos, minNanos, maxNanos);
 		} catch (Throwable e) {
+			System.out.printf("%-20s: %15s %s\n", name, e.getClass(), e.getMessage());
 			out.printf("%-20s, %15s, %15s, %15s, %15s\n", name, "", "", "", "");
 		}
 	}
 
-	private static long median(List<Long> values) {
+	private static double median(List<Double> values) {
 		Collections.sort(values);
 		int center = values.size() / 2;
 		if (values.size() % 2 == 0) {

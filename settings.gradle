@@ -1,6 +1,7 @@
 
 include 'ch.obermuhlner.math.big'
 include 'ch.obermuhlner.math.big.example'
+include 'regression.analysis'
 include 'regression.v1_0_0'
 include 'regression.v1_1_0'
 include 'regression.v1_2_0'
@@ -16,6 +17,7 @@ include 'ch.obermuhlner.math.big.viewer'
 include 'ch.obermuhlner.math.big.kotlin'
 include 'ch.obermuhlner.math.big.kotlin.example'
 
+project(":regression.analysis").projectDir = file("regression/analysis")
 project(":regression.v1_0_0").projectDir = file("regression/v1_0_0")
 project(":regression.v1_1_0").projectDir = file("regression/v1_1_0")
 project(":regression.v1_2_0").projectDir = file("regression/v1_2_0")
