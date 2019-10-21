@@ -309,15 +309,22 @@ public class DefaultBigDecimalMathTest {
     }
 
     private void assertNestedWithPrecision(int precision1, int precision2) {
+        assertEquals(DefaultBigDecimalMath.getDefaultMathContext(), DefaultBigDecimalMath.currentMathContext());
+
         DefaultBigDecimalMath.withPrecision(precision1, () -> {
+            assertEquals(precision1, DefaultBigDecimalMath.currentMathContext().getPrecision());
             assertEquals(BigDecimalMath.pi(new MathContext(precision1)), DefaultBigDecimalMath.pi());
 
             DefaultBigDecimalMath.withPrecision(precision2, () -> {
+                assertEquals(precision2, DefaultBigDecimalMath.currentMathContext().getPrecision());
                 assertEquals(BigDecimalMath.pi(new MathContext(precision2)), DefaultBigDecimalMath.pi());
             });
 
+            assertEquals(precision1, DefaultBigDecimalMath.currentMathContext().getPrecision());
             assertEquals(BigDecimalMath.pi(new MathContext(precision1)), DefaultBigDecimalMath.pi());
         });
+
+        assertEquals(DefaultBigDecimalMath.getDefaultMathContext(), DefaultBigDecimalMath.currentMathContext());
     }
 
     @Test
