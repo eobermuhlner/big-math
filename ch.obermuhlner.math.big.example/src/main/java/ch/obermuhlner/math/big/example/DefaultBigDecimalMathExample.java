@@ -5,7 +5,7 @@ import ch.obermuhlner.math.big.stream.BigDecimalStream;
 
 import static ch.obermuhlner.math.big.DefaultBigDecimalMath.*;
 
-public class DefaultBigDecimalExample {
+public class DefaultBigDecimalMathExample {
     public static void main(String[] args) {
         runDefaultExample();
         runWithPrecisionExample();
