@@ -29,6 +29,11 @@ DefaultBigDecimalMath.withPrecision(5, () -> {
 System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
 ``` 
 
+The new method `DefaultBigDecimalMath.currentMathContext()` can be
+used to access the current `MathContext`.
+Usually there is no need to do this, since the current `MathContext` is
+passed to the `BigDecimalMath` functions automatically.
+
 
 # Examples
 

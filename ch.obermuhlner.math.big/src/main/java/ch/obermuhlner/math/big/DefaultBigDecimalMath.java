@@ -99,7 +99,7 @@ public class DefaultBigDecimalMath {
      * Sets the default {@link MathContext} used if no other {@link MathContext} is defined using {@link #withPrecision(MathContext, Runnable)}.
      *
      * @param defaultMathContext the default {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see #withPrecision(int, Runnable)
      * @see #withPrecision(int, RoundingMode, Runnable)
      * @see #withPrecision(MathContext, Runnable)
@@ -159,12 +159,12 @@ public class DefaultBigDecimalMath {
      * or the default {@link MathContext} if none was specified.</p>
      *
      * @return the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see #withPrecision(int, Runnable)
      * @see #withPrecision(int, RoundingMode, Runnable)
      * @see #withPrecision(MathContext, Runnable)
      */
-    public static MathContext getMathContext() {
+    public static MathContext currentMathContext() {
         Deque<MathContext> mathContexts = mathContextStack.get();
         if (mathContexts == null || mathContexts.isEmpty()) {
             return defaultMathContext;
@@ -178,7 +178,7 @@ public class DefaultBigDecimalMath {
      *
      * @param value the {@link BigDecimal} to round
      * @return the rounded {@link BigDecimal} value
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#round(BigDecimal, MathContext)
      */
     public static BigDecimal round(BigDecimal value) {
@@ -190,11 +190,11 @@ public class DefaultBigDecimalMath {
      *
      * @param value the {@link BigDecimal} to round
      * @return the rounded {@link BigDecimal} value including trailing zeroes
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#roundWithTrailingZeroes(BigDecimal, MathContext)
      */
     public static BigDecimal roundWithTrailingZeroes(BigDecimal value) {
-        return BigDecimalMath.roundWithTrailingZeroes(value, getMathContext());
+        return BigDecimalMath.roundWithTrailingZeroes(value, currentMathContext());
     }
 
     /**
@@ -203,11 +203,11 @@ public class DefaultBigDecimalMath {
      * @param x the x value
      * @param y the y value to add
      * @return the resulting {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimal#add(BigDecimal, MathContext)
      */
     public static BigDecimal add(BigDecimal x, BigDecimal y) {
-        return x.add(y, getMathContext());
+        return x.add(y, currentMathContext());
     }
 
     /**
@@ -216,11 +216,11 @@ public class DefaultBigDecimalMath {
      * @param x the x value
      * @param y the y value to subtract
      * @return the resulting {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimal#subtract(BigDecimal, MathContext)
      */
     public static BigDecimal subtract(BigDecimal x, BigDecimal y) {
-        return x.subtract(y, getMathContext());
+        return x.subtract(y, currentMathContext());
     }
 
     /**
@@ -229,11 +229,11 @@ public class DefaultBigDecimalMath {
      * @param x the x value
      * @param y the y value to multiply
      * @return the resulting {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimal#multiply(BigDecimal, MathContext)
      */
     public static BigDecimal multiply(BigDecimal x, BigDecimal y) {
-        return x.multiply(y, getMathContext());
+        return x.multiply(y, currentMathContext());
     }
 
     /**
@@ -242,11 +242,11 @@ public class DefaultBigDecimalMath {
      * @param x the x value
      * @param y the y value to divide
      * @return the resulting {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimal#divide(BigDecimal, MathContext)
      */
     public static BigDecimal divide(BigDecimal x, BigDecimal y) {
-        return x.divide(y, getMathContext());
+        return x.divide(y, currentMathContext());
     }
 
     /**
@@ -255,11 +255,11 @@ public class DefaultBigDecimalMath {
      * @param x the x value
      * @param y the y value to divide
      * @return the resulting {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimal#remainder(BigDecimal, MathContext)
      */
     public static BigDecimal remainder(BigDecimal x, BigDecimal y) {
-        return x.remainder(y, getMathContext());
+        return x.remainder(y, currentMathContext());
     }
 
     /**
@@ -267,11 +267,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal}
      * @return the reciprocal {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#reciprocal(BigDecimal, MathContext)
      */
     public static BigDecimal reciprocal(BigDecimal x) {
-        return BigDecimalMath.reciprocal(x, getMathContext());
+        return BigDecimalMath.reciprocal(x, currentMathContext());
     }
 
     /**
@@ -279,11 +279,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal}
      * @return the factorial {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#factorial(BigDecimal, MathContext)
      */
     public static BigDecimal factorial(BigDecimal x) {
-        return BigDecimalMath.factorial(x, getMathContext());
+        return BigDecimalMath.factorial(x, currentMathContext());
     }
 
     /**
@@ -291,11 +291,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal}
      * @return the gamma {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#gamma(BigDecimal, MathContext)
      */
     public static BigDecimal gamma(BigDecimal x) {
-        return BigDecimalMath.gamma(x, getMathContext());
+        return BigDecimalMath.gamma(x, currentMathContext());
     }
 
     /**
@@ -303,11 +303,11 @@ public class DefaultBigDecimalMath {
      *
      * @param n the index of the Bernoulli number to be calculated (starting at 0)
      * @return the Bernoulli number for the specified index with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#bernoulli(int, MathContext)
      */
     public static BigDecimal bernoulli(int n) {
-        return BigDecimalMath.bernoulli(n, getMathContext());
+        return BigDecimalMath.bernoulli(n, currentMathContext());
     }
 
     /**
@@ -316,11 +316,11 @@ public class DefaultBigDecimalMath {
      * @param x the {@link BigDecimal} value to take to the power
      * @param y the {@link BigDecimal} value to serve as exponent
      * @return the calculated x to the power of y with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#pow(BigDecimal, BigDecimal, MathContext)
      */
     public static BigDecimal pow(BigDecimal x, BigDecimal y) {
-        return BigDecimalMath.pow(x, y, getMathContext());
+        return BigDecimalMath.pow(x, y, currentMathContext());
     }
 
     /**
@@ -329,11 +329,11 @@ public class DefaultBigDecimalMath {
      * @param x the {@link BigDecimal} value to take to the power
      * @param y the <code>long</code> value to serve as exponent
      * @return the calculated x to the power of y with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#pow(BigDecimal, long, MathContext)
      */
     public static BigDecimal pow(BigDecimal x, long y) {
-        return BigDecimalMath.pow(x, y, getMathContext());
+        return BigDecimalMath.pow(x, y, currentMathContext());
     }
 
     /**
@@ -341,11 +341,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} value to calculate the square root
      * @return the calculated square root of x with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#sqrt(BigDecimal, MathContext)
      */
     public static BigDecimal sqrt(BigDecimal x) {
-        return BigDecimalMath.sqrt(x, getMathContext());
+        return BigDecimalMath.sqrt(x, currentMathContext());
     }
 
     /**
@@ -355,11 +355,11 @@ public class DefaultBigDecimalMath {
      * @param n the {@link BigDecimal} defining the root
      *
      * @return the calculated n'th root of x with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
      */
     public static BigDecimal root(BigDecimal x, BigDecimal n) {
-        return BigDecimalMath.root(x, n, getMathContext());
+        return BigDecimalMath.root(x, n, currentMathContext());
     }
 
     /**
@@ -367,11 +367,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the natural logarithm for
      * @return the calculated natural logarithm {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#log(BigDecimal, MathContext)
      */
     public static BigDecimal log(BigDecimal x) {
-        return BigDecimalMath.log(x, getMathContext());
+        return BigDecimalMath.log(x, currentMathContext());
     }
 
     /**
@@ -379,11 +379,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the logarithm base 2 for
      * @return the calculated natural logarithm {@link BigDecimal} to the base 2 with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#log2(BigDecimal, MathContext)
      */
     public static BigDecimal log2(BigDecimal x) {
-        return BigDecimalMath.log2(x, getMathContext());
+        return BigDecimalMath.log2(x, currentMathContext());
     }
 
     /**
@@ -391,33 +391,33 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the logarithm base 10 for
      * @return the calculated natural logarithm {@link BigDecimal} to the base 10 with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#log10(BigDecimal, MathContext)
      */
     public static BigDecimal log10(BigDecimal x) {
-        return BigDecimalMath.log10(x, getMathContext());
+        return BigDecimalMath.log10(x, currentMathContext());
     }
 
     /**
      * Returns the number pi using the current {@link MathContext}.
      *
      * @return the number pi with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#pi(MathContext)
      */
     public static BigDecimal pi() {
-        return BigDecimalMath.pi(getMathContext());
+        return BigDecimalMath.pi(currentMathContext());
     }
 
     /**
      * Returns the number e using the current {@link MathContext}.
      *
      * @return the number e with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#e(MathContext)
      */
     public static BigDecimal e() {
-        return BigDecimalMath.e(getMathContext());
+        return BigDecimalMath.e(currentMathContext());
     }
 
     /**
@@ -425,11 +425,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the exponent for
      * @return the calculated exponent {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#exp(BigDecimal, MathContext)
      */
     public static BigDecimal exp(BigDecimal x) {
-        return BigDecimalMath.exp(x, getMathContext());
+        return BigDecimalMath.exp(x, currentMathContext());
     }
 
     /**
@@ -437,11 +437,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the sine for
      * @return the calculated sine {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#sin(BigDecimal, MathContext)
      */
     public static BigDecimal sin(BigDecimal x) {
-        return BigDecimalMath.sin(x, getMathContext());
+        return BigDecimalMath.sin(x, currentMathContext());
     }
 
     /**
@@ -449,11 +449,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the arc sine for
      * @return the calculated arc sine {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#asin(BigDecimal, MathContext)
      */
     public static BigDecimal asin(BigDecimal x) {
-        return BigDecimalMath.asin(x, getMathContext());
+        return BigDecimalMath.asin(x, currentMathContext());
     }
 
     /**
@@ -463,7 +463,7 @@ public class DefaultBigDecimalMath {
      * @return the calculated cosine {@link BigDecimal} with the precision specified in the current {@link MathContext}
      */
     public static BigDecimal cos(BigDecimal x) {
-        return BigDecimalMath.cos(x, getMathContext());
+        return BigDecimalMath.cos(x, currentMathContext());
     }
 
     /**
@@ -471,11 +471,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the arc cosine for
      * @return the calculated arc sine {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#acos(BigDecimal, MathContext)
      */
     public static BigDecimal acos(BigDecimal x) {
-        return BigDecimalMath.acos(x, getMathContext());
+        return BigDecimalMath.acos(x, currentMathContext());
     }
 
     /**
@@ -483,11 +483,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the tangens for
      * @return the calculated tangens {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#tan(BigDecimal, MathContext)
      */
     public static BigDecimal tan(BigDecimal x) {
-        return BigDecimalMath.tan(x, getMathContext());
+        return BigDecimalMath.tan(x, currentMathContext());
     }
 
     /**
@@ -495,11 +495,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the arc tangens for
      * @return the calculated arc tangens {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#atan(BigDecimal, MathContext)
      */
     public static BigDecimal atan(BigDecimal x) {
-        return BigDecimalMath.atan(x, getMathContext());
+        return BigDecimalMath.atan(x, currentMathContext());
     }
 
     /**
@@ -508,11 +508,11 @@ public class DefaultBigDecimalMath {
      * @param y the {@link BigDecimal}
      * @param x the {@link BigDecimal}
      * @return the calculated arc tangens {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see #atan2(BigDecimal, BigDecimal)
      */
     public static BigDecimal atan2(BigDecimal y, BigDecimal x) {
-        return BigDecimalMath.atan2(y, x, getMathContext());
+        return BigDecimalMath.atan2(y, x, currentMathContext());
     }
 
     /**
@@ -520,11 +520,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the cotangens for
      * @return the calculated cotanges {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#cot(BigDecimal, MathContext)
      */
     public static BigDecimal cot(BigDecimal x) {
-        return BigDecimalMath.cot(x, getMathContext());
+        return BigDecimalMath.cot(x, currentMathContext());
     }
 
     /**
@@ -532,11 +532,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the arc cotangens for
      * @return the calculated arc cotangens {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#acot(BigDecimal, MathContext)
      */
     public static BigDecimal acot(BigDecimal x) {
-        return BigDecimalMath.acot(x, getMathContext());
+        return BigDecimalMath.acot(x, currentMathContext());
     }
 
     /**
@@ -544,11 +544,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the hyperbolic sine for
      * @return the calculated hyperbolic sine {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#sinh(BigDecimal, MathContext)
      */
     public static BigDecimal sinh(BigDecimal x) {
-        return BigDecimalMath.sinh(x, getMathContext());
+        return BigDecimalMath.sinh(x, currentMathContext());
     }
 
     /**
@@ -556,11 +556,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the hyperbolic cosine for
      * @return the calculated hyperbolic cosine {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#cosh(BigDecimal, MathContext)
      */
     public static BigDecimal cosh(BigDecimal x) {
-        return BigDecimalMath.cosh(x, getMathContext());
+        return BigDecimalMath.cosh(x, currentMathContext());
     }
 
     /**
@@ -568,11 +568,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the hyperbolic tangens for
      * @return the calculated hyperbolic tangens {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#tanh(BigDecimal, MathContext)
      */
     public static BigDecimal tanh(BigDecimal x) {
-        return BigDecimalMath.tanh(x, getMathContext());
+        return BigDecimalMath.tanh(x, currentMathContext());
     }
 
     /**
@@ -580,11 +580,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the hyperbolic cotangens for
      * @return the calculated hyperbolic cotangens {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#coth(BigDecimal, MathContext)
      */
     public static BigDecimal coth(BigDecimal x) {
-        return BigDecimalMath.coth(x, getMathContext());
+        return BigDecimalMath.coth(x, currentMathContext());
     }
 
     /**
@@ -592,11 +592,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the arc hyperbolic sine for
      * @return the calculated arc hyperbolic sine {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#asinh(BigDecimal, MathContext)
      */
     public static BigDecimal asinh(BigDecimal x) {
-        return BigDecimalMath.asinh(x, getMathContext());
+        return BigDecimalMath.asinh(x, currentMathContext());
     }
 
     /**
@@ -604,11 +604,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the arc hyperbolic cosine for
      * @return the calculated arc hyperbolic cosine {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#acosh(BigDecimal, MathContext)
      */
     public static BigDecimal acosh(BigDecimal x) {
-        return BigDecimalMath.acosh(x, getMathContext());
+        return BigDecimalMath.acosh(x, currentMathContext());
     }
 
     /**
@@ -616,11 +616,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the arc hyperbolic tangens for
      * @return the calculated arc hyperbolic tangens {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#atanh(BigDecimal, MathContext)
      */
     public static BigDecimal atanh(BigDecimal x) {
-        return BigDecimalMath.atanh(x, getMathContext());
+        return BigDecimalMath.atanh(x, currentMathContext());
     }
 
     /**
@@ -628,11 +628,11 @@ public class DefaultBigDecimalMath {
      *
      * @param x the {@link BigDecimal} to calculate the arc hyperbolic cotangens for
      * @return the calculated arc hyperbolic cotangens {@link BigDecimal} with the precision specified in the current {@link MathContext}
-     * @see #getMathContext()
+     * @see #currentMathContext()
      * @see BigDecimalMath#acoth(BigDecimal, MathContext)
      */
     public static BigDecimal acoth(BigDecimal x) {
-        return BigDecimalMath.acoth(x, getMathContext());
+        return BigDecimalMath.acoth(x, currentMathContext());
     }
 
     /**
