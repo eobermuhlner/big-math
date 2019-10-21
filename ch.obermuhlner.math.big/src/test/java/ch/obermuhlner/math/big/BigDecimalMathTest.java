@@ -16,6 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import ch.obermuhlner.math.big.stream.BigDecimalStream;
+import static ch.obermuhlner.util.ThreadUtil.runMultiThreaded;
 import org.junit.Test;
 
 public class BigDecimalMathTest {
@@ -1999,41 +2000,6 @@ ch.obermuhlner.math.big.BigDecimalMathTest > testLog2PowRandom FAILED
         }
         return result;
     }
-
-	private static void runMultiThreaded(Runnable runnable) throws Throwable {
-		runMultiThreaded(10, runnable);
-	}
-
-	private static void runMultiThreaded(int threadCount, Runnable runnable) throws Throwable {
-		Callable<Void> callable = () -> {
-			runnable.run();
-			return null;
-		};
-
-		AtomicReference<Throwable> exception = new AtomicReference<>();
-		CountDownLatch countDownLatch = new CountDownLatch(threadCount);
-		for (int i = 0; i < threadCount; i++) {
-			final int id = i;
-			Thread thread = new Thread(() -> {
-				System.out.println("STARTED " + id);
-				try {
-					callable.call();
-				} catch (Throwable e) {
-					System.out.println("EXCEPTION " + e);
-					exception.set(e);
-				} finally {
-					System.out.println("FINISHED " + id);
-					countDownLatch.countDown();
-				}
-			});
-			thread.start();
-		}
-		countDownLatch.await();
-
-		if (exception.get() != null) {
-			throw exception.get();
-		}
-	}
 
 	private static BigDecimal toCheck(double value) {
 		long longValue = (long) value;
