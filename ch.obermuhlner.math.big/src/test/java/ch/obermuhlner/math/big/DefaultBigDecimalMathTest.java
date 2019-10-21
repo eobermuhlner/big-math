@@ -4,7 +4,10 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.Random;
 
+import static ch.obermuhlner.util.ThreadUtil.runMultiThreaded;
 import static org.junit.Assert.assertEquals;
 
 public class DefaultBigDecimalMathTest {
@@ -283,5 +286,45 @@ public class DefaultBigDecimalMathTest {
         assertEquals(
                 BigDecimalMath.acoth(BigDecimal.valueOf(3), DefaultBigDecimalMath.getDefaultMathContext()),
                 DefaultBigDecimalMath.acoth(BigDecimal.valueOf(3)));
+    }
+
+    @Test
+    public void testWithPrecision() {
+        DefaultBigDecimalMath.withPrecision(5, () -> {
+            assertEquals(BigDecimal.valueOf(3.1416), DefaultBigDecimalMath.pi());
+        });
+
+        DefaultBigDecimalMath.withPrecision(5, RoundingMode.DOWN, () -> {
+            assertEquals(BigDecimal.valueOf(3.1415), DefaultBigDecimalMath.pi());
+        });
+
+        DefaultBigDecimalMath.withPrecision(new MathContext(3), () -> {
+            assertEquals(BigDecimal.valueOf(3.14), DefaultBigDecimalMath.pi());
+        });
+    }
+
+    @Test
+    public void testNestedWithPrecision() {
+        assertNestedWithPrecision(5, 3);
+    }
+
+    private void assertNestedWithPrecision(int precision1, int precision2) {
+        DefaultBigDecimalMath.withPrecision(precision1, () -> {
+            assertEquals(BigDecimalMath.pi(new MathContext(precision1)), DefaultBigDecimalMath.pi());
+
+            DefaultBigDecimalMath.withPrecision(precision2, () -> {
+                assertEquals(BigDecimalMath.pi(new MathContext(precision2)), DefaultBigDecimalMath.pi());
+            });
+
+            assertEquals(BigDecimalMath.pi(new MathContext(precision1)), DefaultBigDecimalMath.pi());
+        });
+    }
+
+    @Test
+    public void testNestedWithPrecisionMultiThreaded() throws Throwable {
+        Random random = new Random(1);
+        runMultiThreaded(100, () -> {
+            assertNestedWithPrecision(random.nextInt(100) + 1, random.nextInt(100) + 1);
+        });
     }
 }
