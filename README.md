@@ -174,11 +174,32 @@ The `MathContext` contains a precision and information on how to round the last 
 The convenience class `DefaultBigDecimalMath` was added that provides mathematical functions
 where the `MathContext` must not be passed every time.
 
-The class `DefaultBigDecimalMath` is a wrapper around `BigDecimalMath` that passes always the same default `MathContext` to the
+The class `DefaultBigDecimalMath` is a wrapper around `BigDecimalMath` that passes always the current `MathContext` to the
 functions that need a `MathContext` argument.
 
 It is possible to control the default `MathContext` programmatically, or specify it at start time using system properties.
 
+Additionally it is possible to specify a temporary `MathContext` to be used for a certain calculation.
+```java
+System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+DefaultBigDecimalMath.withPrecision(5, () -> {
+    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+    DefaultBigDecimalMath.withPrecision(10, () -> {
+        System.out.println("Pi[10]: " + DefaultBigDecimalMath.pi());
+    });
+    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+});
+System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+```
+
+This will give the following output:
+```
+Pi[default]: 3.141592653589793238462643383279503
+Pi[5]: 3.1416
+Pi[10]: 3.141592654
+Pi[5]: 3.1416
+Pi[default]: 3.141592653589793238462643383279503
+```
 
 #### I specified a precision of `n` digits, but the results have completely different number of digits after the decimal point. Why?
 
