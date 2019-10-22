@@ -69,7 +69,11 @@ public class DefaultBigDecimalMath {
 
     private static MathContext popMathContext() {
         Deque<MathContext> mathContexts = mathContextStack.get();
-        return mathContexts.removeLast();
+        MathContext poppedMathContext = mathContexts.removeLast();
+        if (mathContexts.isEmpty()) {
+            mathContextStack.remove();
+        }
+        return poppedMathContext;
     }
 
     private static int getIntSystemProperty(String propertyKey, int defaultValue) {
