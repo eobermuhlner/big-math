@@ -27,9 +27,9 @@ import java.util.*;
  * (or one of the overloaded methods).</p>
  * <pre>
 System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
-DefaultBigDecimalMath.withPrecision(5, () -> {
+DefaultBigDecimalMath.withPrecision(5, () -&gt; {
     System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
-    DefaultBigDecimalMath.withPrecision(10, () -> {
+    DefaultBigDecimalMath.withPrecision(10, () -&gt; {
         System.out.println("Pi[10]: " + DefaultBigDecimalMath.pi());
     });
     System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
