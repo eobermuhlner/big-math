@@ -11,8 +11,11 @@ import static ch.obermuhlner.math.big.DefaultBigDecimalMath.*;
 public class DefaultBigDecimalMathExample {
     public static void main(String[] args) {
         runDefaultExample();
-        runWithPrecisionExample();
-        runWithPrecision2Example();
+        runCreateLocalMathContextExample();
+        runWithLocalMathContextExample();
+        runWithLocalMathContextCompactExample();
+        runWithLocalMathContextParallelBadExample();
+        runWithLocalMathContextParallelGoodExample();
         runPiChudnovskyExample();
     }
 
@@ -21,11 +24,11 @@ public class DefaultBigDecimalMathExample {
     }
 
     private static void runPiChudnovskyExample() {
-        withPrecision(10, () -> {
+        withLocalMathContext(10, () -> {
             System.out.println("Pi[" + DefaultBigDecimalMath.currentMathContext().getPrecision() + "]: " + piChudnovsky());
             System.out.println("Pi[" + DefaultBigDecimalMath.currentMathContext().getPrecision() + "]: " + piChudnovskyMixedArithmetic());
         });
-        withPrecision(1000, () -> {
+        withLocalMathContext(1000, () -> {
             System.out.println("Pi[" + DefaultBigDecimalMath.currentMathContext().getPrecision() + "]: " + piChudnovsky());
             System.out.println("Pi[" + DefaultBigDecimalMath.currentMathContext().getPrecision() + "]: " + piChudnovskyMixedArithmetic());
         });
@@ -109,11 +112,23 @@ public class DefaultBigDecimalMathExample {
         return pi;
     }
 
-    private static void runWithPrecisionExample() {
+    private static void runCreateLocalMathContextExample() {
         System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
-        DefaultBigDecimalMath.withPrecision(5, () -> {
+        try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5)) {
             System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
-            DefaultBigDecimalMath.withPrecision(10, () -> {
+            try (DefaultBigDecimalMath.LocalMathContext context2 = DefaultBigDecimalMath.createLocalMathContext(10)) {
+                System.out.println("Pi[10]: " + DefaultBigDecimalMath.pi());
+            }
+            System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+        }
+        System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+    }
+
+    private static void runWithLocalMathContextExample() {
+        System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+        DefaultBigDecimalMath.withLocalMathContext(5, () -> {
+            System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+            DefaultBigDecimalMath.withLocalMathContext(10, () -> {
                 System.out.println("Pi[10]: " + DefaultBigDecimalMath.pi());
             });
             System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
@@ -121,11 +136,11 @@ public class DefaultBigDecimalMathExample {
         System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
     }
 
-    private static void runWithPrecisionCompactExample() {
+    private static void runWithLocalMathContextCompactExample() {
         System.out.println("Pi[default]: " + pi());
-        withPrecision(5, () -> {
+        withLocalMathContext(5, () -> {
             System.out.println("Pi[5]: " + pi());
-            withPrecision(10, () -> {
+            withLocalMathContext(10, () -> {
                 System.out.println("Pi[10]: " + pi());
             });
             System.out.println("Pi[5]: " + pi());
@@ -133,19 +148,38 @@ public class DefaultBigDecimalMathExample {
         System.out.println("Pi[default]: " + pi());
     }
 
-    private static void runWithPrecision2Example() {
-        DefaultBigDecimalMath.withPrecision(5, () -> {
-            BigDecimalStream.range(0.0, 1.0, 0.01, currentMathContext())
-                    .map(b -> cos(b))
+    private static void runWithLocalMathContextParallelBadExample() {
+        DefaultBigDecimalMath.withLocalMathContext(5, () -> {
+            BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
+                    .map(b -> DefaultBigDecimalMath.cos(b))
                     .map(b -> "sequential " + Thread.currentThread().getName() + " [5]: " + b)
                     .forEach(System.out::println);
 
-            BigDecimalStream.range(0.0, 1.0, 0.01, currentMathContext())
+            BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
                     .parallel()
-                    .map(b -> cos(b))
+                    .map(b -> DefaultBigDecimalMath.cos(b))
                     .map(b -> "parallel " + Thread.currentThread().getName() + " [?]: " + b)
                     .forEach(System.out::println);
         });
+    }
+
+    private static void runWithLocalMathContextParallelGoodExample() {
+        try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5)) {
+            BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
+                    .map(b -> DefaultBigDecimalMath.cos(b))
+                    .map(b -> "sequential " + Thread.currentThread().getName() + " [5]: " + b)
+                    .forEach(System.out::println);
+
+            BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
+                    .parallel()
+                    .map(b -> {
+                        try (DefaultBigDecimalMath.LocalMathContext context2 = DefaultBigDecimalMath.createLocalMathContext(5)) {
+                            return DefaultBigDecimalMath.cos(b);
+                        }
+                    })
+                    .map(b -> "parallel " + Thread.currentThread().getName() + " [5]: " + b)
+                    .forEach(System.out::println);
+        }
     }
 }
 

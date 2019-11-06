@@ -290,15 +290,15 @@ public class DefaultBigDecimalMathTest {
 
     @Test
     public void testWithPrecision() {
-        DefaultBigDecimalMath.withPrecision(5, () -> {
+        DefaultBigDecimalMath.withLocalMathContext(5, () -> {
             assertEquals(BigDecimal.valueOf(3.1416), DefaultBigDecimalMath.pi());
         });
 
-        DefaultBigDecimalMath.withPrecision(5, RoundingMode.DOWN, () -> {
+        DefaultBigDecimalMath.withLocalMathContext(5, RoundingMode.DOWN, () -> {
             assertEquals(BigDecimal.valueOf(3.1415), DefaultBigDecimalMath.pi());
         });
 
-        DefaultBigDecimalMath.withPrecision(new MathContext(3), () -> {
+        DefaultBigDecimalMath.withLocalMathContext(new MathContext(3), () -> {
             assertEquals(BigDecimal.valueOf(3.14), DefaultBigDecimalMath.pi());
         });
     }
@@ -311,11 +311,11 @@ public class DefaultBigDecimalMathTest {
     private void assertNestedWithPrecision(int precision1, int precision2) {
         assertEquals(DefaultBigDecimalMath.getDefaultMathContext(), DefaultBigDecimalMath.currentMathContext());
 
-        DefaultBigDecimalMath.withPrecision(precision1, () -> {
+        DefaultBigDecimalMath.withLocalMathContext(precision1, () -> {
             assertEquals(precision1, DefaultBigDecimalMath.currentMathContext().getPrecision());
             assertEquals(BigDecimalMath.pi(new MathContext(precision1)), DefaultBigDecimalMath.pi());
 
-            DefaultBigDecimalMath.withPrecision(precision2, () -> {
+            DefaultBigDecimalMath.withLocalMathContext(precision2, () -> {
                 assertEquals(precision2, DefaultBigDecimalMath.currentMathContext().getPrecision());
                 assertEquals(BigDecimalMath.pi(new MathContext(precision2)), DefaultBigDecimalMath.pi());
             });

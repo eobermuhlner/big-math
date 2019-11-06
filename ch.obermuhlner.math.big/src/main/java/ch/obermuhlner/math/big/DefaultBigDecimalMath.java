@@ -16,15 +16,33 @@ import java.util.*;
  *     <li><code>ch.obermuhlner.math.big.default.rounding</code> to a {@link RoundingMode} name (default=HALF_UP) </li>
  * </ul>
  *
- * <p>It is also possible to set the default {@link MathContext} using {@link #setDefaultMathContext(MathContext)}.
- * It is recommended to set the desired precision in the {@link MathContext} early in the startup of the application.</p>
+ * <p>It is also possible to programmatically set the default {@link MathContext} using {@link #setDefaultMathContext(MathContext)}.
+ * It is recommended to set the desired precision in the {@link MathContext} very early in the startup of the application and to not change it afterwards.</p>
  *
  * <p>Important: Avoid the pitfall of setting the precision temporarily using {@link #setDefaultMathContext(MathContext)} for a calculation.
  * This can lead to race conditions and calculations with the wrong precision
  * if other threads in your application do the same thing.</p>
  *
- * <p>To set a temporary {@link MathContext} use {@link #withPrecision(MathContext, Runnable)}
- * (or one of the overloaded methods).</p>
+ * <p>To set a temporary {@link MathContext} you have to choice to use either:
+ * <ul>
+ *      <li><code>DefaultBigDecimalMath.createLocalMathContext()</code> in a try-with-resources statement</li>
+ *      <li><code>DefaultBigDecimalMath.withLocalMathContext()</code> with a lambda function</li>
+ * </ul>
+ *
+ * Example code using <code>DefaultBigDecimalMath.createLocalMathContext()</code>:
+ * <pre>
+System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5)) {
+    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+    try (DefaultBigDecimalMath.LocalMathContext context2 = DefaultBigDecimalMath.createLocalMathContext(10)) {
+        System.out.println("Pi[10]: " + DefaultBigDecimalMath.pi());
+    }
+    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+}
+System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+ </pre>
+ *
+ * Example code using <code>DefaultBigDecimalMath.withLocalMathContext()</code>:
  * <pre>
 System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
 DefaultBigDecimalMath.withPrecision(5, () -&gt; {
@@ -37,14 +55,41 @@ DefaultBigDecimalMath.withPrecision(5, () -&gt; {
 System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
 </pre>
  *
+ * Both snippets with give the following ouput:
+ * <pre>
+Pi[default]: 3.141592653589793238462643383279503
+Pi[5]: 3.1416
+Pi[10]: 3.141592654
+Pi[5]: 3.1416
+Pi[default]: 3.141592653589793238462643383279503
+</pre>
  * <p>The temporary {@link MathContext} are stored in {@link ThreadLocal} variables
  * and will therefore not conflict with each other when used in multi-threaded use case.</p>
  *
- * <p>Important: Due to the {@link ThreadLocal} variables the temporary {@link MathContext} will
+ * <p>Important: Due to the {@link ThreadLocal} variables the local {@link MathContext} will
  * <strong>not</strong> be available in other threads.
  * This includes streams using <code>parallel()</code>, thread pools and manually started threads.
- * If you need temporary {@link MathContext} for calculations then you <strong>must</strong> call
- * {@link #withPrecision(MathContext, Runnable)} inside <strong>every</strong> separate thread.</p>
+ * If you need temporary {@link MathContext} for calculations then you <strong>must</strong>
+ * set the local {@link MathContext} inside <strong>every</strong> separate thread.</p>
+ *
+ * <pre>
+try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5)) {
+    BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
+        .map(b -> DefaultBigDecimalMath.cos(b))
+        .map(b -> "sequential " + Thread.currentThread().getName() + " [5]: " + b)
+        .forEach(System.out::println);
+
+    BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
+        .parallel()
+        .map(b -> {
+            try (DefaultBigDecimalMath.LocalMathContext context2 = DefaultBigDecimalMath.createLocalMathContext(5)) {
+                return DefaultBigDecimalMath.cos(b);
+            }
+        })
+        .map(b -> "parallel " + Thread.currentThread().getName() + " [5]: " + b)
+        .forEach(System.out::println);
+}
+</pre>
  */
 public class DefaultBigDecimalMath {
 
@@ -100,13 +145,13 @@ public class DefaultBigDecimalMath {
     }
 
     /**
-     * Sets the default {@link MathContext} used if no other {@link MathContext} is defined using {@link #withPrecision(MathContext, Runnable)}.
+     * Sets the default {@link MathContext} used if no other {@link MathContext} is defined using {@link #withLocalMathContext(MathContext, Runnable)}.
      *
      * @param defaultMathContext the default {@link MathContext}
      * @see #currentMathContext()
-     * @see #withPrecision(int, Runnable)
-     * @see #withPrecision(int, RoundingMode, Runnable)
-     * @see #withPrecision(MathContext, Runnable)
+     * @see #withLocalMathContext(int, Runnable)
+     * @see #withLocalMathContext(int, RoundingMode, Runnable)
+     * @see #withLocalMathContext(MathContext, Runnable)
      */
     public static void setDefaultMathContext(MathContext defaultMathContext) {
         Objects.requireNonNull(defaultMathContext);
@@ -128,8 +173,8 @@ public class DefaultBigDecimalMath {
      * @param precision the precision to use for calculations in the <code>runnable</code>
      * @param runnable the {@link Runnable} to execute
      */
-    public static void withPrecision(int precision, Runnable runnable) {
-        withPrecision(new MathContext(precision), runnable);
+    public static void withLocalMathContext(int precision, Runnable runnable) {
+        withLocalMathContext(new MathContext(precision), runnable);
     }
 
     /**
@@ -139,8 +184,8 @@ public class DefaultBigDecimalMath {
      * @param roundingMode the {@link RoundingMode} to use for calculations in the <code>runnable</code>
      * @param runnable the {@link Runnable} to execute
      */
-    public static void withPrecision(int precision, RoundingMode roundingMode, Runnable runnable) {
-        withPrecision(new MathContext(precision, roundingMode), runnable);
+    public static void withLocalMathContext(int precision, RoundingMode roundingMode, Runnable runnable) {
+        withLocalMathContext(new MathContext(precision, roundingMode), runnable);
     }
 
     /**
@@ -149,24 +194,55 @@ public class DefaultBigDecimalMath {
      * @param mathContext the {@link MathContext} to use for calculations in the <code>runnable</code>
      * @param runnable the {@link Runnable} to execute
      */
-    public static void withPrecision(MathContext mathContext, Runnable runnable) {
-        try (LocalContext context = new LocalContext(mathContext)) {
+    public static void withLocalMathContext(MathContext mathContext, Runnable runnable) {
+        try (LocalMathContext context = createLocalMathContext(mathContext)) {
             runnable.run();
         }
+    }
+
+    /**
+     * Executes the given {@link Runnable} using the specified precision.
+     *
+     * @param precision the precision to use for calculations
+     * @return the created {@link LocalMathContext} to be used in a try-with-resources statement
+     */
+    public static LocalMathContext createLocalMathContext(int precision) {
+        return createLocalMathContext(new MathContext(precision));
+    }
+
+    /**
+     * Executes the given {@link Runnable} using the specified precision and {@link RoundingMode}.
+     *
+     * @param precision the precision to use for calculations
+     * @param roundingMode the {@link RoundingMode} to use for calculations in the <code>runnable</code>
+     * @return the created {@link LocalMathContext} to be used in a try-with-resources statement
+     */
+    public static LocalMathContext createLocalMathContext(int precision, RoundingMode roundingMode) {
+        return createLocalMathContext(new MathContext(precision, roundingMode));
+    }
+
+    /**
+     * Executes the given {@link Runnable} using the specified {@link MathContext}.
+     *
+     * @param mathContext the {@link MathContext} to use for calculations
+     * @return the created {@link LocalMathContext} to be used in a try-with-resources statement
+     */
+    public static LocalMathContext createLocalMathContext(MathContext mathContext) {
+        return new LocalMathContext(mathContext);
     }
 
     /**
      * Returns the current {@link MathContext} used for all mathematical functions in this class.
      *
      * <p>The current {@link MathContext} is the last {@link MathContext} specified
-     * using {@link #withPrecision(MathContext, Runnable)}
+     * using {@link #withLocalMathContext(MathContext, Runnable)}
      * or the default {@link MathContext} if none was specified.</p>
      *
      * @return the current {@link MathContext}
      * @see #currentMathContext()
-     * @see #withPrecision(int, Runnable)
-     * @see #withPrecision(int, RoundingMode, Runnable)
-     * @see #withPrecision(MathContext, Runnable)
+     * @see #withLocalMathContext(int, Runnable)
+     * @see #withLocalMathContext(int, RoundingMode, Runnable)
+     * @see #withLocalMathContext(MathContext, Runnable)
      */
     public static MathContext currentMathContext() {
         Deque<MathContext> mathContexts = mathContextStack.get();
@@ -644,10 +720,10 @@ public class DefaultBigDecimalMath {
      *
      * <p>The recommended way to use this class is to use the try-with-resources.</p>
      */
-    public static class LocalContext implements AutoCloseable {
+    public static class LocalMathContext implements AutoCloseable {
         public final MathContext mathContext;
 
-        LocalContext(MathContext mathContext) {
+        LocalMathContext(MathContext mathContext) {
             this.mathContext = mathContext;
             pushMathContext(mathContext);
         }
