@@ -75,18 +75,18 @@ Pi[default]: 3.141592653589793238462643383279503
  * <pre>
 try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5)) {
     BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
-        .map(b -> DefaultBigDecimalMath.cos(b))
-        .map(b -> "sequential " + Thread.currentThread().getName() + " [5]: " + b)
+        .map(b -&gt; DefaultBigDecimalMath.cos(b))
+        .map(b -&gt; "sequential " + Thread.currentThread().getName() + " [5]: " + b)
         .forEach(System.out::println);
 
     BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
         .parallel()
-        .map(b -> {
+        .map(b -&gt; {
             try (DefaultBigDecimalMath.LocalMathContext context2 = DefaultBigDecimalMath.createLocalMathContext(5)) {
                 return DefaultBigDecimalMath.cos(b);
             }
         })
-        .map(b -> "parallel " + Thread.currentThread().getName() + " [5]: " + b)
+        .map(b -&gt; "parallel " + Thread.currentThread().getName() + " [5]: " + b)
         .forEach(System.out::println);
 }
 </pre>

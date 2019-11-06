@@ -174,32 +174,8 @@ The `MathContext` contains a precision and information on how to round the last 
 The convenience class `DefaultBigDecimalMath` was added that provides mathematical functions
 where the `MathContext` must not be passed every time.
 
-The class `DefaultBigDecimalMath` is a wrapper around `BigDecimalMath` that passes always the current `MathContext` to the
-functions that need a `MathContext` argument.
+Please refer to the chapter [DefaultBigDecimalMath](#defaultbigdecimalmath)
 
-It is possible to control the default `MathContext` programmatically, or specify it at start time using system properties.
-
-Additionally it is possible to specify a temporary `MathContext` to be used for a certain calculation.
-```java
-System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
-DefaultBigDecimalMath.withPrecision(5, () -> {
-    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
-    DefaultBigDecimalMath.withPrecision(10, () -> {
-        System.out.println("Pi[10]: " + DefaultBigDecimalMath.pi());
-    });
-    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
-});
-System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
-```
-
-This will give the following output:
-```
-Pi[default]: 3.141592653589793238462643383279503
-Pi[5]: 3.1416
-Pi[10]: 3.141592654
-Pi[5]: 3.1416
-Pi[default]: 3.141592653589793238462643383279503
-```
 
 #### I specified a precision of `n` digits, but the results have completely different number of digits after the decimal point. Why?
 
@@ -355,9 +331,90 @@ The class `BigComplexMath` is the equivalent of `BigDecimalMath` and contains ma
 * `root(BigComplex, BigComplex, MathContext)` 
 
 
+## DefaultBigDecimalMath
+
+The class `DefaultBigDecimalMath` is a wrapper around `BigDecimalMath` that passes always the current `MathContext` to the
+functions that need a `MathContext` argument.
+
+The initial default `MathContext` is equivalent to `MathContext.DECIMAL128` but this can be overridden by setting the following system properties:
+- `ch.obermuhlner.math.big.default.precision` to a positive integer precision (default=34)
+- `ch.obermuhlner.math.big.default.rounding` to a RoundingMode name (default=HALF_UP)
+
+It is also possible to programmatically set the default `MathContext` using `setDefaultMathContext(MathContext)`.
+It is recommended to set the desired precision in the `MathContext` very early in the startup of the application and to not change it afterwards.
+
+**Important**: Avoid the pitfall of setting the precision temporarily using `setDefaultMathContext(MathContext)` for a calculation.
+This can lead to race conditions and calculations with the wrong precision if other threads in your application do the same thing.
+
+To set a temporary `MathContext` you have to choice to use either:
+- `DefaultBigDecimalMath.createLocalMathContext()` in a try-with-resources statement  
+- `DefaultBigDecimalMath.withLocalMathContext()` with a lambda function  
+
+Example code using `DefaultBigDecimalMath.createLocalMathContext()`:
+```java
+System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5)) {
+    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+    try (DefaultBigDecimalMath.LocalMathContext context2 = DefaultBigDecimalMath.createLocalMathContext(10)) {
+        System.out.println("Pi[10]: " + DefaultBigDecimalMath.pi());
+    };
+    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+};
+System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+```
+
+Example code using `DefaultBigDecimalMath.withLocalMathContext()`:
+```java
+System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+DefaultBigDecimalMath.withLocalMathContext(5, () -> {
+    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+    DefaultBigDecimalMath.withLocalMathContext(10, () -> {
+        System.out.println("Pi[10]: " + DefaultBigDecimalMath.pi());
+    });
+    System.out.println("Pi[5]: " + DefaultBigDecimalMath.pi());
+});
+System.out.println("Pi[default]: " + DefaultBigDecimalMath.pi());
+```
+
+Both snippets will give the following output:
+```console
+Pi[default]: 3.141592653589793238462643383279503
+Pi[5]: 3.1416
+Pi[10]: 3.141592654
+Pi[5]: 3.1416
+Pi[default]: 3.141592653589793238462643383279503
+```
+
+The temporary `MathContext` are stored in `ThreadLocal` variables
+and will therefore not conflict with each other when used in multi-threaded use case.
+**Important**: Due to the `ThreadLocal` variables the temporary `MathContext` will
+ _not_ be available in other threads.
+This includes streams using `parallel()`, thread pools and manually started threads.
+If you need temporary `MathContext` for calculations then you _must_ 
+set the local `MathContext` inside _every_ separate thread.
+
+```java
+try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5)) {
+    BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
+            .map(b -> DefaultBigDecimalMath.cos(b))
+            .map(b -> "sequential " + Thread.currentThread().getName() + " [5]: " + b)
+            .forEach(System.out::println);
+
+    BigDecimalStream.range(0.0, 1.0, 0.01, DefaultBigDecimalMath.currentMathContext())
+            .parallel()
+            .map(b -> {
+                try (DefaultBigDecimalMath.LocalMathContext context2 = DefaultBigDecimalMath.createLocalMathContext(5)) {
+                    return DefaultBigDecimalMath.cos(b);
+                }
+            })
+            .map(b -> "parallel " + Thread.currentThread().getName() + " [5]: " + b)
+            .forEach(System.out::println);
+}
+```
+
 ## BigFloat
 
-The class `BigFloat` is a wrapper around `BigDecimal` which simplifies the consistent usage of the `MathContext` and provides a simpler API for calculations. 
+The class `BigFloat` is an experimental wrapper around `BigDecimal` which simplifies the consistent usage of the `MathContext` and provides a simpler API for calculations. 
 
 The API for calculations is simplified and more consistent with the typical mathematical usage.
 * Factory methods on the `Context` class for values:
