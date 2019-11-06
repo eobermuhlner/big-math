@@ -289,7 +289,22 @@ public class DefaultBigDecimalMathTest {
     }
 
     @Test
-    public void testWithPrecision() {
+    public void testCreateLocalMathContext() {
+        try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5)) {
+            assertEquals(BigDecimal.valueOf(3.1416), DefaultBigDecimalMath.pi());
+        }
+
+        try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(5, RoundingMode.DOWN)) {
+            assertEquals(BigDecimal.valueOf(3.1415), DefaultBigDecimalMath.pi());
+        }
+
+        try (DefaultBigDecimalMath.LocalMathContext context = DefaultBigDecimalMath.createLocalMathContext(new MathContext(3))) {
+            assertEquals(BigDecimal.valueOf(3.14), DefaultBigDecimalMath.pi());
+        }
+    }
+
+    @Test
+    public void testWithLocalMathContext() {
         DefaultBigDecimalMath.withLocalMathContext(5, () -> {
             assertEquals(BigDecimal.valueOf(3.1416), DefaultBigDecimalMath.pi());
         });
@@ -304,11 +319,11 @@ public class DefaultBigDecimalMathTest {
     }
 
     @Test
-    public void testNestedWithPrecision() {
-        assertNestedWithPrecision(5, 3);
+    public void testNestedWithLocalMathContext() {
+        assertNestedWithLocalMathContext(5, 3);
     }
 
-    private void assertNestedWithPrecision(int precision1, int precision2) {
+    private void assertNestedWithLocalMathContext(int precision1, int precision2) {
         assertEquals(DefaultBigDecimalMath.getDefaultMathContext(), DefaultBigDecimalMath.currentMathContext());
 
         DefaultBigDecimalMath.withLocalMathContext(precision1, () -> {
@@ -328,10 +343,10 @@ public class DefaultBigDecimalMathTest {
     }
 
     @Test
-    public void testNestedWithPrecisionMultiThreaded() throws Throwable {
+    public void testNestedWithLocalMathContextMultiThreaded() throws Throwable {
         Random random = new Random(1);
         runMultiThreaded(100, () -> {
-            assertNestedWithPrecision(random.nextInt(100) + 1, random.nextInt(100) + 1);
+            assertNestedWithLocalMathContext(random.nextInt(100) + 1, random.nextInt(100) + 1);
         });
     }
 }
