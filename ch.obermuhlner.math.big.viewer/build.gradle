@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-	compile group: 'ch.obermuhlner', name: 'big-math', version: '2.2.1'
+	compile group: 'ch.obermuhlner', name: 'big-math', version: '2.3.0'
 	//compile project(':ch.obermuhlner.math.big')
 
     testCompile 'junit:junit:4.12'
