@@ -52,10 +52,10 @@ Note: the CPU specs where printed with the following command:
 wmic cpu get caption, deviceid, name, numberofcores, maxclockspeed, status
 ```
 
-![selected functions performance over releases](https://github.com/eobermuhlner/big-math/blob/master/regression/analysis/selected functions performance over releases.png)
+![selected functions performance over releases](https://github.com/eobermuhlner/big-math/blob/master/regression/analysis/selected%20functions%20performance%20over%20releases.png)
 
-![fast functions performance over releases](https://github.com/eobermuhlner/big-math/blob/master/regression/analysis/fast functions performance over releases.png)
+![fast functions performance over releases](https://github.com/eobermuhlner/big-math/blob/master/regression/analysis/fast%20functions%20performance%20over%20releases.png)
 
-![medium functions performance over releases](https://github.com/eobermuhlner/big-math/blob/master/regression/analysis/medium functions performance over releases.png)
+![medium functions performance over releases](https://github.com/eobermuhlner/big-math/blob/master/regression/analysis/medium%20functions%20performance%20over%20releases.png)
 
-![very slow functions performance over releases](https://github.com/eobermuhlner/big-math/blob/master/regression/analysis/very slow functions performance over releases.png)
+![very slow functions performance over releases](https://github.com/eobermuhlner/big-math/blob/master/regression/analysis/very%20slow%20functions%20performance%20over%20releases.png)
