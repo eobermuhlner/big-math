@@ -78,7 +78,8 @@ public class AggregateCsv {
                 "v2_0_1",
                 "v2_1_0",
                 "v2_2_0",
-                "v2_2_1");
+                "v2_2_1",
+                "v2_3_0");
 
         aggregateCsv.run("performance over releases.csv", "../%s/performance.csv", releaseNames, null);
 

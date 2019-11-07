@@ -42,8 +42,8 @@ The committed `performance.csv` files in each regression project where created
 by running on a PC with the following specs: 
 
 ```
-Caption                               DeviceID  MaxClockSpeed  Name                                      NumberOfCores  Status
-Intel64 Family 6 Model 78 Stepping 3  CPU0      2592           Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz  2              OK
+Caption                                 DeviceID  MaxClockSpeed  Name                                      NumberOfCores  Status
+Intel64 Family 6 Model 142 Stepping 11  CPU0      2001           Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz  4              OK
 ```
 
 Note: the CPU specs where printed with the following command: 
