@@ -51,3 +51,11 @@ Note: the CPU specs where printed with the following command:
 ```console
 wmic cpu get caption, deviceid, name, numberofcores, maxclockspeed, status
 ```
+
+![selected functions performance over releases](analysis/selected functions performance over releases.png)
+
+![fast functions performance over releases](analysis/fast functions performance over releases.png)
+
+![medium functions performance over releases](analysis/medium functions performance over releases.png)
+
+![very slow functions performance over releases](analysis/very slow functions performance over releases.png)
