@@ -143,6 +143,10 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
+    static MutableBigMatrix matrix(int rows, int columns, double... values) {
+        return matrix(rows, columns, MatrixUtils.toBigDecimal(values));
+    }
+
     static MutableBigMatrix matrix(int rows, int columns, BigDecimal... values) {
         int n = rows * columns;
         if (values.length - n > 10000 || (values.length > 10000 && MatrixUtils.countZeroValues(values) > 10000)) {

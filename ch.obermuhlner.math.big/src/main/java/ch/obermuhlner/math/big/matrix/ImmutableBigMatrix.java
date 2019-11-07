@@ -22,6 +22,10 @@ public interface ImmutableBigMatrix extends BigMatrix {
 
     ImmutableBigMatrix invert(MathContext mathContext);
 
+    static ImmutableBigMatrix matrix(int rows, int columns, double... values) {
+        return matrix(rows, columns, MatrixUtils.toBigDecimal(values));
+    }
+
     static ImmutableBigMatrix matrix(int rows, int columns, BigDecimal... values) {
         int n = rows * columns;
         if (values.length - n > 10000 || (values.length > 10000 && MatrixUtils.countZeroValues(values) > 10000)) {

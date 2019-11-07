@@ -6,7 +6,7 @@ import java.math.MathContext;
 
 import static java.math.BigDecimal.valueOf;
 
-public class MatrixTest {
+public class BigMatrixTest {
     @Test
     public void testBasics() {
         System.out.println(ImmutableBigMatrix.identity(5, 5));

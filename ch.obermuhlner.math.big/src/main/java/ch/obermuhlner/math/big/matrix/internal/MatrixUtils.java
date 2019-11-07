@@ -22,4 +22,14 @@ public class MatrixUtils {
         }
         return count;
     }
+
+    public static BigDecimal[] toBigDecimal(double... values) {
+        BigDecimal[] result = new BigDecimal[values.length];
+
+        for (int i = 0; i < values.length; i++) {
+            result[i] = BigDecimal.valueOf(values[i]);
+        }
+
+        return result;
+    }
 }
