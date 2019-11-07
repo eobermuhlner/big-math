@@ -217,7 +217,7 @@ The implementation in Java 11 and before is O(n^2).
 
 If you want to convert very long strings (10000 characters or longer) then this slow constructor may become an issue.
 
-`BigDecimalMath.toBigDecimal(String)` is a drop in replacement with the same functionality
+`BigDecimalMath.toBigDecimal(String)` is a drop-in replacement with the same functionality
 (converting a string representation into a `BigDecimal`) but it is using a faster recursive implementation.
 
 The following chart shows the time necessary to create a `BigDecimal` from a string representation of increasing length:
@@ -387,6 +387,7 @@ Pi[default]: 3.141592653589793238462643383279503
 
 The temporary `MathContext` are stored in `ThreadLocal` variables
 and will therefore not conflict with each other when used in multi-threaded use case.
+
 **Important**: Due to the `ThreadLocal` variables the temporary `MathContext` will
  _not_ be available in other threads.
 This includes streams using `parallel()`, thread pools and manually started threads.
