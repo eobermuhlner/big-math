@@ -14,6 +14,9 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     protected BigDecimal defaultValue = BigDecimal.ZERO;
 
     public AbstractSparseBigMatrix(int rows, int columns) {
+        checkRows(rows);
+        checkColumns(columns);
+
         this.rows = rows;
         this.columns = columns;
     }
@@ -48,24 +51,16 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
 
     @Override
     public BigDecimal get(int row, int column) {
-        if (row < 0 || row >= rows) {
-            throw new IndexOutOfBoundsException("row: " + row);
-        }
-        if (column < 0 || column >= columns) {
-            throw new IndexOutOfBoundsException("column: " + columns);
-        }
+        checkRow(row);
+        checkColumn(column);
 
         int index = row*columns + column;
         return data.getOrDefault(index, defaultValue);
     }
 
     protected void internalSet(int row, int column, BigDecimal value) {
-        if (row < 0 || row >= rows) {
-            throw new IndexOutOfBoundsException("row: " + row);
-        }
-        if (column < 0 || column >= columns) {
-            throw new IndexOutOfBoundsException("row: " + row);
-        }
+        checkRow(row);
+        checkColumn(column);
 
         int index = row*columns + column;
         if (value.equals(defaultValue)) {

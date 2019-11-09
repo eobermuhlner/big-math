@@ -46,11 +46,6 @@ public class LambdaImmutableBigMatrix extends AbstractBigMatrix implements Immut
     }
 
     @Override
-    public ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
-        return (ImmutableBigMatrix) super.subMatrix(startRow, startColumn, rows, columns);
-    }
-
-    @Override
     public ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
         return (ImmutableBigMatrix) super.add(other, mathContext);
     }
@@ -68,15 +63,5 @@ public class LambdaImmutableBigMatrix extends AbstractBigMatrix implements Immut
     @Override
     public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
         return (ImmutableBigMatrix) super.multiply(other, mathContext);
-    }
-
-    @Override
-    public ImmutableBigMatrix transpose() {
-        return (ImmutableBigMatrix) super.transpose();
-    }
-
-    @Override
-    public ImmutableBigMatrix invert(MathContext mathContext) {
-        return (ImmutableBigMatrix) super.invert(mathContext);
     }
 }

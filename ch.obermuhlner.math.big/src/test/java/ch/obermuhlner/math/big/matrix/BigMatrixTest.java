@@ -9,24 +9,24 @@ import static java.math.BigDecimal.valueOf;
 public class BigMatrixTest {
     @Test
     public void testBasics() {
-        System.out.println(ImmutableBigMatrix.identity(5, 5));
+        System.out.println(ImmutableBigMatrix.identityMatrix(5, 5));
 
-        ImmutableBigMatrix m2 = ImmutableBigMatrix.dense(2, 2,
-                valueOf(1.1), valueOf(2.2),
-                valueOf(3.3), valueOf(4.4));
+        ImmutableBigMatrix m2 = ImmutableBigMatrix.denseMatrix(2, 2,
+                1.1, 2.2,
+                3.3, 4.4);
         System.out.println(m2);
 
         ImmutableBigMatrix m3 = m2.multiply(valueOf(2.0), MathContext.DECIMAL64);
         System.out.println(m3);
 
-        ImmutableBigMatrix m4 = ImmutableBigMatrix.dense(3, 3,
-                (row, column) -> valueOf(row+column));
+        ImmutableBigMatrix m4 = ImmutableBigMatrix.denseMatrix(3, 3,
+                (row, column) -> valueOf(row + column));
         System.out.println(m4);
     }
 
     @Test
     public void testGaussianElimination() {
-        MutableBigMatrix m = MutableBigMatrix.dense(3, 4,
+        MutableBigMatrix m = MutableBigMatrix.denseMatrix(3, 4,
                 valueOf(2), valueOf(1), valueOf(-1), valueOf(8),
                 valueOf(-3), valueOf(-1), valueOf(2), valueOf(-11),
                 valueOf(-2), valueOf(1), valueOf(2), valueOf(-3));
@@ -36,7 +36,7 @@ public class BigMatrixTest {
 
     @Test
     public void testGaussianEliminationReducedEchelon() {
-        MutableBigMatrix m = MutableBigMatrix.dense(3, 4,
+        MutableBigMatrix m = MutableBigMatrix.denseMatrix(3, 4,
                 valueOf(2), valueOf(1), valueOf(-1), valueOf(8),
                 valueOf(-3), valueOf(-1), valueOf(2), valueOf(-11),
                 valueOf(-2), valueOf(1), valueOf(2), valueOf(-3));
@@ -46,7 +46,7 @@ public class BigMatrixTest {
 
     @Test
     public void testInvert() {
-        MutableBigMatrix m = MutableBigMatrix.dense(3, 3,
+        MutableBigMatrix m = MutableBigMatrix.denseMatrix(3, 3,
                 valueOf(2), valueOf(-1), valueOf(0),
                 valueOf(-1), valueOf(2), valueOf(-1),
                 valueOf(0), valueOf(-1), valueOf(2));

@@ -49,11 +49,6 @@ public class DenseMutableBigMatrix extends AbstractDenseBigMatrix implements Mut
     }
 
     @Override
-    public MutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
-        return (MutableBigMatrix) super.subMatrix(startRow, startColumn, rows, columns);
-    }
-
-    @Override
     public MutableBigMatrix add(BigMatrix other, MathContext mathContext) {
         return (MutableBigMatrix) super.add(other, mathContext);
     }
@@ -71,15 +66,5 @@ public class DenseMutableBigMatrix extends AbstractDenseBigMatrix implements Mut
     @Override
     public MutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
         return (MutableBigMatrix) super.multiply(other, mathContext);
-    }
-
-    @Override
-    public MutableBigMatrix transpose() {
-        return (MutableBigMatrix) super.transpose();
-    }
-
-    @Override
-    public MutableBigMatrix invert(MathContext mathContext) {
-        return (MutableBigMatrix) super.invert(mathContext);
     }
 }

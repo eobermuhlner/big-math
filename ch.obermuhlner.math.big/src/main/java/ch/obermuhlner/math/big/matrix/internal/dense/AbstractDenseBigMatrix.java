@@ -11,6 +11,9 @@ public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
     protected final BigDecimal[] data;
 
     public AbstractDenseBigMatrix(int rows, int columns) {
+        checkRows(rows);
+        checkColumns(columns);
+
         this.rows = rows;
         this.columns = columns;
         this.data = new BigDecimal[rows * columns];
@@ -46,14 +49,23 @@ public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
 
     @Override
     public BigDecimal get(int row, int column) {
+        checkRow(row);
+        checkColumn(column);
+
         return data[index(row, column)];
     }
 
     protected void internalSet(int row, int column, BigDecimal value) {
+        checkRow(row);
+        checkColumn(column);
+
         data[index(row, column)] = value;
     }
 
     protected int index(int row, int column) {
+        checkRow(row);
+        checkColumn(column);
+
         return row*columns + column;
     }
 }

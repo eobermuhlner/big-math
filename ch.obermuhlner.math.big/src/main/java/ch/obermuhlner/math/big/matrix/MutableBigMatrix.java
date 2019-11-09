@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big.matrix;
 
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 import ch.obermuhlner.math.big.matrix.internal.dense.DenseMutableBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.sparse.SparseMutableBigMatrix;
 
 import java.math.BigDecimal;
@@ -32,14 +33,25 @@ public interface MutableBigMatrix extends BigMatrix {
         fill(BigDecimal.ZERO);
     }
 
-    MutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns);
-
     MutableBigMatrix add(BigMatrix other, MathContext mathContext);
+
     MutableBigMatrix subtract(BigMatrix other, MathContext mathContext);
+
     MutableBigMatrix multiply(BigDecimal value, MathContext mathContext);
+
     MutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
 
-    MutableBigMatrix transpose();
+    default MutableBigMatrix transpose() {
+        return asImmutableMatrix().transpose().toMutableMatrix();
+    }
+
+    default MutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
+        return asImmutableMatrix().subMatrix(startRow, startColumn, rows, columns).toMutableMatrix();
+    }
+
+    default MutableBigMatrix minor(int skipRow, int skipColumn) {
+        return asImmutableMatrix().minor(skipRow, skipColumn).toMutableMatrix();
+    }
 
     default void addToThis(BigMatrix other, MathContext mathContext) {
         if (rows() != other.rows()) {
@@ -79,7 +91,19 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
-    MutableBigMatrix invert(MathContext mathContext);
+    default MutableBigMatrix invert(MathContext mathContext) {
+        if (rows() != columns()) {
+            return null;
+        }
+
+        MutableBigMatrix work = MutableBigMatrix.sparseMatrix(rows(), columns() * 2);
+        work.set(0, 0, this);
+        work.set(0, columns(), ImmutableBigMatrix.identityMatrix(rows(), columns()));
+
+        work.gaussianElimination(true, mathContext);
+
+        return work.subMatrix(0, columns(), rows(), columns());
+    }
 
     default void gaussianElimination(boolean reducedEchelonForm, MathContext mathContext) {
         int pivotRow = 0;
@@ -87,7 +111,7 @@ public interface MutableBigMatrix extends BigMatrix {
 
         while (pivotRow < rows() && pivotColumn < columns()) {
             int maxRow = pivotRow;
-            for (int row = pivotRow+1; row < rows(); row++) {
+            for (int row = pivotRow + 1; row < rows(); row++) {
                 if (get(row, pivotColumn).abs().compareTo(get(maxRow, pivotColumn)) > 0) {
                     maxRow = row;
                 }
@@ -98,7 +122,7 @@ public interface MutableBigMatrix extends BigMatrix {
             } else {
                 swapRows(pivotRow, maxRow);
                 BigDecimal divisor = get(pivotRow, pivotColumn);
-                for (int row = pivotRow+1; row < rows(); row++) {
+                for (int row = pivotRow + 1; row < rows(); row++) {
                     BigDecimal factor = get(row, pivotColumn).divide(divisor, mathContext);
                     set(row, pivotColumn, BigDecimal.ZERO);
                     for (int column = pivotColumn + 1; column < columns(); column++) {
@@ -111,7 +135,7 @@ public interface MutableBigMatrix extends BigMatrix {
             if (reducedEchelonForm) {
                 BigDecimal pivotDivisor = get(pivotRow, pivotColumn);
                 set(pivotRow, pivotColumn, BigDecimal.ONE);
-                for (int column = pivotColumn+1; column < columns(); column++) {
+                for (int column = pivotColumn + 1; column < columns(); column++) {
                     BigDecimal value = get(pivotRow, column).divide(pivotDivisor, mathContext);
                     set(pivotRow, column, value);
                 }
@@ -119,7 +143,7 @@ public interface MutableBigMatrix extends BigMatrix {
                 for (int row = 0; row < pivotRow; row++) {
                     BigDecimal factor = get(row, pivotColumn);
                     set(row, pivotColumn, BigDecimal.ZERO);
-                    for (int column = pivotColumn+1; column < columns(); column++) {
+                    for (int column = pivotColumn + 1; column < columns(); column++) {
                         BigDecimal value = get(row, column).subtract(get(pivotRow, column).multiply(factor, mathContext), mathContext);
                         set(row, column, value);
                     }
@@ -143,45 +167,77 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
+    static MutableBigMatrix matrix(int rows, int columns) {
+        return matrix(rows, columns, new BigDecimal[0]);
+    }
+
     static MutableBigMatrix matrix(int rows, int columns, double... values) {
         return matrix(rows, columns, MatrixUtils.toBigDecimal(values));
     }
 
     static MutableBigMatrix matrix(int rows, int columns, BigDecimal... values) {
         int n = rows * columns;
-        if (values.length - n > 10000 || (values.length > 10000 && MatrixUtils.countZeroValues(values) > 10000)) {
-            return sparse(rows, columns, values);
+        if (values.length - n > 10000 || (values.length > 10000 && MatrixUtils.atLeastZeroValues(10000, values))) {
+            return sparseMatrix(rows, columns, values);
         } else {
-            return dense(rows, columns, values);
+            return denseMatrix(rows, columns, values);
         }
     }
 
-    static MutableBigMatrix dense(int rows, int columns, BigDecimal... values) {
+    static MutableBigMatrix matrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+        int n = rows * columns;
+        if (n >= 10000 && MatrixUtils.atLeastZeroValues(10000, rows, columns, valueFunction)) {
+            return sparseMatrix(rows, columns, valueFunction);
+        } else {
+            return denseMatrix(rows, columns, valueFunction);
+        }
+    }
+
+    static MutableBigMatrix denseMatrix(int rows, int columns) {
+        return denseMatrix(rows, columns, new BigDecimal[0]);
+    }
+
+    static MutableBigMatrix denseMatrix(int rows, int columns, double... values) {
+        return denseMatrix(rows, columns, MatrixUtils.toBigDecimal(values));
+    }
+
+    static MutableBigMatrix denseMatrix(int rows, int columns, BigDecimal... values) {
         return new DenseMutableBigMatrix(rows, columns, values);
     }
 
-    static MutableBigMatrix dense(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+    static MutableBigMatrix denseMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
         return new DenseMutableBigMatrix(rows, columns, valueFunction);
     }
 
-    static MutableBigMatrix denseIdentity(int rows, int columns) {
+    static MutableBigMatrix denseIdentityMatrix(int rows, int columns) {
         return new DenseMutableBigMatrix(rows, columns, (row, column) -> {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
         });
     }
 
-    static MutableBigMatrix sparse(int rows, int columns, BigDecimal... values) {
+    static MutableBigMatrix sparseMatrix(int rows, int columns) {
+        return sparseMatrix(rows, columns, new BigDecimal[0]);
+    }
+
+    static MutableBigMatrix sparseMatrix(int rows, int columns, double... values) {
+        return sparseMatrix(rows, columns, MatrixUtils.toBigDecimal(values));
+    }
+
+    static MutableBigMatrix sparseMatrix(int rows, int columns, BigDecimal... values) {
         return new SparseMutableBigMatrix(rows, columns, values);
     }
 
-    static MutableBigMatrix sparse(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+    static MutableBigMatrix sparseMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
         return new SparseMutableBigMatrix(rows, columns, valueFunction);
     }
 
-    static MutableBigMatrix sparseIdentity(int rows, int columns) {
+    static MutableBigMatrix sparseIdentityMatrix(int rows, int columns) {
         return new SparseMutableBigMatrix(rows, columns, (row, column) -> {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
         });
     }
 
+    static MutableBigMatrix identityMatrix(int rows, int columns) {
+        return sparseIdentityMatrix(rows, columns);
+    }
 }

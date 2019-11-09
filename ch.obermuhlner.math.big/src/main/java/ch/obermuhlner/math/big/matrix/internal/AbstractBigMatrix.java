@@ -83,47 +83,6 @@ public abstract class AbstractBigMatrix implements BigMatrix {
         return result;
     }
 
-    protected BigMatrix transpose() {
-        AbstractBigMatrix result = createBigMatrix(columns(), rows());
-
-        for (int row = 0; row < rows(); row++) {
-            for (int column = 0; column < columns(); column++) {
-                int targetRow = column;
-                int targetColumn = row;
-                result.internalSet(targetRow, targetColumn, get(row, column));
-            }
-        }
-
-        return result;
-    }
-
-    public BigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
-        AbstractBigMatrix result = createBigMatrix(rows, columns);
-
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                BigDecimal value = get(startRow + row, startColumn + column);
-                result.internalSet(row, column, value);
-            }
-        }
-        
-        return result;
-    }
-
-    public BigMatrix invert(MathContext mathContext) {
-        if (rows() != columns()) {
-            return null;
-        }
-
-        MutableBigMatrix work = MutableBigMatrix.sparse(rows(), columns() * 2);
-        work.set(0, 0, this);
-        work.set(0, columns(), ImmutableBigMatrix.identity(rows(), columns()));
-
-        work.gaussianElimination(true, mathContext);
-
-        return work.subMatrix(0, columns(), rows(), columns());
-    }
-
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
@@ -172,5 +131,35 @@ public abstract class AbstractBigMatrix implements BigMatrix {
             }
         }
         return true;
+    }
+
+    protected void checkRows(int rows) {
+        if (rows < 0 ) {
+            throw new IllegalArgumentException("rows < 0: " + rows);
+        }
+    }
+
+    protected void checkColumns(int columns) {
+        if (columns < 0 ) {
+            throw new IllegalArgumentException("columns < 0: " + columns);
+        }
+    }
+
+    protected void checkRow(int row) {
+        if (row < 0 ) {
+            throw new IllegalArgumentException("row < 0: " + row);
+        }
+        if (row >= rows()) {
+            throw new IllegalArgumentException("row >= " + rows() + " : " + row);
+        }
+    }
+
+    protected void checkColumn(int column) {
+        if (column < 0 ) {
+            throw new IllegalArgumentException("column < 0: " + column);
+        }
+        if (column >= columns()) {
+            throw new IllegalArgumentException("column >= " + columns() + " : " + column);
+        }
     }
 }
