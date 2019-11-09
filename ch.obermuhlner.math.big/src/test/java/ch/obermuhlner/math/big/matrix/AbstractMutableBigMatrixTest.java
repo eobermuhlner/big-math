@@ -114,4 +114,73 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
                         8, 10, 12),
                 m1);
     }
+
+    @Test
+    public void testSwapRows() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.swapRows(0, 1);
+
+        assertEquals(
+                createBigMatrix(3, 3,
+                        4, 5, 6,
+                        1, 2, 3,
+                        7, 8, 9),
+                m1);
+    }
+
+    @Test
+    public void testSwapRowsSame() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.swapRows(1, 1);
+
+        assertEquals(
+                createBigMatrix(3, 3,
+                        1, 2, 3,
+                        4, 5, 6,
+                        7, 8, 9),
+                m1);
+    }
+
+    @Test
+    public void testSwapColumns() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.swapColumns(0, 1);
+
+        assertEquals(
+                createBigMatrix(3, 3,
+                        2, 1, 3,
+                        5, 4, 6,
+                        8, 7, 9),
+                m1);
+    }
+
+
+    @Test
+    public void testSwapColumnsSame() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.swapColumns(1, 1);
+
+        assertEquals(
+                createBigMatrix(3, 3,
+                        1, 2, 3,
+                        4, 5, 6,
+                        7, 8, 9),
+                m1);
+    }
 }

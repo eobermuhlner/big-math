@@ -167,6 +167,18 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
+    default void swapColumns(int column1, int column2) {
+        if (column1 == column2) {
+            return;
+        }
+
+        for (int row = 0; row < columns(); row++) {
+            BigDecimal tmp = get(row, column1);
+            set(row, column1, get(row, column2));
+            set(row, column2, tmp);
+        }
+    }
+
     static MutableBigMatrix matrix(int rows, int columns) {
         return matrix(rows, columns, new BigDecimal[0]);
     }
