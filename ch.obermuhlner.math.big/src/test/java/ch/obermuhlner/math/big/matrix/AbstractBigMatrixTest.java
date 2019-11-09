@@ -106,6 +106,76 @@ public abstract class AbstractBigMatrixTest {
     }
 
     @Test
+    public void testAdd() {
+        BigMatrix m1 = createBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 6);
+        BigMatrix m2 = createBigMatrix(2, 3,
+                10, 20, 30,
+                40, 50, 60);
+
+        BigMatrix r = m1.add(m2, MathContext.DECIMAL128);
+
+        assertEquals(
+                createBigMatrix(2, 3,
+                        11, 22, 33,
+                        44, 55, 66),
+                r);
+    }
+
+    @Test
+    public void testSubtract() {
+        BigMatrix m1 = createBigMatrix(2, 3,
+                10, 20, 30,
+                40, 50, 60);
+        BigMatrix m2 = createBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 6);
+
+        BigMatrix r = m1.subtract(m2, MathContext.DECIMAL128);
+
+        assertEquals(
+                createBigMatrix(2, 3,
+                        9, 18, 27,
+                        36, 45, 54),
+                r);
+    }
+
+    @Test
+    public void testMultiply() {
+        BigMatrix m1 = createBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 6);
+        BigMatrix m2 = createBigMatrix(3, 2,
+                1, 2,
+                3, 4,
+                5, 6);
+
+        BigMatrix r = m1.multiply(m2, MathContext.DECIMAL128);
+        System.out.println(r);
+
+        assertEquals(
+                createBigMatrix(2, 2,
+                        22, 28,
+                        49, 64),
+                r);
+    }
+
+    @Test
+    public void testMultiplyScalar() {
+        BigMatrix m1 = createBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 6);
+
+        BigMatrix r = m1.multiply(valueOf(2), MathContext.DECIMAL128);
+
+        assertEquals(createBigMatrix(2, 3,
+                2, 4, 6,
+                8, 10, 12),
+                r);
+    }
+
+    @Test
     public void testDeterminant() {
         assertBigDecimal(
                 valueOf(1),
@@ -147,7 +217,7 @@ public abstract class AbstractBigMatrixTest {
         BigMatrix r = m.invert(MathContext.DECIMAL64);
 
         assertBigMatrix(
-                ImmutableBigMatrix.denseMatrix(3, 3,
+                createBigMatrix(3, 3,
                         0.75, 0.5, 0.25,
                         0.5, 1.0, 0.5,
                         0.25, 0.5, 0.75),

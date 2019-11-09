@@ -13,6 +13,11 @@ public interface BigMatrix {
 
     BigDecimal get(int row, int column);
 
+    BigMatrix add(BigMatrix other, MathContext mathContext);
+    BigMatrix subtract(BigMatrix other, MathContext mathContext);
+    BigMatrix multiply(BigDecimal value, MathContext mathContext);
+    BigMatrix multiply(BigMatrix other, MathContext mathContext);
+
     BigMatrix transpose();
     BigMatrix subMatrix(int startRow, int startColumn, int rows, int columns);
     BigMatrix minor(int skipRow, int skipColumn);

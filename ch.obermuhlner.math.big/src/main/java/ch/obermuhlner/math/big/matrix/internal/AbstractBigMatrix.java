@@ -13,7 +13,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
 
     protected abstract void internalSet(int row, int column, BigDecimal value);
 
-    protected BigMatrix add(BigMatrix other, MathContext mathContext) {
+    public BigMatrix add(BigMatrix other, MathContext mathContext) {
         AbstractBigMatrix result = createBigMatrix(rows(), columns());
 
         if (rows() != other.rows()) {
@@ -32,7 +32,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
         return result;
     }
 
-    protected BigMatrix subtract(BigMatrix other, MathContext mathContext) {
+    public BigMatrix subtract(BigMatrix other, MathContext mathContext) {
         AbstractBigMatrix result = createBigMatrix(rows(), columns());
 
         if (rows() != other.rows()) {
@@ -51,7 +51,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
         return result;
     }
 
-    protected BigMatrix multiply(BigDecimal value, MathContext mathContext) {
+    public BigMatrix multiply(BigDecimal value, MathContext mathContext) {
         AbstractBigMatrix result = createBigMatrix(rows(), columns());
 
         for (int row = 0; row < rows(); row++) {
@@ -63,7 +63,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
         return result;
     }
 
-    protected BigMatrix multiply(BigMatrix other, MathContext mathContext) {
+    public BigMatrix multiply(BigMatrix other, MathContext mathContext) {
         if (columns() != other.rows()) {
             throw new ArithmeticException("columns " + columns() + " != rows " + other.rows());
         }
