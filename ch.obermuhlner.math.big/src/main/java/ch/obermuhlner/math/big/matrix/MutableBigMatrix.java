@@ -33,65 +33,7 @@ public interface MutableBigMatrix extends BigMatrix {
         fill(BigDecimal.ZERO);
     }
 
-    MutableBigMatrix add(BigMatrix other, MathContext mathContext);
-
-    MutableBigMatrix subtract(BigMatrix other, MathContext mathContext);
-
-    MutableBigMatrix multiply(BigDecimal value, MathContext mathContext);
-
-    MutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
-
-    default MutableBigMatrix transpose() {
-        return asImmutableMatrix().transpose().toMutableMatrix();
-    }
-
-    default MutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
-        return asImmutableMatrix().subMatrix(startRow, startColumn, rows, columns).toMutableMatrix();
-    }
-
-    default MutableBigMatrix minor(int skipRow, int skipColumn) {
-        return asImmutableMatrix().minor(skipRow, skipColumn).toMutableMatrix();
-    }
-
-    default void addToThis(BigMatrix other, MathContext mathContext) {
-        if (rows() != other.rows()) {
-            throw new ArithmeticException("rows: " + rows() + " != " + other.rows());
-        }
-        if (columns() != other.columns()) {
-            throw new ArithmeticException("columns: " + columns() + " != " + other.columns());
-        }
-
-        for (int row = 0; row < rows(); row++) {
-            for (int column = 0; column < columns(); column++) {
-                set(row, column, get(row, column).add(other.get(row, column), mathContext));
-            }
-        }
-    }
-
-    default void subtractFromThis(BigMatrix other, MathContext mathContext) {
-        if (rows() != other.rows()) {
-            throw new ArithmeticException("rows: " + rows() + " != " + other.rows());
-        }
-        if (columns() != other.columns()) {
-            throw new ArithmeticException("columns: " + columns() + " != " + other.columns());
-        }
-
-        for (int row = 0; row < rows(); row++) {
-            for (int column = 0; column < columns(); column++) {
-                set(row, column, get(row, column).subtract(other.get(row, column), mathContext));
-            }
-        }
-    }
-
-    default void multiplyToThis(BigDecimal value, MathContext mathContext) {
-        for (int row = 0; row < rows(); row++) {
-            for (int column = 0; column < columns(); column++) {
-                set(row, column, get(row, column).multiply(value, mathContext));
-            }
-        }
-    }
-
-    default MutableBigMatrix invert(MathContext mathContext) {
+    default ImmutableBigMatrix invert(MathContext mathContext) {
         if (rows() != columns()) {
             return null;
         }

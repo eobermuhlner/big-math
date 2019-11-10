@@ -13,57 +13,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
 
     protected abstract void internalSet(int row, int column, BigDecimal value);
 
-    public BigMatrix add(BigMatrix other, MathContext mathContext) {
-        AbstractBigMatrix result = createBigMatrix(rows(), columns());
-
-        if (rows() != other.rows()) {
-            throw new ArithmeticException("rows: " + rows() + " != " + other.rows());
-        }
-        if (columns() != other.columns()) {
-            throw new ArithmeticException("columns: " + columns() + " != " + other.columns());
-        }
-
-        for (int row = 0; row < rows(); row++) {
-            for (int column = 0; column < columns(); column++) {
-                result.internalSet(row, column, get(row, column).add(other.get(row, column), mathContext));
-            }
-        }
-
-        return result;
-    }
-
-    public BigMatrix subtract(BigMatrix other, MathContext mathContext) {
-        AbstractBigMatrix result = createBigMatrix(rows(), columns());
-
-        if (rows() != other.rows()) {
-            throw new ArithmeticException("rows: " + rows() + " != " + other.rows());
-        }
-        if (columns() != other.columns()) {
-            throw new ArithmeticException("columns: " + columns() + " != " + other.columns());
-        }
-
-        for (int row = 0; row < rows(); row++) {
-            for (int column = 0; column < columns(); column++) {
-                result.internalSet(row, column, get(row, column).subtract(other.get(row, column), mathContext));
-            }
-        }
-
-        return result;
-    }
-
-    public BigMatrix multiply(BigDecimal value, MathContext mathContext) {
-        AbstractBigMatrix result = createBigMatrix(rows(), columns());
-
-        for (int row = 0; row < rows(); row++) {
-            for (int column = 0; column < columns(); column++) {
-                result.internalSet(row, column, get(row, column).multiply(value, mathContext));
-            }
-        }
-
-        return result;
-    }
-
-    public BigMatrix multiply(BigMatrix other, MathContext mathContext) {
+    public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
         if (columns() != other.rows()) {
             throw new ArithmeticException("columns " + columns() + " != rows " + other.rows());
         }
@@ -80,7 +30,27 @@ public abstract class AbstractBigMatrix implements BigMatrix {
             }
         }
 
-        return result;
+        return result.toImmutableMatrix();
+    }
+
+    public ImmutableBigMatrix multiply(BigMatrix other) {
+        if (columns() != other.rows()) {
+            throw new ArithmeticException("columns " + columns() + " != rows " + other.rows());
+        }
+
+        AbstractBigMatrix result = createBigMatrix(rows(), other.columns());
+
+        for (int row = 0; row < result.rows(); row++) {
+            for (int column = 0; column < result.columns(); column++) {
+                BigDecimal sum = BigDecimal.ZERO;
+                for (int index = 0; index < columns(); index++) {
+                    sum = sum.add(get(row, index).multiply(other.get(index, column)));
+                }
+                result.internalSet(row, column, sum);
+            }
+        }
+
+        return result.toImmutableMatrix();
     }
 
     @Override

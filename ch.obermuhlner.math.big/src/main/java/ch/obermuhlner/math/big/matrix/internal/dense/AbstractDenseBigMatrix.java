@@ -5,6 +5,8 @@ import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
 
+import static java.math.BigDecimal.ZERO;
+
 public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
     protected final int rows;
     protected final int columns;
@@ -22,8 +24,9 @@ public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
     public AbstractDenseBigMatrix(int rows, int columns, BigDecimal... values) {
         this(rows, columns);
 
-        for (int i = 0; i < values.length; i++) {
-            data[i] = values[i];
+        int n = rows * columns;
+        for (int i = 0; i < n; i++) {
+            data[i] = i < values.length ? values[i] : ZERO;
         }
     }
 

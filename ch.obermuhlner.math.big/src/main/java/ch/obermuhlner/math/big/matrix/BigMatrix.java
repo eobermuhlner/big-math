@@ -13,15 +13,50 @@ public interface BigMatrix {
 
     BigDecimal get(int row, int column);
 
-    BigMatrix add(BigMatrix other, MathContext mathContext);
-    BigMatrix subtract(BigMatrix other, MathContext mathContext);
-    BigMatrix multiply(BigDecimal value, MathContext mathContext);
-    BigMatrix multiply(BigMatrix other, MathContext mathContext);
+    default ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column), mathContext));
+    }
+    default ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column), mathContext));
+    }
+    default ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value, mathContext));
+    }
 
-    BigMatrix transpose();
-    BigMatrix subMatrix(int startRow, int startColumn, int rows, int columns);
-    BigMatrix minor(int skipRow, int skipColumn);
-    BigMatrix invert(MathContext mathContext);
+    ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
+
+    default ImmutableBigMatrix add(BigMatrix other) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column)));
+    }
+    default BigMatrix subtract(BigMatrix other) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column)));
+    }
+    default BigMatrix multiply(BigDecimal value) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value));
+    }
+
+    ImmutableBigMatrix multiply(BigMatrix other);
+
+    default ImmutableBigMatrix transpose() {
+        return ImmutableBigMatrix.lambdaMatrix(columns(), rows(),
+                (row, column) -> get(column, row));
+    }
+
+    default ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
+        return ImmutableBigMatrix.lambdaMatrix(rows, columns,
+                (row, column) -> get(row + startRow, column + startColumn));
+    }
+
+    default ImmutableBigMatrix minor(int skipRow, int skipColumn) {
+        return ImmutableBigMatrix.lambdaMatrix(rows() - 1, columns() - 1,
+                (row, column) ->
+                        get(row < skipRow ? row : row + 1,
+                                column < skipColumn ? column : column + 1));
+    }
+
+    default ImmutableBigMatrix invert(MathContext mathContext) {
+        return toMutableMatrix().invert(mathContext);
+    }
 
     default BigDecimal sum() {
         BigDecimal result = ZERO;
@@ -109,5 +144,51 @@ public interface BigMatrix {
             return (ImmutableBigMatrix) this;
         }
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column));
+    }
+
+    default BigDecimal[] toBigDecimalArray() {
+        BigDecimal[] result = new BigDecimal[rows() * columns()];
+        int i = 0;
+        for (int row = 0; row < rows(); row++) {
+            for (int column = 0; column < columns(); column++) {
+                result[i++] = get(row, column);
+            }
+        }
+        return result;
+    }
+
+    default BigDecimal[][] toBigDecimalNestedArray() {
+        BigDecimal[][] result = new BigDecimal[rows()][];
+        for (int row = 0; row < rows(); row++) {
+            BigDecimal[] currentRow = new BigDecimal[columns()];
+            result[row] = currentRow;
+            for (int column = 0; column < columns(); column++) {
+                currentRow[column] = get(row, column);
+            }
+        }
+        return result;
+    }
+
+    default double[] toDoubleArray() {
+        double[] result = new double[rows() * columns()];
+        int i = 0;
+        for (int row = 0; row < rows(); row++) {
+            for (int column = 0; column < columns(); column++) {
+                result[i++] = get(row, column).doubleValue();
+            }
+        }
+        return result;
+    }
+
+    default double[][] toDoubleNestedArray() {
+        double[][] result = new double[rows()][];
+        for (int row = 0; row < rows(); row++) {
+            double[] currentRow = new double[columns()];
+            result[row] = currentRow;
+            for (int column = 0; column < columns(); column++) {
+                currentRow[column] = get(row, column).doubleValue();
+            }
+        }
+        return result;
     }
 }

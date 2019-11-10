@@ -43,14 +43,4 @@ public class BigMatrixTest {
         m.gaussianElimination(true, MathContext.DECIMAL64);
         System.out.println(m);
     }
-
-    @Test
-    public void testInvert() {
-        MutableBigMatrix m = MutableBigMatrix.denseMatrix(3, 3,
-                valueOf(2), valueOf(-1), valueOf(0),
-                valueOf(-1), valueOf(2), valueOf(-1),
-                valueOf(0), valueOf(-1), valueOf(2));
-        MutableBigMatrix inverted = m.invert(MathContext.DECIMAL64);
-        System.out.println(inverted);
-    }
 }

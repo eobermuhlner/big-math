@@ -47,24 +47,4 @@ public class DenseMutableBigMatrix extends AbstractDenseBigMatrix implements Mut
             data[i] = value;
         }
     }
-
-    @Override
-    public MutableBigMatrix add(BigMatrix other, MathContext mathContext) {
-        return (MutableBigMatrix) super.add(other, mathContext);
-    }
-
-    @Override
-    public MutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
-        return (MutableBigMatrix) super.subtract(other, mathContext);
-    }
-
-    @Override
-    public MutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
-        return (MutableBigMatrix) super.multiply(value, mathContext);
-    }
-
-    @Override
-    public MutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
-        return (MutableBigMatrix) super.multiply(other, mathContext);
-    }
 }

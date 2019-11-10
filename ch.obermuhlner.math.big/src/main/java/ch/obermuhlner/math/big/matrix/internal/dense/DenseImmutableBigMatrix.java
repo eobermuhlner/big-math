@@ -20,24 +20,4 @@ public class DenseImmutableBigMatrix extends AbstractDenseBigMatrix implements I
     protected DenseImmutableBigMatrix createBigMatrix(int rows, int columns) {
         return new DenseImmutableBigMatrix(rows, columns);
     }
-
-    @Override
-    public ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
-        return (ImmutableBigMatrix) super.add(other, mathContext);
-    }
-
-    @Override
-    public ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
-        return (ImmutableBigMatrix) super.subtract(other, mathContext);
-    }
-
-    @Override
-    public ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
-        return (ImmutableBigMatrix) super.multiply(value, mathContext);
-    }
-
-    @Override
-    public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
-        return (ImmutableBigMatrix) super.multiply(other, mathContext);
-    }
 }

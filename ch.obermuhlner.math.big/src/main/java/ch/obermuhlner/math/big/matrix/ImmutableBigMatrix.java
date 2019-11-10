@@ -11,33 +11,8 @@ import java.util.function.BiFunction;
 
 public interface ImmutableBigMatrix extends BigMatrix {
 
-    ImmutableBigMatrix add(BigMatrix other, MathContext mathContext);
-
-    ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext);
-
-    ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext);
-
-    ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
-
-    default ImmutableBigMatrix invert(MathContext mathContext) {
-        return toMutableMatrix().invert(mathContext).asImmutableMatrix();
-    }
-
-    default ImmutableBigMatrix transpose() {
-        return new LambdaImmutableBigMatrix(columns(), rows(),
-                (row, column) -> get(column, row));
-    }
-
-    default ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
-        return new LambdaImmutableBigMatrix(rows, columns,
-                (row, column) -> get(row + startRow, column + startColumn));
-    }
-
-    default ImmutableBigMatrix minor(int skipRow, int skipColumn) {
-        return new LambdaImmutableBigMatrix(rows() - 1, columns() - 1,
-                (row, column) ->
-                        get(row < skipRow ? row : row + 1,
-                                column < skipColumn ? column : column + 1));
+    static ImmutableBigMatrix matrix(int rows, int columns) {
+        return matrix(rows, columns, new BigDecimal[0]);
     }
 
     static ImmutableBigMatrix matrix(int rows, int columns, double... values) {
