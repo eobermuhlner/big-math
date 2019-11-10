@@ -52,6 +52,34 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
         m.set(0, -1, ZERO);
     }
 
+    @Test
+    public void testClear() {
+        MutableBigMatrix m = createMutableBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 6);
+
+        m.clear();
+
+        assertEquals(
+                createBigMatrix(2, 3),
+                m);
+    }
+
+    @Test
+    public void testFill() {
+        MutableBigMatrix m = createMutableBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 6);
+
+        m.fill(valueOf(1));
+
+        assertEquals(
+                createBigMatrix(2, 3,
+                        1, 1, 1,
+                        1, 1, 1),
+                m);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void failSetColumnUpper() {
         MutableBigMatrix m = createMutableBigMatrix(2, 3,
