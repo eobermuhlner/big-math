@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big.matrix.internal.dense;
 
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
@@ -13,8 +14,8 @@ public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
     protected final BigDecimal[] data;
 
     public AbstractDenseBigMatrix(int rows, int columns) {
-        checkRows(rows);
-        checkColumns(columns);
+        MatrixUtils.checkRows(rows);
+        MatrixUtils.checkColumns(columns);
 
         this.rows = rows;
         this.columns = columns;
@@ -52,22 +53,22 @@ public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
 
     @Override
     public BigDecimal get(int row, int column) {
-        checkRow(row);
-        checkColumn(column);
+        MatrixUtils.checkRow(this, row);
+        MatrixUtils.checkColumn(this, column);
 
         return data[index(row, column)];
     }
 
     protected void internalSet(int row, int column, BigDecimal value) {
-        checkRow(row);
-        checkColumn(column);
+        MatrixUtils.checkRow(this, row);
+        MatrixUtils.checkColumn(this, column);
 
         data[index(row, column)] = value;
     }
 
     protected int index(int row, int column) {
-        checkRow(row);
-        checkColumn(column);
+        MatrixUtils.checkRow(this, row);
+        MatrixUtils.checkColumn(this, column);
 
         return row*columns + column;
     }

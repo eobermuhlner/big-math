@@ -1,10 +1,8 @@
 package ch.obermuhlner.math.big.matrix.internal.sparse;
 
-import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.function.BiFunction;
 
 public class SparseImmutableBigMatrix extends AbstractSparseBigMatrix implements ImmutableBigMatrix {

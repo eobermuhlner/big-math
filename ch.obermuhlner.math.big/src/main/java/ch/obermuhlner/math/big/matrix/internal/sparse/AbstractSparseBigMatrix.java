@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big.matrix.internal.sparse;
 
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -14,8 +15,8 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     protected BigDecimal defaultValue = BigDecimal.ZERO;
 
     public AbstractSparseBigMatrix(int rows, int columns) {
-        checkRows(rows);
-        checkColumns(columns);
+        MatrixUtils.checkRows(rows);
+        MatrixUtils.checkColumns(columns);
 
         this.rows = rows;
         this.columns = columns;
@@ -51,16 +52,16 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
 
     @Override
     public BigDecimal get(int row, int column) {
-        checkRow(row);
-        checkColumn(column);
+        MatrixUtils.checkRow(this, row);
+        MatrixUtils.checkColumn(this, column);
 
         int index = row*columns + column;
         return data.getOrDefault(index, defaultValue);
     }
 
     protected void internalSet(int row, int column, BigDecimal value) {
-        checkRow(row);
-        checkColumn(column);
+        MatrixUtils.checkRow(this, row);
+        MatrixUtils.checkColumn(this, column);
 
         int index = row*columns + column;
         if (value.equals(defaultValue)) {

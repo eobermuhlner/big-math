@@ -1,10 +1,8 @@
 package ch.obermuhlner.math.big.matrix.internal.dense;
 
-import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.function.BiFunction;
 
 public class DenseImmutableBigMatrix extends AbstractDenseBigMatrix implements ImmutableBigMatrix {

@@ -2,7 +2,6 @@ package ch.obermuhlner.math.big.matrix;
 
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 import ch.obermuhlner.math.big.matrix.internal.dense.DenseMutableBigMatrix;
-import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.sparse.SparseMutableBigMatrix;
 
 import java.math.BigDecimal;
@@ -98,6 +97,9 @@ public interface MutableBigMatrix extends BigMatrix {
     }
 
     default void swapRows(int row1, int row2) {
+        MatrixUtils.checkRow(this, "row1", row1);
+        MatrixUtils.checkRow(this, "row2", row2);
+
         if (row1 == row2) {
             return;
         }
@@ -110,6 +112,9 @@ public interface MutableBigMatrix extends BigMatrix {
     }
 
     default void swapColumns(int column1, int column2) {
+        MatrixUtils.checkColumn(this, "column1", column1);
+        MatrixUtils.checkColumn(this, "column2", column2);
+
         if (column1 == column2) {
             return;
         }

@@ -6,7 +6,6 @@ import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.sparse.SparseImmutableBigMatrix;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.function.BiFunction;
 
 public interface ImmutableBigMatrix extends BigMatrix {

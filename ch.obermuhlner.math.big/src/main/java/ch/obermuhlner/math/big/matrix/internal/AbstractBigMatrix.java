@@ -2,7 +2,6 @@ package ch.obermuhlner.math.big.matrix.internal;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
-import ch.obermuhlner.math.big.matrix.MutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -14,9 +13,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
     protected abstract void internalSet(int row, int column, BigDecimal value);
 
     public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
-        if (columns() != other.rows()) {
-            throw new ArithmeticException("columns " + columns() + " != rows " + other.rows());
-        }
+        MatrixUtils.checkColumnsOtherRows(this, other);
 
         AbstractBigMatrix result = createBigMatrix(rows(), other.columns());
 
@@ -34,9 +31,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
     }
 
     public ImmutableBigMatrix multiply(BigMatrix other) {
-        if (columns() != other.rows()) {
-            throw new ArithmeticException("columns " + columns() + " != rows " + other.rows());
-        }
+        MatrixUtils.checkColumnsOtherRows(this, other);
 
         AbstractBigMatrix result = createBigMatrix(rows(), other.columns());
 
@@ -101,35 +96,5 @@ public abstract class AbstractBigMatrix implements BigMatrix {
             }
         }
         return true;
-    }
-
-    protected void checkRows(int rows) {
-        if (rows < 0 ) {
-            throw new IllegalArgumentException("rows < 0: " + rows);
-        }
-    }
-
-    protected void checkColumns(int columns) {
-        if (columns < 0 ) {
-            throw new IllegalArgumentException("columns < 0: " + columns);
-        }
-    }
-
-    protected void checkRow(int row) {
-        if (row < 0 ) {
-            throw new IllegalArgumentException("row < 0: " + row);
-        }
-        if (row >= rows()) {
-            throw new IllegalArgumentException("row >= " + rows() + " : " + row);
-        }
-    }
-
-    protected void checkColumn(int column) {
-        if (column < 0 ) {
-            throw new IllegalArgumentException("column < 0: " + column);
-        }
-        if (column >= columns()) {
-            throw new IllegalArgumentException("column >= " + columns() + " : " + column);
-        }
     }
 }

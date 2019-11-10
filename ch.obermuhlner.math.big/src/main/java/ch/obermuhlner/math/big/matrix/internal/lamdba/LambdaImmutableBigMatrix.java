@@ -1,12 +1,10 @@
 package ch.obermuhlner.math.big.matrix.internal.lamdba;
 
-import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.dense.DenseImmutableBigMatrix;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.function.BiFunction;
 
 public class LambdaImmutableBigMatrix extends AbstractBigMatrix implements ImmutableBigMatrix {
@@ -43,25 +41,5 @@ public class LambdaImmutableBigMatrix extends AbstractBigMatrix implements Immut
     @Override
     protected AbstractBigMatrix createBigMatrix(int rows, int columns) {
         return new DenseImmutableBigMatrix(rows, columns);
-    }
-
-    @Override
-    public ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
-        return (ImmutableBigMatrix) super.add(other, mathContext);
-    }
-
-    @Override
-    public ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
-        return (ImmutableBigMatrix) super.subtract(other, mathContext);
-    }
-
-    @Override
-    public ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
-        return (ImmutableBigMatrix) super.multiply(value, mathContext);
-    }
-
-    @Override
-    public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
-        return (ImmutableBigMatrix) super.multiply(other, mathContext);
     }
 }

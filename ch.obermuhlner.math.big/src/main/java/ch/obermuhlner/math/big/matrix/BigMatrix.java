@@ -1,11 +1,12 @@
 package ch.obermuhlner.math.big.matrix;
 
+import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import static java.math.BigDecimal.*;
-
 import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ZERO;
 
 public interface BigMatrix {
     int rows();
@@ -14,9 +15,11 @@ public interface BigMatrix {
     BigDecimal get(int row, int column);
 
     default ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
+        MatrixUtils.checkSameSize(this, other);
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column), mathContext));
     }
     default ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
+        MatrixUtils.checkSameSize(this, other);
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column), mathContext));
     }
     default ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
@@ -26,9 +29,11 @@ public interface BigMatrix {
     ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
 
     default ImmutableBigMatrix add(BigMatrix other) {
+        MatrixUtils.checkSameSize(this, other);
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column)));
     }
     default BigMatrix subtract(BigMatrix other) {
+        MatrixUtils.checkSameSize(this, other);
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column)));
     }
     default BigMatrix multiply(BigDecimal value) {
@@ -79,9 +84,7 @@ public interface BigMatrix {
     }
 
     default BigDecimal determinant() {
-        if (columns() != rows()) {
-            throw new ArithmeticException("columns " + columns() + " != rows " + rows());
-        }
+        MatrixUtils.checkSquare(this);
 
         int n = columns();
         switch (n) {
