@@ -59,6 +59,10 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         return data.getOrDefault(index, defaultValue);
     }
 
+    public int sparseSize() {
+        return data.size();
+    }
+
     protected void internalSet(int row, int column, BigDecimal value) {
         MatrixUtils.checkRow(this, row);
         MatrixUtils.checkColumn(this, column);

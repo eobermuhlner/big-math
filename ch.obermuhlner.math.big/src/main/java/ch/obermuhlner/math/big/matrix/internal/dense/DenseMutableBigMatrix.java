@@ -35,11 +35,6 @@ public class DenseMutableBigMatrix extends AbstractDenseBigMatrix implements Mut
     }
 
     @Override
-    public BigDecimal get(int row, int column) {
-        return data[index(row, column)];
-    }
-
-    @Override
     public void fill(BigDecimal value) {
         for (int i = 0; i < data.length; i++) {
             data[i] = value;

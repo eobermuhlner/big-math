@@ -8,8 +8,14 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.function.BiFunction;
 
+import static java.math.BigDecimal.valueOf;
+
 public interface MutableBigMatrix extends BigMatrix {
     void set(int row, int column, BigDecimal value);
+
+    default void set(int row, int column, double value) {
+        set(row, column, valueOf(value));
+    }
 
     default void set(int row, int column, BigMatrix matrix) {
         for (int sourceRow = 0; sourceRow < matrix.rows(); sourceRow++) {
@@ -39,7 +45,7 @@ public interface MutableBigMatrix extends BigMatrix {
 
         MutableBigMatrix work = MutableBigMatrix.sparseMatrix(rows(), columns() * 2);
         work.set(0, 0, this);
-        work.set(0, columns(), ImmutableBigMatrix.identityMatrix(rows(), columns()));
+        work.set(0, columns(), ImmutableBigMatrix.identityMatrix(rows()));
 
         work.gaussianElimination(true, mathContext);
 
@@ -168,8 +174,8 @@ public interface MutableBigMatrix extends BigMatrix {
         return new DenseMutableBigMatrix(rows, columns, valueFunction);
     }
 
-    static MutableBigMatrix denseIdentityMatrix(int rows, int columns) {
-        return new DenseMutableBigMatrix(rows, columns, (row, column) -> {
+    static MutableBigMatrix denseIdentityMatrix(int size) {
+        return new DenseMutableBigMatrix(size, size, (row, column) -> {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
         });
     }
@@ -190,13 +196,13 @@ public interface MutableBigMatrix extends BigMatrix {
         return new SparseMutableBigMatrix(rows, columns, valueFunction);
     }
 
-    static MutableBigMatrix sparseIdentityMatrix(int rows, int columns) {
-        return new SparseMutableBigMatrix(rows, columns, (row, column) -> {
+    static MutableBigMatrix sparseIdentityMatrix(int size) {
+        return new SparseMutableBigMatrix(size, size, (row, column) -> {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
         });
     }
 
-    static MutableBigMatrix identityMatrix(int rows, int columns) {
-        return sparseIdentityMatrix(rows, columns);
+    static MutableBigMatrix identityMatrix(int size) {
+        return sparseIdentityMatrix(size);
     }
 }

@@ -9,7 +9,7 @@ import static java.math.BigDecimal.valueOf;
 public class BigMatrixTest {
     @Test
     public void testBasics() {
-        System.out.println(ImmutableBigMatrix.identityMatrix(5, 5));
+        System.out.println(ImmutableBigMatrix.identityMatrix(5));
 
         ImmutableBigMatrix m2 = ImmutableBigMatrix.denseMatrix(2, 2,
                 1.1, 2.2,

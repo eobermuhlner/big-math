@@ -67,9 +67,6 @@ public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
     }
 
     protected int index(int row, int column) {
-        MatrixUtils.checkRow(this, row);
-        MatrixUtils.checkColumn(this, column);
-
         return row*columns + column;
     }
 }

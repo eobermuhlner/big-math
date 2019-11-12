@@ -48,8 +48,8 @@ public interface ImmutableBigMatrix extends BigMatrix {
         return new DenseImmutableBigMatrix(rows, columns, valueFunction);
     }
 
-    static ImmutableBigMatrix identityMatrix(int rows, int columns) {
-        return new LambdaImmutableBigMatrix(rows, columns, (row, column) -> {
+    static ImmutableBigMatrix identityMatrix(int size) {
+        return new LambdaImmutableBigMatrix(size, size, (row, column) -> {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
         });
     }
