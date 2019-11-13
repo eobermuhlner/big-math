@@ -84,7 +84,7 @@ public interface MutableBigMatrix extends BigMatrix {
                 BigDecimal pivotDivisor = get(pivotRow, pivotColumn);
                 set(pivotRow, pivotColumn, BigDecimal.ONE);
                 for (int column = pivotColumn + 1; column < columns(); column++) {
-                    BigDecimal value = get(pivotRow, column).divide(pivotDivisor, mathContext);
+                    BigDecimal value = get(pivotRow, column).divide(pivotDivisor, mathContext).stripTrailingZeros();
                     set(pivotRow, column, value);
                 }
 
@@ -133,6 +133,10 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
+    static MutableBigMatrix matrix(BigMatrix matrix) {
+        return matrix(matrix.rows(), matrix.columns(), (row, column) -> matrix.get(row, column));
+    }
+
     static MutableBigMatrix matrix(int rows, int columns) {
         return matrix(rows, columns, new BigDecimal[0]);
     }
@@ -159,6 +163,10 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
+    static MutableBigMatrix denseMatrix(BigMatrix matrix) {
+        return denseMatrix(matrix.rows(), matrix.columns(), (row, column) -> matrix.get(row, column));
+    }
+
     static MutableBigMatrix denseMatrix(int rows, int columns) {
         return denseMatrix(rows, columns, new BigDecimal[0]);
     }
@@ -176,9 +184,11 @@ public interface MutableBigMatrix extends BigMatrix {
     }
 
     static MutableBigMatrix denseIdentityMatrix(int size) {
-        return new DenseMutableBigMatrix(size, size, (row, column) -> {
-            return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
-        });
+        return denseMatrix(ImmutableBigMatrix.identityMatrix(size));
+    }
+
+    static MutableBigMatrix sparseMatrix(BigMatrix matrix) {
+        return sparseMatrix(matrix.rows(), matrix.columns(), (row, column) -> matrix.get(row, column));
     }
 
     static MutableBigMatrix sparseMatrix(int rows, int columns) {
@@ -198,9 +208,7 @@ public interface MutableBigMatrix extends BigMatrix {
     }
 
     static MutableBigMatrix sparseIdentityMatrix(int size) {
-        return new SparseMutableBigMatrix(size, size, (row, column) -> {
-            return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
-        });
+        return sparseMatrix(ImmutableBigMatrix.identityMatrix(size));
     }
 
     static MutableBigMatrix identityMatrix(int size) {

@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big.example.matrix;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
+import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 
 import java.math.MathContext;
 
@@ -31,10 +32,10 @@ public class SimpleKalmanFilter implements KalmanFilter {
     @Override
     public void predict() {
         // x = F x
-        x = F.multiply(x).toImmutableDenseMatrix();
+        x = F.multiply(x, MC);
 
         // P = F P F' + Q
-        P = F.multiply(P).multiply(F.transpose()).add(Q).round(MC);
+        P = F.multiply(P).multiply(F.transpose()).add(Q, MC);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class SimpleKalmanFilter implements KalmanFilter {
         x = x.add(K.multiply(y, MC));
 
         // P = (I-kH)P = P - KHP
-        P = P.subtract(K.multiply(H).multiply(P));
+        P = P.subtract(K.multiply(H).multiply(P), MC);
     }
 
     @Override

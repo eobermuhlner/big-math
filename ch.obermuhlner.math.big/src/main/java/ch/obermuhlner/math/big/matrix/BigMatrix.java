@@ -15,56 +15,47 @@ public interface BigMatrix {
     BigDecimal get(int row, int column);
 
     default ImmutableBigMatrix round(MathContext mathContext) {
-        return ImmutableBigMatrix.matrix(rows(), columns(), (row, column) -> get(row, column).round(mathContext));
+        return ImmutableBigMatrix.matrix(rows(), columns(), (row, column) -> get(row, column).round(mathContext).stripTrailingZeros());
     }
-
-    default ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
-        MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column), mathContext).stripTrailingZeros());
-    }
-    default ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
-        MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column), mathContext).stripTrailingZeros());
-    }
-    default ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value, mathContext).stripTrailingZeros());
-    }
-
-    ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
 
     default ImmutableBigMatrix add(BigMatrix other) {
-        MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column)).stripTrailingZeros());
+        return add(other, null);
     }
+    default ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
+        return ImmutableBigMatrix.matrix(lazyAdd(other, mathContext));
+    }
+
     default ImmutableBigMatrix subtract(BigMatrix other) {
-        MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column)).stripTrailingZeros());
+        return subtract(other, null);
     }
+    default ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
+        return ImmutableBigMatrix.matrix(lazySubtract(other, mathContext));
+    }
+
     default ImmutableBigMatrix multiply(BigDecimal value) {
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value).stripTrailingZeros());
+        return multiply(value, null);
+    }
+    default ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
+        return ImmutableBigMatrix.matrix(lazyMultiply(value, mathContext));
     }
 
     ImmutableBigMatrix multiply(BigMatrix other);
+    ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
 
     default ImmutableBigMatrix transpose() {
-        return ImmutableBigMatrix.lambdaMatrix(columns(), rows(),
-                (row, column) -> get(column, row));
+        return ImmutableBigMatrix.matrix(lazyTranspose());
     }
 
     default ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
-        return ImmutableBigMatrix.lambdaMatrix(rows, columns,
-                (row, column) -> get(row + startRow, column + startColumn));
+        return ImmutableBigMatrix.matrix(lazySubMatrix(startRow, startColumn, rows, columns));
     }
 
     default ImmutableBigMatrix minor(int skipRow, int skipColumn) {
-        return ImmutableBigMatrix.lambdaMatrix(rows() - 1, columns() - 1,
-                (row, column) ->
-                        get(row < skipRow ? row : row + 1,
-                                column < skipColumn ? column : column + 1));
+        return ImmutableBigMatrix.matrix(lazyMinor(skipRow, skipColumn));
     }
 
     default ImmutableBigMatrix invert(MathContext mathContext) {
-        return toMutableMatrix().invert(mathContext);
+        return MutableBigMatrix.matrix(this).invert(mathContext);
     }
 
     default BigDecimal sum() {
@@ -98,14 +89,14 @@ public interface BigMatrix {
                 return get(0, 0);
             case 2:
                 return get(0, 0).multiply(get(1, 1))
-                        .subtract(get(0, 1).multiply(get(1, 0)));
+                        .subtract(get(0, 1).multiply(get(1, 0))).stripTrailingZeros();
             case 3:
                 return get(0, 0).multiply(get(1, 1)).multiply(get(2, 2))
                         .add(get(0, 1).multiply(get(1, 2)).multiply(get(2, 0)))
                         .add(get(0, 2).multiply(get(1, 0)).multiply(get(2, 1)))
                         .subtract(get(0, 2).multiply(get(1, 1)).multiply(get(2, 0)))
                         .subtract(get(0, 1).multiply(get(1, 0)).multiply(get(2, 2)))
-                        .subtract(get(0, 0).multiply(get(1, 2)).multiply(get(2, 1)));
+                        .subtract(get(0, 0).multiply(get(1, 2)).multiply(get(2, 1))).stripTrailingZeros();
         }
 
         BigDecimal result = ZERO;
@@ -119,31 +110,47 @@ public interface BigMatrix {
             }
             sign = !sign;
         }
-        return result;
+        return result.stripTrailingZeros();
     }
 
-    default ImmutableBigMatrix toImmutableMatrix() {
-        return ImmutableBigMatrix.matrix(rows(), columns(), (row, column) -> get(row, column));
+    default ImmutableBigMatrix lazyAdd(BigMatrix other) {
+        return lazyAdd(other, null);
+    }
+    default ImmutableBigMatrix lazyAdd(BigMatrix other, MathContext mathContext) {
+        MatrixUtils.checkSameSize(this, other);
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> MatrixUtils.add(get(row, column), other.get(row, column), mathContext).stripTrailingZeros());
     }
 
-    default ImmutableBigMatrix toImmutableDenseMatrix() {
-        return ImmutableBigMatrix.denseMatrix(rows(), columns(), (row, column) -> get(row, column));
+    default ImmutableBigMatrix lazySubtract(BigMatrix other) {
+        return lazySubtract(other, null);
+    }
+    default ImmutableBigMatrix lazySubtract(BigMatrix other, MathContext mathContext) {
+        MatrixUtils.checkSameSize(this, other);
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> MatrixUtils.subtract(get(row, column), other.get(row, column), mathContext).stripTrailingZeros());
     }
 
-    default ImmutableBigMatrix toImmutableSparseMatrix() {
-        return ImmutableBigMatrix.sparseMatrix(rows(), columns(), (row, column) -> get(row, column));
+    default ImmutableBigMatrix lazyMultiply(BigDecimal value) {
+        return lazyMultiply(value, null);
+    }
+    default ImmutableBigMatrix lazyMultiply(BigDecimal value, MathContext mathContext) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> MatrixUtils.multiply(get(row, column), value, mathContext).stripTrailingZeros());
     }
 
-    default MutableBigMatrix toMutableMatrix() {
-        return MutableBigMatrix.matrix(rows(), columns(), (row, column) -> get(row, column));
+    default ImmutableBigMatrix lazyTranspose() {
+        return ImmutableBigMatrix.lambdaMatrix(columns(), rows(),
+                (row, column) -> get(column, row));
     }
 
-    default MutableBigMatrix toMutableDenseMatrix() {
-        return MutableBigMatrix.denseMatrix(rows(), columns(), (row, column) -> get(row, column));
+    default ImmutableBigMatrix lazySubMatrix(int startRow, int startColumn, int rows, int columns) {
+        return ImmutableBigMatrix.lambdaMatrix(rows, columns,
+                (row, column) -> get(row + startRow, column + startColumn));
     }
 
-    default MutableBigMatrix toMutableSparseMatrix() {
-        return MutableBigMatrix.sparseMatrix(rows(), columns(), (row, column) -> get(row, column));
+    default ImmutableBigMatrix lazyMinor(int skipRow, int skipColumn) {
+        return ImmutableBigMatrix.lambdaMatrix(rows() - 1, columns() - 1,
+                (row, column) ->
+                        get(row < skipRow ? row : row + 1,
+                                column < skipColumn ? column : column + 1));
     }
 
     default ImmutableBigMatrix asImmutableMatrix() {

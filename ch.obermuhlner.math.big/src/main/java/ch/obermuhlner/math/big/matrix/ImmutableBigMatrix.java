@@ -10,6 +10,10 @@ import java.util.function.BiFunction;
 
 public interface ImmutableBigMatrix extends BigMatrix {
 
+    static ImmutableBigMatrix matrix(BigMatrix matrix) {
+        return matrix(matrix.rows(), matrix.columns(), (row, column) -> matrix.get(row, column));
+    }
+
     static ImmutableBigMatrix matrix(int rows, int columns) {
         return matrix(rows, columns, new BigDecimal[0]);
     }
@@ -36,6 +40,14 @@ public interface ImmutableBigMatrix extends BigMatrix {
         }
     }
 
+    static ImmutableBigMatrix denseMatrix(BigMatrix matrix) {
+        return denseMatrix(matrix.rows(), matrix.columns(), (row, column) -> matrix.get(row, column));
+    }
+
+    static ImmutableBigMatrix denseMatrix(int rows, int columns) {
+        return denseMatrix(rows, columns, new BigDecimal[0]);
+    }
+
     static ImmutableBigMatrix denseMatrix(int rows, int columns, double... values) {
         return denseMatrix(rows, columns, MatrixUtils.toBigDecimal(values));
     }
@@ -52,6 +64,14 @@ public interface ImmutableBigMatrix extends BigMatrix {
         return new LambdaImmutableBigMatrix(size, size, (row, column) -> {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
         });
+    }
+
+    static ImmutableBigMatrix sparseMatrix(BigMatrix matrix) {
+        return sparseMatrix(matrix.rows(), matrix.columns(), (row, column) -> matrix.get(row, column));
+    }
+
+    static ImmutableBigMatrix sparseMatrix(int rows, int columns) {
+        return sparseMatrix(rows, columns, new BigDecimal[0]);
     }
 
     static ImmutableBigMatrix sparseMatrix(int rows, int columns, double... values) {

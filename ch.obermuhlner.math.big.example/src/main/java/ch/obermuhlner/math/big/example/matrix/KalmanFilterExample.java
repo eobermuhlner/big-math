@@ -9,7 +9,7 @@ import java.util.List;
 
 public class KalmanFilterExample {
 
-    private static final int MAX_STEPS = 10; // 1000
+    private static final int MAX_STEPS = 1000;
     private static final double T = 1.0;
 
     private static int measDOF = 8;

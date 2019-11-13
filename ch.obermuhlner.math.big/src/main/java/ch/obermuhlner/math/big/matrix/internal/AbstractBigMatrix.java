@@ -32,7 +32,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
             }
         }
 
-        return result.toImmutableMatrix();
+        return ImmutableBigMatrix.matrix(result);
     }
 
     @Override
