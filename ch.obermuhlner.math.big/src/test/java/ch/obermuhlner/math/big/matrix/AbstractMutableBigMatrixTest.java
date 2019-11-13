@@ -2,6 +2,9 @@ package ch.obermuhlner.math.big.matrix;
 
 import org.junit.Test;
 
+import java.math.MathContext;
+
+import static ch.obermuhlner.util.AssertUtil.assertBigDecimal;
 import static java.math.BigDecimal.*;
 import static org.junit.Assert.assertEquals;
 
@@ -140,7 +143,6 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
                 m1);
     }
 
-
     @Test
     public void testSwapColumnsSame() {
         MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
@@ -156,5 +158,30 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
                         4, 5, 6,
                         7, 8, 9),
                 m1);
+    }
+
+    @Test
+    public void testSum() {
+        MutableBigMatrix m = createMutableBigMatrix(2, 3);
+        m.fill(valueOf(2));
+        m.set(0, 0,
+                ImmutableBigMatrix.matrix(2, 3,
+                        1, 2, 3,
+                        4, 5, 6));
+
+
+        assertBigDecimal(valueOf(1 + 2 + 3 + 4 + 5 + 6), m.sum(MathContext.DECIMAL128));
+    }
+
+    @Test
+    public void testProduct() {
+        MutableBigMatrix m = createMutableBigMatrix(2, 3);
+        m.fill(valueOf(2));
+        m.set(0, 0,
+                ImmutableBigMatrix.matrix(2, 3,
+                        1, 2, 3,
+                        4, 5, 6));
+
+        assertBigDecimal(valueOf(1 * 2 * 3 * 4 * 5 * 6), m.product(MathContext.DECIMAL128));
     }
 }

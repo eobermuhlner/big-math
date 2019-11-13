@@ -14,6 +14,10 @@ public interface BigMatrix {
 
     BigDecimal get(int row, int column);
 
+    default int size() {
+        return rows() * columns();
+    }
+
     default ImmutableBigMatrix round(MathContext mathContext) {
         return ImmutableBigMatrix.matrix(rows(), columns(), (row, column) -> get(row, column).round(mathContext).stripTrailingZeros());
     }
@@ -59,20 +63,29 @@ public interface BigMatrix {
     }
 
     default BigDecimal sum() {
+        return sum(null);
+    }
+
+    default BigDecimal sum(MathContext mathContext) {
         BigDecimal result = ZERO;
         for (int row = 0; row < rows(); row++) {
             for (int col = 0; col < columns(); col++) {
-                result = result.add(get(row, col));
+                result = MatrixUtils.add(result, get(row, col), mathContext);
             }
         }
         return result;
     }
 
     default BigDecimal product() {
+        return product(null);
+    }
+
+
+    default BigDecimal product(MathContext mathContext) {
         BigDecimal result = ONE;
         for (int row = 0; row < rows(); row++) {
             for (int col = 0; col < columns(); col++) {
-                result = result.multiply(get(row, col));
+                result = MatrixUtils.multiply(result, get(row, col), mathContext);
             }
         }
         return result;
@@ -102,7 +115,7 @@ public interface BigMatrix {
         BigDecimal result = ZERO;
         boolean sign = true;
         for (int i = 0; i < columns(); i++) {
-            BigDecimal term = get(0, i).multiply(asImmutableMatrix().minor(0, i).determinant());
+            BigDecimal term = get(0, i).multiply(lazyMinor(0, i).determinant());
             if (sign) {
                 result = result.add(term);
             } else {

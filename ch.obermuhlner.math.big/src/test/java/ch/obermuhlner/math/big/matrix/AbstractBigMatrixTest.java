@@ -109,17 +109,17 @@ public abstract class AbstractBigMatrixTest {
     public void testAddMathContext() {
         BigMatrix m1 = createBigMatrix(2, 3,
                 1, 2, 3,
-                4, 5, 6);
+                4, 0, 0);
         BigMatrix m2 = createBigMatrix(2, 3,
                 10, 20, 30,
-                40, 50, 60);
+                0, 50, 0);
 
         BigMatrix r = m1.add(m2, MathContext.DECIMAL128);
 
         assertEquals(
                 createBigMatrix(2, 3,
                         11, 22, 33,
-                        44, 55, 66),
+                        4, 50, 0),
                 r);
     }
 
@@ -127,17 +127,17 @@ public abstract class AbstractBigMatrixTest {
     public void testAdd() {
         BigMatrix m1 = createBigMatrix(2, 3,
                 1, 2, 3,
-                4, 5, 6);
+                4, 0, 0);
         BigMatrix m2 = createBigMatrix(2, 3,
                 10, 20, 30,
-                40, 50, 60);
+                0, 50, 0);
 
         BigMatrix r = m1.add(m2);
 
         assertEquals(
                 createBigMatrix(2, 3,
                         11, 22, 33,
-                        44, 55, 66),
+                        4, 50, 0),
                 r);
     }
 
@@ -145,17 +145,17 @@ public abstract class AbstractBigMatrixTest {
     public void testSubtractMathContext() {
         BigMatrix m1 = createBigMatrix(2, 3,
                 10, 20, 30,
-                40, 50, 60);
+                40, 0, 0);
         BigMatrix m2 = createBigMatrix(2, 3,
                 1, 2, 3,
-                4, 5, 6);
+                0, 5, 0);
 
         BigMatrix r = m1.subtract(m2, MathContext.DECIMAL128);
 
         assertEquals(
                 createBigMatrix(2, 3,
                         9, 18, 27,
-                        36, 45, 54),
+                        40, -5, 0),
                 r);
     }
 
@@ -163,17 +163,17 @@ public abstract class AbstractBigMatrixTest {
     public void testSubtract() {
         BigMatrix m1 = createBigMatrix(2, 3,
                 10, 20, 30,
-                40, 50, 60);
+                40, 0, 0);
         BigMatrix m2 = createBigMatrix(2, 3,
                 1, 2, 3,
-                4, 5, 6);
+                0, 5, 0);
 
         BigMatrix r = m1.subtract(m2);
 
         assertEquals(
                 createBigMatrix(2, 3,
                         9, 18, 27,
-                        36, 45, 54),
+                        40, -5, 0),
                 r);
     }
 
@@ -201,13 +201,13 @@ public abstract class AbstractBigMatrixTest {
     public void testMultiplyScalarMathContext() {
         BigMatrix m1 = createBigMatrix(2, 3,
                 1, 2, 3,
-                4, 5, 6);
+                4, 5, 0);
 
         BigMatrix r = m1.multiply(valueOf(2), MathContext.DECIMAL128);
 
         assertEquals(createBigMatrix(2, 3,
                 2, 4, 6,
-                8, 10, 12),
+                8, 10, 0),
                 r);
     }
 
@@ -215,13 +215,13 @@ public abstract class AbstractBigMatrixTest {
     public void testMultiplyScalar() {
         BigMatrix m1 = createBigMatrix(2, 3,
                 1, 2, 3,
-                4, 5, 6);
+                4, 5, 0);
 
         BigMatrix r = m1.multiply(valueOf(2));
 
         assertEquals(createBigMatrix(2, 3,
                 2, 4, 6,
-                8, 10, 12),
+                8, 10, 0),
                 r);
     }
 

@@ -1,5 +1,6 @@
 package ch.obermuhlner.math.big.matrix.internal.sparse;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
@@ -12,6 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+
+import static java.math.BigDecimal.valueOf;
 
 public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     protected final int rows;
@@ -74,14 +77,6 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     }
 
     @Override
-    public ImmutableBigMatrix add(BigMatrix other) {
-        if (other instanceof AbstractSparseBigMatrix) {
-            return addSparse((AbstractSparseBigMatrix) other, null);
-        }
-        return super.add(other);
-    }
-
-    @Override
     public ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
         if (other instanceof AbstractSparseBigMatrix) {
             return addSparse((AbstractSparseBigMatrix) other, mathContext);
@@ -103,14 +98,6 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         }
 
         return m.asImmutableMatrix();
-    }
-
-    @Override
-    public ImmutableBigMatrix subtract(BigMatrix other) {
-        if (other instanceof AbstractSparseBigMatrix) {
-            return subtractSparse((AbstractSparseBigMatrix) other, null);
-        }
-        return super.subtract(other);
     }
 
     @Override
@@ -138,11 +125,6 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     }
 
     @Override
-    public ImmutableBigMatrix multiply(BigDecimal value) {
-        return multiplySparse(value, null);
-    }
-
-    @Override
     public ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
         return multiplySparse(value, mathContext);
     }
@@ -160,6 +142,32 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         return m.asImmutableMatrix();
     }
 
+    @Override
+    public BigDecimal sum(MathContext mathContext) {
+        BigDecimal result = MatrixUtils.multiply(valueOf(size() - sparseSize()), defaultValue, mathContext);
+
+        for (BigDecimal value : data.values()) {
+            result = MatrixUtils.add(result, value, mathContext);
+        }
+
+        return result;
+    }
+
+    @Override
+    public BigDecimal product(MathContext mathContext) {
+        if (mathContext == null) {
+            return super.product(null);
+        }
+
+        BigDecimal result = BigDecimalMath.pow(defaultValue,size() - sparseSize(), mathContext);
+
+        for (BigDecimal value : data.values()) {
+            result = MatrixUtils.multiply(result, value, mathContext);
+        }
+
+        return result;
+    }
+
     protected void internalSet(int row, int column, BigDecimal value) {
         MatrixUtils.checkRow(this, row);
         MatrixUtils.checkColumn(this, column);
@@ -168,7 +176,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         internalSet(index, value);
     }
 
-    void internalSet(int index, BigDecimal value) {
+    protected void internalSet(int index, BigDecimal value) {
         if (value.equals(defaultValue)) {
             data.remove(index);
         } else {
