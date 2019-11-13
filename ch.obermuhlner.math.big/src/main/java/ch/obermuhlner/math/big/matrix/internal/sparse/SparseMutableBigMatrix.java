@@ -15,11 +15,6 @@ public class SparseMutableBigMatrix extends AbstractSparseBigMatrix implements M
     }
 
     @Override
-    protected SparseMutableBigMatrix createBigMatrix(int rows, int columns) {
-        return new SparseMutableBigMatrix(rows, columns);
-    }
-
-    @Override
     public void set(int row, int column, BigDecimal value) {
         internalSet(row, column, value);
     }

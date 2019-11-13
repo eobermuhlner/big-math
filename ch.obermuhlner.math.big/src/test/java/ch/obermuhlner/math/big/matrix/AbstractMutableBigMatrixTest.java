@@ -161,7 +161,7 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
     }
 
     @Test
-    public void testSum() {
+    public void testMutableSum() {
         MutableBigMatrix m = createMutableBigMatrix(2, 3);
         m.fill(valueOf(2));
         m.set(0, 0,
@@ -174,7 +174,7 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
     }
 
     @Test
-    public void testProduct() {
+    public void testMutableProduct() {
         MutableBigMatrix m = createMutableBigMatrix(2, 3);
         m.fill(valueOf(2));
         m.set(0, 0,
@@ -183,5 +183,25 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
                         4, 5, 6));
 
         assertBigDecimal(valueOf(1 * 2 * 3 * 4 * 5 * 6), m.product(MathContext.DECIMAL128));
+    }
+
+    @Test
+    public void testMutableMultiply() {
+        BigMatrix m1 = createBigMatrix(2, 3,
+                0, 0, 3,
+                0, 5, 0);
+        BigMatrix m2 = createBigMatrix(3, 2,
+                0, 2,
+                3, 0,
+                0, 0);
+
+        BigMatrix r = m1.multiply(m2, MathContext.DECIMAL128);
+        System.out.println(r);
+
+        assertEquals(
+                createBigMatrix(2, 2,
+                        0, 0,
+                        15, 0),
+                r);
     }
 }

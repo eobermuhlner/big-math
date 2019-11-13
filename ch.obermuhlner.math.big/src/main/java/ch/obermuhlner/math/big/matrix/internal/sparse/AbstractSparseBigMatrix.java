@@ -34,7 +34,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         this(rows, columns);
 
         for (int i = 0; i < values.length; i++) {
-            data.put(i, values[i]);
+            internalSet(i, values[i]);
         }
     }
 
@@ -67,13 +67,28 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         return internalGet(index);
     }
 
+    public BigDecimal getDefaultValue() {
+        return defaultValue;
+    }
 
     BigDecimal internalGet(int index) {
         return data.getOrDefault(index, defaultValue);
     }
 
-    public int sparseSize() {
+    public int sparseFilledSize() {
         return data.size();
+    }
+
+    public int sparseEmptySize() {
+        return size() - sparseFilledSize();
+    }
+
+    public double sparseEmptyRatio() {
+        if (size() == 0) {
+            return 0.0;
+        }
+
+        return (double)sparseEmptySize() / size();
     }
 
     @Override
@@ -144,7 +159,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
 
     @Override
     public BigDecimal sum(MathContext mathContext) {
-        BigDecimal result = MatrixUtils.multiply(valueOf(size() - sparseSize()), defaultValue, mathContext);
+        BigDecimal result = MatrixUtils.multiply(valueOf(size() - sparseFilledSize()), defaultValue, mathContext);
 
         for (BigDecimal value : data.values()) {
             result = MatrixUtils.add(result, value, mathContext);
@@ -159,7 +174,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
             return super.product(null);
         }
 
-        BigDecimal result = BigDecimalMath.pow(defaultValue,size() - sparseSize(), mathContext);
+        BigDecimal result = BigDecimalMath.pow(defaultValue,size() - sparseFilledSize(), mathContext);
 
         for (BigDecimal value : data.values()) {
             result = MatrixUtils.multiply(result, value, mathContext);
@@ -177,7 +192,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     }
 
     protected void internalSet(int index, BigDecimal value) {
-        if (value.equals(defaultValue)) {
+        if (value.compareTo(defaultValue) == 0) {
             data.remove(index);
         } else {
             data.put(index, value);

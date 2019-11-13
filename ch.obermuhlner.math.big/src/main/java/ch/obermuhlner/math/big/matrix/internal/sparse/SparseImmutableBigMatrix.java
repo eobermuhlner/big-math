@@ -13,9 +13,4 @@ public class SparseImmutableBigMatrix extends AbstractSparseBigMatrix implements
     public SparseImmutableBigMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
         super(rows, columns, valueFunction);
     }
-
-    @Override
-    protected SparseImmutableBigMatrix createBigMatrix(int rows, int columns) {
-        return new SparseImmutableBigMatrix(rows, columns);
-    }
 }

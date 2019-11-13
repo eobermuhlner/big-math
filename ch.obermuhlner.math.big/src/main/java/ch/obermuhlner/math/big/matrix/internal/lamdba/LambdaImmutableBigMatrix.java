@@ -37,9 +37,4 @@ public class LambdaImmutableBigMatrix extends AbstractBigMatrix implements Immut
     protected void internalSet(int row, int column, BigDecimal value) {
         throw new IllegalStateException();
     }
-
-    @Override
-    protected AbstractBigMatrix createBigMatrix(int rows, int columns) {
-        return new DenseImmutableBigMatrix(rows, columns);
-    }
 }

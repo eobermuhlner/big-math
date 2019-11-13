@@ -13,9 +13,4 @@ public class DenseImmutableBigMatrix extends AbstractDenseBigMatrix implements I
     public DenseImmutableBigMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
         super(rows, columns, valueFunction);
     }
-
-    @Override
-    protected DenseImmutableBigMatrix createBigMatrix(int rows, int columns) {
-        return new DenseImmutableBigMatrix(rows, columns);
-    }
 }

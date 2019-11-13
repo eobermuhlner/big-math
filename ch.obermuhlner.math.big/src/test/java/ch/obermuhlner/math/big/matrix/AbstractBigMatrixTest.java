@@ -181,19 +181,19 @@ public abstract class AbstractBigMatrixTest {
     public void testMultiply() {
         BigMatrix m1 = createBigMatrix(2, 3,
                 1, 2, 3,
-                4, 5, 6);
+                4, 5, 0);
         BigMatrix m2 = createBigMatrix(3, 2,
                 1, 2,
                 3, 4,
-                5, 6);
+                0, 6);
 
         BigMatrix r = m1.multiply(m2, MathContext.DECIMAL128);
         System.out.println(r);
 
         assertEquals(
                 createBigMatrix(2, 2,
-                        22, 28,
-                        49, 64),
+                        7, 28,
+                        19, 28),
                 r);
     }
 

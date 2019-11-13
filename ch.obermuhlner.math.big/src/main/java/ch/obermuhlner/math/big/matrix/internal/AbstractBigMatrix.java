@@ -2,13 +2,14 @@ package ch.obermuhlner.math.big.matrix.internal;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.dense.DenseImmutableBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.sparse.AbstractSparseBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.sparse.SparseImmutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
 public abstract class AbstractBigMatrix implements BigMatrix {
-
-    protected abstract AbstractBigMatrix createBigMatrix(int rows, int columns);
 
     protected abstract void internalSet(int row, int column, BigDecimal value);
 
@@ -20,7 +21,12 @@ public abstract class AbstractBigMatrix implements BigMatrix {
     public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
         MatrixUtils.checkColumnsOtherRows(this, other);
 
-        AbstractBigMatrix result = createBigMatrix(rows(), other.columns());
+        AbstractBigMatrix result;
+        if (isSparseWithLotsOfZeroes(this) && isSparseWithLotsOfZeroes(other)) {
+            result = new SparseImmutableBigMatrix(rows(), other.columns());
+        } else {
+            result = new DenseImmutableBigMatrix(rows(), other.columns());
+        }
 
         for (int row = 0; row < result.rows(); row++) {
             for (int column = 0; column < result.columns(); column++) {
@@ -33,6 +39,14 @@ public abstract class AbstractBigMatrix implements BigMatrix {
         }
 
         return ImmutableBigMatrix.matrix(result);
+    }
+
+    private boolean isSparseWithLotsOfZeroes(BigMatrix matrix) {
+        if (matrix instanceof AbstractSparseBigMatrix) {
+            AbstractSparseBigMatrix sparseMatrix = (AbstractSparseBigMatrix) matrix;
+            return sparseMatrix.getDefaultValue().signum() == 0 && sparseMatrix.sparseEmptyRatio() > 0.5;
+        }
+        return false;
     }
 
     @Override

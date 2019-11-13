@@ -15,11 +15,6 @@ public class DenseMutableBigMatrix extends AbstractDenseBigMatrix implements Mut
     }
 
     @Override
-    protected DenseMutableBigMatrix createBigMatrix(int rows, int columns) {
-        return new DenseMutableBigMatrix(rows, columns);
-    }
-
-    @Override
     public int rows() {
         return rows;
     }
