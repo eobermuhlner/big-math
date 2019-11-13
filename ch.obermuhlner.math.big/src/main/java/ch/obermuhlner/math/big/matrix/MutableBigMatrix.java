@@ -74,7 +74,7 @@ public interface MutableBigMatrix extends BigMatrix {
                     BigDecimal factor = get(row, pivotColumn).divide(divisor, mathContext);
                     set(row, pivotColumn, BigDecimal.ZERO);
                     for (int column = pivotColumn + 1; column < columns(); column++) {
-                        BigDecimal value = get(row, column).subtract(get(pivotRow, column).multiply(factor, mathContext), mathContext);
+                        BigDecimal value = get(row, column).subtract(get(pivotRow, column).multiply(factor, mathContext), mathContext).stripTrailingZeros();
                         set(row, column, value);
                     }
                 }
@@ -92,7 +92,7 @@ public interface MutableBigMatrix extends BigMatrix {
                     BigDecimal factor = get(row, pivotColumn);
                     set(row, pivotColumn, BigDecimal.ZERO);
                     for (int column = pivotColumn + 1; column < columns(); column++) {
-                        BigDecimal value = get(row, column).subtract(get(pivotRow, column).multiply(factor, mathContext), mathContext);
+                        BigDecimal value = get(row, column).subtract(get(pivotRow, column).multiply(factor, mathContext), mathContext).stripTrailingZeros();
                         set(row, column, value);
                     }
                 }

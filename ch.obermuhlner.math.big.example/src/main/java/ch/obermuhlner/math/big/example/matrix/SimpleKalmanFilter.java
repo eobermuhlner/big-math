@@ -43,17 +43,17 @@ public class SimpleKalmanFilter implements KalmanFilter {
         BigMatrix y = z.subtract(H.multiply(x));
 
         // S = H P H' + R
-        BigMatrix S = H.multiply(P).multiply(H.transpose()).add(R).round(MC);
+        BigMatrix S = H.multiply(P).multiply(H.transpose()).add(R);
 
         // K = PH'S^(-1)
         BigMatrix Sinv = S.invert(MC);
-        BigMatrix K = P.multiply(H.transpose().multiply(Sinv)).round(MC);
+        BigMatrix K = P.multiply(H.transpose().multiply(Sinv));
 
         // x = x + Ky
-        x = x.add(K.multiply(y)).round(MC);
+        x = x.add(K.multiply(y, MC));
 
         // P = (I-kH)P = P - KHP
-        P = P.subtract(K.multiply(H).multiply(P)).round(MC);
+        P = P.subtract(K.multiply(H).multiply(P));
     }
 
     @Override

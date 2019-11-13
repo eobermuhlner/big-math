@@ -28,7 +28,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
                 for (int index = 0; index < columns(); index++) {
                     sum = MatrixUtils.add(sum, MatrixUtils.multiply(get(row, index), other.get(index, column), mathContext), mathContext);
                 }
-                result.internalSet(row, column, sum);
+                result.internalSet(row, column, sum.stripTrailingZeros());
             }
         }
 

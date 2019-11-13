@@ -20,28 +20,28 @@ public interface BigMatrix {
 
     default ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
         MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column), mathContext));
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column), mathContext).stripTrailingZeros());
     }
     default ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
         MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column), mathContext));
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column), mathContext).stripTrailingZeros());
     }
     default ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value, mathContext));
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value, mathContext).stripTrailingZeros());
     }
 
     ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
 
     default ImmutableBigMatrix add(BigMatrix other) {
         MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column)));
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column)).stripTrailingZeros());
     }
     default ImmutableBigMatrix subtract(BigMatrix other) {
         MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column)));
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column)).stripTrailingZeros());
     }
     default ImmutableBigMatrix multiply(BigDecimal value) {
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value));
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value).stripTrailingZeros());
     }
 
     ImmutableBigMatrix multiply(BigMatrix other);
