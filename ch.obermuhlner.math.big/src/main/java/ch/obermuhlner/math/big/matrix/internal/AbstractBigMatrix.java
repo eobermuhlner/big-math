@@ -12,6 +12,11 @@ public abstract class AbstractBigMatrix implements BigMatrix {
 
     protected abstract void internalSet(int row, int column, BigDecimal value);
 
+    @Override
+    public ImmutableBigMatrix multiply(BigMatrix other) {
+        return multiply(other, null);
+    }
+
     public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
         MatrixUtils.checkColumnsOtherRows(this, other);
 
@@ -21,25 +26,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
             for (int column = 0; column < result.columns(); column++) {
                 BigDecimal sum = BigDecimal.ZERO;
                 for (int index = 0; index < columns(); index++) {
-                    sum = sum.add(get(row, index).multiply(other.get(index, column), mathContext), mathContext);
-                }
-                result.internalSet(row, column, sum);
-            }
-        }
-
-        return result.toImmutableMatrix();
-    }
-
-    public ImmutableBigMatrix multiply(BigMatrix other) {
-        MatrixUtils.checkColumnsOtherRows(this, other);
-
-        AbstractBigMatrix result = createBigMatrix(rows(), other.columns());
-
-        for (int row = 0; row < result.rows(); row++) {
-            for (int column = 0; column < result.columns(); column++) {
-                BigDecimal sum = BigDecimal.ZERO;
-                for (int index = 0; index < columns(); index++) {
-                    sum = sum.add(get(row, index).multiply(other.get(index, column)));
+                    sum = MatrixUtils.add(sum, MatrixUtils.multiply(get(row, index), other.get(index, column), mathContext), mathContext);
                 }
                 result.internalSet(row, column, sum);
             }

@@ -3,6 +3,7 @@ package ch.obermuhlner.math.big.matrix.internal;
 import ch.obermuhlner.math.big.matrix.BigMatrix;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.function.BiFunction;
 
 public class MatrixUtils {
@@ -62,6 +63,30 @@ public class MatrixUtils {
         }
 
         return result;
+    }
+
+    public static BigDecimal add(BigDecimal left, BigDecimal right, MathContext mathContext) {
+        if (mathContext == null) {
+            return left.add(right);
+        } else {
+            return left.add(right, mathContext);
+        }
+    }
+
+    public static BigDecimal subtract(BigDecimal left, BigDecimal right, MathContext mathContext) {
+        if (mathContext == null) {
+            return left.subtract(right);
+        } else {
+            return left.subtract(right, mathContext);
+        }
+    }
+
+    public static BigDecimal multiply(BigDecimal left, BigDecimal right, MathContext mathContext) {
+        if (mathContext == null) {
+            return left.multiply(right);
+        } else {
+            return left.multiply(right, mathContext);
+        }
     }
 
     public static void checkRows(int rows) {

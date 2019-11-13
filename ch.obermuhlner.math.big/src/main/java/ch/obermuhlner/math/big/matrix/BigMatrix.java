@@ -14,6 +14,10 @@ public interface BigMatrix {
 
     BigDecimal get(int row, int column);
 
+    default ImmutableBigMatrix round(MathContext mathContext) {
+        return ImmutableBigMatrix.matrix(rows(), columns(), (row, column) -> get(row, column).round(mathContext));
+    }
+
     default ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
         MatrixUtils.checkSameSize(this, other);
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column), mathContext));
@@ -32,11 +36,11 @@ public interface BigMatrix {
         MatrixUtils.checkSameSize(this, other);
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).add(other.get(row, column)));
     }
-    default BigMatrix subtract(BigMatrix other) {
+    default ImmutableBigMatrix subtract(BigMatrix other) {
         MatrixUtils.checkSameSize(this, other);
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).subtract(other.get(row, column)));
     }
-    default BigMatrix multiply(BigDecimal value) {
+    default ImmutableBigMatrix multiply(BigDecimal value) {
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column).multiply(value));
     }
 

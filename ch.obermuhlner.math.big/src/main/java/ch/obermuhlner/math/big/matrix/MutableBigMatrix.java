@@ -64,7 +64,8 @@ public interface MutableBigMatrix extends BigMatrix {
                 }
             }
 
-            if (get(maxRow, pivotColumn).signum() == 0) {
+            BigDecimal pivotCell = get(maxRow, pivotColumn);
+            if (pivotCell.signum() == 0) {
                 pivotColumn++;
             } else {
                 swapRows(pivotRow, maxRow);
