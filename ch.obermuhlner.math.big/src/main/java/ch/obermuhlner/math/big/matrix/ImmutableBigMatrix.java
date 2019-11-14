@@ -23,8 +23,7 @@ public interface ImmutableBigMatrix extends BigMatrix {
     }
 
     static ImmutableBigMatrix matrix(int rows, int columns, BigDecimal... values) {
-        int n = rows * columns;
-        if (values.length - n >= 10000 || (values.length > 10000 && MatrixUtils.atLeastZeroValues(10000, values))) {
+        if (MatrixUtils.preferSparseMatrix(rows, columns, values)) {
             return sparseMatrix(rows, columns, values);
         } else {
             return denseMatrix(rows, columns, values);
@@ -32,8 +31,7 @@ public interface ImmutableBigMatrix extends BigMatrix {
     }
 
     static ImmutableBigMatrix matrix(int rows, int columns, CoordValue... values) {
-        int n = rows * columns;
-        if (values.length - n > 10000 || (values.length > 10000 && MatrixUtils.atLeastZeroValues(10000, values))) {
+        if (MatrixUtils.preferSparseMatrix(rows, columns, values)) {
             return sparseMatrix(rows, columns, values);
         } else {
             return denseMatrix(rows, columns, values);
@@ -41,8 +39,7 @@ public interface ImmutableBigMatrix extends BigMatrix {
     }
 
     static ImmutableBigMatrix matrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
-        int n = rows * columns;
-        if (n >= 10000 && MatrixUtils.atLeastZeroValues(10000, rows, columns, valueFunction)) {
+        if (MatrixUtils.preferSparseMatrix(rows, columns, valueFunction)) {
             return sparseMatrix(rows, columns, valueFunction);
         } else {
             return denseMatrix(rows, columns, valueFunction);

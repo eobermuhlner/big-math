@@ -8,66 +8,8 @@ import java.math.MathContext;
 import java.util.function.BiFunction;
 
 public class MatrixUtils {
-    public static int countZeroValues(BigDecimal[] data) {
-        int count = 0;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i].signum() == 0) {
-                count++;
-            }
-        }
-        return count;
-    }
 
-    public static int countZeroValues(double[] data) {
-        int count = 0;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i] == 0.0) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public static boolean atLeastZeroValues(int minCount, BigDecimal[] data) {
-        int count = 0;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i].signum() == 0) {
-                count++;
-                if (count >= minCount) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static boolean atLeastZeroValues(int minCount, CoordValue[] data) {
-        int count = 0;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i].value.signum() == 0) {
-                count++;
-                if (count >= minCount) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static boolean atLeastZeroValues(int minCount, int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
-        int count = 0;
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                if (valueFunction.apply(row, column).signum() == 0) {
-                    count++;
-                    if (count >= minCount) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+    private static final int THRESHOLD_ELEMENT_COUNT = 10000;
 
     public static BigDecimal[] toBigDecimal(double... values) {
         BigDecimal[] result = new BigDecimal[values.length];
@@ -160,5 +102,61 @@ public class MatrixUtils {
         if (matrix.columns() != other.rows()) {
             throw new IllegalArgumentException("columns != other.rows : " + matrix.columns() + " != " + other.rows());
         }
+    }
+
+    public static boolean preferSparseMatrix(int rows, int columns, BigDecimal... values) {
+        int n = rows * columns;
+        return values.length - n >= THRESHOLD_ELEMENT_COUNT || (values.length > THRESHOLD_ELEMENT_COUNT && MatrixUtils.atLeastZeroValues(THRESHOLD_ELEMENT_COUNT, values));
+    }
+
+    public static boolean preferSparseMatrix(int rows, int columns, CoordValue... values) {
+        int n = rows * columns;
+        return values.length - n >= THRESHOLD_ELEMENT_COUNT || (values.length > THRESHOLD_ELEMENT_COUNT && MatrixUtils.atLeastZeroValues(THRESHOLD_ELEMENT_COUNT, values));
+    }
+
+    public static boolean preferSparseMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+        int n = rows * columns;
+        return n >= THRESHOLD_ELEMENT_COUNT && MatrixUtils.atLeastZeroValues(THRESHOLD_ELEMENT_COUNT, rows, columns, valueFunction);
+    }
+
+    private static boolean atLeastZeroValues(int minCount, BigDecimal[] data) {
+        int count = 0;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].signum() == 0) {
+                count++;
+                if (count >= minCount) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean atLeastZeroValues(int minCount, CoordValue[] data) {
+        int count = 0;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].value.signum() == 0) {
+                count++;
+                if (count >= minCount) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean atLeastZeroValues(int minCount, int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+        int count = 0;
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (valueFunction.apply(row, column).signum() == 0) {
+                    count++;
+                    if (count >= minCount) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
