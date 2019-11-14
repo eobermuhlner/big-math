@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big.matrix.internal.sparse;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import ch.obermuhlner.math.big.matrix.BigMatrix;
+import ch.obermuhlner.math.big.matrix.CoordValue;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
@@ -35,6 +36,14 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
 
         for (int i = 0; i < values.length; i++) {
             internalSet(i, values[i]);
+        }
+    }
+
+    public AbstractSparseBigMatrix(int rows, int columns, CoordValue... values) {
+        this(rows, columns);
+
+        for (CoordValue value : values) {
+            internalSet(value.coord.row, value.coord.column, value.value);
         }
     }
 
@@ -102,7 +111,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     private ImmutableBigMatrix addSparse(AbstractSparseBigMatrix other, MathContext mathContext) {
         MatrixUtils.checkSameSize(this, other);
 
-        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns);
+        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns, new BigDecimal[0]);
         m.defaultValue = MatrixUtils.subtract(defaultValue, other.defaultValue, mathContext);
 
         Set<Integer> mergedIndexes = new HashSet<>(data.keySet());
@@ -126,7 +135,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     private ImmutableBigMatrix subtractSparse(AbstractSparseBigMatrix other, MathContext mathContext) {
         MatrixUtils.checkSameSize(this, other);
 
-        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns);
+        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns, new BigDecimal[0]);
         m.defaultValue = MatrixUtils.subtract(defaultValue, other.defaultValue, mathContext);
 
         Set<Integer> mergedIndexes = new HashSet<>(data.keySet());
@@ -145,7 +154,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     }
 
     private ImmutableBigMatrix multiplySparse(BigDecimal value, MathContext mathContext) {
-        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns);
+        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns, new BigDecimal[0]);
         m.defaultValue = MatrixUtils.multiply(defaultValue, value, mathContext);
 
         for (Map.Entry<Integer, BigDecimal> entry : data.entrySet()) {

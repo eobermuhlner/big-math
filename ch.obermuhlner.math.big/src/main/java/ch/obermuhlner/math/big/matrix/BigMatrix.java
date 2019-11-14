@@ -59,7 +59,15 @@ public interface BigMatrix {
     }
 
     default ImmutableBigMatrix invert(MathContext mathContext) {
-        return MutableBigMatrix.matrix(this).invert(mathContext);
+        MatrixUtils.checkSquare(this);
+
+        MutableBigMatrix work = MutableBigMatrix.sparseMatrix(rows(), columns() * 2);
+        work.set(0, 0, this);
+        work.set(0, columns(), ImmutableBigMatrix.identityMatrix(rows()));
+
+        work.gaussianElimination(true, mathContext);
+
+        return work.subMatrix(0, columns(), rows(), columns());
     }
 
     default BigDecimal sum() {

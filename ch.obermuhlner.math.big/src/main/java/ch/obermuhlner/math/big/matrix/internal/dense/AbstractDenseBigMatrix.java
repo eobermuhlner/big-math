@@ -1,5 +1,6 @@
 package ch.obermuhlner.math.big.matrix.internal.dense;
 
+import ch.obermuhlner.math.big.matrix.CoordValue;
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 
@@ -28,6 +29,14 @@ public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
         int n = rows * columns;
         for (int i = 0; i < n; i++) {
             data[i] = i < values.length ? values[i] : ZERO;
+        }
+    }
+
+    public AbstractDenseBigMatrix(int rows, int columns, CoordValue... values) {
+        this(rows, columns);
+
+        for (CoordValue value : values) {
+            internalSet(value.coord.row, value.coord.column, value.value);
         }
     }
 

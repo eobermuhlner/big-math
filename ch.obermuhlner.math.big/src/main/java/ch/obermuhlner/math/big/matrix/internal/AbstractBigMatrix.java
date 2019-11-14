@@ -23,9 +23,9 @@ public abstract class AbstractBigMatrix implements BigMatrix {
 
         AbstractBigMatrix result;
         if (isSparseWithLotsOfZeroes(this) && isSparseWithLotsOfZeroes(other)) {
-            result = new SparseImmutableBigMatrix(rows(), other.columns());
+            result = new SparseImmutableBigMatrix(rows(), other.columns(), new BigDecimal[0]);
         } else {
-            result = new DenseImmutableBigMatrix(rows(), other.columns());
+            result = new DenseImmutableBigMatrix(rows(), other.columns(), new BigDecimal[0]);
         }
 
         for (int row = 0; row < result.rows(); row++) {

@@ -15,5 +15,4 @@ public abstract class AbstractImmutableBigMatrixTest extends AbstractBigMatrixTe
     }
 
     protected abstract ImmutableBigMatrix createImmutableBigMatrix(int rows, int columns, double... values);
-
 }

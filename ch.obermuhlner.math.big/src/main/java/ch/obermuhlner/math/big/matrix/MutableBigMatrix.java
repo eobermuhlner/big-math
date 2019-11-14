@@ -38,20 +38,6 @@ public interface MutableBigMatrix extends BigMatrix {
         fill(BigDecimal.ZERO);
     }
 
-    default ImmutableBigMatrix invert(MathContext mathContext) {
-        if (rows() != columns()) {
-            return null;
-        }
-
-        MutableBigMatrix work = MutableBigMatrix.sparseMatrix(rows(), columns() * 2);
-        work.set(0, 0, this);
-        work.set(0, columns(), ImmutableBigMatrix.identityMatrix(rows()));
-
-        work.gaussianElimination(true, mathContext);
-
-        return work.subMatrix(0, columns(), rows(), columns());
-    }
-
     default void gaussianElimination(boolean reducedEchelonForm, MathContext mathContext) {
         int pivotRow = 0;
         int pivotColumn = 0;
@@ -154,6 +140,15 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
+    static MutableBigMatrix matrix(int rows, int columns, CoordValue... values) {
+        int n = rows * columns;
+        if (values.length - n > 10000 || (values.length > 10000 && MatrixUtils.atLeastZeroValues(10000, values))) {
+            return sparseMatrix(rows, columns, values);
+        } else {
+            return denseMatrix(rows, columns, values);
+        }
+    }
+
     static MutableBigMatrix matrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
         int n = rows * columns;
         if (n >= 10000 && MatrixUtils.atLeastZeroValues(10000, rows, columns, valueFunction)) {
@@ -183,6 +178,10 @@ public interface MutableBigMatrix extends BigMatrix {
         return new DenseMutableBigMatrix(rows, columns, valueFunction);
     }
 
+    static MutableBigMatrix denseMatrix(int rows, int columns, CoordValue... values) {
+        return new DenseMutableBigMatrix(rows, columns, values);
+    }
+
     static MutableBigMatrix denseIdentityMatrix(int size) {
         return denseMatrix(ImmutableBigMatrix.identityMatrix(size));
     }
@@ -200,6 +199,10 @@ public interface MutableBigMatrix extends BigMatrix {
     }
 
     static MutableBigMatrix sparseMatrix(int rows, int columns, BigDecimal... values) {
+        return new SparseMutableBigMatrix(rows, columns, values);
+    }
+
+    static MutableBigMatrix sparseMatrix(int rows, int columns, CoordValue... values) {
         return new SparseMutableBigMatrix(rows, columns, values);
     }
 

@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big.matrix.internal;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
+import ch.obermuhlner.math.big.matrix.CoordValue;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -31,6 +32,19 @@ public class MatrixUtils {
         int count = 0;
         for (int i = 0; i < data.length; i++) {
             if (data[i].signum() == 0) {
+                count++;
+                if (count >= minCount) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean atLeastZeroValues(int minCount, CoordValue[] data) {
+        int count = 0;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].value.signum() == 0) {
                 count++;
                 if (count >= minCount) {
                     return true;

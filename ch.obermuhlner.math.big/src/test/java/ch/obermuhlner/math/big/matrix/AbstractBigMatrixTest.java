@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.math.MathContext;
 
+import static ch.obermuhlner.math.big.matrix.CoordValue.coordValue;
 import static ch.obermuhlner.util.AssertUtil.assertBigDecimal;
 import static ch.obermuhlner.util.AssertUtil.assertBigMatrix;
 import static junit.framework.TestCase.assertTrue;
@@ -285,12 +286,51 @@ public abstract class AbstractBigMatrixTest {
                 4, 5, 6);
 
         assertTrue(m1.equals(m2));
+    }
 
-        assertTrue(m1.equals(ImmutableBigMatrix.denseMatrix(2, 3, 1, 2, 3, 4, 5, 6)));
-        assertTrue(m1.equals(ImmutableBigMatrix.sparseMatrix(2, 3, 1, 2, 3, 4, 5, 6)));
-        assertTrue(m1.equals(ImmutableBigMatrix.lambdaMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
-        assertTrue(m1.equals(MutableBigMatrix.denseMatrix(2, 3, 1, 2, 3, 4, 5, 6)));
-        assertTrue(m1.equals(MutableBigMatrix.sparseMatrix(2, 3, 1, 2, 3, 4, 5, 6)));
+    @Test
+    public void testConstructors() {
+        BigMatrix empty = createBigMatrix(2, 3,
+                0, 0, 0,
+                0, 0, 0);
+        BigMatrix m = createBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 6);
+
+        assertTrue(empty.equals(ImmutableBigMatrix.matrix(2, 3)));
+        assertTrue(empty.equals(MutableBigMatrix.matrix(2, 3)));
+
+        assertTrue(m.equals(ImmutableBigMatrix.matrix(2, 3, 1, 2, 3, 4, 5, 6)));
+        assertTrue(m.equals(ImmutableBigMatrix.denseMatrix(2, 3, 1, 2, 3, 4, 5, 6)));
+        assertTrue(m.equals(ImmutableBigMatrix.sparseMatrix(2, 3, 1, 2, 3, 4, 5, 6)));
+        assertTrue(m.equals(MutableBigMatrix.matrix(2, 3, 1, 2, 3, 4, 5, 6)));
+        assertTrue(m.equals(MutableBigMatrix.denseMatrix(2, 3, 1, 2, 3, 4, 5, 6)));
+        assertTrue(m.equals(MutableBigMatrix.sparseMatrix(2, 3, 1, 2, 3, 4, 5, 6)));
+
+        assertTrue(m.equals(ImmutableBigMatrix.matrix(2, 3,
+                coordValue(0, 0, 1), coordValue(0, 1, 2), coordValue(0, 2, 3),
+                coordValue(1, 0, 4), coordValue(1, 1, 5), coordValue(1, 2, 6))));
+        assertTrue(m.equals(ImmutableBigMatrix.denseMatrix(2, 3,
+                coordValue(0, 0, 1), coordValue(0, 1, 2), coordValue(0, 2, 3),
+                coordValue(1, 0, 4), coordValue(1, 1, 5), coordValue(1, 2, 6))));
+        assertTrue(m.equals(ImmutableBigMatrix.sparseMatrix(2, 3,
+                coordValue(0, 0, 1), coordValue(0, 1, 2), coordValue(0, 2, 3),
+                coordValue(1, 0, 4), coordValue(1, 1, 5), coordValue(1, 2, 6))));
+        assertTrue(m.equals(MutableBigMatrix.matrix(2, 3,
+                coordValue(0, 0, 1), coordValue(0, 1, 2), coordValue(0, 2, 3),
+                coordValue(1, 0, 4), coordValue(1, 1, 5), coordValue(1, 2, 6))));
+        assertTrue(m.equals(MutableBigMatrix.denseMatrix(2, 3,
+                coordValue(0, 0, 1), coordValue(0, 1, 2), coordValue(0, 2, 3),
+                coordValue(1, 0, 4), coordValue(1, 1, 5), coordValue(1, 2, 6))));
+        assertTrue(m.equals(MutableBigMatrix.sparseMatrix(2, 3,
+                coordValue(0, 0, 1), coordValue(0, 1, 2), coordValue(0, 2, 3),
+                coordValue(1, 0, 4), coordValue(1, 1, 5), coordValue(1, 2, 6))));
+
+        assertTrue(m.equals(ImmutableBigMatrix.denseMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
+        assertTrue(m.equals(ImmutableBigMatrix.sparseMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
+        assertTrue(m.equals(ImmutableBigMatrix.lambdaMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
+        assertTrue(m.equals(MutableBigMatrix.denseMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
+        assertTrue(m.equals(MutableBigMatrix.sparseMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
     }
 
     @Test(expected = IllegalArgumentException.class)
