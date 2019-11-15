@@ -2,6 +2,7 @@ package ch.obermuhlner.math.big.matrix.internal;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.CoordValue;
+import ch.obermuhlner.math.big.matrix.internal.sparse.AbstractSparseBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -179,5 +180,9 @@ public class MatrixUtils {
             }
         }
         return false;
+    }
+
+    public static boolean preferSparseMatrix(SparseBigMatrix matrix) {
+        return matrix.size() > 1000 && matrix.sparseEmptyRatio() > 0.5;
     }
 }

@@ -251,4 +251,12 @@ public interface BigMatrix {
         });
         return result;
     }
+
+    default Map<Integer, Map<Integer, BigDecimal>> toTransposedSparseNestedMap() {
+        Map<Integer, Map<Integer, BigDecimal>> result = new HashMap<>();
+        getCoordValues().forEach(cv -> {
+            result.computeIfAbsent(cv.coord.column, HashMap::new).put(cv.coord.row, cv.value);
+        });
+        return result;
+    }
 }

@@ -105,7 +105,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
     private ImmutableBigMatrix addSparse(AbstractSparseBigMatrix other, MathContext mathContext) {
         MatrixUtils.checkSameSize(this, other);
 
-        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns, new BigDecimal[0]);
+        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns);
         m.defaultValue = MatrixUtils.subtract(defaultValue, other.defaultValue, mathContext);
 
         Set<Integer> mergedIndexes = new HashSet<>(data.keySet());
@@ -129,7 +129,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
     private ImmutableBigMatrix subtractSparse(AbstractSparseBigMatrix other, MathContext mathContext) {
         MatrixUtils.checkSameSize(this, other);
 
-        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns, new BigDecimal[0]);
+        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns);
         m.defaultValue = MatrixUtils.subtract(defaultValue, other.defaultValue, mathContext);
 
         Set<Integer> mergedIndexes = new HashSet<>(data.keySet());
@@ -148,7 +148,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
     }
 
     private ImmutableBigMatrix multiplySparse(BigDecimal value, MathContext mathContext) {
-        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns, new BigDecimal[0]);
+        SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(rows, columns);
         m.defaultValue = MatrixUtils.multiply(defaultValue, value, mathContext);
 
         for (Map.Entry<Integer, BigDecimal> entry : data.entrySet()) {
@@ -162,7 +162,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
 
     @Override
     public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
-        if (defaultValue.signum() == 0) {
+        if (defaultValue.signum() == 0 &&  MatrixUtils.preferSparseMatrix(this)) {
             return multiplySparse(other, mathContext);
         }
         return super.multiply(other, mathContext);
@@ -170,13 +170,9 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
 
     private ImmutableBigMatrix multiplySparse(BigMatrix other, MathContext mathContext) {
         Map<Integer, Map<Integer, BigDecimal>> leftByRowColumn = toSparseNestedMap();
+        Map<Integer, Map<Integer, BigDecimal>> rightByColumnRow = other.toTransposedSparseNestedMap();
 
-        Map<Integer, Map<Integer, BigDecimal>> rightByColumnRow = new HashMap<>();
-        other.getCoordValues().forEach(cv -> {
-            rightByColumnRow.computeIfAbsent(cv.coord.column, HashMap::new).put(cv.coord.row, cv.value);
-        });
-
-        AbstractBigMatrix result = new SparseImmutableBigMatrix(rows(), other.columns(), new BigDecimal[0]);
+        SparseImmutableBigMatrix result = new SparseImmutableBigMatrix(rows(), other.columns());
 
         for (Map.Entry<Integer, Map<Integer, BigDecimal>> leftRow : leftByRowColumn.entrySet()) {
             for (Map.Entry<Integer, Map<Integer, BigDecimal>> rightColumn : rightByColumnRow.entrySet()) {
@@ -191,7 +187,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
             }
         }
 
-        return result.asImmutableMatrix();
+        return result;
     }
 
     @Override
@@ -222,6 +218,42 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
             result = MatrixUtils.multiply(result, value, mathContext);
         }
 
+        return result;
+    }
+
+    @Override
+    public ImmutableBigMatrix transpose() {
+        if (MatrixUtils.preferSparseMatrix(this)) {
+            return transposeSparse();
+        }
+        return super.transpose();
+    }
+
+    private ImmutableBigMatrix transposeSparse() {
+        SparseImmutableBigMatrix result = new SparseImmutableBigMatrix(columns, rows);
+
+        result.defaultValue = defaultValue;
+
+        for (Map.Entry<Integer, BigDecimal> entry : data.entrySet()) {
+            int index = entry.getKey();
+            BigDecimal value = entry.getValue();
+            result.internalSet(index % columns, index / columns, value);
+        }
+
+        return result;
+    }
+
+    @Override
+    public ImmutableBigMatrix round(MathContext mathContext) {
+        return roundSparse(mathContext);
+    }
+
+    private ImmutableBigMatrix roundSparse(MathContext mathContext) {
+        SparseImmutableBigMatrix result = new SparseImmutableBigMatrix(columns, rows);
+
+        getCoordValues().forEach(cv -> {
+            result.internalSet(cv.coord.row, cv.coord.column, cv.value.round(mathContext).stripTrailingZeros());
+        });
         return result;
     }
 
