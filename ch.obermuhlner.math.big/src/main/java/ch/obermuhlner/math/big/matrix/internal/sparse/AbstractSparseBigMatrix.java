@@ -2,10 +2,12 @@ package ch.obermuhlner.math.big.matrix.internal.sparse;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import ch.obermuhlner.math.big.matrix.BigMatrix;
+import ch.obermuhlner.math.big.matrix.Coord;
 import ch.obermuhlner.math.big.matrix.CoordValue;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
+import ch.obermuhlner.math.big.matrix.internal.SparseBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -14,10 +16,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
+import static ch.obermuhlner.math.big.matrix.Coord.coord;
 import static java.math.BigDecimal.valueOf;
 
-public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
+public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implements SparseBigMatrix {
     protected final int rows;
     protected final int columns;
     protected final Map<Integer, BigDecimal> data = new HashMap<>();
@@ -76,7 +80,8 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         return internalGet(index);
     }
 
-    public BigDecimal getDefaultValue() {
+    @Override
+    public BigDecimal getSparseDefaultValue() {
         return defaultValue;
     }
 
@@ -84,20 +89,9 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         return data.getOrDefault(index, defaultValue);
     }
 
+    @Override
     public int sparseFilledSize() {
         return data.size();
-    }
-
-    public int sparseEmptySize() {
-        return size() - sparseFilledSize();
-    }
-
-    public double sparseEmptyRatio() {
-        if (size() == 0) {
-            return 0.0;
-        }
-
-        return (double)sparseEmptySize() / size();
     }
 
     @Override
@@ -167,8 +161,42 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     }
 
     @Override
+    public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
+        if (defaultValue.signum() == 0) {
+            return multiplySparse(other, mathContext);
+        }
+        return super.multiply(other, mathContext);
+    }
+
+    private ImmutableBigMatrix multiplySparse(BigMatrix other, MathContext mathContext) {
+        Map<Integer, Map<Integer, BigDecimal>> leftByRowColumn = toSparseNestedMap();
+
+        Map<Integer, Map<Integer, BigDecimal>> rightByColumnRow = new HashMap<>();
+        other.getCoordValues().forEach(cv -> {
+            rightByColumnRow.computeIfAbsent(cv.coord.column, HashMap::new).put(cv.coord.row, cv.value);
+        });
+
+        AbstractBigMatrix result = new SparseImmutableBigMatrix(rows(), other.columns(), new BigDecimal[0]);
+
+        for (Map.Entry<Integer, Map<Integer, BigDecimal>> leftRow : leftByRowColumn.entrySet()) {
+            for (Map.Entry<Integer, Map<Integer, BigDecimal>> rightColumn : rightByColumnRow.entrySet()) {
+                BigDecimal sum = BigDecimal.ZERO;
+                Set<Integer> commonIndices = new HashSet<>(leftRow.getValue().keySet());
+                commonIndices.retainAll(rightColumn.getValue().keySet());
+                for (Integer index : commonIndices) {
+                    BigDecimal v = MatrixUtils.multiply(leftRow.getValue().get(index), rightColumn.getValue().get(index), mathContext);
+                    sum = MatrixUtils.add(sum, v, mathContext);
+                }
+                result.internalSet(leftRow.getKey(), rightColumn.getKey(), sum);
+            }
+        }
+
+        return result.asImmutableMatrix();
+    }
+
+    @Override
     public BigDecimal sum(MathContext mathContext) {
-        BigDecimal result = MatrixUtils.multiply(valueOf(size() - sparseFilledSize()), defaultValue, mathContext);
+        BigDecimal result = MatrixUtils.multiply(valueOf(sparseEmptySize()), defaultValue, mathContext);
 
         for (BigDecimal value : data.values()) {
             result = MatrixUtils.add(result, value, mathContext);
@@ -179,11 +207,16 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
 
     @Override
     public BigDecimal product(MathContext mathContext) {
+        BigDecimal result;
         if (mathContext == null) {
-            return super.product(null);
+            result = MatrixUtils.pow(defaultValue, sparseEmptySize());
+        } else {
+            result = BigDecimalMath.pow(defaultValue, sparseEmptySize(), mathContext);
         }
 
-        BigDecimal result = BigDecimalMath.pow(defaultValue,size() - sparseFilledSize(), mathContext);
+        if (result.signum() == 0) {
+            return result;
+        }
 
         for (BigDecimal value : data.values()) {
             result = MatrixUtils.multiply(result, value, mathContext);
@@ -192,7 +225,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         return result;
     }
 
-    protected void internalSet(int row, int column, BigDecimal value) {
+    public void internalSet(int row, int column, BigDecimal value) {
         MatrixUtils.checkRow(this, row);
         MatrixUtils.checkColumn(this, column);
 
@@ -200,11 +233,59 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         internalSet(index, value);
     }
 
-    protected void internalSet(int index, BigDecimal value) {
+    public void internalSet(int index, BigDecimal value) {
         if (value.compareTo(defaultValue) == 0) {
             data.remove(index);
         } else {
             data.put(index, value);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (obj instanceof AbstractSparseBigMatrix) {
+            return equalsSparse((AbstractSparseBigMatrix) obj);
+        }
+        return super.equals(obj);
+    }
+
+    private boolean equalsSparse(AbstractSparseBigMatrix other) {
+        if (rows() != other.rows()) {
+            return false;
+        }
+        if (columns() != other.columns()) {
+            return false;
+        }
+
+        Set<Integer> mergedIndexes = new HashSet<>(data.keySet());
+        mergedIndexes.addAll(other.data.keySet());
+
+        if (sparseEmptySize() != 0 && other.sparseEmptySize() != 0 && defaultValue != other.defaultValue) {
+            return false;
+        }
+
+        for (int index : mergedIndexes) {
+            if (internalGet(index).compareTo(other.internalGet(index)) != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Stream<Coord> getCoords() {
+        if (defaultValue.signum() == 0) {
+            return getCoordsSparse();
+        }
+
+        return super.getCoords();
+    }
+
+    private Stream<Coord> getCoordsSparse() {
+        int columns = columns();
+        return data.keySet().stream()
+                .map(i -> coord(i / columns, i % columns));
     }
 }

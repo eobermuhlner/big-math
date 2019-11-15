@@ -26,6 +26,12 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
+    default void set(CoordValue... values) {
+        for (CoordValue value : values) {
+            set(value.coord.row, value.coord.column, value.value);
+        }
+    }
+
     default void fill(BigDecimal value) {
         for (int row = 0; row < rows(); row++) {
             for (int col = 0; col < columns(); col++) {

@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.function.BiFunction;
 
+import static java.math.BigDecimal.ONE;
+
 public class MatrixUtils {
 
     private static final int THRESHOLD_ELEMENT_COUNT = 10000;
@@ -43,6 +45,25 @@ public class MatrixUtils {
         } else {
             return left.multiply(right, mathContext);
         }
+    }
+
+    public static BigDecimal pow(BigDecimal x, long y) {
+        BigDecimal result = ONE;
+        while (y > 0) {
+            if ((y & 1) == 1) {
+                // odd exponent -> multiply result with x
+                result = result.multiply(x);
+                y -= 1;
+            }
+
+            if (y > 0) {
+                // even exponent -> square x
+                x = x.multiply(x);
+            }
+
+            y >>= 1;
+        }
+        return result;
     }
 
     public static void checkRows(int rows) {

@@ -4,7 +4,13 @@ import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import static ch.obermuhlner.math.big.matrix.Coord.coord;
+import static ch.obermuhlner.math.big.matrix.CoordValue.coordValue;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 
@@ -174,6 +180,17 @@ public interface BigMatrix {
                                 column < skipColumn ? column : column + 1));
     }
 
+    default Stream<Coord> getCoords() {
+        return IntStream.range(0, rows() * columns())
+                .mapToObj(i -> coord(i / columns(), i % columns()))
+                .filter(c -> get(c.row, c.column).signum() != 0);
+    }
+
+    default Stream<CoordValue> getCoordValues() {
+        return getCoords()
+                .map(c -> coordValue(c, get(c.row, c.column)));
+    }
+
     default ImmutableBigMatrix asImmutableMatrix() {
         if (this instanceof ImmutableBigMatrix) {
             return (ImmutableBigMatrix) this;
@@ -224,6 +241,14 @@ public interface BigMatrix {
                 currentRow[column] = get(row, column).doubleValue();
             }
         }
+        return result;
+    }
+
+    default Map<Integer, Map<Integer, BigDecimal>> toSparseNestedMap() {
+        Map<Integer, Map<Integer, BigDecimal>> result = new HashMap<>();
+        getCoordValues().forEach(cv -> {
+            result.computeIfAbsent(cv.coord.row, HashMap::new).put(cv.coord.column, cv.value);
+        });
         return result;
     }
 }

@@ -41,6 +41,9 @@ public abstract class AbstractBigMatrixTest {
 
     @Test
     public void testSum() {
+        assertBigDecimal(valueOf(0), createBigMatrix(0, 0).sum());
+        assertBigDecimal(valueOf(0), createBigMatrix(2, 3).sum());
+
         BigMatrix m = createBigMatrix(2, 3,
                 1, 2, 3,
                 4, 5, 6);
@@ -50,6 +53,9 @@ public abstract class AbstractBigMatrixTest {
 
     @Test
     public void testProduct() {
+        assertBigDecimal(valueOf(1), createBigMatrix(0, 0).product());
+        assertBigDecimal(valueOf(0), createBigMatrix(2, 3).product());
+
         BigMatrix m = createBigMatrix(2, 3,
                 1, 2, 3,
                 4, 5, 6);

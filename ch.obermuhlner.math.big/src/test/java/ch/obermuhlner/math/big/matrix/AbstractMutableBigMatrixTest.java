@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.math.MathContext;
 
+import static ch.obermuhlner.math.big.matrix.CoordValue.coordValue;
 import static ch.obermuhlner.util.AssertUtil.assertBigDecimal;
 import static java.math.BigDecimal.*;
 import static org.junit.Assert.assertEquals;
@@ -18,7 +19,7 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
     protected abstract MutableBigMatrix createMutableBigMatrix(int rows, int columns, double... values);
 
     @Test
-    public void testSetRowLower() {
+    public void testSet() {
         MutableBigMatrix m = createMutableBigMatrix(2, 3,
                 1, 2, 3,
                 4, 5, 6);
@@ -27,6 +28,23 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
         m.set(1, 2, ZERO);
         assertEquals(ZERO, m.get(1, 2));
     }
+
+    @Test
+    public void testSetCoordValues() {
+        MutableBigMatrix m = createMutableBigMatrix(2, 3);
+        m.set(
+                coordValue(0, 0, 1),
+                coordValue(0, 1, 2),
+                coordValue(0, 2, 3),
+                coordValue(1, 0, 4),
+                coordValue(1, 1, 5),
+                coordValue(1, 2, 6));
+
+        assertEquals(valueOf(6.0), m.get(1, 2));
+        m.set(1, 2, ZERO);
+        assertEquals(ZERO, m.get(1, 2));
+    }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void failSetRowLower() {

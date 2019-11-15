@@ -2,7 +2,6 @@ package ch.obermuhlner.math.big.matrix.internal.lamdba;
 
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
-import ch.obermuhlner.math.big.matrix.internal.dense.DenseImmutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
@@ -34,7 +33,7 @@ public class LambdaImmutableBigMatrix extends AbstractBigMatrix implements Immut
     }
 
     @Override
-    protected void internalSet(int row, int column, BigDecimal value) {
+    public void internalSet(int row, int column, BigDecimal value) {
         throw new IllegalStateException();
     }
 }

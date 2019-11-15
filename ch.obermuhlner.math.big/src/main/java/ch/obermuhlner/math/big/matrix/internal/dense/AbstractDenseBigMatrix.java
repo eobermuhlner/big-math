@@ -68,7 +68,7 @@ public abstract class AbstractDenseBigMatrix extends AbstractBigMatrix {
         return data[index(row, column)];
     }
 
-    protected void internalSet(int row, int column, BigDecimal value) {
+    public void internalSet(int row, int column, BigDecimal value) {
         MatrixUtils.checkRow(this, row);
         MatrixUtils.checkColumn(this, column);
 
