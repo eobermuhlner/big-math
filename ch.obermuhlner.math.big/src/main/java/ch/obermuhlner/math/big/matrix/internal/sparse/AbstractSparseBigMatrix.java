@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static ch.obermuhlner.math.big.matrix.Coord.coord;
@@ -186,6 +187,23 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
                 result.internalSet(leftRow.getKey(), rightColumn.getKey(), sum);
             }
         }
+
+        return result;
+    }
+
+    @Override
+    public ImmutableBigMatrix elementOperation(Function<BigDecimal, BigDecimal> operation) {
+        return elementOperationSparse(operation);
+    }
+
+    private ImmutableBigMatrix elementOperationSparse(Function<BigDecimal, BigDecimal> operation) {
+        SparseImmutableBigMatrix result = new SparseImmutableBigMatrix(rows(), columns());
+
+        result.defaultValue = operation.apply(defaultValue);
+
+        getCoordValues().forEach(cv -> {
+            result.internalSet(cv.coord.row, cv.coord.column, operation.apply(cv.value));
+        });
 
         return result;
     }

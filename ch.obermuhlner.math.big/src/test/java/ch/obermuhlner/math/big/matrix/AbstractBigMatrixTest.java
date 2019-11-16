@@ -233,6 +233,20 @@ public abstract class AbstractBigMatrixTest {
     }
 
     @Test
+    public void testElementOperation() {
+        BigMatrix m1 = createBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 0);
+
+        ImmutableBigMatrix r = m1.elementOperation(v -> v.multiply(valueOf(2)));
+
+        assertEquals(createBigMatrix(2, 3,
+                2, 4, 6,
+                8, 10, 0),
+                r);
+    }
+
+    @Test
     public void testDeterminant() {
         assertBigDecimal(
                 valueOf(1),

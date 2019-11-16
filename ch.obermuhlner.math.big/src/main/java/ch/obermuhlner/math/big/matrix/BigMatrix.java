@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -51,6 +52,10 @@ public interface BigMatrix {
 
     ImmutableBigMatrix multiply(BigMatrix other);
     ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
+
+    default ImmutableBigMatrix elementOperation(Function<BigDecimal, BigDecimal> operation) {
+        return ImmutableBigMatrix.matrix(lazyElementOperation(operation));
+    }
 
     default ImmutableBigMatrix transpose() {
         return ImmutableBigMatrix.matrix(lazyTranspose());
@@ -161,6 +166,11 @@ public interface BigMatrix {
     }
     default ImmutableBigMatrix lazyMultiply(BigDecimal value, MathContext mathContext) {
         return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> MatrixUtils.multiply(get(row, column), value, mathContext).stripTrailingZeros());
+    }
+
+    default ImmutableBigMatrix lazyElementOperation(Function<BigDecimal, BigDecimal> operation) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(),
+                (row, column) -> operation.apply(get(row, column)));
     }
 
     default ImmutableBigMatrix lazyTranspose() {

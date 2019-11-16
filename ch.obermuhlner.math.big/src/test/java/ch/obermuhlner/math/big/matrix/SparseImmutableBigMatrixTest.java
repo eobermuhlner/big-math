@@ -76,6 +76,15 @@ public class SparseImmutableBigMatrixTest extends AbstractImmutableBigMatrixTest
     }
 
     @Test(timeout = TIMEOUT)
+    public void testElementOperation() {
+        ImmutableBigMatrix m1 = createImmutableBigMatrix(ROWS, COLUMNS, 1, 2, 3);
+
+        BigMatrix r = m1.elementOperation(v -> v.multiply(valueOf(2)));
+
+        assertEquals(createImmutableBigMatrix(ROWS, COLUMNS, 2, 4, 6), r);
+    }
+
+    @Test(timeout = TIMEOUT)
     public void testSparseTranspose() {
         ImmutableBigMatrix m1 = createImmutableBigMatrix(ROWS, COLUMNS, 1, 2, 3);
 
