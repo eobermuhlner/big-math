@@ -295,40 +295,6 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         }
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (obj instanceof AbstractSparseBigMatrix) {
-            return equalsSparse((AbstractSparseBigMatrix) obj);
-        }
-        return super.equals(obj);
-    }
-
-    private boolean equalsSparse(AbstractSparseBigMatrix other) {
-        if (rows() != other.rows()) {
-            return false;
-        }
-        if (columns() != other.columns()) {
-            return false;
-        }
-
-        Set<Integer> mergedIndexes = new HashSet<>(data.keySet());
-        mergedIndexes.addAll(other.data.keySet());
-
-        if (sparseEmptySize() != 0 && other.sparseEmptySize() != 0 && defaultValue != other.defaultValue) {
-            return false;
-        }
-
-        for (int index : mergedIndexes) {
-            if (internalGet(index).compareTo(other.internalGet(index)) != 0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public Stream<Coord> getCoords() {
         if (defaultValue.signum() == 0) {
             return getCoordsSparse();

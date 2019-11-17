@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big.matrix.internal;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
+import ch.obermuhlner.math.big.matrix.Coord;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.dense.DenseImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.sparse.AbstractSparseBigMatrix;
@@ -8,6 +9,9 @@ import ch.obermuhlner.math.big.matrix.internal.sparse.SparseImmutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class AbstractBigMatrix implements BigMatrix {
 
@@ -77,13 +81,17 @@ public abstract class AbstractBigMatrix implements BigMatrix {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof BigMatrix)) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (! (obj instanceof BigMatrix)) {
             return false;
         }
+
         BigMatrix other = (BigMatrix) obj;
+
+        if (isSparse() || other.isSparse()) {
+            return equalsSparse(other);
+        }
 
         if (rows() != other.rows()) {
             return false;
@@ -98,6 +106,30 @@ public abstract class AbstractBigMatrix implements BigMatrix {
                 }
             }
         }
+        return true;
+    }
+
+    private boolean equalsSparse(BigMatrix other) {
+        if (rows() != other.rows()) {
+            return false;
+        }
+        if (columns() != other.columns()) {
+            return false;
+        }
+
+        if (sparseEmptySize() != 0 && other.sparseEmptySize() != 0 && getSparseDefaultValue() != other.getSparseDefaultValue()) {
+            return false;
+        }
+
+        Set<Coord> mergedCoords = getCoords().collect(Collectors.toSet());
+        mergedCoords.addAll(other.getCoords().collect(Collectors.toSet()));
+
+        for (Coord coord : mergedCoords) {
+            if (get(coord.row, coord.column).compareTo(other.get(coord.row, coord.column)) != 0) {
+                return false;
+            }
+        }
+
         return true;
     }
 
