@@ -3,10 +3,12 @@ package ch.obermuhlner.math.big.matrix;
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 import ch.obermuhlner.math.big.matrix.internal.dense.DenseImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaImmutableBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaTransformationImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.sparse.SparseImmutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public interface ImmutableBigMatrix extends BigMatrix {
 
@@ -102,5 +104,9 @@ public interface ImmutableBigMatrix extends BigMatrix {
 
     static ImmutableBigMatrix lambdaMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
         return new LambdaImmutableBigMatrix(rows, columns, valueFunction);
+    }
+
+    static ImmutableBigMatrix lambdaMatrix(BigMatrix matrix, int rows, int columns, Function<Coord, Coord> transformationFunction) {
+        return new LambdaTransformationImmutableBigMatrix(matrix, rows, columns, transformationFunction);
     }
 }

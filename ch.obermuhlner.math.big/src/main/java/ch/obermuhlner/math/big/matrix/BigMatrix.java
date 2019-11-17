@@ -1,6 +1,7 @@
 package ch.obermuhlner.math.big.matrix;
 
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
+import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaTransformationImmutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -174,20 +175,19 @@ public interface BigMatrix {
     }
 
     default ImmutableBigMatrix lazyTranspose() {
-        return ImmutableBigMatrix.lambdaMatrix(columns(), rows(),
-                (row, column) -> get(column, row));
+        return ImmutableBigMatrix.lambdaMatrix(this, columns(), rows(),
+                c -> coord(c.column, c.row));
     }
 
     default ImmutableBigMatrix lazySubMatrix(int startRow, int startColumn, int rows, int columns) {
-        return ImmutableBigMatrix.lambdaMatrix(rows, columns,
-                (row, column) -> get(row + startRow, column + startColumn));
+        return ImmutableBigMatrix.lambdaMatrix(this, rows, columns,
+                c -> coord(c.row + startRow, c.column + startColumn));
     }
 
     default ImmutableBigMatrix lazyMinor(int skipRow, int skipColumn) {
-        return ImmutableBigMatrix.lambdaMatrix(rows() - 1, columns() - 1,
-                (row, column) ->
-                        get(row < skipRow ? row : row + 1,
-                                column < skipColumn ? column : column + 1));
+        return ImmutableBigMatrix.lambdaMatrix(this,rows() - 1, columns() - 1,
+                c -> coord(c.row < skipRow ? c.row : c.row + 1,
+                                c.column < skipColumn ? c.column : c.column + 1));
     }
 
     default Stream<Coord> getCoords() {
