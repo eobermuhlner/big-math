@@ -9,6 +9,10 @@ import ch.obermuhlner.math.big.matrix.internal.sparse.SparseImmutableBigMatrix;
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static ch.obermuhlner.math.big.matrix.Coord.coord;
 
 public interface ImmutableBigMatrix extends BigMatrix {
 
@@ -75,7 +79,23 @@ public interface ImmutableBigMatrix extends BigMatrix {
     static ImmutableBigMatrix identityMatrix(int size) {
         return new LambdaImmutableBigMatrix(size, size, (row, column) -> {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
-        });
+        }) {
+            @Override
+            public boolean isSparse() {
+                return true;
+            }
+
+            @Override
+            public int sparseFilledSize() {
+                return rows();
+            }
+
+            @Override
+            public Stream<Coord> getCoords() {
+                return IntStream.range(0, rows())
+                        .mapToObj(i -> coord(i, i));
+            }
+        };
     }
 
     static ImmutableBigMatrix sparseMatrix(BigMatrix matrix) {
