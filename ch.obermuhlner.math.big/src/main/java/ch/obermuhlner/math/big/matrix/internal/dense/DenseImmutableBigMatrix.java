@@ -7,6 +7,11 @@ import java.math.BigDecimal;
 import java.util.function.BiFunction;
 
 public class DenseImmutableBigMatrix extends AbstractDenseBigMatrix implements ImmutableBigMatrix {
+
+    public DenseImmutableBigMatrix(int rows, int columns) {
+        super(rows, columns);
+    }
+
     public DenseImmutableBigMatrix(int rows, int columns, BigDecimal... values) {
         super(rows, columns, values);
     }

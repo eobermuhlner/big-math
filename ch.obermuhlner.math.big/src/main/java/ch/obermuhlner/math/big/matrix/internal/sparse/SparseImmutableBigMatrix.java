@@ -7,6 +7,11 @@ import java.math.BigDecimal;
 import java.util.function.BiFunction;
 
 public class SparseImmutableBigMatrix extends AbstractSparseBigMatrix implements ImmutableBigMatrix {
+
+    public SparseImmutableBigMatrix(BigDecimal defaultValue, int rows, int columns) {
+        super(defaultValue, rows, columns);
+    }
+
     public SparseImmutableBigMatrix(int rows, int columns) {
         super(rows, columns);
     }

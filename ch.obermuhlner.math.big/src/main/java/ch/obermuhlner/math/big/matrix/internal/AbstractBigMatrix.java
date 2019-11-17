@@ -1,55 +1,87 @@
 package ch.obermuhlner.math.big.matrix.internal;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
-import ch.obermuhlner.math.big.matrix.Coord;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
-import ch.obermuhlner.math.big.matrix.internal.dense.DenseImmutableBigMatrix;
-import ch.obermuhlner.math.big.matrix.internal.sparse.AbstractSparseBigMatrix;
-import ch.obermuhlner.math.big.matrix.internal.sparse.SparseImmutableBigMatrix;
+import ch.obermuhlner.math.big.matrix.ImmutableOperations;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 public abstract class AbstractBigMatrix implements BigMatrix {
 
     public abstract void internalSet(int row, int column, BigDecimal value);
 
     @Override
-    public ImmutableBigMatrix multiply(BigMatrix other) {
-        return multiply(other, null);
+    public ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(this) || MatrixUtils.preferSparseMatrix(other)) {
+            return ImmutableOperations.sparseAdd(this, other, mathContext);
+        }
+        return ImmutableOperations.denseAdd(this, other, mathContext);
     }
 
+    @Override
+    public ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(this) || MatrixUtils.preferSparseMatrix(other)) {
+            return ImmutableOperations.sparseSubtract(this, other, mathContext);
+        }
+        return ImmutableOperations.denseSubtract(this, other, mathContext);
+    }
+
+    @Override
+    public ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(this)) {
+            return ImmutableOperations.sparseMultiply(this, value, mathContext);
+        }
+        return ImmutableOperations.denseMultiply(this, value, mathContext);
+    }
+
+    @Override
     public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
-        MatrixUtils.checkColumnsOtherRows(this, other);
-
-        AbstractBigMatrix result;
-        if (isSparseWithLotsOfZeroes(this) && isSparseWithLotsOfZeroes(other)) {
-            result = new SparseImmutableBigMatrix(rows(), other.columns(), new BigDecimal[0]);
-        } else {
-            result = new DenseImmutableBigMatrix(rows(), other.columns(), new BigDecimal[0]);
+        if (MatrixUtils.preferSparseMatrix(this) || MatrixUtils.preferSparseMatrix(other)) {
+            return ImmutableOperations.sparseMultiply(this, other, mathContext);
         }
-
-        for (int row = 0; row < result.rows(); row++) {
-            for (int column = 0; column < result.columns(); column++) {
-                BigDecimal sum = BigDecimal.ZERO;
-                for (int index = 0; index < columns(); index++) {
-                    sum = MatrixUtils.add(sum, MatrixUtils.multiply(get(row, index), other.get(index, column), mathContext), mathContext);
-                }
-                result.internalSet(row, column, sum.stripTrailingZeros());
-            }
-        }
-
-        return result.asImmutableMatrix();
+        return ImmutableOperations.denseMultiply(this, other, mathContext);
     }
 
-    private boolean isSparseWithLotsOfZeroes(BigMatrix matrix) {
-        if (matrix instanceof AbstractSparseBigMatrix) {
-            AbstractSparseBigMatrix sparseMatrix = (AbstractSparseBigMatrix) matrix;
-            return sparseMatrix.getSparseDefaultValue().signum() == 0 && sparseMatrix.sparseEmptyRatio() > 0.5;
+    @Override
+    public ImmutableBigMatrix elementOperation(Function<BigDecimal, BigDecimal> operation) {
+        if (MatrixUtils.preferSparseMatrix(this)) {
+            return ImmutableOperations.sparseElementOperation(this, operation);
         }
-        return false;
+        return ImmutableOperations.denseElementOperation(this, operation);
+    }
+
+    @Override
+    public ImmutableBigMatrix transpose() {
+        if (MatrixUtils.preferSparseMatrix(this)) {
+            return ImmutableOperations.sparseTranspose(this);
+        }
+        return ImmutableOperations.denseTranspose(this);
+    }
+
+    @Override
+    public BigDecimal sum(MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(this)) {
+            return ImmutableOperations.sparseSum(this, mathContext);
+        }
+        return ImmutableOperations.denseSum(this, mathContext);
+    }
+
+    @Override
+    public BigDecimal product(MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(this)) {
+            return ImmutableOperations.sparseProduct(this, mathContext);
+        }
+        return ImmutableOperations.denseProduct(this, mathContext);
+    }
+
+    @Override
+    public ImmutableBigMatrix round(MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(this)) {
+            return ImmutableOperations.sparseRound(this, mathContext);
+        }
+        return ImmutableOperations.denseRound(this, mathContext);
     }
 
     @Override
@@ -89,47 +121,10 @@ public abstract class AbstractBigMatrix implements BigMatrix {
         BigMatrix other = (BigMatrix) obj;
 
         if (isSparse() || other.isSparse()) {
-            return sparseEquals(other);
+            return ImmutableOperations.sparseEquals(this, other);
         }
 
-        if (rows() != other.rows()) {
-            return false;
-        }
-        if (columns() != other.columns()) {
-            return false;
-        }
-        for (int row = 0; row < rows(); row++) {
-            for (int column = 0; column < columns(); column++) {
-                if (get(row, column).compareTo(other.get(row, column)) != 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean sparseEquals(BigMatrix other) {
-        if (rows() != other.rows()) {
-            return false;
-        }
-        if (columns() != other.columns()) {
-            return false;
-        }
-
-        if (sparseEmptySize() != 0 && other.sparseEmptySize() != 0 && getSparseDefaultValue() != other.getSparseDefaultValue()) {
-            return false;
-        }
-
-        Set<Coord> mergedCoords = getCoords().collect(Collectors.toSet());
-        mergedCoords.addAll(other.getCoords().collect(Collectors.toSet()));
-
-        for (Coord coord : mergedCoords) {
-            if (get(coord.row, coord.column).compareTo(other.get(coord.row, coord.column)) != 0) {
-                return false;
-            }
-        }
-
-        return true;
+        return ImmutableOperations.denseEquals(this, other);
     }
 
     @Override

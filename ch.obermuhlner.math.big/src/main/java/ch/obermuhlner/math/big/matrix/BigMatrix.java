@@ -1,7 +1,6 @@
 package ch.obermuhlner.math.big.matrix;
 
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
-import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaTransformationImmutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -26,41 +25,31 @@ public interface BigMatrix {
         return rows() * columns();
     }
 
-    default ImmutableBigMatrix round(MathContext mathContext) {
-        return ImmutableBigMatrix.matrix(rows(), columns(), (row, column) -> get(row, column).round(mathContext).stripTrailingZeros());
-    }
+    ImmutableBigMatrix round(MathContext mathContext);
 
     default ImmutableBigMatrix add(BigMatrix other) {
         return add(other, null);
     }
-    default ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
-        return ImmutableBigMatrix.matrix(lazyAdd(other, mathContext));
-    }
+    ImmutableBigMatrix add(BigMatrix other, MathContext mathContext);
 
     default ImmutableBigMatrix subtract(BigMatrix other) {
         return subtract(other, null);
     }
-    default ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
-        return ImmutableBigMatrix.matrix(lazySubtract(other, mathContext));
-    }
+    ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext);
 
     default ImmutableBigMatrix multiply(BigDecimal value) {
         return multiply(value, null);
     }
-    default ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
-        return ImmutableBigMatrix.matrix(lazyMultiply(value, mathContext));
-    }
+    ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext);
 
-    ImmutableBigMatrix multiply(BigMatrix other);
+    default ImmutableBigMatrix multiply(BigMatrix other) {
+        return multiply(other, null);
+    }
     ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext);
 
-    default ImmutableBigMatrix elementOperation(Function<BigDecimal, BigDecimal> operation) {
-        return ImmutableBigMatrix.matrix(lazyElementOperation(operation));
-    }
+    ImmutableBigMatrix elementOperation(Function<BigDecimal, BigDecimal> operation);
 
-    default ImmutableBigMatrix transpose() {
-        return ImmutableBigMatrix.matrix(lazyTranspose());
-    }
+    ImmutableBigMatrix transpose();
 
     default ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
         return ImmutableBigMatrix.matrix(lazySubMatrix(startRow, startColumn, rows, columns));
@@ -85,31 +74,12 @@ public interface BigMatrix {
     default BigDecimal sum() {
         return sum(null);
     }
-
-    default BigDecimal sum(MathContext mathContext) {
-        BigDecimal result = ZERO;
-        for (int row = 0; row < rows(); row++) {
-            for (int col = 0; col < columns(); col++) {
-                result = MatrixUtils.add(result, get(row, col), mathContext);
-            }
-        }
-        return result;
-    }
+    BigDecimal sum(MathContext mathContext);
 
     default BigDecimal product() {
         return product(null);
     }
-
-
-    default BigDecimal product(MathContext mathContext) {
-        BigDecimal result = ONE;
-        for (int row = 0; row < rows(); row++) {
-            for (int col = 0; col < columns(); col++) {
-                result = MatrixUtils.multiply(result, get(row, col), mathContext);
-            }
-        }
-        return result;
-    }
+    BigDecimal product(MathContext mathContext);
 
     default BigDecimal determinant() {
         MatrixUtils.checkSquare(this);
@@ -144,6 +114,11 @@ public interface BigMatrix {
             sign = !sign;
         }
         return result.stripTrailingZeros();
+    }
+
+    default ImmutableBigMatrix lazyRound(MathContext mathContext) {
+        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(),
+                (row, column) -> get(row, column).round(mathContext).stripTrailingZeros());
     }
 
     default ImmutableBigMatrix lazyAdd(BigMatrix other) {

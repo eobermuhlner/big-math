@@ -185,4 +185,12 @@ public class MatrixUtils {
     public static boolean preferSparseMatrix(BigMatrix matrix) {
         return matrix.size() > 1000 && matrix.sparseEmptyRatio() > 0.5;
     }
+
+    public static boolean isSparseWithLotsOfZeroes(BigMatrix matrix) {
+        if (matrix instanceof AbstractSparseBigMatrix) {
+            AbstractSparseBigMatrix sparseMatrix = (AbstractSparseBigMatrix) matrix;
+            return sparseMatrix.getSparseDefaultValue().signum() == 0 && sparseMatrix.sparseEmptyRatio() > 0.5;
+        }
+        return false;
+    }
 }
