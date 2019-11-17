@@ -201,6 +201,30 @@ public interface BigMatrix {
                 .map(c -> coordValue(c, get(c.row, c.column)));
     }
 
+    default boolean isSparse() {
+        return false;
+    }
+
+    default BigDecimal getSparseDefaultValue() {
+        return ZERO;
+    }
+
+    default int sparseFilledSize() {
+        return size();
+    }
+
+    default int sparseEmptySize() {
+        return size() - sparseFilledSize();
+    }
+
+    default double sparseEmptyRatio() {
+        if (size() == 0) {
+            return 0.0;
+        }
+
+        return (double) sparseEmptySize() / size();
+    }
+
     default ImmutableBigMatrix asImmutableMatrix() {
         if (this instanceof ImmutableBigMatrix) {
             return (ImmutableBigMatrix) this;

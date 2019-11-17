@@ -7,7 +7,6 @@ import ch.obermuhlner.math.big.matrix.CoordValue;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
-import ch.obermuhlner.math.big.matrix.internal.SparseBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -22,7 +21,7 @@ import java.util.stream.Stream;
 import static ch.obermuhlner.math.big.matrix.Coord.coord;
 import static java.math.BigDecimal.valueOf;
 
-public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implements SparseBigMatrix {
+public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     protected final int rows;
     protected final int columns;
     protected final Map<Integer, BigDecimal> data = new HashMap<>();
@@ -79,6 +78,11 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix implemen
 
         int index = row*columns + column;
         return internalGet(index);
+    }
+
+    @Override
+    public boolean isSparse() {
+        return true;
     }
 
     @Override

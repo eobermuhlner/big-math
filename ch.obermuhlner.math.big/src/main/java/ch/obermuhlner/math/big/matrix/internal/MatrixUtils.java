@@ -182,7 +182,7 @@ public class MatrixUtils {
         return false;
     }
 
-    public static boolean preferSparseMatrix(SparseBigMatrix matrix) {
+    public static boolean preferSparseMatrix(BigMatrix matrix) {
         return matrix.size() > 1000 && matrix.sparseEmptyRatio() > 0.5;
     }
 }
