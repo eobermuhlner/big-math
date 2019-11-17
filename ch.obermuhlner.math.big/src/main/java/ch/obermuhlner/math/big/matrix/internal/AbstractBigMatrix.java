@@ -9,7 +9,6 @@ import ch.obermuhlner.math.big.matrix.internal.sparse.SparseImmutableBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -90,7 +89,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
         BigMatrix other = (BigMatrix) obj;
 
         if (isSparse() || other.isSparse()) {
-            return equalsSparse(other);
+            return sparseEquals(other);
         }
 
         if (rows() != other.rows()) {
@@ -109,7 +108,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
         return true;
     }
 
-    private boolean equalsSparse(BigMatrix other) {
+    private boolean sparseEquals(BigMatrix other) {
         if (rows() != other.rows()) {
             return false;
         }
