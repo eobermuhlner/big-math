@@ -52,11 +52,11 @@ public interface BigMatrix {
     ImmutableBigMatrix transpose();
 
     default ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
-        return ImmutableBigMatrix.matrix(lazySubMatrix(startRow, startColumn, rows, columns));
+        return ImmutableBigMatrix.matrix(ImmutableOperations.lazySubMatrix(this, startRow, startColumn, rows, columns));
     }
 
     default ImmutableBigMatrix minor(int skipRow, int skipColumn) {
-        return ImmutableBigMatrix.matrix(lazyMinor(skipRow, skipColumn));
+        return ImmutableBigMatrix.matrix(ImmutableOperations.lazyMinor(this, skipRow, skipColumn));
     }
 
     default ImmutableBigMatrix invert(MathContext mathContext) {
@@ -105,7 +105,7 @@ public interface BigMatrix {
         BigDecimal result = ZERO;
         boolean sign = true;
         for (int i = 0; i < columns(); i++) {
-            BigDecimal term = get(0, i).multiply(lazyMinor(0, i).determinant());
+            BigDecimal term = get(0, i).multiply(ImmutableOperations.lazyMinor(this, 0, i).determinant());
             if (sign) {
                 result = result.add(term);
             } else {
@@ -114,55 +114,6 @@ public interface BigMatrix {
             sign = !sign;
         }
         return result.stripTrailingZeros();
-    }
-
-    default ImmutableBigMatrix lazyRound(MathContext mathContext) {
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(),
-                (row, column) -> get(row, column).round(mathContext).stripTrailingZeros());
-    }
-
-    default ImmutableBigMatrix lazyAdd(BigMatrix other) {
-        return lazyAdd(other, null);
-    }
-    default ImmutableBigMatrix lazyAdd(BigMatrix other, MathContext mathContext) {
-        MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> MatrixUtils.add(get(row, column), other.get(row, column), mathContext).stripTrailingZeros());
-    }
-
-    default ImmutableBigMatrix lazySubtract(BigMatrix other) {
-        return lazySubtract(other, null);
-    }
-    default ImmutableBigMatrix lazySubtract(BigMatrix other, MathContext mathContext) {
-        MatrixUtils.checkSameSize(this, other);
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> MatrixUtils.subtract(get(row, column), other.get(row, column), mathContext).stripTrailingZeros());
-    }
-
-    default ImmutableBigMatrix lazyMultiply(BigDecimal value) {
-        return lazyMultiply(value, null);
-    }
-    default ImmutableBigMatrix lazyMultiply(BigDecimal value, MathContext mathContext) {
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> MatrixUtils.multiply(get(row, column), value, mathContext).stripTrailingZeros());
-    }
-
-    default ImmutableBigMatrix lazyElementOperation(Function<BigDecimal, BigDecimal> operation) {
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(),
-                (row, column) -> operation.apply(get(row, column)));
-    }
-
-    default ImmutableBigMatrix lazyTranspose() {
-        return ImmutableBigMatrix.lambdaMatrix(this, columns(), rows(),
-                c -> coord(c.column, c.row));
-    }
-
-    default ImmutableBigMatrix lazySubMatrix(int startRow, int startColumn, int rows, int columns) {
-        return ImmutableBigMatrix.lambdaMatrix(this, rows, columns,
-                c -> coord(c.row + startRow, c.column + startColumn));
-    }
-
-    default ImmutableBigMatrix lazyMinor(int skipRow, int skipColumn) {
-        return ImmutableBigMatrix.lambdaMatrix(this,rows() - 1, columns() - 1,
-                c -> coord(c.row < skipRow ? c.row : c.row + 1,
-                                c.column < skipColumn ? c.column : c.column + 1));
     }
 
     default Stream<Coord> getCoords() {

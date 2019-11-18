@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static ch.obermuhlner.math.big.matrix.Coord.coord;
 import static java.math.BigDecimal.*;
 
 public class ImmutableOperations {
@@ -21,17 +22,17 @@ public class ImmutableOperations {
     public static ImmutableBigMatrix denseAdd(BigMatrix left, BigMatrix right, MathContext mathContext) {
         MatrixUtils.checkSameSize(left, right);
 
-        return ImmutableBigMatrix.matrix(left.lazyAdd(right, mathContext));
+        return ImmutableBigMatrix.matrix(lazyAdd(left, right, mathContext));
     }
 
     public static ImmutableBigMatrix denseSubtract(BigMatrix left, BigMatrix right, MathContext mathContext) {
         MatrixUtils.checkSameSize(left, right);
 
-        return ImmutableBigMatrix.matrix(left.lazySubtract(right, mathContext));
+        return ImmutableBigMatrix.matrix(lazySubtract(left, right, mathContext));
     }
 
     public static ImmutableBigMatrix denseMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
-        return ImmutableBigMatrix.matrix(left.lazyMultiply(right, mathContext));
+        return ImmutableBigMatrix.matrix(lazyMultiply(left, right, mathContext));
     }
 
     public static ImmutableBigMatrix denseMultiply(BigMatrix left, BigMatrix right, MathContext mathContext) {
@@ -62,11 +63,11 @@ public class ImmutableOperations {
     }
 
     public static ImmutableBigMatrix denseElementOperation(BigMatrix matrix, Function<BigDecimal, BigDecimal> operation) {
-        return ImmutableBigMatrix.matrix(matrix.lazyElementOperation(operation));
+        return ImmutableBigMatrix.matrix(lazyElementOperation(matrix, operation));
     }
 
     public static ImmutableBigMatrix denseTranspose(BigMatrix matrix) {
-        return ImmutableBigMatrix.matrix(matrix.lazyTranspose());
+        return ImmutableBigMatrix.matrix(lazyTranspose(matrix));
     }
 
     public static BigDecimal denseSum(BigMatrix matrix, MathContext mathContext) {
@@ -90,7 +91,7 @@ public class ImmutableOperations {
     }
 
     public static ImmutableBigMatrix denseRound(BigMatrix matrix, MathContext mathContext) {
-        return ImmutableBigMatrix.matrix(matrix.lazyRound(mathContext));
+        return ImmutableBigMatrix.matrix(lazyRound(matrix, mathContext));
     }
 
     public static boolean denseEquals(BigMatrix left, BigMatrix right) {
@@ -276,5 +277,51 @@ public class ImmutableOperations {
             result.internalSet(cv.coord.row, cv.coord.column, cv.value.round(mathContext).stripTrailingZeros());
         });
         return result;
+    }
+
+    public static ImmutableBigMatrix lazyRound(BigMatrix matrix, MathContext mathContext) {
+        return ImmutableBigMatrix.lambdaMatrix(matrix.rows(), matrix.columns(),
+                (row, column) -> matrix.get(row, column).round(mathContext).stripTrailingZeros());
+    }
+
+    public static ImmutableBigMatrix lazyAdd(BigMatrix left, BigMatrix right, MathContext mathContext) {
+        MatrixUtils.checkSameSize(left, right);
+        return ImmutableBigMatrix.lambdaMatrix(left.rows(), left.columns(), (row, column) -> {
+            return MatrixUtils.add(left.get(row, column), right.get(row, column), mathContext).stripTrailingZeros();
+        });
+    }
+
+    public static ImmutableBigMatrix lazySubtract(BigMatrix left, BigMatrix right, MathContext mathContext) {
+        MatrixUtils.checkSameSize(left, right);
+        return ImmutableBigMatrix.lambdaMatrix(left.rows(), left.columns(), (row, column) -> {
+            return MatrixUtils.subtract(left.get(row, column), right.get(row, column), mathContext).stripTrailingZeros();
+        });
+    }
+
+    public static ImmutableBigMatrix lazyMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
+        return ImmutableBigMatrix.lambdaMatrix(left.rows(), left.columns(), (row, column) -> {
+            return MatrixUtils.multiply(left.get(row, column), right, mathContext).stripTrailingZeros();
+        });
+    }
+
+    public static ImmutableBigMatrix lazyElementOperation(BigMatrix matrix, Function<BigDecimal, BigDecimal> operation) {
+        return ImmutableBigMatrix.lambdaMatrix(matrix.rows(), matrix.columns(),
+                (row, column) -> operation.apply(matrix.get(row, column)));
+    }
+
+    public static ImmutableBigMatrix lazyTranspose(BigMatrix matrix) {
+        return ImmutableBigMatrix.lambdaMatrix(matrix, matrix.columns(), matrix.rows(),
+                c -> coord(c.column, c.row));
+    }
+
+    public static ImmutableBigMatrix lazySubMatrix(BigMatrix matrix, int startRow, int startColumn, int rows, int columns) {
+        return ImmutableBigMatrix.lambdaMatrix(matrix, rows, columns,
+                c -> coord(c.row + startRow, c.column + startColumn));
+    }
+
+    public static ImmutableBigMatrix lazyMinor(BigMatrix matrix, int skipRow, int skipColumn) {
+        return ImmutableBigMatrix.lambdaMatrix(matrix,matrix.rows() - 1, matrix.columns() - 1,
+                c -> coord(c.row < skipRow ? c.row : c.row + 1,
+                        c.column < skipColumn ? c.column : c.column + 1));
     }
 }

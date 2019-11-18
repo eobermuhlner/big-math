@@ -47,6 +47,16 @@ public class LambdaTransformationImmutableBigMatrix extends AbstractBigMatrix im
     }
 
     @Override
+    public boolean isSparse() {
+        return matrix.isSparse();
+    }
+
+    @Override
+    public int sparseEmptySize() {
+        return matrix.sparseEmptySize();
+    }
+
+    @Override
     public void internalSet(int row, int column, BigDecimal value) {
         throw new IllegalStateException();
     }
