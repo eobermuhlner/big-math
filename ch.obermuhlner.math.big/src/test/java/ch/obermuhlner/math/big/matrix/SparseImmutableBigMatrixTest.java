@@ -118,4 +118,14 @@ public class SparseImmutableBigMatrixTest extends AbstractImmutableBigMatrixTest
         ImmutableBigMatrix r = m.round(new MathContext(2));
         assertEquals(createImmutableBigMatrix(ROWS, COLUMNS, 110, 220, 330), r);
     }
+
+    @Test(timeout = TIMEOUT)
+    public void testSparseIdentity() {
+        ImmutableBigMatrix m = ImmutableBigMatrix.identityMatrix(ROWS);
+
+        ImmutableBigMatrix r = m.add(m);
+
+        assertEquals(valueOf(2), r.get(0, 0));
+    }
+
 }

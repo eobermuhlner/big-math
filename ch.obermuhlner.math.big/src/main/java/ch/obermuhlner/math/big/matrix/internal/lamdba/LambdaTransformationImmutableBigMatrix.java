@@ -41,8 +41,8 @@ public class LambdaTransformationImmutableBigMatrix extends AbstractBigMatrix im
     }
 
     @Override
-    public Stream<Coord> getCoords() {
-        return matrix.getCoords()
+    public Stream<Coord> getSparseCoords() {
+        return matrix.getSparseCoords()
                 .map(c -> coordFunction.apply(c));
     }
 

@@ -91,7 +91,7 @@ public interface ImmutableBigMatrix extends BigMatrix {
             }
 
             @Override
-            public Stream<Coord> getCoords() {
+            public Stream<Coord> getSparseCoords() {
                 return IntStream.range(0, rows())
                         .mapToObj(i -> coord(i, i));
             }

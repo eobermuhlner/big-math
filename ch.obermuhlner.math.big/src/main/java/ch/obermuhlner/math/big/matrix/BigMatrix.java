@@ -116,14 +116,14 @@ public interface BigMatrix {
         return result.stripTrailingZeros();
     }
 
-    default Stream<Coord> getCoords() {
+    default Stream<Coord> getSparseCoords() {
         return IntStream.range(0, rows() * columns())
                 .mapToObj(i -> coord(i / columns(), i % columns()))
                 .filter(c -> get(c.row, c.column).signum() != 0);
     }
 
-    default Stream<CoordValue> getCoordValues() {
-        return getCoords()
+    default Stream<CoordValue> getSparseCoordValues() {
+        return getSparseCoords()
                 .map(c -> coordValue(c, get(c.row, c.column)));
     }
 
@@ -206,7 +206,7 @@ public interface BigMatrix {
 
     default Map<Integer, Map<Integer, BigDecimal>> toSparseNestedMap() {
         Map<Integer, Map<Integer, BigDecimal>> result = new HashMap<>();
-        getCoordValues().forEach(cv -> {
+        getSparseCoordValues().forEach(cv -> {
             result.computeIfAbsent(cv.coord.row, HashMap::new).put(cv.coord.column, cv.value);
         });
         return result;
@@ -214,7 +214,7 @@ public interface BigMatrix {
 
     default Map<Integer, Map<Integer, BigDecimal>> toTransposedSparseNestedMap() {
         Map<Integer, Map<Integer, BigDecimal>> result = new HashMap<>();
-        getCoordValues().forEach(cv -> {
+        getSparseCoordValues().forEach(cv -> {
             result.computeIfAbsent(cv.coord.column, HashMap::new).put(cv.coord.row, cv.value);
         });
         return result;

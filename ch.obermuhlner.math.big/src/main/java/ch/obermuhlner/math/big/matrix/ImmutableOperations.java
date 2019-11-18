@@ -127,8 +127,8 @@ public class ImmutableOperations {
             return false;
         }
 
-        Set<Coord> mergedCoords = left.getCoords().collect(Collectors.toSet());
-        mergedCoords.addAll(right.getCoords().collect(Collectors.toSet()));
+        Set<Coord> mergedCoords = left.getSparseCoords().collect(Collectors.toSet());
+        mergedCoords.addAll(right.getSparseCoords().collect(Collectors.toSet()));
 
         for (Coord coord : mergedCoords) {
             if (left.get(coord.row, coord.column).compareTo(right.get(coord.row, coord.column)) != 0) {
@@ -146,8 +146,8 @@ public class ImmutableOperations {
 
         SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(defaultValue, left.rows(), left.columns());
 
-        Set<Coord> mergedCoords = left.getCoords().collect(Collectors.toSet());
-        mergedCoords.addAll(right.getCoords().collect(Collectors.toSet()));
+        Set<Coord> mergedCoords = left.getSparseCoords().collect(Collectors.toSet());
+        mergedCoords.addAll(right.getSparseCoords().collect(Collectors.toSet()));
 
         for (Coord coord : mergedCoords) {
             BigDecimal value = MatrixUtils.add(left.get(coord.row, coord.column), right.get(coord.row, coord.column), mathContext);
@@ -164,8 +164,8 @@ public class ImmutableOperations {
 
         SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(defaultValue, left.rows(), left.columns());
 
-        Set<Coord> mergedCoords = left.getCoords().collect(Collectors.toSet());
-        mergedCoords.addAll(right.getCoords().collect(Collectors.toSet()));
+        Set<Coord> mergedCoords = left.getSparseCoords().collect(Collectors.toSet());
+        mergedCoords.addAll(right.getSparseCoords().collect(Collectors.toSet()));
 
         for (Coord coord : mergedCoords) {
             BigDecimal value = MatrixUtils.subtract(left.get(coord.row, coord.column), right.get(coord.row, coord.column), mathContext);
@@ -180,7 +180,7 @@ public class ImmutableOperations {
 
         SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(defaultValue, left.rows(), left.columns());
 
-        left.getCoordValues().forEach(coordValue -> {
+        left.getSparseCoordValues().forEach(coordValue -> {
             BigDecimal value = MatrixUtils.multiply(left.get(coordValue.coord.row, coordValue.coord.column), right, mathContext);
             m.internalSet(coordValue.coord.row, coordValue.coord.column, value);
         });
@@ -220,7 +220,7 @@ public class ImmutableOperations {
 
         SparseImmutableBigMatrix result = new SparseImmutableBigMatrix(defaultValue, matrix.rows(), matrix.columns());
 
-        matrix.getCoordValues().forEach(cv -> {
+        matrix.getSparseCoordValues().forEach(cv -> {
             result.internalSet(cv.coord.row, cv.coord.column, operation.apply(cv.value));
         });
 
@@ -232,7 +232,7 @@ public class ImmutableOperations {
 
         SparseImmutableBigMatrix result = new SparseImmutableBigMatrix(defaultValue, matrix.columns(), matrix.rows());
 
-        matrix.getCoordValues().forEach(cv -> {
+        matrix.getSparseCoordValues().forEach(cv -> {
             result.internalSet(cv.coord.column, cv.coord.row, cv.value);
         });
 
@@ -242,7 +242,7 @@ public class ImmutableOperations {
     public static BigDecimal sparseSum(BigMatrix matrix, MathContext mathContext) {
         BigDecimal common = MatrixUtils.multiply(valueOf(matrix.sparseEmptySize()), matrix.getSparseDefaultValue(), mathContext);
 
-        BigDecimal valuesSum = matrix.getCoordValues()
+        BigDecimal valuesSum = matrix.getSparseCoordValues()
                 .map(cv -> cv.value)
                 .reduce(ZERO, (b1, b2) -> MatrixUtils.add(b1, b2, mathContext));
 
@@ -261,7 +261,7 @@ public class ImmutableOperations {
             return common;
         }
 
-        BigDecimal valuesProduct = matrix.getCoordValues()
+        BigDecimal valuesProduct = matrix.getSparseCoordValues()
                 .map(cv -> cv.value)
                 .reduce(ONE, (b1, b2) -> MatrixUtils.multiply(b1, b2, mathContext));
 
@@ -273,7 +273,7 @@ public class ImmutableOperations {
 
         SparseImmutableBigMatrix result = new SparseImmutableBigMatrix(defaultValue, matrix.columns(), matrix.rows());
 
-        matrix.getCoordValues().forEach(cv -> {
+        matrix.getSparseCoordValues().forEach(cv -> {
             result.internalSet(cv.coord.row, cv.coord.column, cv.value.round(mathContext).stripTrailingZeros());
         });
         return result;

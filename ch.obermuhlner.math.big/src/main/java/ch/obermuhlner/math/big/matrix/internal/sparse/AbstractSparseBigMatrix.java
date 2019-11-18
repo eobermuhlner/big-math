@@ -113,7 +113,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
         }
     }
 
-    public Stream<Coord> getCoords() {
+    public Stream<Coord> getSparseCoords() {
         int columns = columns();
         return data.keySet().stream()
                 .map(i -> coord(i / columns, i % columns));
