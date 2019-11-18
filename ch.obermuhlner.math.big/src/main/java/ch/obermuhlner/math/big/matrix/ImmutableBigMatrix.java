@@ -2,8 +2,8 @@ package ch.obermuhlner.math.big.matrix;
 
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 import ch.obermuhlner.math.big.matrix.internal.dense.DenseImmutableBigMatrix;
-import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaImmutableBigMatrix;
-import ch.obermuhlner.math.big.matrix.internal.lamdba.LambdaTransformationImmutableBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.lazy.LazyImmutableBigMatrix;
+import ch.obermuhlner.math.big.matrix.internal.lazy.LazyTransformationImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.sparse.SparseImmutableBigMatrix;
 
 import java.math.BigDecimal;
@@ -77,7 +77,7 @@ public interface ImmutableBigMatrix extends BigMatrix {
     }
 
     static ImmutableBigMatrix identityMatrix(int size) {
-        return new LambdaImmutableBigMatrix(size, size, (row, column) -> {
+        return new LazyImmutableBigMatrix(size, size, (row, column) -> {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
         }) {
             @Override
@@ -122,11 +122,11 @@ public interface ImmutableBigMatrix extends BigMatrix {
         return new SparseImmutableBigMatrix(rows, columns, valueFunction);
     }
 
-    static ImmutableBigMatrix lambdaMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
-        return new LambdaImmutableBigMatrix(rows, columns, valueFunction);
+    static ImmutableBigMatrix lazyMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+        return new LazyImmutableBigMatrix(rows, columns, valueFunction);
     }
 
-    static ImmutableBigMatrix lambdaMatrix(BigMatrix matrix, int rows, int columns, Function<Coord, Coord> transformationFunction) {
-        return new LambdaTransformationImmutableBigMatrix(matrix, rows, columns, transformationFunction);
+    static ImmutableBigMatrix lazyMatrix(BigMatrix matrix, int rows, int columns, Function<Coord, Coord> transformationFunction) {
+        return new LazyTransformationImmutableBigMatrix(matrix, rows, columns, transformationFunction);
     }
 }

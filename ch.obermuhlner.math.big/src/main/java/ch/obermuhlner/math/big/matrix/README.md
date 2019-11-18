@@ -27,7 +27,7 @@ create matrices that store the elements in different ways.
 - `sparseMatrix()` - optimized for matrices where most elements
   have the same value (default is 0).
   Only elements that are different from the common value are stored.
-- `lambdaMatrix()` - does not store the matrix elements but
+- `lazyMatrix()` - does not store the matrix elements but
   recalculates all elements on the fly.
 
 - `matrix()` - automatically picks the best storage type (dense or sparse).
@@ -56,7 +56,7 @@ The constructor methods in `ImmutableBigMatrix`:
     static ImmutableBigMatrix sparseMatrix(int rows, int columns, BigDecimal... values);
     static ImmutableBigMatrix sparseMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction);
     static ImmutableBigMatrix identityMatrix(int size);
-    static ImmutableBigMatrix lambdaMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction);
+    static ImmutableBigMatrix lazyMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction);
 ```
 
 ## `MutableBigMatrix` constructor methods
@@ -110,15 +110,6 @@ Operations in `BigMatrix`:
     BigDecimal product();
     BigDecimal product(MathContext mathContext);
     BigDecimal determinant();
-    ImmutableBigMatrix lazyAdd(BigMatrix other);
-    ImmutableBigMatrix lazyAdd(BigMatrix other, MathContext mathContext);
-    ImmutableBigMatrix lazySubtract(BigMatrix other);
-    ImmutableBigMatrix lazySubtract(BigMatrix other, MathContext mathContext);
-    ImmutableBigMatrix lazyMultiply(BigDecimal value);
-    ImmutableBigMatrix lazyMultiply(BigDecimal value, MathContext mathContext);
-    ImmutableBigMatrix lazyTranspose();
-    ImmutableBigMatrix lazySubMatrix(int startRow, int startColumn, int rows, int columns);
-    ImmutableBigMatrix lazyMinor(int skipRow, int skipColumn);
     ImmutableBigMatrix asImmutableMatrix();
     BigDecimal[] toBigDecimalArray();
     BigDecimal[][] toBigDecimalNestedArray();
@@ -126,10 +117,8 @@ Operations in `BigMatrix`:
     double[][] toDoubleNestedArray();
 ```
 
-The methods prefixed `lazy` are special.
-They return the result of the calculation as a lambda matrix that will be calculated later on-the-fly.
-This saves memory, since the result matrix is not created as an actual instance.
-
+The mathematical operations in `BigMatrix` have heuristics to call the optimal operation in `ImmutableOperations`.
+ 
 
 ## `MutableBigMatrix` operations
 
@@ -142,3 +131,53 @@ Operations in `MutableBigMatrix`:
     void clear();
     void gaussianElimination(boolean reducedEchelonForm, MathContext mathContext);
 ```  
+
+## External immutable operations
+
+The class `ImmutableOperations` provides external specialized operations:
+```
+    public static ImmutableBigMatrix denseAdd(BigMatrix left, BigMatrix right, MathContext mathContext) {
+    public static ImmutableBigMatrix denseSubtract(BigMatrix left, BigMatrix right, MathContext mathContext) {
+    public static ImmutableBigMatrix denseMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
+    public static ImmutableBigMatrix denseMultiply(BigMatrix left, BigMatrix right, MathContext mathContext) {
+    public static ImmutableBigMatrix denseElementOperation(BigMatrix matrix, Function<BigDecimal, BigDecimal> operation) {
+    public static ImmutableBigMatrix denseTranspose(BigMatrix matrix) {
+    public static ImmutableBigMatrix denseRound(BigMatrix matrix, MathContext mathContext) {
+    public static BigDecimal denseSum(BigMatrix matrix, MathContext mathContext) {
+    public static BigDecimal denseProduct(BigMatrix matrix, MathContext mathContext) {
+    public static boolean denseEquals(BigMatrix left, BigMatrix right) {
+
+    public static ImmutableBigMatrix sparseAdd(BigMatrix left, BigMatrix right, MathContext mathContext) {
+    public static ImmutableBigMatrix sparseSubtract(BigMatrix left, BigMatrix right, MathContext mathContext) {
+    public static ImmutableBigMatrix sparseMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
+    public static ImmutableBigMatrix sparseMultiply(BigMatrix left, BigMatrix right, MathContext mathContext) {
+    public static ImmutableBigMatrix sparseElementOperation(BigMatrix matrix, Function<BigDecimal, BigDecimal> operation) {
+    public static ImmutableBigMatrix sparseTranspose(BigMatrix matrix) {
+    public static ImmutableBigMatrix sparseRound(BigMatrix matrix, MathContext mathContext) {
+    public static BigDecimal sparseSum(BigMatrix matrix, MathContext mathContext) {
+    public static BigDecimal sparseProduct(BigMatrix matrix, MathContext mathContext) {
+    public static boolean sparseEquals(BigMatrix left, BigMatrix right) {
+
+    public static ImmutableBigMatrix lazyAdd(BigMatrix left, BigMatrix right, MathContext mathContext) {
+    public static ImmutableBigMatrix lazySubtract(BigMatrix left, BigMatrix right, MathContext mathContext) {
+    public static ImmutableBigMatrix lazyMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
+    public static ImmutableBigMatrix lazyElementOperation(BigMatrix matrix, Function<BigDecimal, BigDecimal> operation) {
+    public static ImmutableBigMatrix lazyTranspose(BigMatrix matrix) {
+    public static ImmutableBigMatrix lazySubMatrix(BigMatrix matrix, int startRow, int startColumn, int rows, int columns) {
+    public static ImmutableBigMatrix lazyMinor(BigMatrix matrix, int skipRow, int skipColumn) {
+    public static ImmutableBigMatrix lazyRound(BigMatrix matrix, MathContext mathContext) {
+```
+
+The `dense` operations are straightforward implementations optimized for dense matrices where all elements in the matrix have values.
+
+The `sparse` operations are optimized for sparse matrices where many elements have the same value (typically 0).
+
+The `lazy` operations defer the actual calculation of the operation to later.
+This has the advantage of reducing the memory consumption by not creating concrete matrices for every operationn.
+
+Beware that lazy operations can become inefficient when the last operation after a chain of lazy operations is not O(n).
+For example the matrix multiplication is worst case O(n^3) which will lead to the same lazy element being recalculated multiple times.
+In such a case it is recommended to copy the result of a chain of lazy operations into a new matrix instance by using the 
+appropriate `ImmutableBigMatrix` constructor method, for example `ImmutableBigMatrix.matrix()`. 
+ 
+

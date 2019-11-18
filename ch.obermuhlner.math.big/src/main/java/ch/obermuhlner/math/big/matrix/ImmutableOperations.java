@@ -280,47 +280,47 @@ public class ImmutableOperations {
     }
 
     public static ImmutableBigMatrix lazyRound(BigMatrix matrix, MathContext mathContext) {
-        return ImmutableBigMatrix.lambdaMatrix(matrix.rows(), matrix.columns(),
+        return ImmutableBigMatrix.lazyMatrix(matrix.rows(), matrix.columns(),
                 (row, column) -> matrix.get(row, column).round(mathContext).stripTrailingZeros());
     }
 
     public static ImmutableBigMatrix lazyAdd(BigMatrix left, BigMatrix right, MathContext mathContext) {
         MatrixUtils.checkSameSize(left, right);
-        return ImmutableBigMatrix.lambdaMatrix(left.rows(), left.columns(), (row, column) -> {
+        return ImmutableBigMatrix.lazyMatrix(left.rows(), left.columns(), (row, column) -> {
             return MatrixUtils.add(left.get(row, column), right.get(row, column), mathContext).stripTrailingZeros();
         });
     }
 
     public static ImmutableBigMatrix lazySubtract(BigMatrix left, BigMatrix right, MathContext mathContext) {
         MatrixUtils.checkSameSize(left, right);
-        return ImmutableBigMatrix.lambdaMatrix(left.rows(), left.columns(), (row, column) -> {
+        return ImmutableBigMatrix.lazyMatrix(left.rows(), left.columns(), (row, column) -> {
             return MatrixUtils.subtract(left.get(row, column), right.get(row, column), mathContext).stripTrailingZeros();
         });
     }
 
     public static ImmutableBigMatrix lazyMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
-        return ImmutableBigMatrix.lambdaMatrix(left.rows(), left.columns(), (row, column) -> {
+        return ImmutableBigMatrix.lazyMatrix(left.rows(), left.columns(), (row, column) -> {
             return MatrixUtils.multiply(left.get(row, column), right, mathContext).stripTrailingZeros();
         });
     }
 
     public static ImmutableBigMatrix lazyElementOperation(BigMatrix matrix, Function<BigDecimal, BigDecimal> operation) {
-        return ImmutableBigMatrix.lambdaMatrix(matrix.rows(), matrix.columns(),
+        return ImmutableBigMatrix.lazyMatrix(matrix.rows(), matrix.columns(),
                 (row, column) -> operation.apply(matrix.get(row, column)));
     }
 
     public static ImmutableBigMatrix lazyTranspose(BigMatrix matrix) {
-        return ImmutableBigMatrix.lambdaMatrix(matrix, matrix.columns(), matrix.rows(),
+        return ImmutableBigMatrix.lazyMatrix(matrix, matrix.columns(), matrix.rows(),
                 c -> coord(c.column, c.row));
     }
 
     public static ImmutableBigMatrix lazySubMatrix(BigMatrix matrix, int startRow, int startColumn, int rows, int columns) {
-        return ImmutableBigMatrix.lambdaMatrix(matrix, rows, columns,
+        return ImmutableBigMatrix.lazyMatrix(matrix, rows, columns,
                 c -> coord(c.row + startRow, c.column + startColumn));
     }
 
     public static ImmutableBigMatrix lazyMinor(BigMatrix matrix, int skipRow, int skipColumn) {
-        return ImmutableBigMatrix.lambdaMatrix(matrix,matrix.rows() - 1, matrix.columns() - 1,
+        return ImmutableBigMatrix.lazyMatrix(matrix,matrix.rows() - 1, matrix.columns() - 1,
                 c -> coord(c.row < skipRow ? c.row : c.row + 1,
                         c.column < skipColumn ? c.column : c.column + 1));
     }

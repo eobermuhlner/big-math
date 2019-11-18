@@ -1,4 +1,4 @@
-package ch.obermuhlner.math.big.matrix.internal.lamdba;
+package ch.obermuhlner.math.big.matrix.internal.lazy;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.Coord;
@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 import static ch.obermuhlner.math.big.matrix.Coord.coord;
 
-public class LambdaTransformationImmutableBigMatrix extends AbstractBigMatrix implements ImmutableBigMatrix {
+public class LazyTransformationImmutableBigMatrix extends AbstractBigMatrix implements ImmutableBigMatrix {
     private int rows;
     private int columns;
     private final Function<Coord, Coord> coordFunction;
     private BigMatrix matrix;
 
-    public LambdaTransformationImmutableBigMatrix(BigMatrix matrix, int rows, int columns, Function<Coord, Coord> coordFunction) {
+    public LazyTransformationImmutableBigMatrix(BigMatrix matrix, int rows, int columns, Function<Coord, Coord> coordFunction) {
         this.matrix = matrix;
         this.rows = rows;
         this.columns = columns;

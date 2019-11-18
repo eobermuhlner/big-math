@@ -35,7 +35,7 @@ public class SimpleKalmanFilter implements KalmanFilter {
         x = F.multiply(x, MC);
 
         // P = F P F' + Q
-        P = F.multiply(P).multiply(F.lazyTranspose()).add(Q, MC);
+        P = F.multiply(P).multiply(F.transpose()).add(Q, MC);
     }
 
     @Override
@@ -44,11 +44,11 @@ public class SimpleKalmanFilter implements KalmanFilter {
         BigMatrix y = z.subtract(H.multiply(x));
 
         // S = H P H' + R
-        BigMatrix S = H.multiply(P).multiply(H.lazyTranspose()).add(R);
+        BigMatrix S = H.multiply(P).multiply(H.transpose()).add(R);
 
         // K = PH'S^(-1)
         BigMatrix Sinv = S.invert(MC);
-        BigMatrix K = P.multiply(H.lazyTranspose().multiply(Sinv));
+        BigMatrix K = P.multiply(H.transpose().multiply(Sinv));
 
         // x = x + Ky
         x = x.add(K.multiply(y, MC));

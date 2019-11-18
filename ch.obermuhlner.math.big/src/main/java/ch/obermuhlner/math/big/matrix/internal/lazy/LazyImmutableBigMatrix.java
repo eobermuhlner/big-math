@@ -1,4 +1,4 @@
-package ch.obermuhlner.math.big.matrix.internal.lamdba;
+package ch.obermuhlner.math.big.matrix.internal.lazy;
 
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
@@ -6,12 +6,12 @@ import ch.obermuhlner.math.big.matrix.internal.AbstractBigMatrix;
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
 
-public class LambdaImmutableBigMatrix extends AbstractBigMatrix implements ImmutableBigMatrix {
+public class LazyImmutableBigMatrix extends AbstractBigMatrix implements ImmutableBigMatrix {
     private final int rows;
     private final int columns;
     private final BiFunction<Integer, Integer, BigDecimal> valueFunction;
 
-    public LambdaImmutableBigMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
+    public LazyImmutableBigMatrix(int rows, int columns, BiFunction<Integer, Integer, BigDecimal> valueFunction) {
         this.rows = rows;
         this.columns = columns;
         this.valueFunction = valueFunction;

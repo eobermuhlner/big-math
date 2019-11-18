@@ -348,7 +348,7 @@ public abstract class AbstractBigMatrixTest {
 
         assertTrue(m.equals(ImmutableBigMatrix.denseMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
         assertTrue(m.equals(ImmutableBigMatrix.sparseMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
-        assertTrue(m.equals(ImmutableBigMatrix.lambdaMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
+        assertTrue(m.equals(ImmutableBigMatrix.lazyMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
         assertTrue(m.equals(MutableBigMatrix.denseMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
         assertTrue(m.equals(MutableBigMatrix.sparseMatrix(2, 3, (row, column) -> valueOf(row * 3 + column + 1))));
     }

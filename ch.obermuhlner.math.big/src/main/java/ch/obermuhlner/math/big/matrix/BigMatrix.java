@@ -155,7 +155,7 @@ public interface BigMatrix {
         if (this instanceof ImmutableBigMatrix) {
             return (ImmutableBigMatrix) this;
         }
-        return ImmutableBigMatrix.lambdaMatrix(rows(), columns(), (row, column) -> get(row, column));
+        return ImmutableBigMatrix.lazyMatrix(rows(), columns(), (row, column) -> get(row, column));
     }
 
     default BigDecimal[] toBigDecimalArray() {
