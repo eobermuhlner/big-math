@@ -19,6 +19,81 @@ import static java.math.BigDecimal.*;
 
 public class ImmutableOperations {
 
+    public static ImmutableBigMatrix autoAdd(BigMatrix left, BigMatrix right, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(left, 100, 0.98) || MatrixUtils.preferSparseMatrix(right, 100, 0.98)) {
+            return ImmutableOperations.sparseAdd(left, right, mathContext);
+        }
+        return ImmutableOperations.denseAdd(left, right, mathContext);
+    }
+
+    public static ImmutableBigMatrix autoSubtract(BigMatrix left, BigMatrix right, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(left, 100, 0.98) || MatrixUtils.preferSparseMatrix(right, 100, 0.98)) {
+            return ImmutableOperations.sparseSubtract(left, right, mathContext);
+        }
+        return ImmutableOperations.denseSubtract(left, right, mathContext);
+    }
+
+    public static ImmutableBigMatrix autoMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(left, 10, 0.01)) {
+            return ImmutableOperations.sparseMultiply(left, right, mathContext);
+        }
+        return ImmutableOperations.denseMultiply(left, right, mathContext);
+    }
+
+    public static ImmutableBigMatrix autoMultiply(BigMatrix left, BigMatrix right, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(left, 10, 0.01) || MatrixUtils.preferSparseMatrix(right, 10, 0.01)) {
+            return ImmutableOperations.sparseMultiply(left, right, mathContext);
+        }
+        return ImmutableOperations.denseMultiply(left, right, mathContext);
+    }
+
+    public static ImmutableBigMatrix autoElementOperation(BigMatrix matrix, Function<BigDecimal, BigDecimal> operation) {
+        if (MatrixUtils.preferSparseMatrix(matrix, 10, 0.01)) {
+            return ImmutableOperations.sparseElementOperation(matrix, operation);
+        }
+        return ImmutableOperations.denseElementOperation(matrix, operation);
+    }
+
+    public static ImmutableBigMatrix autoTranspose(BigMatrix matrix) {
+        return lazyTranspose(matrix);
+    }
+
+    public static ImmutableBigMatrix autoSubMatrix(BigMatrix matrix, int startRow, int startColumn, int rows, int columns) {
+        return lazySubMatrix(matrix, startRow, startColumn, rows, columns);
+    }
+
+    public static ImmutableBigMatrix autoMinor(BigMatrix matrix, int skipRow, int skipColumn) {
+        return lazyMinor(matrix, skipRow, skipColumn);
+    }
+
+    public static BigDecimal autoSum(BigMatrix matrix, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(matrix, 10, 0.01)) {
+            return ImmutableOperations.sparseSum(matrix, mathContext);
+        }
+        return ImmutableOperations.denseSum(matrix, mathContext);
+    }
+
+    public static BigDecimal autoProduct(BigMatrix matrix, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(matrix, 10, 0.01)) {
+            return ImmutableOperations.sparseProduct(matrix, mathContext);
+        }
+        return ImmutableOperations.denseProduct(matrix, mathContext);
+    }
+
+    public static ImmutableBigMatrix autoRound(BigMatrix matrix, MathContext mathContext) {
+        if (MatrixUtils.preferSparseMatrix(matrix, 100, 0.01)) {
+            return ImmutableOperations.sparseRound(matrix, mathContext);
+        }
+        return ImmutableOperations.denseRound(matrix, mathContext);
+    }
+
+    public static boolean autoEquals(BigMatrix left, BigMatrix right) {
+        if (MatrixUtils.preferSparseMatrix(left, 10, 0.01)) {
+            return ImmutableOperations.sparseEquals(left, right);
+        }
+        return ImmutableOperations.denseEquals(left, right);
+    }
+
     public static ImmutableBigMatrix denseAdd(BigMatrix left, BigMatrix right, MathContext mathContext) {
         MatrixUtils.checkSameSize(left, right);
 
@@ -32,6 +107,16 @@ public class ImmutableOperations {
     }
 
     public static ImmutableBigMatrix denseMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
+        if (right.compareTo(ZERO) == 0) {
+            return ImmutableBigMatrix.matrix(left.rows(), left.columns());
+        }
+        if (right.compareTo(ONE) == 0) {
+            if (left instanceof ImmutableBigMatrix) {
+                return (ImmutableBigMatrix) left;
+            }
+            return ImmutableBigMatrix.matrix(left);
+        }
+
         return ImmutableBigMatrix.matrix(lazyMultiply(left, right, mathContext));
     }
 
@@ -68,6 +153,14 @@ public class ImmutableOperations {
 
     public static ImmutableBigMatrix denseTranspose(BigMatrix matrix) {
         return ImmutableBigMatrix.matrix(lazyTranspose(matrix));
+    }
+
+    public static ImmutableBigMatrix denseSubMatrix(BigMatrix matrix, int startRow, int startColumn, int rows, int columns) {
+        return ImmutableBigMatrix.matrix(lazySubMatrix(matrix, startRow, startColumn, rows, columns));
+    }
+
+    public static ImmutableBigMatrix denseMinor(BigMatrix matrix, int skipRow, int skipColumn) {
+        return ImmutableBigMatrix.matrix(lazyMinor(matrix, skipRow, skipColumn));
     }
 
     public static BigDecimal denseSum(BigMatrix matrix, MathContext mathContext) {
@@ -123,7 +216,7 @@ public class ImmutableOperations {
             return false;
         }
 
-        if (left.sparseEmptySize() != 0 && right.sparseEmptySize() != 0 && left.getSparseDefaultValue().compareTo(right.getSparseDefaultValue()) != 0) {
+        if (left.sparseEmptyElementCount() != 0 && right.sparseEmptyElementCount() != 0 && left.getSparseDefaultValue().compareTo(right.getSparseDefaultValue()) != 0) {
             return false;
         }
 
@@ -176,6 +269,16 @@ public class ImmutableOperations {
     }
 
     public static ImmutableBigMatrix sparseMultiply(BigMatrix left, BigDecimal right, MathContext mathContext) {
+        if (right.compareTo(ZERO) == 0) {
+            return ImmutableBigMatrix.matrix(left.rows(), left.columns());
+        }
+        if (right.compareTo(ONE) == 0) {
+            if (left instanceof ImmutableBigMatrix) {
+                return (ImmutableBigMatrix) left;
+            }
+            return ImmutableBigMatrix.matrix(left);
+        }
+
         BigDecimal defaultValue = MatrixUtils.multiply(left.getSparseDefaultValue(), right, mathContext);
 
         SparseImmutableBigMatrix m = new SparseImmutableBigMatrix(defaultValue, left.rows(), left.columns());
@@ -240,7 +343,7 @@ public class ImmutableOperations {
     }
 
     public static BigDecimal sparseSum(BigMatrix matrix, MathContext mathContext) {
-        BigDecimal common = MatrixUtils.multiply(valueOf(matrix.sparseEmptySize()), matrix.getSparseDefaultValue(), mathContext);
+        BigDecimal common = MatrixUtils.multiply(valueOf(matrix.sparseEmptyElementCount()), matrix.getSparseDefaultValue(), mathContext);
 
         BigDecimal valuesSum = matrix.getSparseCoordValues()
                 .map(cv -> cv.value)
@@ -252,9 +355,9 @@ public class ImmutableOperations {
     public static BigDecimal sparseProduct(BigMatrix matrix, MathContext mathContext) {
         BigDecimal common;
         if (mathContext == null) {
-            common = MatrixUtils.pow(matrix.getSparseDefaultValue(), matrix.sparseEmptySize());
+            common = MatrixUtils.pow(matrix.getSparseDefaultValue(), matrix.sparseEmptyElementCount());
         } else {
-            common = BigDecimalMath.pow(matrix.getSparseDefaultValue(), matrix.sparseEmptySize(), mathContext);
+            common = BigDecimalMath.pow(matrix.getSparseDefaultValue(), matrix.sparseEmptyElementCount(), mathContext);
         }
 
         if (common.signum() == 0) {

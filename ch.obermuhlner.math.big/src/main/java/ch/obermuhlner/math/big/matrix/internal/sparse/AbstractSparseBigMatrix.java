@@ -79,11 +79,6 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     }
 
     @Override
-    public boolean isSparse() {
-        return true;
-    }
-
-    @Override
     public BigDecimal getSparseDefaultValue() {
         return defaultValue;
     }
@@ -93,7 +88,7 @@ public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
     }
 
     @Override
-    public int sparseFilledSize() {
+    public int sparseFilledElementCount() {
         return data.size();
     }
 

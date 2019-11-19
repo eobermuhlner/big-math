@@ -14,74 +14,57 @@ public abstract class AbstractBigMatrix implements BigMatrix {
 
     @Override
     public ImmutableBigMatrix add(BigMatrix other, MathContext mathContext) {
-        if (MatrixUtils.preferSparseMatrix(this) || MatrixUtils.preferSparseMatrix(other)) {
-            return ImmutableOperations.sparseAdd(this, other, mathContext);
-        }
-        return ImmutableOperations.denseAdd(this, other, mathContext);
+        return ImmutableOperations.autoAdd(this, other, mathContext);
     }
 
     @Override
     public ImmutableBigMatrix subtract(BigMatrix other, MathContext mathContext) {
-        if (MatrixUtils.preferSparseMatrix(this) || MatrixUtils.preferSparseMatrix(other)) {
-            return ImmutableOperations.sparseSubtract(this, other, mathContext);
-        }
-        return ImmutableOperations.denseSubtract(this, other, mathContext);
+        return ImmutableOperations.autoSubtract(this, other, mathContext);
     }
 
     @Override
     public ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext) {
-        if (MatrixUtils.preferSparseMatrix(this)) {
-            return ImmutableOperations.sparseMultiply(this, value, mathContext);
-        }
-        return ImmutableOperations.denseMultiply(this, value, mathContext);
+        return ImmutableOperations.autoMultiply(this, value, mathContext);
     }
 
     @Override
     public ImmutableBigMatrix multiply(BigMatrix other, MathContext mathContext) {
-        if (MatrixUtils.preferSparseMatrix(this) || MatrixUtils.preferSparseMatrix(other)) {
-            return ImmutableOperations.sparseMultiply(this, other, mathContext);
-        }
-        return ImmutableOperations.denseMultiply(this, other, mathContext);
+        return ImmutableOperations.autoMultiply(this, other, mathContext);
     }
 
     @Override
     public ImmutableBigMatrix elementOperation(Function<BigDecimal, BigDecimal> operation) {
-        if (MatrixUtils.preferSparseMatrix(this)) {
-            return ImmutableOperations.sparseElementOperation(this, operation);
-        }
-        return ImmutableOperations.denseElementOperation(this, operation);
+        return ImmutableOperations.autoElementOperation(this, operation);
     }
 
     @Override
     public ImmutableBigMatrix transpose() {
-        if (MatrixUtils.preferSparseMatrix(this)) {
-            return ImmutableOperations.sparseTranspose(this);
-        }
-        return ImmutableOperations.denseTranspose(this);
+        return ImmutableOperations.autoTranspose(this);
+    }
+
+    @Override
+    public ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
+        return ImmutableOperations.autoSubMatrix(this, startRow, startColumn, rows, columns);
+    }
+
+    @Override
+    public ImmutableBigMatrix minor(int skipRow, int skipColumn) {
+        return ImmutableOperations.autoMinor(this, skipRow, skipColumn);
     }
 
     @Override
     public BigDecimal sum(MathContext mathContext) {
-        if (MatrixUtils.preferSparseMatrix(this)) {
-            return ImmutableOperations.sparseSum(this, mathContext);
-        }
-        return ImmutableOperations.denseSum(this, mathContext);
+        return ImmutableOperations.autoSum(this, mathContext);
     }
 
     @Override
     public BigDecimal product(MathContext mathContext) {
-        if (MatrixUtils.preferSparseMatrix(this)) {
-            return ImmutableOperations.sparseProduct(this, mathContext);
-        }
-        return ImmutableOperations.denseProduct(this, mathContext);
+        return ImmutableOperations.autoProduct(this, mathContext);
     }
 
     @Override
     public ImmutableBigMatrix round(MathContext mathContext) {
-        if (MatrixUtils.preferSparseMatrix(this)) {
-            return ImmutableOperations.sparseRound(this, mathContext);
-        }
-        return ImmutableOperations.denseRound(this, mathContext);
+        return ImmutableOperations.autoRound(this, mathContext);
     }
 
     @Override
@@ -120,11 +103,7 @@ public abstract class AbstractBigMatrix implements BigMatrix {
 
         BigMatrix other = (BigMatrix) obj;
 
-        if (isSparse() || other.isSparse()) {
-            return ImmutableOperations.sparseEquals(this, other);
-        }
-
-        return ImmutableOperations.denseEquals(this, other);
+        return ImmutableOperations.autoEquals(this, other);
     }
 
     @Override

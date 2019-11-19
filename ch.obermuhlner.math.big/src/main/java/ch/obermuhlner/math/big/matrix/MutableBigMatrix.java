@@ -126,7 +126,11 @@ public interface MutableBigMatrix extends BigMatrix {
     }
 
     static MutableBigMatrix matrix(BigMatrix matrix) {
-        return matrix(matrix.rows(), matrix.columns(), (row, column) -> matrix.get(row, column));
+        if (MatrixUtils.preferSparseMatrix(matrix, 1000, 0.5)) {
+            return sparseMatrix(matrix);
+        } else {
+            return denseMatrix(matrix);
+        }
     }
 
     static MutableBigMatrix matrix(int rows, int columns) {

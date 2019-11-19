@@ -47,13 +47,8 @@ public class LazyTransformationImmutableBigMatrix extends AbstractBigMatrix impl
     }
 
     @Override
-    public boolean isSparse() {
-        return matrix.isSparse();
-    }
-
-    @Override
-    public int sparseEmptySize() {
-        return matrix.sparseEmptySize();
+    public int sparseEmptyElementCount() {
+        return matrix.sparseEmptyElementCount();
     }
 
     @Override

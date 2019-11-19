@@ -2,7 +2,6 @@ package ch.obermuhlner.math.big.matrix.internal;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.CoordValue;
-import ch.obermuhlner.math.big.matrix.internal.sparse.AbstractSparseBigMatrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -12,7 +11,9 @@ import static java.math.BigDecimal.ONE;
 
 public class MatrixUtils {
 
-    private static final int THRESHOLD_ELEMENT_COUNT = 10000;
+    private static final int THRESHOLD_ELEMENT_COUNT = 100000;
+
+    private static final double THRESHOLD_EMPTY_RATIO = 0.9;
 
     public static BigDecimal[] toBigDecimal(double... values) {
         BigDecimal[] result = new BigDecimal[values.length];
@@ -182,15 +183,11 @@ public class MatrixUtils {
         return false;
     }
 
-    public static boolean preferSparseMatrix(BigMatrix matrix) {
-        return matrix.size() > 1000 && matrix.sparseEmptyRatio() > 0.5;
+    public static boolean preferSparseMatrix(BigMatrix matrix, int thresholdElementCount, double thresholdEmptyRatio) {
+        return matrix.elementCount() > thresholdElementCount && matrix.sparseEmptyRatio() > thresholdEmptyRatio;
     }
 
     public static boolean isSparseWithLotsOfZeroes(BigMatrix matrix) {
-        if (matrix instanceof AbstractSparseBigMatrix) {
-            AbstractSparseBigMatrix sparseMatrix = (AbstractSparseBigMatrix) matrix;
-            return sparseMatrix.getSparseDefaultValue().signum() == 0 && sparseMatrix.sparseEmptyRatio() > 0.5;
-        }
-        return false;
+        return matrix.getSparseDefaultValue().signum() == 0 && matrix.sparseEmptyRatio() > THRESHOLD_EMPTY_RATIO;
     }
 }

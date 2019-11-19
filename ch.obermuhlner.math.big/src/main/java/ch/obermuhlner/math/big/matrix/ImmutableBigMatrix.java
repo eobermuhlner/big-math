@@ -17,7 +17,11 @@ import static ch.obermuhlner.math.big.matrix.Coord.coord;
 public interface ImmutableBigMatrix extends BigMatrix {
 
     static ImmutableBigMatrix matrix(BigMatrix matrix) {
-        return matrix(matrix.rows(), matrix.columns(), (row, column) -> matrix.get(row, column));
+        if (MatrixUtils.preferSparseMatrix(matrix, 1000, 0.5)) {
+            return sparseMatrix(matrix);
+        } else {
+            return denseMatrix(matrix);
+        }
     }
 
     static ImmutableBigMatrix matrix(int rows, int columns) {
@@ -81,12 +85,7 @@ public interface ImmutableBigMatrix extends BigMatrix {
             return row == column ? BigDecimal.ONE : BigDecimal.ZERO;
         }) {
             @Override
-            public boolean isSparse() {
-                return true;
-            }
-
-            @Override
-            public int sparseFilledSize() {
+            public int sparseFilledElementCount() {
                 return rows();
             }
 

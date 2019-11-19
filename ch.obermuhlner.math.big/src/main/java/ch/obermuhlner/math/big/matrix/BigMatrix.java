@@ -21,7 +21,7 @@ public interface BigMatrix {
 
     BigDecimal get(int row, int column);
 
-    default int size() {
+    default int elementCount() {
         return rows() * columns();
     }
 
@@ -51,13 +51,9 @@ public interface BigMatrix {
 
     ImmutableBigMatrix transpose();
 
-    default ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns) {
-        return ImmutableBigMatrix.matrix(ImmutableOperations.lazySubMatrix(this, startRow, startColumn, rows, columns));
-    }
+    ImmutableBigMatrix subMatrix(int startRow, int startColumn, int rows, int columns);
 
-    default ImmutableBigMatrix minor(int skipRow, int skipColumn) {
-        return ImmutableBigMatrix.matrix(ImmutableOperations.lazyMinor(this, skipRow, skipColumn));
-    }
+    ImmutableBigMatrix minor(int skipRow, int skipColumn);
 
     default ImmutableBigMatrix invert(MathContext mathContext) {
         MatrixUtils.checkSquare(this);
@@ -127,28 +123,24 @@ public interface BigMatrix {
                 .map(c -> coordValue(c, get(c.row, c.column)));
     }
 
-    default boolean isSparse() {
-        return false;
-    }
-
     default BigDecimal getSparseDefaultValue() {
         return ZERO;
     }
 
-    default int sparseFilledSize() {
-        return size();
+    default int sparseFilledElementCount() {
+        return elementCount();
     }
 
-    default int sparseEmptySize() {
-        return size() - sparseFilledSize();
+    default int sparseEmptyElementCount() {
+        return elementCount() - sparseFilledElementCount();
     }
 
     default double sparseEmptyRatio() {
-        if (size() == 0) {
+        if (elementCount() == 0) {
             return 0.0;
         }
 
-        return (double) sparseEmptySize() / size();
+        return (double) sparseEmptyElementCount() / elementCount();
     }
 
     default ImmutableBigMatrix asImmutableMatrix() {
