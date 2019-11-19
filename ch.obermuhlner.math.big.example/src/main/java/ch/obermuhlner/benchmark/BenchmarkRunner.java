@@ -1,14 +1,23 @@
 package ch.obermuhlner.benchmark;
 
-public class BenchmarkRunner<T> {
+public class BenchmarkRunner {
 
     private static final double nanosPerSecond = 1_000_000_000.0;
     private static final int maxInnerCount = 1000;
 
-    private double warmupSeconds = 0.1;
-    private double measureSeconds = 1.0;
+    private double warmupSeconds;
+    private double measureSeconds;
 
-    public double measure(Benchmark benchmark, T data) {
+    public BenchmarkRunner() {
+        this(1.0);
+    }
+
+    public BenchmarkRunner(double measureSeconds) {
+        this.warmupSeconds = measureSeconds / 10;
+        this.measureSeconds = measureSeconds;
+    }
+
+    public <T> double measure(Benchmark benchmark, T data) {
         double singleRunSeconds = measure(benchmark, data, 1);
 
         if (singleRunSeconds > measureSeconds) {
@@ -20,7 +29,7 @@ public class BenchmarkRunner<T> {
         return measure(benchmark, data, measureSeconds, singleRunSeconds, 10);
     }
 
-    private double measure(Benchmark benchmark, T data, double limitSeconds, double singleRunSeconds, int runCount) {
+    private <T> double measure(Benchmark benchmark, T data, double limitSeconds, double singleRunSeconds, int runCount) {
         double seconds = limitSeconds;
 
         double minElapsedSeconds = Double.MAX_VALUE;
@@ -55,14 +64,14 @@ public class BenchmarkRunner<T> {
         return innerCount;
     }
 
-    private void warmup(Benchmark benchmark, T data, double seconds) {
+    private <T> void warmup(Benchmark benchmark, T data, double seconds) {
         while (seconds > 0) {
             double elapsedSeconds = measure(benchmark, data, 1);
             seconds -= elapsedSeconds;
         }
     }
 
-    private double measure(Benchmark benchmark, T data, int count) {
+    private <T> double measure(Benchmark benchmark, T data, int count) {
         long startNanos = System.nanoTime();
         for (int i = 0; i < count; i++) {
             benchmark.run(data);
