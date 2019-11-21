@@ -45,7 +45,6 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
         assertEquals(ZERO, m.get(1, 2));
     }
 
-
     @Test(expected = IllegalArgumentException.class)
     public void failSetRowLower() {
         MutableBigMatrix m = createMutableBigMatrix(2, 3,
@@ -71,6 +70,15 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
                 4, 5, 6);
 
         m.set(0, -1, ZERO);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void failSetColumnUpper() {
+        MutableBigMatrix m = createMutableBigMatrix(2, 3,
+                1, 2, 3,
+                4, 5, 6);
+
+        m.set(0, 3, ZERO);
     }
 
     @Test
@@ -99,15 +107,6 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
                         1, 1, 1,
                         1, 1, 1),
                 m);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void failSetColumnUpper() {
-        MutableBigMatrix m = createMutableBigMatrix(2, 3,
-                1, 2, 3,
-                4, 5, 6);
-
-        m.set(0, 3, ZERO);
     }
 
     @Test
