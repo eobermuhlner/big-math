@@ -15,9 +15,9 @@ import static ch.obermuhlner.math.big.matrix.Coord.coord;
 import static java.math.BigDecimal.ZERO;
 
 public abstract class AbstractSparseBigMatrix extends AbstractBigMatrix {
-    protected final int rows;
-    protected final int columns;
-    protected final Map<Integer, BigDecimal> data = new HashMap<>();
+    protected int rows;
+    protected int columns;
+    protected Map<Integer, BigDecimal> data = new HashMap<>();
     protected BigDecimal defaultValue;
 
     public AbstractSparseBigMatrix(BigDecimal defaultValue, int rows, int columns) {

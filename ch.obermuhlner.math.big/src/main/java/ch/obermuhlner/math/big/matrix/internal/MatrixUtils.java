@@ -91,11 +91,19 @@ public class MatrixUtils {
     }
 
     public static void checkRow(BigMatrix matrix, String name, int row) {
+        checkRow(matrix.rows(), name, row);
+    }
+
+    public static void checkRow(int rows, int row) {
+        checkRow(rows, "row", row);
+    }
+
+    public static void checkRow(int rows, String name, int row) {
         if (row < 0 ) {
             throw new IllegalArgumentException(name + " < 0 : " + row);
         }
-        if (row >= matrix.rows()) {
-            throw new IllegalArgumentException(name + " >= " + matrix.rows() + " : " + row);
+        if (row >= rows) {
+            throw new IllegalArgumentException(name + " >= " + rows + " : " + row);
         }
     }
 

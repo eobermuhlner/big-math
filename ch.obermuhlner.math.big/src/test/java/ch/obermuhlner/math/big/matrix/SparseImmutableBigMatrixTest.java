@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SparseImmutableBigMatrixTest extends AbstractImmutableBigMatrixTest {
 
-    private static final int TIMEOUT = 50;
+    private static final int TIMEOUT = 100;
     private static final int ROWS = 10000;
     private static final int COLUMNS = 10000;
 

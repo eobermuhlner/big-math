@@ -32,6 +32,26 @@ public interface MutableBigMatrix extends BigMatrix {
         }
     }
 
+    default void insertRow(int row, double... values) {
+        insertRow(row, MatrixUtils.toBigDecimal(values));
+    }
+    void insertRow(int row, BigDecimal... values);
+    default void appendRow(double... values) {
+        appendRow(MatrixUtils.toBigDecimal(values));
+    }
+    void appendRow(BigDecimal... values);
+    void removeRow(int row);
+
+    default void insertColumn(int column, double... values) {
+        insertColumn(column, MatrixUtils.toBigDecimal(values));
+    }
+    void insertColumn(int column, BigDecimal... values);
+    default void appendColumn(double... values) {
+        appendColumn(MatrixUtils.toBigDecimal(values));
+    }
+    void appendColumn(BigDecimal... values);
+    void removeColumn(int column);
+
     default void fill(BigDecimal value) {
         for (int row = 0; row < rows(); row++) {
             for (int col = 0; col < columns(); col++) {

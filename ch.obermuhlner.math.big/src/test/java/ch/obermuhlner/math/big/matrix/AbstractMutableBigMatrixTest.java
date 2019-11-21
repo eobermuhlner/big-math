@@ -179,6 +179,144 @@ public abstract class AbstractMutableBigMatrixTest extends AbstractBigMatrixTest
     }
 
     @Test
+    public void testInsertRow() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.insertRow(1, 10, 11, 12);
+
+        assertEquals(
+                createBigMatrix(4, 3,
+                        1, 2, 3,
+                        10, 11, 12,
+                        4, 5, 6,
+                        7, 8, 9),
+                m1);
+    }
+
+    @Test
+    public void testInsertRowEnd() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.insertRow(3, 10, 11, 12);
+
+        assertEquals(
+                createBigMatrix(4, 3,
+                        1, 2, 3,
+                        4, 5, 6,
+                        7, 8, 9,
+                        10, 11, 12),
+                m1);
+    }
+
+    @Test
+    public void testAppendRow() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.appendRow(10, 11, 12);
+
+        assertEquals(
+                createBigMatrix(4, 3,
+                        1, 2, 3,
+                        4, 5, 6,
+                        7, 8, 9,
+                        10, 11, 12),
+                m1);
+    }
+
+    @Test
+    public void testRemoveRow() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.removeRow(1);
+
+        assertEquals(
+                createBigMatrix(2, 3,
+                        1, 2, 3,
+                        7, 8, 9),
+                m1);
+    }
+
+    @Test
+    public void testInsertColumn() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.insertColumn(1, 10, 11, 12);
+
+        assertEquals(
+                createBigMatrix(3, 4,
+                        1, 10, 2, 3,
+                        4, 11, 5, 6,
+                        7, 12, 8, 9),
+                m1);
+    }
+
+    @Test
+    public void testInsertColumnEnd() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.insertColumn(3, 10, 11, 12);
+
+        assertEquals(
+                createBigMatrix(3, 4,
+                        1, 2, 3, 10,
+                        4, 5, 6, 11,
+                        7, 8, 9, 12),
+                m1);
+    }
+
+    @Test
+    public void testAppendColumn() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.appendColumn(10, 11, 12);
+
+        assertEquals(
+                createBigMatrix(3, 4,
+                        1, 2, 3, 10,
+                        4, 5, 6, 11,
+                        7, 8, 9, 12),
+                m1);
+    }
+
+    @Test
+    public void testRemoveColumn() {
+        MutableBigMatrix m1 = createMutableBigMatrix(3, 3,
+                1, 2, 3,
+                4, 5, 6,
+                7, 8, 9);
+
+        m1.removeColumn(1);
+
+        assertEquals(
+                createBigMatrix(3, 2,
+                        1, 3,
+                        4, 6,
+                        7, 9),
+                m1);
+    }
+
+    @Test
     public void testMutableSum() {
         MutableBigMatrix m = createMutableBigMatrix(2, 3);
         m.fill(valueOf(2));
