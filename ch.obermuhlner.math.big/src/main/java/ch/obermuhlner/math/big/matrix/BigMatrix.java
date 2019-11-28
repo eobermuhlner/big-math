@@ -42,6 +42,10 @@ public interface BigMatrix {
     }
     ImmutableBigMatrix multiply(BigDecimal value, MathContext mathContext);
 
+    default ImmutableBigMatrix divide(BigDecimal value, MathContext mathContext) {
+        return multiply(ONE.divide(value, mathContext), mathContext);
+    }
+
     default ImmutableBigMatrix multiply(BigMatrix other) {
         return multiply(other, null);
     }

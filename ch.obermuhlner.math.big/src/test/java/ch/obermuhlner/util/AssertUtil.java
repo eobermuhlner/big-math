@@ -1,6 +1,7 @@
 package ch.obermuhlner.util;
 
 import ch.obermuhlner.math.big.matrix.BigMatrix;
+import ch.obermuhlner.math.big.vector.BigVector;
 
 import java.math.BigDecimal;
 
@@ -32,6 +33,15 @@ public class AssertUtil {
             for (int column = 0; column < expected.columns(); column++) {
                 assertBigDecimal(expected.get(row, column), actual.get(row, column), epsilon);
             }
+        }
+    }
+
+
+    public static void assertBigVector(BigVector expected, BigVector actual, BigDecimal epsilon) {
+        assertEquals("size", expected.size(), actual.size());
+
+        for (int i = 0; i < expected.size(); i++) {
+            assertBigDecimal(expected.get(i), actual.get(i), epsilon);
         }
     }
 }

@@ -129,6 +129,18 @@ Operations in `MutableBigMatrix`:
     void set(int row, int column, BigMatrix matrix);
     void fill(BigDecimal value);
     void clear();
+    void insertRow(int row, double... values);
+    void insertRow(int row, BigDecimal... values);
+    void appendRow(double... values);
+    void appendRow(BigDecimal... values);
+    void removeRow(int row);
+    void insertColumn(int column, double... values);
+    void insertColumn(int column, BigDecimal... values);
+    void appendColumn(double... values);
+    void appendColumn(BigDecimal... values);
+    void removeColumn(int column);
+    void swapRows(int row1, int row2);
+    void swapColumns(int column1, int column2);
     void gaussianElimination(boolean reducedEchelonForm, MathContext mathContext);
 ```  
 
