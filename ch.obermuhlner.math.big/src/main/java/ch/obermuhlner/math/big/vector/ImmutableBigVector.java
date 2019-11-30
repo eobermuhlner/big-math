@@ -8,6 +8,8 @@ import ch.obermuhlner.math.big.vector.internal.matrix.MatrixImmutableBigVector;
 
 import java.math.BigDecimal;
 
+import static java.math.BigDecimal.ZERO;
+
 public interface ImmutableBigVector extends BigVector {
 
     static ImmutableBigVector vector(double... values) {
@@ -35,13 +37,14 @@ public interface ImmutableBigVector extends BigVector {
     }
 
     static ImmutableBigVector denseVectorOfSize(int size, BigDecimal... values) {
-        if (size == 2) {
-            return new Fix2ImmutableBigVector(values[0], values[1]);
+        switch (size) {
+            case 2:
+                return new Fix2ImmutableBigVector(values);
+            case 3:
+                return new Fix3ImmutableBigVector(values);
+            default:
+                return new MatrixImmutableBigVector(ImmutableBigMatrix.denseMatrix(size, 1, values));
         }
-        if (size == 3) {
-            return new Fix3ImmutableBigVector(values[0], values[1], values[2]);
-        }
-        return new MatrixImmutableBigVector(ImmutableBigMatrix.denseMatrix(size, 1, values));
     }
 
     static ImmutableBigVector sparseVector(double... values) {

@@ -118,7 +118,17 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testAdd() {
+    public void testAdd2() {
+        BigVector m1 = createBigVector(10, 20);
+        BigVector m2 = createBigVector(1, 2);
+
+        ImmutableBigVector r = m1.add(m2);
+
+        assertEquals(ImmutableBigVector.vector(11, 22), r);
+    }
+
+    @Test
+    public void testAdd3() {
         BigVector m1 = createBigVector(10, 20, 30);
         BigVector m2 = createBigVector(1, 2, 3);
 
@@ -128,7 +138,17 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testSubtract() {
+    public void testSubtract2() {
+        BigVector m1 = createBigVector(11, 22);
+        BigVector m2 = createBigVector(1, 2);
+
+        ImmutableBigVector r = m1.subtract(m2);
+
+        assertEquals(ImmutableBigVector.vector(10, 20), r);
+    }
+
+    @Test
+    public void testSubtract3() {
         BigVector m1 = createBigVector(11, 22, 33);
         BigVector m2 = createBigVector(1, 2, 3);
 
@@ -138,7 +158,16 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testMultiplyScalar() {
+    public void testMultiplyScalar2() {
+        BigVector m = createBigVector(1, 2);
+
+        ImmutableBigVector r = m.multiply(valueOf(2));
+
+        assertEquals(ImmutableBigVector.vector(2, 4), r);
+    }
+
+    @Test
+    public void testMultiplyScalar3() {
         BigVector m = createBigVector(1, 2, 3);
 
         ImmutableBigVector r = m.multiply(valueOf(2));
@@ -147,7 +176,16 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testDivideScalar() {
+    public void testDivideScalar2() {
+        BigVector m = createBigVector(2, 4);
+
+        ImmutableBigVector r = m.divide(valueOf(2), MathContext.DECIMAL128);
+
+        assertEquals(ImmutableBigVector.vector(1, 2), r);
+    }
+
+    @Test
+    public void testDivideScalar3() {
         BigVector m = createBigVector(2, 4, 6);
 
         ImmutableBigVector r = m.divide(valueOf(2), MathContext.DECIMAL128);
@@ -168,8 +206,20 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testDot() {
-        // https://www.wolframalpha.com/input/?i=%281%2C+2%2C+3%29+dot+%282%2C+3%2C+4%29
+    public void testDot2() {
+        // https://www.wolframalpha.com/input/?i=%281%2C+2%29.%282%2C+3%29
+        BigVector m1 = createBigVector(1, 2);
+        BigVector m2 = createBigVector(2, 3);
+
+        BigDecimal r = m1.dot(m2);
+
+        BigDecimal epsilon = valueOf(0.000001);
+        assertBigDecimal(valueOf(8), r, epsilon);
+    }
+
+    @Test
+    public void testDot3() {
+        // https://www.wolframalpha.com/input/?i=%281%2C+2%2C+3%29.%282%2C+3%2C+4%29
         BigVector m1 = createBigVector(1, 2, 3);
         BigVector m2 = createBigVector(2, 3, 4);
 
@@ -180,7 +230,18 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testMagnitude() {
+    public void testMagnitude2() {
+        BigVector m = createBigVector(1, 2);
+
+        BigDecimal r = m.magnitude(MathContext.DECIMAL128);
+
+        BigDecimal epsilon = valueOf(0.00001);
+        assertBigDecimal(BigDecimalMath.sqrt(valueOf(1 + 2*2), MathContext.DECIMAL128), r, epsilon);
+        assertBigDecimal(valueOf(2.23607), r, epsilon);
+    }
+
+    @Test
+    public void testMagnitude3() {
         BigVector m = createBigVector(1, 2, 3);
 
         BigDecimal r = m.magnitude(MathContext.DECIMAL128);
@@ -191,7 +252,21 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testNormalize() {
+    public void testNormalize2() {
+        // https://www.wolframalpha.com/input/?i=normalize+%281%2C+2%2C+3%29
+        BigVector m = createBigVector(1, 2);
+
+        BigVector r = m.normalize(MathContext.DECIMAL128);
+
+        BigDecimal epsilon = valueOf(0.000001);
+        assertBigVector(ImmutableBigVector.vector(
+                1.0 / Math.sqrt(5),
+                2.0 / Math.sqrt(5)), r, epsilon);
+    }
+
+    @Test
+    public void testNormalize3() {
+        // https://www.wolframalpha.com/input/?i=normalize+%281%2C+2%2C+3%29
         BigVector m = createBigVector(1, 2, 3);
 
         BigVector r = m.normalize(MathContext.DECIMAL128);
@@ -204,7 +279,17 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testAbs() {
+    public void testAbs2() {
+        BigVector m = createBigVector(1, -2);
+
+        BigVector r = m.abs();
+
+        BigDecimal epsilon = valueOf(0.000001);
+        assertBigVector(ImmutableBigVector.vector(1, 2), r, epsilon);
+    }
+
+    @Test
+    public void testAbs3() {
         BigVector m = createBigVector(1, -2, 0);
 
         BigVector r = m.abs();
@@ -214,7 +299,17 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testElementOperation() {
+    public void testElementOperation2() {
+        BigVector m = createBigVector(1, 2);
+
+        BigVector r = m.elementOperation(b -> b.multiply(valueOf(11)));
+
+        BigDecimal epsilon = valueOf(0.000001);
+        assertBigVector(ImmutableBigVector.vector(11, 22), r, epsilon);
+    }
+
+    @Test
+    public void testElementOperation3() {
         BigVector m = createBigVector(1, 2, 3);
 
         BigVector r = m.elementOperation(b -> b.multiply(valueOf(11)));
@@ -230,5 +325,12 @@ public abstract class AbstractBigVectorTest {
 
         assertEquals(true, createBigVector(0, 0, 0).isZero());
         assertEquals(true, createBigVector().isZero());
+
+        for (int i = 0; i < 10; i++) {
+            assertEquals(true, ImmutableBigVector.zeroVector(i).isZero());
+            assertEquals(true, MutableBigVector.zeroVector(i).isZero());
+            assertEquals(true, MutableBigVector.denseZeroVector(i).isZero());
+            assertEquals(true, MutableBigVector.sparseZeroVector(i).isZero());
+        }
     }
 }
