@@ -8,6 +8,7 @@ import java.math.MathContext;
 
 import static ch.obermuhlner.util.AssertUtil.assertBigDecimal;
 import static ch.obermuhlner.util.AssertUtil.assertBigVector;
+import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 import static org.junit.Assert.*;
 
@@ -137,6 +138,14 @@ public abstract class AbstractBigVectorTest {
         assertEquals(ImmutableBigVector.vector(11, 22, 33), r);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void failAdd() {
+        BigVector m1 = createBigVector(10, 20);
+        BigVector m2 = createBigVector(1, 2, 3);
+
+        ImmutableBigVector r = m1.add(m2);
+    }
+
     @Test
     public void testSubtract2() {
         BigVector m1 = createBigVector(11, 22);
@@ -155,6 +164,14 @@ public abstract class AbstractBigVectorTest {
         ImmutableBigVector r = m1.subtract(m2);
 
         assertEquals(ImmutableBigVector.vector(10, 20, 30), r);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void failSubtract() {
+        BigVector m1 = createBigVector(10, 20);
+        BigVector m2 = createBigVector(1, 2, 3);
+
+        ImmutableBigVector r = m1.subtract(m2);
     }
 
     @Test
@@ -205,6 +222,22 @@ public abstract class AbstractBigVectorTest {
         assertBigVector(ImmutableBigVector.vector(-1, 2, -1), r, epsilon);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void failCross2() {
+        BigVector m1 = createBigVector(10, 20);
+        BigVector m2 = createBigVector(1, 2);
+
+        ImmutableBigVector r = m1.cross(m2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void failCross3() {
+        BigVector m1 = createBigVector(10, 20, 30);
+        BigVector m2 = createBigVector(1, 2, 3, 4);
+
+        ImmutableBigVector r = m1.cross(m2);
+    }
+
     @Test
     public void testDot2() {
         // https://www.wolframalpha.com/input/?i=%281%2C+2%29.%282%2C+3%29
@@ -227,6 +260,23 @@ public abstract class AbstractBigVectorTest {
 
         BigDecimal epsilon = valueOf(0.000001);
         assertBigDecimal(valueOf(20), r, epsilon);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void failDot() {
+        BigVector m1 = createBigVector(10, 20);
+        BigVector m2 = createBigVector(1, 2, 3);
+
+        BigDecimal r = m1.dot(m2);
+    }
+
+    @Test
+    public void testMagnitudeZero() {
+        BigVector m = createBigVector();
+
+        BigDecimal r = m.magnitude(MathContext.DECIMAL128);
+
+        assertBigDecimal(ZERO, r);
     }
 
     @Test

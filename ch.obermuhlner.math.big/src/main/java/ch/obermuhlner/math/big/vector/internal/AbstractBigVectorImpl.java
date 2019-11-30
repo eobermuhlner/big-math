@@ -57,6 +57,8 @@ public abstract class AbstractBigVectorImpl implements BigVector {
 
     @Override
     public BigDecimal dot(BigVector other, MathContext mathContext) {
+        VectorUtils.checkSameSize(this, other);
+
         BigDecimal result = ZERO;
         for (int i = 0; i < size(); i++) {
             result = MatrixUtils.add(result, MatrixUtils.multiply(get(i), other.get(i), mathContext), mathContext);

@@ -8,8 +8,6 @@ import ch.obermuhlner.math.big.vector.internal.matrix.MatrixImmutableBigVector;
 
 import java.math.BigDecimal;
 
-import static java.math.BigDecimal.ZERO;
-
 public interface ImmutableBigVector extends BigVector {
 
     static ImmutableBigVector vector(double... values) {
