@@ -2,7 +2,7 @@ package ch.obermuhlner.math.big.vector;
 
 import ch.obermuhlner.math.big.matrix.MutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
-import ch.obermuhlner.math.big.vector.internal.MutableBigVectorImpl;
+import ch.obermuhlner.math.big.vector.internal.matrix.MatrixMutableBigVector;
 
 import java.math.BigDecimal;
 
@@ -41,21 +41,21 @@ public interface MutableBigVector extends BigVector {
     }
 
     static MutableBigVector zeroVector(int size) {
-        return vectorOfSize(size, new BigDecimal[0]);
+        return denseZeroVector(size);
     }
 
     static MutableBigVector denseVector(double... values) {
         return denseVector(MatrixUtils.toBigDecimal(values));
     }
     static MutableBigVector denseVector(BigDecimal... values) {
-        return new MutableBigVectorImpl(MutableBigMatrix.denseMatrix(values.length, 1, values));
+        return new MatrixMutableBigVector(MutableBigMatrix.denseMatrix(values.length, 1, values));
     }
 
     static MutableBigVector denseVectorOfSize(int size, double... values) {
         return denseVectorOfSize(size, MatrixUtils.toBigDecimal(values));
     }
     static MutableBigVector denseVectorOfSize(int size, BigDecimal... values) {
-        return new MutableBigVectorImpl(MutableBigMatrix.denseMatrix(size, 1, values));
+        return new MatrixMutableBigVector(MutableBigMatrix.denseMatrix(size, 1, values));
     }
 
     static MutableBigVector denseZeroVector(int size) {
@@ -67,14 +67,14 @@ public interface MutableBigVector extends BigVector {
         return sparseVector(MatrixUtils.toBigDecimal(values));
     }
     static MutableBigVector sparseVector(BigDecimal... values) {
-        return new MutableBigVectorImpl(MutableBigMatrix.sparseMatrix(values.length, 1, values));
+        return new MatrixMutableBigVector(MutableBigMatrix.sparseMatrix(values.length, 1, values));
     }
 
     static MutableBigVector sparseVectorOfSize(int size, double... values) {
         return sparseVectorOfSize(size, MatrixUtils.toBigDecimal(values));
     }
     static MutableBigVector sparseVectorOfSize(int size, BigDecimal... values) {
-        return new MutableBigVectorImpl(MutableBigMatrix.sparseMatrix(size, 1, values));
+        return new MatrixMutableBigVector(MutableBigMatrix.sparseMatrix(size, 1, values));
     }
 
     static MutableBigVector sparseZeroVector(int size) {

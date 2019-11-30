@@ -1,13 +1,13 @@
-package ch.obermuhlner.math.big.vector.internal;
+package ch.obermuhlner.math.big.vector.internal.matrix;
 
 import ch.obermuhlner.math.big.matrix.MutableBigMatrix;
 import ch.obermuhlner.math.big.vector.MutableBigVector;
 
 import java.math.BigDecimal;
 
-public class MutableBigVectorImpl extends AbstractBigVectorImpl<MutableBigMatrix> implements MutableBigVector {
+public class MatrixMutableBigVector extends MatrixBigVector<MutableBigMatrix> implements MutableBigVector {
 
-    public MutableBigVectorImpl(MutableBigMatrix matrix) {
+    public MatrixMutableBigVector(MutableBigMatrix matrix) {
         super(matrix);
     }
 

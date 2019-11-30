@@ -12,6 +12,7 @@ import static java.math.BigDecimal.valueOf;
 import static org.junit.Assert.*;
 
 public abstract class AbstractBigVectorTest {
+
     protected abstract BigVector createBigVector(double... values);
 
     @Test
@@ -36,15 +37,84 @@ public abstract class AbstractBigVectorTest {
     }
 
     @Test
-    public void testConstructors() {
+    public void testConstructorsSize2() {
+        BigVector m = createBigVector(1, 2);
+
+        assertEquals(m, ImmutableBigVector.vector(1, 2));
+        assertEquals(m, ImmutableBigVector.denseVector(1, 2));
+        assertEquals(m, ImmutableBigVector.sparseVector(1, 2));
+        assertEquals(m, ImmutableBigVector.denseVectorOfSize(2, 1, 2));
+        assertEquals(m, ImmutableBigVector.sparseVectorOfSize(2, 1, 2));
+        assertEquals(m, ImmutableBigVector.vector(valueOf(1), valueOf(2)));
+        assertEquals(m, ImmutableBigVector.denseVector(valueOf(1), valueOf(2)));
+        assertEquals(m, ImmutableBigVector.sparseVector(valueOf(1), valueOf(2)));
+        assertEquals(m, ImmutableBigVector.denseVectorOfSize(2, valueOf(1), valueOf(2)));
+        assertEquals(m, ImmutableBigVector.sparseVectorOfSize(2, valueOf(1), valueOf(2)));
+
+        assertEquals(m, MutableBigVector.vector(1, 2));
+        assertEquals(m, MutableBigVector.denseVector(1, 2));
+        assertEquals(m, MutableBigVector.sparseVector(1, 2));
+        assertEquals(m, MutableBigVector.denseVectorOfSize(2, 1, 2));
+        assertEquals(m, MutableBigVector.sparseVectorOfSize(2, 1, 2));
+        assertEquals(m, MutableBigVector.vector(valueOf(1), valueOf(2)));
+        assertEquals(m, MutableBigVector.denseVector(valueOf(1), valueOf(2)));
+        assertEquals(m, MutableBigVector.sparseVector(valueOf(1), valueOf(2)));
+        assertEquals(m, MutableBigVector.denseVectorOfSize(2, valueOf(1), valueOf(2)));
+        assertEquals(m, MutableBigVector.sparseVectorOfSize(2, valueOf(1), valueOf(2)));
+    }
+
+    @Test
+    public void testConstructorsSize3() {
         BigVector m = createBigVector(1, 2, 3);
 
         assertEquals(m, ImmutableBigVector.vector(1, 2, 3));
         assertEquals(m, ImmutableBigVector.denseVector(1, 2, 3));
         assertEquals(m, ImmutableBigVector.sparseVector(1, 2, 3));
+        assertEquals(m, ImmutableBigVector.denseVectorOfSize(3, 1, 2, 3));
+        assertEquals(m, ImmutableBigVector.sparseVectorOfSize(3, 1, 2, 3));
         assertEquals(m, ImmutableBigVector.vector(valueOf(1), valueOf(2), valueOf(3)));
         assertEquals(m, ImmutableBigVector.denseVector(valueOf(1), valueOf(2), valueOf(3)));
         assertEquals(m, ImmutableBigVector.sparseVector(valueOf(1), valueOf(2), valueOf(3)));
+        assertEquals(m, ImmutableBigVector.denseVectorOfSize(3, valueOf(1), valueOf(2), valueOf(3)));
+        assertEquals(m, ImmutableBigVector.sparseVectorOfSize(3, valueOf(1), valueOf(2), valueOf(3)));
+
+        assertEquals(m, MutableBigVector.vector(1, 2, 3));
+        assertEquals(m, MutableBigVector.denseVector(1, 2, 3));
+        assertEquals(m, MutableBigVector.sparseVector(1, 2, 3));
+        assertEquals(m, MutableBigVector.denseVectorOfSize(3, 1, 2, 3));
+        assertEquals(m, MutableBigVector.sparseVectorOfSize(3, 1, 2, 3));
+        assertEquals(m, MutableBigVector.vector(valueOf(1), valueOf(2), valueOf(3)));
+        assertEquals(m, MutableBigVector.denseVector(valueOf(1), valueOf(2), valueOf(3)));
+        assertEquals(m, MutableBigVector.sparseVector(valueOf(1), valueOf(2), valueOf(3)));
+        assertEquals(m, MutableBigVector.denseVectorOfSize(3, valueOf(1), valueOf(2), valueOf(3)));
+        assertEquals(m, MutableBigVector.sparseVectorOfSize(3, valueOf(1), valueOf(2), valueOf(3)));
+    }
+
+    @Test
+    public void testConstructorsSize4() {
+        BigVector m = createBigVector(1, 2, 3, 4);
+
+        assertEquals(m, ImmutableBigVector.vector(1, 2, 3, 4));
+        assertEquals(m, ImmutableBigVector.denseVector(1, 2, 3, 4));
+        assertEquals(m, ImmutableBigVector.sparseVector(1, 2, 3, 4));
+        assertEquals(m, ImmutableBigVector.denseVectorOfSize(4, 1, 2, 3, 4));
+        assertEquals(m, ImmutableBigVector.sparseVectorOfSize(4, 1, 2, 3, 4));
+        assertEquals(m, ImmutableBigVector.vector(valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+        assertEquals(m, ImmutableBigVector.denseVector(valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+        assertEquals(m, ImmutableBigVector.sparseVector(valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+        assertEquals(m, ImmutableBigVector.denseVectorOfSize(4, valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+        assertEquals(m, ImmutableBigVector.sparseVectorOfSize(4, valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+
+        assertEquals(m, MutableBigVector.vector(1, 2, 3, 4));
+        assertEquals(m, MutableBigVector.denseVector(1, 2, 3, 4));
+        assertEquals(m, MutableBigVector.sparseVector(1, 2, 3, 4));
+        assertEquals(m, MutableBigVector.denseVectorOfSize(4, 1, 2, 3, 4));
+        assertEquals(m, MutableBigVector.sparseVectorOfSize(4, 1, 2, 3, 4));
+        assertEquals(m, MutableBigVector.vector(valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+        assertEquals(m, MutableBigVector.denseVector(valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+        assertEquals(m, MutableBigVector.sparseVector(valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+        assertEquals(m, MutableBigVector.denseVectorOfSize(4, valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
+        assertEquals(m, MutableBigVector.sparseVectorOfSize(4, valueOf(1), valueOf(2), valueOf(3),  valueOf(4)));
     }
 
     @Test

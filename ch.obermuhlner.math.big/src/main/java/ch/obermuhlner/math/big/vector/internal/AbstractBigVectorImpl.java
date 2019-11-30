@@ -1,60 +1,58 @@
 package ch.obermuhlner.math.big.vector.internal;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
-import ch.obermuhlner.math.big.matrix.BigMatrix;
 import ch.obermuhlner.math.big.matrix.ImmutableBigMatrix;
 import ch.obermuhlner.math.big.matrix.internal.MatrixUtils;
 import ch.obermuhlner.math.big.vector.BigVector;
 import ch.obermuhlner.math.big.vector.ImmutableBigVector;
+import ch.obermuhlner.math.big.vector.internal.matrix.MatrixImmutableBigVector;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static java.math.BigDecimal.ZERO;
 
-public class AbstractBigVectorImpl<M extends BigMatrix> implements BigVector {
-
-    protected final M matrix;
-
-    AbstractBigVectorImpl(M matrix) {
-        this.matrix = matrix;
-    }
+public abstract class AbstractBigVectorImpl implements BigVector {
 
     @Override
     public BigDecimal get(int index) {
-        return matrix.get(index, 0);
+        return asBigMatrix().get(index, 0);
     }
 
     @Override
     public int size() {
-        return matrix.rows();
+        return asBigMatrix().rows();
     }
 
     @Override
     public ImmutableBigVector round(MathContext mathContext) {
-        return new ImmutableBigVectorImpl(matrix.round(mathContext));
+        return new MatrixImmutableBigVector(asBigMatrix().round(mathContext));
     }
 
     @Override
     public ImmutableBigVector add(BigVector other, MathContext mathContext) {
-        return new ImmutableBigVectorImpl(matrix.add(other.asBigMatrix(), mathContext));
+        return new MatrixImmutableBigVector(asBigMatrix().add(other.asBigMatrix(), mathContext));
     }
 
     @Override
     public ImmutableBigVector subtract(BigVector other, MathContext mathContext) {
-        return new ImmutableBigVectorImpl(matrix.subtract(other.asBigMatrix(), mathContext));
+        return new MatrixImmutableBigVector(asBigMatrix().subtract(other.asBigMatrix(), mathContext));
     }
 
     @Override
     public ImmutableBigVector multiply(BigDecimal value, MathContext mathContext) {
-        return new ImmutableBigVectorImpl(matrix.multiply(value, mathContext));
+        return new MatrixImmutableBigVector(asBigMatrix().multiply(value, mathContext));
     }
 
     @Override
     public ImmutableBigVector divide(BigDecimal value, MathContext mathContext) {
-        return new ImmutableBigVectorImpl(matrix.divide(value, mathContext));
+        return new MatrixImmutableBigVector(asBigMatrix().divide(value, mathContext));
+    }
+
+    @Override
+    public ImmutableBigVector elementOperation(Function<BigDecimal, BigDecimal> operation) {
+        return new MatrixImmutableBigVector(asBigMatrix().elementOperation(operation));
     }
 
     @Override
@@ -83,7 +81,7 @@ public class AbstractBigVectorImpl<M extends BigMatrix> implements BigVector {
         VectorUtils.checkSize(this, 3);
         VectorUtils.checkSameSize(this, other);
 
-        return new ImmutableBigVectorImpl(ImmutableBigMatrix.denseMatrix(3, 1,
+        return new MatrixImmutableBigVector(ImmutableBigMatrix.denseMatrix(3, 1,
                 MatrixUtils.subtract(MatrixUtils.multiply(get(1), other.get(2), mathContext), MatrixUtils.multiply(get(2), other.get(1), mathContext), mathContext),
                 MatrixUtils.subtract(MatrixUtils.multiply(get(2), other.get(0), mathContext), MatrixUtils.multiply(get(0), other.get(2), mathContext), mathContext),
                 MatrixUtils.subtract(MatrixUtils.multiply(get(0), other.get(1), mathContext), MatrixUtils.multiply(get(1), other.get(0), mathContext), mathContext)));
@@ -100,11 +98,6 @@ public class AbstractBigVectorImpl<M extends BigMatrix> implements BigVector {
     }
 
     @Override
-    public ImmutableBigVector elementOperation(Function<BigDecimal, BigDecimal> operation) {
-        return new ImmutableBigVectorImpl(matrix.elementOperation(operation));
-    }
-
-    @Override
     public ImmutableBigVector abs() {
         return elementOperation(b -> b.abs());
     }
@@ -118,11 +111,6 @@ public class AbstractBigVectorImpl<M extends BigMatrix> implements BigVector {
             }
         }
         return true;
-    }
-
-    @Override
-    public BigMatrix asBigMatrix() {
-        return matrix;
     }
 
     @Override
@@ -146,7 +134,25 @@ public class AbstractBigVectorImpl<M extends BigMatrix> implements BigVector {
 
     @Override
     public int hashCode() {
-        return Objects.hash(matrix);
+        int result = 1;
+
+        int n = size();
+
+        result = 31 * result + n;
+
+        int index = 1;
+        int lastIndex = 1;
+
+        while (index < n) {
+            int elementHash = get(index).stripTrailingZeros().hashCode();
+            result = 31 * result + elementHash;
+
+            int tmp = index + lastIndex;
+            lastIndex = index;
+            index = tmp;
+        }
+
+        return result;
     }
 
     @Override
