@@ -1,19 +1,32 @@
-# gradle stuff
+# intellij files
+.idea/
+*.iml
+*.ipr
+*.iws
+*.userlibraries
+build-idea/
 
-.gradle
-build
-gradle.properties
-
-# Eclipse IDE stuff
-
+# eclipse files
 .project
 .classpath
-bin
-out
 .settings
+build-eclipse/
 
-# IntelliJ IDEA stuff
+# netbeans files
+nb-configuration.xml
+nbactions.xml
 
-*.iml
-.idea
+# gradle stuff
+.gradle/
+/build/
 
+# maven stuff (to be removed when trunk becomes 4.x)
+*-execution-hints.log
+target/
+
+# testing stuff
+**/.local*
+/logs/
+
+# osx stuff
+.DS_Store
