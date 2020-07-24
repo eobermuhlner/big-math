@@ -230,7 +230,7 @@
                     <invokerPropertiesFile>${project.build.directory}/it-repo/invoker.properties</invokerPropertiesFile>
                     <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
                     <settingsFile>src/it/settings.xml</settingsFile>
-                    <streamLogs>true</streamLogs>
+                    <streamLogs>false</streamLogs>
                 </configuration>
             </plugin>
             <plugin>
@@ -291,58 +291,6 @@
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>walkingkooka</groupId>
-                <artifactId>j2cl-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>j2cl-big-math-it-junit</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <browsers>
-                                <param>CHROME</param>
-                                <param>HTML_UNIT</param>
-                            </browsers>
-                            <classpath-scope>test</classpath-scope>
-                            <compilation-level>ADVANCED</compilation-level>
-                            <defines>
-                                <gwt.cspCompatModeEnabled>true</gwt.cspCompatModeEnabled>
-                                <gwt.enableDebugId>true</gwt.enableDebugId>
-                                <gwt.strictCspTestingEnabled>true</gwt.strictCspTestingEnabled>
-                                <jre.checkedMode>DISABLED</jre.checkedMode>
-                                <jre.checks.checkLevel>MINIMAL</jre.checks.checkLevel>
-                                <jsinterop.checks>DISABLED</jsinterop.checks>
-                            </defines>
-                            <externs/>
-                            <formatting/>
-                            <java-compiler-arguments/>
-                            <language-out>ECMASCRIPT5</language-out>
-                            <thread-pool-size>0</thread-pool-size>
-
-                            <classpath-required/>
-                            <ignored-dependencies>
-                                <param>org.apiguardian:apiguardian-api:*</param>
-                                <param>walkingkooka:j2cl-junit-java:*</param>
-                                <param>org.junit.platform:junit-platform-commons:*</param>
-                                <param>org.junit.platform:junit-platform-engine:*</param>
-                                <param>org.junit.jupiter:junit-jupiter-api:*</param>
-                                <param>org.junit.jupiter:junit-jupiter-engine:*</param>
-                            </ignored-dependencies>
-                            <javascript-source-required/>
-
-                            <skip-tests>false</skip-tests>
-                            <tests>
-                                <test>junit/Test</test>
-                            </tests>
-                            <test-timeout>30</test-timeout>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
