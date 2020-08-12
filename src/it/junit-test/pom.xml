@@ -44,10 +44,10 @@
             <name>Vertispan hosted artifacts-releases</name>
             <url>https://repo.vertispan.com/j2cl</url>
             <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
@@ -57,7 +57,7 @@
                 <enabled>false</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
@@ -67,7 +67,7 @@
                 <enabled>false</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>
