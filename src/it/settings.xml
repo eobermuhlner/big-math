@@ -7,13 +7,27 @@
             </activation>
             <repositories>
                 <repository>
-                    <id>local.central</id>
+                    <id>local.repo</id>
                     <url>@localRepositoryUrl@</url>
                     <releases>
                         <enabled>true</enabled>
+                        <updatePolicy>daily</updatePolicy>
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
+                        <updatePolicy>daily</updatePolicy>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>github-mp1-appengine-repo</id>
+                    <url>https://maven-repo-254709.appspot.com</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>daily</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>daily</updatePolicy>
                     </snapshots>
                 </repository>
                 <repository>
@@ -56,15 +70,13 @@
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
-                    <id>local.central</id>
+                    <id>local.repo</id>
                     <url>@localRepositoryUrl@</url>
                     <releases>
                         <enabled>true</enabled>
-                        <updatePolicy>daily</updatePolicy>
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
-                        <updatePolicy>daily</updatePolicy>
                     </snapshots>
                 </pluginRepository>
             </pluginRepositories>
