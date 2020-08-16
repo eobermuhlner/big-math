@@ -125,16 +125,6 @@
             <groupId>@project.groupId@</groupId>
             <artifactId>@project.artifactId@</artifactId>
             <version>@project.version@</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apiguardian</groupId>
-                    <artifactId>apiguardian-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.junit.platform</groupId>
-                    <artifactId>junit-platform-engine</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>walkingkooka</groupId>
