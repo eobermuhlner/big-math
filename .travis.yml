@@ -4,16 +4,14 @@ jdk:
 
 install: mvn dependency:resolve
 
-before_script:
-  - echo "MAVEN_OPTS='-Xmx3g -XX:MaxPermSize=800m'" > ~/.mavenrc
-
 script:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -e
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -e > it-output.txt
 
 after_success:
   - mvn jacoco:report coveralls:report
 
 after_failure:
   - tail -n 500 target/it-tests/junit-test/build.log
+  - tail -n 500 it-output.txt
 
 dist: trusty
