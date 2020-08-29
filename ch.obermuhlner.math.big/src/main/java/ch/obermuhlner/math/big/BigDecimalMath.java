@@ -827,47 +827,70 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 	/**
 	 * Calculates the n'th root of {@link BigDecimal} x.
 	 * 
-	 * <p>See <a href="http://en.wikipedia.org/wiki/Square_root">Wikipedia: Square root</a></p>
+	 * <p>See <a href="https://en.wikipedia.org/wiki/Nth_root">Wikipedia: Nth root</a></p>
 	 * @param x the {@link BigDecimal} value to calculate the n'th root
 	 * @param n the {@link BigDecimal} defining the root
 	 * @param mathContext the {@link MathContext} used for the result
 	 * 
 	 * @return the calculated n'th root of x with the precision specified in the <code>mathContext</code>
+	 * @throws ArithmeticException if n &lt;= 0
 	 * @throws ArithmeticException if x &lt; 0
 	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
 	 */
 	public static BigDecimal root(BigDecimal x, BigDecimal n, MathContext mathContext) {
 		checkMathContext(mathContext);
-		switch (x.signum()) {
-		case 0:
-			return ZERO;
-		case -1:
-			throw new ArithmeticException("Illegal root(x) for x < 0: x = " + x);
+
+		switch (n.signum()) {
+			case -1:
+			case 0:
+				throw new ArithmeticException("Illegal root(x, n) for n <= 0: n = " + n);
 		}
 
+		switch (x.signum()) {
+			case 0:
+				return ZERO;
+			case -1:
+				throw new ArithmeticException("Illegal root(x, n) for x < 0: x = " + x);
+		}
+
+		if (isDoubleValue(x) && isDoubleValue(n)) {
+			double initialResult = Math.pow(x.doubleValue(), 1.0 / n.doubleValue());
+			if (Double.isFinite(initialResult)) {
+				return rootUsingNewtonRaphson(x, n, BigDecimal.valueOf(initialResult), mathContext);
+			}
+		}
+
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+
+		return pow(x, BigDecimal.ONE.divide(n, mc), mathContext);
+	}
+
+	private static BigDecimal rootUsingNewtonRaphson(BigDecimal x, BigDecimal n, BigDecimal initialResult, MathContext mathContext) {
 		if (n.compareTo(BigDecimal.ONE) <= 0) {
 			MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 			return pow(x, BigDecimal.ONE.divide(n, mc), mathContext);
 		}
-		
-		int maxPrecision = mathContext.getPrecision() + 4;
+
+		int maxPrecision = mathContext.getPrecision() * 2;
 		BigDecimal acceptableError = ONE.movePointLeft(mathContext.getPrecision() + 1);
 
 		BigDecimal nMinus1 = n.subtract(ONE);
-		BigDecimal result = x.divide(TWO, MathContext.DECIMAL32);
-		int adaptivePrecision = 2; // first approximation has really bad precision
-		BigDecimal step;
+		BigDecimal result = initialResult;
+		int adaptivePrecision = 12;
 
-		do {
-			adaptivePrecision *= 3;
-			if (adaptivePrecision > maxPrecision) {
-				adaptivePrecision = maxPrecision;
-			}
-			MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
-			
-			step = x.divide(pow(result, nMinus1, mc), mc).subtract(result).divide(n, mc);
-			result = result.add(step);
-		} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
+		if (adaptivePrecision < maxPrecision) {
+			BigDecimal step;
+			do {
+				adaptivePrecision *= 3;
+				if (adaptivePrecision > maxPrecision) {
+					adaptivePrecision = maxPrecision;
+				}
+				MathContext mc = new MathContext(adaptivePrecision, mathContext.getRoundingMode());
+
+				step = x.divide(pow(result, nMinus1, mc), mc).subtract(result).divide(n, mc);
+				result = result.add(step);
+			} while (adaptivePrecision < maxPrecision || step.abs().compareTo(acceptableError) > 0);
+		}
 
 		return round(result, mathContext);
 	}

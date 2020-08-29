@@ -835,19 +835,48 @@ public class BigDecimalMathTest {
 	}
 
 	@Test
-	public void testRoot() {
-		for(double value : new double[] { 0.1, 2, 10, 33.3333 }) {
+	public void testRootSqrtCbrt() {
+		for(double x : new double[] { 0, 0.1, 1, 2, 10, 33.3333 }) {
 			assertBigDecimal(
-					"root(2," + value + ")",
-					toCheck(Math.sqrt(value)),
-					BigDecimalMath.root(BigDecimal.valueOf(value), BigDecimal.valueOf(2), MC),
-                    MC_CHECK_DOUBLE);
+					"root(2," + x + ")",
+					toCheck(Math.sqrt(x)),
+					BigDecimalMath.root(BigDecimal.valueOf(x), BigDecimal.valueOf(2), MC),
+					MC_CHECK_DOUBLE);
 			assertBigDecimal(
-					"root(3," + value + ")",
-					toCheck(Math.cbrt(value)),
-					BigDecimalMath.root(BigDecimal.valueOf(value), BigDecimal.valueOf(3), MC),
-                    MC_CHECK_DOUBLE);
+					"root(3," + x + ")",
+					toCheck(Math.cbrt(x)),
+					BigDecimalMath.root(BigDecimal.valueOf(x), BigDecimal.valueOf(3), MC),
+					MC_CHECK_DOUBLE);
 		}
+	}
+
+	@Test
+	public void testRoot() {
+		for(double n : new double[] { 0.1, 0.9, 1, 1.1, 2, 10, 33.3333, 1234.5678 }) {
+			for (double x : new double[]{ 0, 0.1, 0.9, 1, 1.1, 2, 10, 33.3333, 1234.5678 }) {
+				System.out.println("ROOT x=" + x + " n=" + n);
+				assertBigDecimal(
+						"root(2," + x + ")",
+						toCheck(Math.pow(x, 1.0 / n)),
+						BigDecimalMath.root(BigDecimal.valueOf(x), BigDecimal.valueOf(n), MC),
+						MC_CHECK_DOUBLE);
+			}
+		}
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testRootZeroN() {
+		BigDecimalMath.root(BigDecimal.ONE, BigDecimal.ZERO, MC);
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testRootNegativeN() {
+		BigDecimalMath.root(BigDecimal.ONE, new BigDecimal(-1), MC);
+	}
+
+	@Test(expected = ArithmeticException.class)
+	public void testRootNegativeX() {
+		BigDecimalMath.root(new BigDecimal(-1), BigDecimal.ONE, MC);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -862,8 +891,7 @@ public class BigDecimalMathTest {
 		assertPrecisionCalculation(
 				expected,
 				mathContext -> BigDecimalMath.root(BigDecimal.valueOf(123), BigDecimal.valueOf(1.23), mathContext),
-				10,
-				100); // TODO optimize root()
+				10);
 	}
 
 	@Test
@@ -873,8 +901,7 @@ public class BigDecimalMathTest {
 		assertPrecisionCalculation(
 				expected,
 				mathContext -> BigDecimalMath.root(BigDecimal.valueOf(123), BigDecimal.valueOf(7.5), mathContext),
-				10,
-				50); // TODO optimize root()
+				10);
 	}
 
 	@Test
@@ -1789,14 +1816,14 @@ public class BigDecimalMathTest {
 
 	@Test
 	public void testRootPowRandom() {
-		for (BigDecimal value : Arrays.asList(new BigDecimal("0.1"), new BigDecimal("1.0"), new BigDecimal("2.1"))) {
+		for (BigDecimal n : Arrays.asList(new BigDecimal("0.1"), new BigDecimal("1.0"), new BigDecimal("2.1"), new BigDecimal("1234.5678"))) {
 			assertRandomCalculation(
-                    adaptCount(100),
+                    adaptCount(1000),
 					"x",
-					"pow(root(x, " + value + ")," + value + ")",
+					"pow(root(x, " + n + ")," + n + ")",
 					(random, mathContext) -> randomBigDecimal(random, mathContext),
 					(x, mathContext) -> x,
-					(x, mathContext) -> BigDecimalMath.pow(BigDecimalMath.root(x, value, mathContext), value, mathContext));
+					(x, mathContext) -> BigDecimalMath.pow(BigDecimalMath.root(x, n, mathContext), n, mathContext));
 		}
 	}
 
