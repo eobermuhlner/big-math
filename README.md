@@ -23,7 +23,7 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `log(BigDecimal, MathContext)`
 *   `exp(BigDecimal, MathContext)`
 *   `pow(BigDecimal, BigDecimal, MathContext)` calculates x^y
-*   `sqrt(BigDecimal, BigDecimal, MathContext)`
+*   `sqrt(BigDecimal, MathContext)`
 *   `root(BigDecimal, BigDecimal, MathContext)` calculates the n'th root of x
 *   `sin(BigDecimal, MathContext)`
 *   `cos(BigDecimal, MathContext)`
