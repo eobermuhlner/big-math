@@ -10,7 +10,7 @@ import java.util.Objects;
  * A wrapper around {@link BigDecimal} which simplifies the consistent usage of the {@link MathContext}
  * and provides a simpler API for calculations.
  *
- * <h1>Overview</h1>
+ * <h2>Overview</h2>
  *
  * <p>Every {@link BigFloat} instance has a reference to a {@link Context} that specifies the {@link MathContext} to be used for all calculations and values.</p>
  *
@@ -94,7 +94,7 @@ import java.util.Objects;
  * </li>
  * </ul>
  *
- * <h1>Usage</h1>
+ * <h2>Usage</h2>
  *
  * <p>Before doing any calculations you need to create a <code>Context</code> specifying the precision used for all calculations.</p>
  * <pre>
