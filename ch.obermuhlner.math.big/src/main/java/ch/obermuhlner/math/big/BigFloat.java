@@ -94,7 +94,7 @@ import java.util.Objects;
  * </li>
  * </ul>
  *
- * <h2>Usage</h2>
+ * <h3>Usage</h3>
  *
  * <p>Before doing any calculations you need to create a <code>Context</code> specifying the precision used for all calculations.</p>
  * <pre>
