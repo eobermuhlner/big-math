@@ -1,4 +1,4 @@
-module BigMathChObermuhlnerMathBig {
+module ch.obermuhlner.math.big {
     
     /**
      * Exports.
