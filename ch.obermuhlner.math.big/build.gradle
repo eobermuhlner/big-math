@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'ch.obermuhlner'
-version = '2.3.0'
+version = '2.3.1'
 archivesBaseName = 'big-math'
 
 ext {
@@ -29,8 +29,10 @@ repositories {
 }
 
 compileJava   {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    //sourceCompatibility = '1.8'
+    sourceCompatibility = '1.9'
+    //targetCompatibility = '1.8'
+    targetCompatibility = '1.9'
 }
 
 dependencies {
