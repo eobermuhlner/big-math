@@ -14,7 +14,6 @@ include 'regression.v2_2_0'
 include 'regression.v2_2_1'
 include 'regression.v2_3_0'
 include 'regression.v_current'
-include 'ch.obermuhlner.math.big.viewer'
 include 'ch.obermuhlner.math.big.kotlin'
 include 'ch.obermuhlner.math.big.kotlin.example'
 

@@ -8,6 +8,11 @@ repositories {
 	mavenCentral()
 }
 
+compileJava   {
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+}
+
 dependencies {
 	//compile group: 'ch.obermuhlner', name: 'big-math', version: '2.3.0'
 	compile project(':ch.obermuhlner.math.big')
