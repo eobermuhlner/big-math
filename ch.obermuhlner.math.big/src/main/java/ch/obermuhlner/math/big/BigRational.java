@@ -41,7 +41,7 @@ import java.util.stream.IntStream;
  * <p>Any {@link BigRational} value can be converted into an arbitrary {@link #withPrecision(int) precision} (number of significant digits)
  * or {@link #withScale(int) scale} (number of digits after the decimal point).</p>
  */
-public class BigRational implements Comparable<BigRational>, Serializable {
+public class BigRational extends Number implements Comparable<BigRational>, Serializable {
 
 	/**
 	 * The value 0 as {@link BigRational}.
@@ -1099,6 +1099,26 @@ public class BigRational implements Comparable<BigRational>, Serializable {
             }
             return jSum.divide(valueOf(k+1));
     	}).reduce(ZERO, BigRational::add);
+    }
+
+    @Override
+    public int intValue() {
+        return toBigDecimal().intValue();
+    }
+
+    @Override
+    public long longValue() {
+        return toBigDecimal().longValue();
+    }
+
+    @Override
+    public float floatValue() {
+        return toBigDecimal().floatValue();
+    }
+
+    @Override
+    public double doubleValue() {
+        return toBigDecimal().doubleValue();
     }
 
 }
