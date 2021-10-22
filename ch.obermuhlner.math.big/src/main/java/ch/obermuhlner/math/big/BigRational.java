@@ -639,21 +639,36 @@ public class BigRational implements Comparable<BigRational> {
 
 	/**
 	 * Returns this rational number as a double value.
-	 * 
+	 *
+	 * <p>If the rational number cannot be represented as double then one of the following results will be returned:</p>
+	 * <ul>
+	 *   <li>&gt; <code>Double.MAX_VALUE</code> returns {@link Double#POSITIVE_INFINITY}</li>
+	 *   <li>&lt; <code>-Double.MAX_VALUE</code> returns {@link Double#NEGATIVE_INFINITY}</li>
+	 *   <li>&lt; <code>Double.MIN_VALUE</code> returns <code>+0.0</code></li>
+	 *   <li>&gt; <code>-Double.MIN_VALUE</code> returns <code>-0.0</code></li>
+	 * </ul>
+	 *
 	 * @return the double value
 	 */
 	public double toDouble() {
-		// TODO best accuracy or maybe bigDecimalValue().doubleValue() is better?
-		return numerator.doubleValue() / denominator.doubleValue();
+		return toBigDecimal().doubleValue();
 	}
 
 	/**
 	 * Returns this rational number as a float value.
-	 * 
+	 *
+	 * <p>If the rational number cannot be represented as float then one of the following results will be returned:</p>
+	 * <ul>
+	 *   <li>&gt; <code>Float.MAX_VALUE</code> returns {@link Float#POSITIVE_INFINITY}</li>
+	 *   <li>&lt; <code>-Float.MAX_VALUE</code> returns {@link Float#NEGATIVE_INFINITY}</li>
+	 *   <li>&lt; <code>Float.MIN_VALUE</code> returns <code>+0.0f</code></li>
+	 *   <li>&gt; <code>-Float.MIN_VALUE</code> returns <code>-0.0f</code></li>
+	 * </ul>
+	 *
 	 * @return the float value
 	 */
 	public float toFloat() {
-		return numerator.floatValue() / denominator.floatValue();
+		return toBigDecimal().floatValue();
 	}
 
 	/**

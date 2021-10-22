@@ -340,6 +340,23 @@ public class BigRationalTest {
 		assertEquals(123.4, valueOf(123.4).toDouble(), 0.0);
 		assertEquals(-123.0, valueOf(-123.0).toDouble(), 0.0);
 		assertEquals(-123.4, valueOf(-123.4).toDouble(), 0.0);
+		assertEquals(0.3333333333333333, valueOf(1, 3).toDouble(), 0.0);
+		assertEquals(0.6666666666666666, valueOf(2, 3).toDouble(), 0.0);
+
+		assertEquals(8.804462619980757, valueOf("8.804462619980757911125181749462772084351").toDouble(), 0.0);
+		assertEquals(8.804462619980757, valueOf("8.80446261998075791112518174946277208435").toDouble(), 0.0);
+
+		assertEquals(5E-21, valueOf(BigDecimal.ONE, new BigDecimal("2E20")).toDouble(), 0.0);
+		assertEquals(5E-101, valueOf(BigDecimal.ONE, new BigDecimal("2E100")).toDouble(), 0.0);
+		assertEquals(0.0, valueOf(BigDecimal.ONE, new BigDecimal("2E9999")).toDouble(), 0.0); // underflow to +0.0
+		assertEquals(0.0, valueOf(BigDecimal.ONE, new BigDecimal("-2E9999")).toDouble(), 0.0); // underflow to +0.0
+		assertEquals(0, Double.compare(+0.0, valueOf(BigDecimal.ONE, new BigDecimal("2E9999")).toDouble())); // underflow to +0.0
+		assertEquals(0, Double.compare(-0.0, valueOf(BigDecimal.ONE, new BigDecimal("-2E9999")).toDouble())); // underflow to -0.0
+
+		assertEquals(2E20f, valueOf(new BigDecimal("2E20")).toFloat(), 0.0);
+		assertEquals(Double.POSITIVE_INFINITY, valueOf(new BigDecimal("2E100")).toFloat(), 0.0); // overflow to +infinity
+		assertEquals(-2E20f, valueOf(new BigDecimal("-2E20")).toFloat(), 0.0);
+		assertEquals(Double.NEGATIVE_INFINITY, valueOf(new BigDecimal("-2E100")).toFloat(), 0.0); // overflow to -infinity
 	}
 	
 	/**
@@ -352,8 +369,24 @@ public class BigRationalTest {
 		assertEquals(123.4f, valueOf(123.4).toFloat(), 0.0);
 		assertEquals(-123.0f, valueOf(-123.0).toFloat(), 0.0);
 		assertEquals(-123.4f, valueOf(-123.4).toFloat(), 0.0);
+		assertEquals(0.33333333f, valueOf(1, 3).toFloat(), 0.0);
+		assertEquals(0.6666667f, valueOf(2, 3).toFloat(), 0.0);
+
+		assertEquals(8.804462f, valueOf("8.804462619980757911125181749462772084351").toFloat(), 0.0);
+		assertEquals(8.804462f, valueOf("8.80446261998075791112518174946277208435").toFloat(), 0.0);
+
+		assertEquals(5E-21f, valueOf(BigDecimal.ONE, new BigDecimal("2E20")).toFloat(), 0.0);
+		assertEquals(0.0f, valueOf(BigDecimal.ONE, new BigDecimal("2E100")).toFloat(), 0.0); // underflow to +0.0f
+		assertEquals(0.0f, valueOf(BigDecimal.ONE, new BigDecimal("2E9999")).toFloat(), 0.0); // underflow to +0.0f
+		assertEquals(0, Float.compare(+0.0f, valueOf(BigDecimal.ONE, new BigDecimal("2E9999")).toFloat())); // underflow to +0.0f
+		assertEquals(0, Float.compare(-0.0f, valueOf(BigDecimal.ONE, new BigDecimal("-2E9999")).toFloat())); // underflow to -0.0f
+
+		assertEquals(2E20f, valueOf(new BigDecimal("2E20")).toFloat(), 0.0);
+		assertEquals(Float.POSITIVE_INFINITY, valueOf(new BigDecimal("2E100")).toFloat(), 0.0); // overflow to +infinity
+		assertEquals(-2E20f, valueOf(new BigDecimal("-2E20")).toFloat(), 0.0);
+		assertEquals(Float.NEGATIVE_INFINITY, valueOf(new BigDecimal("-2E100")).toFloat(), 0.0); // overflow to -infinity
 	}
-	
+
 	/**
 	 * Tests {@link BigRational#integerPart()}.
 	 */
