@@ -11,6 +11,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -22,6 +28,31 @@ import org.junit.Test;
  */
 public class BigRationalTest {
 	private static final String PI_STRING = "3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803482534211706798214808651";
+
+	@Test
+	public void testSerialize() throws IOException, ClassNotFoundException {
+		assertSerialize(ZERO);
+		assertSerialize(ONE);
+		assertSerialize(valueOf(2, 3));
+	}
+
+	private void assertSerialize(Object object) throws IOException, ClassNotFoundException {
+		assertEquals(object, deserialize(serialize(object)));
+	}
+
+	private byte[] serialize(Object object) throws IOException {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+		objectOutputStream.writeObject(object);
+		objectOutputStream.close();
+		return byteArrayOutputStream.toByteArray();
+	}
+
+	private Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+		return objectInputStream.readObject();
+	}
 
 	/**
 	 * Tests {@link BigRational#valueOf(int)}.
