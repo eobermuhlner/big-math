@@ -34,11 +34,38 @@ rational : 8804462619980757911125181749462772084351/1000000000000000000000000000
 float    : NaN
 ```
 
-After the fix this example would print:
+After the fix this example prints:
 ```
 rational : 8804462619980757911125181749462772084351/1000000000000000000000000000000000000000
 float    : 8.804462
 ```
+
+
+## `BigRational.toIntegerRationalString()` with small negative numbers
+
+Negative rational numbers smaller than 1 where printed without `-` sign.
+
+For example:
+```java
+BigRational v = valueOf(-1, 2);
+System.out.println("small negative rational toString(): " + v);
+System.out.println("small negative rational toIntegerRationalString(): " + v);
+```
+
+would print:
+```
+small negative rational toString(): -0.5
+small negative rational toIntegerRationalString(): 1/2
+```
+
+After the fix this example prints:
+```
+small negative rational toString(): -0.5
+small negative rational toIntegerRationalString(): -1/2
+```
+
+
+
 
 
 # Enhancements
