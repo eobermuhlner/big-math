@@ -801,9 +801,11 @@ public class BigRational extends Number implements Comparable<BigRational>, Seri
 		}
 		if (fractionNumerator.signum() != 0) {
 			if (result.length() > 0) {
-				result.append(' ');
-			}
-			result.append(fractionNumerator.abs());
+                            result.append(' ')
+                                    .append(fractionNumerator.abs());
+                        } else {
+                            result.append(fractionNumerator);
+                        }
 			result.append('/');
 			result.append(denominator);
 		}
