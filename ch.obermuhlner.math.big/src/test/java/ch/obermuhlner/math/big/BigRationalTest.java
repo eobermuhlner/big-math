@@ -339,9 +339,11 @@ public class BigRationalTest {
 	public void testToIntegerRationalString() {
 		assertEquals("0", valueOf(0).toIntegerRationalString());
 		assertEquals("1", valueOf(1).toIntegerRationalString());
-		
+		assertEquals("-1", valueOf(-1).toIntegerRationalString());
+
 		assertEquals("1/2", valueOf(1, 2).toIntegerRationalString());
-		
+		assertEquals("-1/2", valueOf(-1, 2).toIntegerRationalString());
+
 		assertEquals("1 2/3", valueOf(1, 2, 3).toIntegerRationalString());
 		assertEquals("-1 2/3", valueOf(-1, 2, 3).toIntegerRationalString());
 	}
