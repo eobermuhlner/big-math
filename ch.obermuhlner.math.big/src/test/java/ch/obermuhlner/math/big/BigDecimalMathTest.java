@@ -1870,6 +1870,22 @@ ch.obermuhlner.math.big.BigDecimalMathTest > testLog2PowRandom FAILED
 				(x, mathContext) -> BigDecimalMath.log10(BigDecimalMath.pow(BigDecimal.TEN, x, mathContext), mathContext));
 	}
 
+	@Test
+	public void testToDegrees() {
+		assertEquals(0, BigDecimal.ZERO.compareTo(BigDecimalMath.toDegrees(BigDecimal.ZERO, MC)));
+
+		assertEquals(0, new BigDecimal("85.94366926962348131519723222115776").compareTo(BigDecimalMath.toDegrees(new BigDecimal("1.5"), MC)));
+		assertEquals(0, new BigDecimal("-85.94366926962348131519723222115776").compareTo(BigDecimalMath.toDegrees(new BigDecimal("-1.5"), MC)));
+	}
+
+	@Test
+	public void testToRadians() {
+		assertEquals(0, BigDecimal.ZERO.compareTo(BigDecimalMath.toRadians(BigDecimal.ZERO, MC)));
+
+		assertEquals(0, new BigDecimal("1.570796326794896619231321691639751").compareTo(BigDecimalMath.toRadians(new BigDecimal("90"), MC)));
+		assertEquals(0, new BigDecimal("-1.570796326794896619231321691639751").compareTo(BigDecimalMath.toRadians(new BigDecimal("-90"), MC)));
+	}
+
 	private void assertPrecisionCalculation(Function<MathContext, BigDecimal> precisionCalculation, int startPrecision, int endPrecision) {
 		BigDecimal expected = precisionCalculation.apply(new MathContext(endPrecision * 2));
 		//System.out.println("reference expected:      " + expected);

@@ -37,6 +37,8 @@ The class `BigDecimalMath` provides efficient and accurate implementations for:
 *   `asinh(BigDecimal, MathContext)`
 *   `acosh(BigDecimal, MathContext)`
 *   `atanh(BigDecimal, MathContext)`
+*   `toDegrees(BigDecimal, MathContext)` converts from radians to degrees
+*   `toRadians(BigDecimal, MathContext)` converts from degrees to radians
 *   `pow(BigDecimal, long, MathContext)` calculates x^y for `long` y
 *   `factorial(int)` calculates n!
 *   `bernoulli(int)` calculates Bernoulli numbers

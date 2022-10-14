@@ -26,6 +26,8 @@ public class BigDecimalMath {
 	private static final BigDecimal MINUS_ONE = valueOf(-1);
 	private static final BigDecimal ONE_HALF = valueOf(0.5);
 
+	private static final BigDecimal ONE_HUNDRED_EIGHTY = valueOf(180);
+
 	private static final BigDecimal DOUBLE_MAX_VALUE = BigDecimal.valueOf(Double.MAX_VALUE);
 
 	private static volatile BigDecimal log2Cache;
@@ -1683,6 +1685,38 @@ System.out.println(BigDecimalMath.roundWithTrailingZeroes(new BigDecimal("0.0000
 		checkMathContext(mathContext);
 		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
 		BigDecimal result = log(x.add(ONE).divide(x.subtract(ONE), mc), mc).multiply(ONE_HALF);
+		return round(result, mathContext);
+	}
+
+	/**
+	 * Converts an angle measured in radians to an approximately equivalent angle measured in degrees.
+	 * The conversion from radians to degrees is generally inexact, it uses the number PI with the precision specified in the mathContext.
+	 * @param x An angle in radians.
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return The angle in degrees.
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
+	 */
+	public static BigDecimal toDegrees(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal result = x.multiply(ONE_HUNDRED_EIGHTY.divide(pi(mc), mc),  mc);
+		return round(result, mathContext);
+	}
+
+	/**
+	 /**
+	 * Converts an angle measured in degrees to an approximately equivalent angle measured in radians.
+	 * The conversion from degrees to radians is generally inexact, it uses the number PI with the precision specified in the mathContext.
+	 *
+	 * @param x An angle in degrees.
+	 * @param mathContext the {@link MathContext} used for the result
+	 * @return The angle in radians.
+	 * @throws UnsupportedOperationException if the {@link MathContext} has unlimited precision
+	 */
+	public static BigDecimal toRadians(BigDecimal x, MathContext mathContext) {
+		checkMathContext(mathContext);
+		MathContext mc = new MathContext(mathContext.getPrecision() + 6, mathContext.getRoundingMode());
+		BigDecimal result = x.multiply(pi(mc).divide(ONE_HUNDRED_EIGHTY, mc), mc);
 		return round(result, mathContext);
 	}
 
