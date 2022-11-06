@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'ch.obermuhlner'
-version = '2.3.0'
+version = '2.3.1'
 archivesBaseName = 'big-math'
 
 ext {
@@ -82,7 +82,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
-    archives jar
+    //archives jar // no longer needed tp add - will lead to duplicate
     archives sourcesJar
     archives javadocJar
 }
