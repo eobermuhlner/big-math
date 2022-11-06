@@ -65,7 +65,14 @@ small negative rational toIntegerRationalString(): -1/2
 ```
 
 
+## `BigDecimalMath.root(x, n)` faster with large n
 
+The `BigDecimalMath.root(BigDecimal, BigDecimal, MathContext)` function converged very slowly for larger values of n.
+
+This was due to a bad initial value for the Newton-Raphson approximation.
+
+Now the initial value for the Newton-Raphson approximation is calculated using double precision.
+If the initial value cannot be calculated using double precision the function pow(x, 1/n) is used to calculate the root.
 
 
 # Enhancements
