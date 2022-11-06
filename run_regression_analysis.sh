@@ -11,6 +11,7 @@
 ./gradlew :regression.v2_2_0:run
 ./gradlew :regression.v2_2_1:run
 ./gradlew :regression.v2_3_0:run
+./gradlew :regression.v2_3_1:run
 ./gradlew :regression.v_current:run
 
 ./gradlew :regression.analysis:run

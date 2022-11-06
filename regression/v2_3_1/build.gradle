@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+mainClassName = 'ch.obermuhlner.math.big.example.internal.PerformanceRegressionBigDecimalMath'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile group: 'ch.obermuhlner', name: 'big-math', version: '2.3.1'
+	compile project(':ch.obermuhlner.math.big.example')
+}
