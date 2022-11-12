@@ -97,7 +97,7 @@ public class BigComplexMath {
 	 * @see #gamma(BigComplex, MathContext)
 	 */
 	public static BigComplex factorial(BigComplex x, MathContext mathContext) {
-		if (x.isReal() && BigDecimalMath.isIntValue(x.re)) {
+		if (x.isReal() && BigDecimalMath.isIntValue(x.re) && x.re.intValueExact() > 0) {
 			return BigComplex.valueOf(BigDecimalMath.factorial(x.re.intValueExact()).round(mathContext));
 		}
 
