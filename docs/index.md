@@ -6,14 +6,15 @@
 
 ## Current Release
 
-* [Release Note 2.3.1](releases/v2.3.1.html)
-* [Javadoc Release 2.3.1](javadoc/v2.3.1/)
+* [Release Note 2.3.2](releases/v2.3.2.html)
+* [Javadoc Release 2.3.2](javadoc/v2.3.2/)
 
 ## Release Notes
 
 * [Next Release Note](releases/next_release_note.html) (under construction)
 
-* [Release Note 2.3.1](releases/v2.3.1.html)
+* [Release Note 2.3.1](releases/v2.3.2.html)
+* [Release Note 2.3.1](releases/v2.3.1.html) - deprecated - use 2.3.1 instead!
 * [Release Note 2.3.0](releases/v2.3.0.html)
 * [Release Note 2.2.1](releases/v2.2.1.html)
 * [Release Note 2.2.0](releases/v2.2.0.html)

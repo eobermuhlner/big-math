@@ -14,6 +14,6 @@ compileJava   {
 }
 
 dependencies {
-	//compile group: 'ch.obermuhlner', name: 'big-math', version: '2.3.0'
+	//compile group: 'ch.obermuhlner', name: 'big-math', version: '2.3.3'
 	compile project(':ch.obermuhlner.math.big')
 }
