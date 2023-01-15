@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <inherits name="ch.obermuhlner.math.big.BigMath"/>
+  <source path=""/>
+</module>
