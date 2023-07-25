@@ -274,7 +274,7 @@ public class BigRational extends Number implements Comparable<BigRational>, Seri
 	 * @return the resulting rational number
 	 */
 	public BigRational add(BigRational value) {
-		if (denominator.equals(value.denominator)) {
+		if (denominator.compareTo(value.denominator) == 0) {
 			return of(numerator.add(value.numerator), denominator);
 		}
 
@@ -334,7 +334,7 @@ public class BigRational extends Number implements Comparable<BigRational>, Seri
 	 * @return the resulting rational number
 	 */
 	public BigRational subtract(BigRational value) {
-		if (denominator.equals(value.denominator)) {
+		if (denominator.compareTo(value.denominator) == 0) {
 			return of(numerator.subtract(value.numerator), denominator);
 		}
 
@@ -719,10 +719,10 @@ public class BigRational extends Number implements Comparable<BigRational>, Seri
 		}
 
 		BigRational other = (BigRational) obj;
-		if (!numerator.equals(other.numerator)) {
+		if (numerator.compareTo(other.numerator) != 0) {
 			return false;
 		}
-		return denominator.equals(other.denominator);
+		return denominator.compareTo(other.denominator) == 0;
 	}
 
 	@Override

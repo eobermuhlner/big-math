@@ -579,7 +579,7 @@ public class PerformanceBigDecimalMath {
 				writer.print(y);
 				writer.print(", ");
 				for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
-					if (!x.equals(xStart)) {
+					if (x.compareTo(xStart) != 0) {
 						writer.print(", ");
 					}
 					System.out.println("x = " + x + " y = " + y);
@@ -624,7 +624,7 @@ public class PerformanceBigDecimalMath {
 				writer.print(y);
 				writer.print(", ");
 				for (BigDecimal x = xStart; x.compareTo(xEnd) <= 0; x = x.add(xStep)) {
-					if (!x.equals(xStart)) {
+					if (x.compareTo(xStart) != 0) {
 						writer.print(", ");
 					}
 					System.out.println("x = " + x + " y = " + y);
