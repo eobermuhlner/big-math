@@ -201,6 +201,11 @@ public class BigDecimalStream {
 		}
 		
 		@Override
+		public long estimateSize() {
+			return count;
+		}
+
+		@Override
 		public Spliterator<BigDecimal> trySplit() {
 			long firstHalfCount = count / 2;
 			
@@ -210,10 +215,12 @@ public class BigDecimalStream {
 			
 			long secondHalfCount = count - firstHalfCount;
 			
-			count = firstHalfCount;
+			BigDecimal startFirstHalf = value;
+			count = secondHalfCount;
 			BigDecimal startSecondHalf = value.add(step.multiply(new BigDecimal(firstHalfCount), mathContext), mathContext);
 			
-			return new BigDecimalSpliterator(startSecondHalf, step, secondHalfCount, mathContext);
+			value = startSecondHalf;
+			return new BigDecimalSpliterator(startFirstHalf, step, firstHalfCount, mathContext);
 		}
     }
 }

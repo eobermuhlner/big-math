@@ -196,6 +196,11 @@ public class BigFloatStream {
 		}
 		
 		@Override
+		public long estimateSize() {
+			return count;
+		}
+
+		@Override
 		public Spliterator<BigFloat> trySplit() {
 			long firstHalfCount = count / 2;
 			
@@ -205,10 +210,12 @@ public class BigFloatStream {
 			
 			long secondHalfCount = count - firstHalfCount;
 			
-			count = firstHalfCount;
+			BigFloat startFirstHalf = value;
+			count = secondHalfCount;
 			BigFloat startSecondHalf = value.add(step.multiply(firstHalfCount));
 			
-			return new BigFloatSpliterator(startSecondHalf, step, secondHalfCount);
+			value = startSecondHalf;
+			return new BigFloatSpliterator(startFirstHalf, step, firstHalfCount);
 		}
     }
 }
