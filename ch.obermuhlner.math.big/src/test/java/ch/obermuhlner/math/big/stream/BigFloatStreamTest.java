@@ -17,6 +17,40 @@ import ch.obermuhlner.math.big.BigFloat.Context;
 
 public class BigFloatStreamTest {
 
+    @Test
+    public void testParallelEncounterOrder() {
+        for (long step : new long[] {1, -1}) {
+            long start = step > 0 ? 0 : 9;
+            long end = step > 0 ? 10 : -1;
+            List<BigFloat> expected = BigFloatStream.range(start, end, step, BigFloat.context(16)).collect(Collectors.toList());
+            List<BigFloat> actual = BigFloatStream.range(start, end, step, BigFloat.context(16)).parallel().collect(Collectors.toList());
+            assertEquals(expected, actual);
+            assertEquals(expected, java.util.Arrays.asList(BigFloatStream.range(start, end, step, BigFloat.context(16)).parallel().toArray()));
+        }
+    }
+
+    @Test
+    public void testParallelFindFirst() {
+        assertEquals(BigFloat.context(16).valueOf(0), BigFloatStream.range(0, 10, 1, BigFloat.context(16)).parallel().findFirst().get());
+    }
+
+    @Test
+    public void testSplitPrefixAndRemainingSize() {
+        Spliterator<BigFloat> suffix = BigFloatStream.range(0, 10, 1, BigFloat.context(16)).spliterator();
+        Spliterator<BigFloat> prefix = suffix.trySplit();
+        assertEquals(5, prefix.estimateSize());
+        assertEquals(5, suffix.estimateSize());
+        List<BigFloat> values = new java.util.ArrayList<>();
+        prefix.tryAdvance(values::add);
+        assertEquals(BigFloat.context(16).valueOf(0), values.get(0));
+        assertEquals(4, prefix.estimateSize());
+        prefix.forEachRemaining(values::add);
+        assertEquals(0, prefix.estimateSize());
+        suffix.forEachRemaining(values::add);
+        assertEquals(0, suffix.estimateSize());
+        assertEquals(BigFloatStream.range(0, 10, 1, BigFloat.context(16)).collect(Collectors.toList()), values);
+    }
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testRangeStepZero() {
 		Context context = BigFloat.context(20);

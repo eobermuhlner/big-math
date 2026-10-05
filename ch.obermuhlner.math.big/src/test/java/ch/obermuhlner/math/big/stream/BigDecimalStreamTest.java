@@ -14,6 +14,40 @@ import org.junit.Test;
 
 public class BigDecimalStreamTest {
 
+    @Test
+    public void testParallelEncounterOrder() {
+        for (long step : new long[] {1, -1}) {
+            long start = step > 0 ? 0 : 9;
+            long end = step > 0 ? 10 : -1;
+            List<BigDecimal> expected = BigDecimalStream.range(start, end, step, MathContext.DECIMAL64).collect(Collectors.toList());
+            List<BigDecimal> actual = BigDecimalStream.range(start, end, step, MathContext.DECIMAL64).parallel().collect(Collectors.toList());
+            assertEquals(expected, actual);
+            assertEquals(expected, java.util.Arrays.asList(BigDecimalStream.range(start, end, step, MathContext.DECIMAL64).parallel().toArray()));
+        }
+    }
+
+    @Test
+    public void testParallelFindFirst() {
+        assertEquals(BigDecimal.ZERO, BigDecimalStream.range(0, 10, 1, MathContext.DECIMAL64).parallel().findFirst().get());
+    }
+
+    @Test
+    public void testSplitPrefixAndRemainingSize() {
+        Spliterator<BigDecimal> suffix = BigDecimalStream.range(0, 10, 1, MathContext.DECIMAL64).spliterator();
+        Spliterator<BigDecimal> prefix = suffix.trySplit();
+        assertEquals(5, prefix.estimateSize());
+        assertEquals(5, suffix.estimateSize());
+        List<BigDecimal> values = new java.util.ArrayList<>();
+        prefix.tryAdvance(values::add);
+        assertEquals(BigDecimal.ZERO, values.get(0));
+        assertEquals(4, prefix.estimateSize());
+        prefix.forEachRemaining(values::add);
+        assertEquals(0, prefix.estimateSize());
+        suffix.forEachRemaining(values::add);
+        assertEquals(0, suffix.estimateSize());
+        assertEquals(BigDecimalStream.range(0, 10, 1, MathContext.DECIMAL64).collect(Collectors.toList()), values);
+    }
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testRangeStepZero() {
 		BigDecimalStream.range(BigDecimal.valueOf(0), BigDecimal.valueOf(10), BigDecimal.ZERO, MathContext.DECIMAL64);
