@@ -18,10 +18,10 @@ jobs:
           maven-version: '3.6.3'
 
       - name: Maven dependency/resolve
-        run: mvn dependency:resolve
+        run: mvn dependency:resolve -U
 
       - name: Maven install
-        run: mvn install -Dmaven.javadoc.skip=true -B -V -e > mvn-install.txt
+        run: mvn install -Dmaven.javadoc.skip=true -B -V -e |& tee mvn-install.txt
 
       - name: Print logs
         if: ${{ always() }}
